@@ -122,14 +122,6 @@ dd{margin:0}
 .board{overflow-x:auto;margin-top:16px}
 .empty{color:var(--muted);font-size:14px;padding:16px 0}
 
-/* horns */
-.hornsel{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.hrow{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
-.hn{background:#0e0c08;border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:92px;text-align:center;cursor:pointer}
-.hn:hover{border-color:var(--gold)}
-.hn b{display:block;font-size:20px;font-weight:600}
-.hn small{display:block;color:var(--muted);font-size:11px}
-.hn .fg{margin-top:8px;font-size:13px;color:var(--goldhi)}
 .warn{font-size:12.5px;color:var(--muted);border-left:2px solid var(--red);padding-left:10px;margin-top:12px;line-height:1.5}
 
 /* staff */
@@ -694,7 +686,7 @@ button.phslot{cursor:pointer}button.phslot[disabled]{opacity:.4;cursor:default}.
    <section class="card">
     <h3>On your instrument<span class="sp"></span><button class="mini" id="playInst">▶ Play this voicing</button></h3>
     <div class="tabs" id="tabs">
-     <button data-i="piano" class="on">Piano</button><button data-i="guitar">Guitar</button><button data-i="uke">Ukulele</button><button data-i="bass">Bass</button><button data-i="horns">Horns &amp; winds</button>
+     <button data-i="piano" class="on">Piano</button><button data-i="guitar">Guitar</button><button data-i="uke">Ukulele</button><button data-i="bass">Bass</button>
     </div>
     <div id="inst"></div>
    </section>
@@ -771,7 +763,7 @@ button.phslot{cursor:pointer}button.phslot[disabled]{opacity:.4;cursor:default}.
    <div>
     <section class="card">
      <h3>On your instrument</h3>
-     <div class="tabs" id="ksTabs"><button data-kinst="piano" class="on">Piano</button><button data-kinst="guitar">Guitar</button><button data-kinst="uke">Ukulele</button><button data-kinst="bass">Bass</button><button data-kinst="horns">Horns &amp; winds</button></div>
+     <div class="tabs" id="ksTabs"><button data-kinst="piano" class="on">Piano</button><button data-kinst="guitar">Guitar</button><button data-kinst="uke">Ukulele</button><button data-kinst="bass">Bass</button></div>
      <div id="ksInst"></div>
     </section>
     <section class="card">
@@ -1001,7 +993,7 @@ button.phslot{cursor:pointer}button.phslot[disabled]{opacity:.4;cursor:default}.
  </section>
 </section>
 </main>
-<footer>Composition Jungle Gym · preview 0.36 · all sound made in your browser · works offline · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
+<footer>Composition Jungle Gym · preview 0.37 · all sound made in your browser · works offline · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
 
 <aside class="journal" id="journal" aria-label="Composer's journal">
  <button class="x" id="closeJ">×</button>
@@ -1062,7 +1054,7 @@ function spell(li,midi){li=mod(li,7);let a=mod(midi,12)-NAT[li];if(a>6)a-=12;if(
 function degNum(d){return parseInt(d.replace(/[#b]/g,''))}
 function degColor(d){const n=degNum(d);if(n===1)return'var(--goldhi)';if(n===3||n===2&&!d.startsWith('b')||n===4)return'var(--green)';if(n===5)return'var(--ivory)';if(n===7||n===6)return'var(--red)';return'var(--violet)'}
 
-let S={root:'B',q:'m7',inv:0,level:6,inst:'piano',vi:0,key:null,horn:'trumpet'};
+let S={root:'B',q:'m7',inv:0,level:6,inst:'piano',vi:0,key:null};
 function chordOf(root,qk,inv=0){
  const q=Q.find(x=>x.k===qk),rl=LET.indexOf(root[0]),rpc=pcOf(root);
  const tones=q.d.map(d=>{const s=DEG[d];return{d,s,...spell(rl+degNum(d)-1,rpc+s+60)}});
@@ -1076,6 +1068,9 @@ function voicing(c){
  const b=ord[0];let bm=41+mod(mod(b.midi,12)-41,12);
  const out=[{...b,...spell(b.li,bm)}];let prev=59;
  ord.slice(1).forEach(t=>{let m=prev+1;while(mod(m,12)!==mod(t.midi,12))m++;prev=m;out.push({...t,...spell(t.li,m)})});
+ const rh=out.slice(1);if(rh.length>1&&rh[rh.length-1].midi-rh[0].midi>12){// close position: the rotation of the right-hand notes with the smallest span
+  const T=ord.slice(1).slice().sort((x,y)=>mod(x.midi,12)-mod(y.midi,12));let best=null;for(let k=0;k<T.length;k++){let p=59;const r=T.slice(k).concat(T.slice(0,k)).map(t=>{let m=p+1;while(mod(m,12)!==mod(t.midi,12))m++;p=m;return{...t,...spell(t.li,m)}});const sp=r[r.length-1].midi-r[0].midi;if(!best||sp<best.sp)best={r,sp}}
+  return[out[0],...best.r]}
  return out;
 }
 /* ---------- audio (synthesised locally) ---------- */
@@ -1094,51 +1089,107 @@ function play(midis,gap=0,kind='piano'){const a=ac(),t=a.currentTime+.03;MAST.ga
 
 /* ---------- beginner piano: one hand, 1-3-5, just above middle C ---------- */
 function beginnerNotes(c){
- const R=c.tones[0],T3=c.tones.find(t=>/3|^2$|^4$/.test(t.d)),T5=c.tones.find(t=>/5/.test(t.d));
- let tri=[R,T3,T5].filter(Boolean);if(tri.length===2)tri=[R,T5,{...R,d:'1'}];
- const inv=Math.min(c.inv||0,2),ord=[];for(let i=0;i<3;i++)ord.push(tri[(inv+i)%3]);
+ const R=c.tones[0],T3=c.tones.find(t=>/3|^2$|^4$/.test(t.d)),T5=c.tones.find(t=>/5/.test(t.d))||c.tones.find(t=>t!==R&&t!==T3);
+ let tri=[R,T3,T5].filter(Boolean);const pow=tri.length===2;if(pow)tri=[R,T5];
+ const inv=Math.min(c.inv||0,pow?1:2),ord=[];if(pow)ord.push(...(inv?[T5,R,T5]:[R,T5,R]));else for(let i=0;i<3;i++)ord.push(tri[(inv+i)%3]);
  let prev=59;const notes=ord.map(t=>{let m=prev+1;while(mod(m,12)!==mod(t.midi,12))m++;prev=m;return{...t,...spell(t.li,m)}});
  const left=c.tones.filter(t=>!tri.some(x=>mod(x.midi,12)===mod(t.midi,12)));
- const rh=inv===1?[1,2,5]:[1,3,5],lh=inv===2?[5,2,1]:[5,3,1];
+ const rh=pow?(inv?[1,2,5]:[1,2,5]):inv===1?[1,2,5]:[1,3,5],lh=pow?[5,2,1]:inv===2?[5,2,1]:[5,3,1];
  return{notes,left,rh,lh,inv:c.inv||0}}
-/* ---------- fretted voicing search ---------- */
+/* ---------- fretted shapes: a curated library first, then movable shapes, then (More only) a strictly filtered search ---------- */
 const TUN={guitar:[40,45,50,55,59,64],uke:[67,60,64,69],bass:[28,33,38,43]};
-function frettedVoicings(c,inst,more){
- if(c.q.k==='5'&&inst==='guitar'){const r6=mod(c.rpc-40,12),r5=mod(c.rpc-45,12);
-  return [[r6,r6+2,r6+2,-1,-1,-1],[-1,r5,r5+2,r5+2,-1,-1]].map(fr=>{const f=fr.filter(x=>x>0);return{fr,minF:f.length?Math.min(...f):0,sc:0,first:fr.findIndex(x=>x>=0)}}).sort((a,b)=>a.minF-b.minF)}
- const tun=TUN[inst],ns=tun.length,pcs=c.tones.map(t=>mod(t.midi,12));
- const opt=new Set(c.tones.filter(t=>t.d==='5'&&c.tones.length>3).map(t=>mod(t.midi,12)));
- const req=pcs.filter(p=>!opt.has(p)),bassPc=mod(c.bass.midi,12),res=[],seen=new Set();
- if(inst==='uke'&&new Set(req).size>4)return[];
- for(let b=0;b<=11;b++){
-  const choices=tun.map(o=>{const a=[];if(inst==='guitar')a.push(-1);for(let f=(b===0?0:b);f<=b+(more?4:3);f++)if(pcs.includes(mod(o+f,12)))a.push(f);if(b>0&&b<=3&&pcs.includes(mod(o,12)))a.push(0);return a});
-  const cur=new Array(ns);
-  (function rec(i){if(i===ns){test(cur.slice());return}for(const f of choices[i]){cur[i]=f;rec(i+1)}})(0);
-  function test(fr){
-   const snd=fr.map((f,i)=>f<0?null:tun[i]+f);let first=fr.findIndex(f=>f>=0);if(first<0)return;
-   // mutes only below the first sounding string
-   let im=0;for(let i=first;i<ns;i++)if(fr[i]<0){im++;if(!more||inst!=='guitar'||im>1||i===ns-1)return}
-   const count=ns-first-im;if(count<(more?3:Math.min(4,ns)))return;
-   if(inst==='guitar'&&mod(snd[first],12)!==bassPc)return;
-   const have=new Set(snd.filter(x=>x!==null).map(x=>mod(x,12)));for(const p of req)if(!have.has(p))return;
-   const fretted=fr.filter(f=>f>0);if(fretted.length){const mn=Math.min(...fretted),mx=Math.max(...fretted);if(mx-mn>(more?4:3))return;
-    const idx=fr.map((f,i)=>f===mn?i:-1).filter(i=>i>=0),atMin=idx.length;let barre=atMin>=2;
-    if(barre)for(let i=idx[0];i<=idx[idx.length-1];i++)if(fr[i]<=0)barre=false;
-    const fingers=barre?fretted.length-atMin+1:fretted.length;if(fingers>4)return}
-   const key=fr.join(',');if(seen.has(key))return;seen.add(key);
-   const minF=fretted.length?Math.min(...fretted):0;
-   let sc=count*3-minF*.6+(fr.filter(f=>f===0).length)*.5;
-   res.push({fr,minF,sc,first})}
- }
- res.sort((a,b)=>b.sc-a.sc);const out=[],pos=new Set();
- for(const v of res){const p=more?(v.minF===0?'open':Math.floor(v.minF/3))+'|'+(ns-v.first)+'|'+v.fr.filter(f=>f>=0).length:(v.minF===0?'open':Math.floor(v.minF/3));if(pos.has(p))continue;pos.add(p);out.push(v);if(out.length>=(more?10:4))break}
- return out.sort((a,b)=>a.minF-b.minF);
-}
+// standard shapes from published chord charts; slash shapes sit under their chord and appear when that inversion is chosen
+const FCUR={guitar:{
+ 'C|':['x32010','332010:C/G','032010:C/E'],'D|':['xx0232','200232:D/F♯','x00232:D/A'],'E|':['022100'],'F|':['133211:F (full barre)','xx3211:F (small)','x33211:F/C'],'G|':['320003','320033','x20003:G/B'],'A|':['x02220','002220:A/E'],
+ 'A|m':['x02210','002210:Am/E','3x2210:Am/G'],'E|m':['022000','x22000:Em/B'],'D|m':['xx0231'],
+ 'A|7':['x02020'],'B|7':['x21202'],'C|7':['x32310'],'D|7':['xx0212'],'E|7':['020100','022130'],'G|7':['320001'],
+ 'A|m7':['x02010'],'E|m7':['022030','020000'],'D|m7':['xx0211'],
+ 'C|maj7':['x32000'],'D|maj7':['xx0222'],'E|maj7':['021100'],'F|maj7':['xx3210'],'G|maj7':['320002'],'A|maj7':['x02120'],
+ 'A|sus2':['x02200'],'D|sus2':['xx0230'],'A|sus4':['x02230'],'D|sus4':['xx0233'],'E|sus4':['022200'],'C|sus4':['x33011'],'G|sus4':['330013'],
+ 'C|6':['x32210'],'A|6':['x02222'],'D|6':['xx0202'],'E|6':['022120'],'G|6':['320000'],'A|m6':['x02212'],'D|m6':['xx0201'],'E|m6':['022020'],
+ 'C|add9':['x32030'],'G|add9':['320203'],'E|add9':['024100'],'A|add9':['x02420'],'E|madd9':['024000'],'A|madd9':['x02410'],
+ 'E|9':['020102'],'C|9':['x32333'],'E|m9':['022032'],'B|m7b5':['x2323x'],'C|aug':['x32110'],
+ 'A|7sus4':['x02030'],'E|7sus4':['020200'],'D|7sus4':['xx0213'],'G|7sus4':['330011'],
+ 'E|5':['022xxx'],'A|5':['x022xx'],'D|5':['xx023x']},
+ uke:{'C|':['0003'],'D|':['2220'],'E|':['1402','4442'],'F|':['2010'],'G|':['0232'],'A|':['2100'],'Bb|':['3211'],'B|':['4322'],'Db|':['1114'],'Eb|':['0331'],'F#|':['3121'],
+ 'A|m':['2000'],'B|m':['4222'],'C|m':['0333'],'D|m':['2210'],'E|m':['0432'],'F|m':['1013'],'G|m':['0231'],'F#|m':['2120'],'Db|m':['1104'],'Bb|m':['3111'],
+ 'A|7':['0100'],'B|7':['2322'],'C|7':['0001'],'D|7':['2223'],'E|7':['1202'],'F|7':['2310'],'G|7':['0212'],'Bb|7':['1211'],
+ 'A|m7':['0000'],'B|m7':['2222'],'C|m7':['3333'],'D|m7':['2213'],'E|m7':['0202'],'G|m7':['0211'],
+ 'C|maj7':['0002'],'D|maj7':['2224'],'F|maj7':['2413','5500'],'G|maj7':['0222'],'A|maj7':['1100'],'Bb|maj7':['3210'],
+ 'D|sus2':['2200'],'G|sus2':['0230'],'C|sus4':['0013'],'D|sus4':['0230'],'G|sus4':['0233'],'A|sus4':['2200'],
+ 'C|6':['0000'],'F|6':['2213'],'G|6':['0202'],'C|add9':['0203'],'F|add9':['0010'],
+ 'E|dim7':['0101'],'B|m7b5':['2212'],'C|aug':['1003'],'E|7sus4':['2202'],'G|7sus4':['0213'],'C|5':['0033']}};
+// movable guitar shapes: offsets from the root's fret on the root's string (null = muted)
+const FMOV={E:{s:0,q:{'':[0,2,2,1,0,0],m:[0,2,2,0,0,0],'7':[0,2,0,1,0,0],m7:[0,2,0,0,0,0],maj7:[0,null,1,1,0,null],sus4:[0,2,2,2,0,0],'7sus4':[0,2,0,2,0,0],dim7:[0,null,-1,0,-1,null],m7b5:[0,null,0,0,-1,null],'5':[0,2,2,null,null,null]}},
+ A:{s:1,q:{'':[null,0,2,2,2,0],m:[null,0,2,2,1,0],'7':[null,0,2,0,2,0],m7:[null,0,2,0,1,0],maj7:[null,0,2,1,2,0],sus2:[null,0,2,2,0,0],sus4:[null,0,2,2,3,0],'7sus4':[null,0,2,0,3,0],'6':[null,0,2,2,2,2],m6:[null,0,2,2,1,2],
+  '9':[null,0,-1,0,0,0],maj9:[null,0,-1,1,0,null],m9:[null,0,-2,0,0,null],m7b5:[null,0,1,0,1,null],dim7:[null,0,1,-1,1,null],dim:[null,0,1,2,1,null],aug:[null,0,-1,-2,-2,null],'5':[null,0,2,2,null,null]}},
+ D:{s:2,q:{'':[null,null,0,2,3,2],m:[null,null,0,2,3,1],'7':[null,null,0,2,1,2],m7:[null,null,0,2,1,1],maj7:[null,null,0,2,2,2],sus2:[null,null,0,2,3,0],sus4:[null,null,0,2,3,3]}}};
+const pfr=s=>{const[a,n]=s.split(':');return{fr:a.length===6||a.length===4?[...a].map(ch=>ch==='x'?-1:+ch):a.split(',').map(x=>x==='x'?-1:+x),name:n||null}};
+function frSounds(fr,inst){return fr.map((f,i)=>f<0?null:TUN[inst][i]+f)}
+function frInnerMutes(fr){const s=fr.map((f,i)=>f>=0?i:-1).filter(i=>i>=0);if(!s.length)return 0;let m=0;for(let i=s[0];i<=s[s.length-1];i++)if(fr[i]<0)m++;return m}
+// the chord's notes: every required tone present, nothing outside the chord
+function frHasChord(fr,c,inst){const pcs=c.tones.map(t=>mod(t.midi,12)),opt=new Set(c.tones.filter(t=>t.d==='5'&&c.tones.length>3).map(t=>mod(t.midi,12)));
+ const have=new Set(frSounds(fr,inst).filter(x=>x!==null).map(x=>mod(x,12)));for(const p of have)if(!pcs.includes(p))return false;for(const p of pcs)if(!opt.has(p)&&!have.has(p))return false;return true}
+function frBassOK(fr,c,inst){if(inst!=='guitar')return true;const s=frSounds(fr,inst).filter(x=>x!==null);return mod(Math.min(...s),12)===mod(c.bass.midi,12)}
+// realism: four-fret reach, open strings only in first position, four fingers, enough strings
+function frReal(fr,inst,c,innerOK){const fd=fr.filter(f=>f>0);if(fd.length){if(Math.max(...fd)-Math.min(...fd)>3)return false;if(fr.includes(0)&&Math.max(...fd)>4)return false;if(!fretFingers(fr).ok)return false}
+ const n=fr.filter(f=>f>=0).length;if(inst==='uke'&&n<4)return false;if(inst==='guitar'&&c.q.k!=='5'&&n<4)return false;if(frInnerMutes(fr)>(innerOK?1:0))return false;return true}
+function frLabel(fr){const fd=fr.filter(f=>f>0);return!fd.length||fr.includes(0)&&Math.max(...fd)<=4?'Open position':'Fret '+Math.min(...fd)}
+function frettedCands(c,inst){const out=[],seen=new Set(),add=(fr,name,tier)=>{const k=fr.join();if(seen.has(k))return;if(!frHasChord(fr,c,inst)||!frBassOK(fr,c,inst))return;seen.add(k);const fd=fr.filter(f=>f>0);out.push({fr,name,tier,minF:fd.length?Math.min(...fd):0,first:fr.findIndex(f=>f>=0)})};
+ const rootN=c.tones[0].name,rpc=c.rpc,qk=c.q.k,lib=FCUR[inst];
+ // 1. curated shapes for this chord (matched by pitch, so C♯ and D♭ share shapes)
+ Object.entries(lib).forEach(([k,L])=>{const[r,q]=k.split('|');if(q!==qk||pcOf(r)!==rpc)return;L.forEach(s=>{const p=pfr(s);add(p.fr,p.name||`Open ${pretty(rootN)}${qk==='m'?'m':qk}`,0)})});
+ if(inst==='guitar'){
+  // 2. movable shapes (E, A and D shapes), every position up to fret 12
+  Object.entries(FMOV).forEach(([sh,M])=>{const o=M.q[qk];if(!o)return;let r=mod(rpc-TUN.guitar[M.s],12);for(const rr of [r,r+12]){if(rr<1||rr>12)continue;const fr=o.map(x=>x===null?-1:x+rr);if(fr.some(f=>f===0))continue;if(!frReal(fr,inst,c,true))continue;add(fr,`${sh}-shape barre, fret ${Math.min(...fr.filter(f=>f>0))}`,sh==='D'?2:1)}})}
+ else{
+  // 2. ukulele: an open shape of the same chord type moved up the neck, the open strings becoming a barre
+  Object.entries(lib).forEach(([k,L])=>{const[r,q]=k.split('|');if(q!==qk)return;const sh=mod(rpc-pcOf(r),12);if(!sh)return;L.forEach(s=>{const p=pfr(s);const fr=p.fr.map(f=>f+sh);if(!frReal(fr,inst,c,false))return;add(fr,`${pretty(r)}${q==='m'?'m':q} shape moved up ${sh} fret${sh>1?'s':''}`,sh<=5?1:2)})})}
+ return out}
+// 3. More shapes: a search kept to realistic shapes
+function frettedSearch(c,inst){const tun=TUN[inst],ns=tun.length,pcs=c.tones.map(t=>mod(t.midi,12)),res=[],seen=new Set();
+ for(let b=0;b<=11;b++){const choices=tun.map(o=>{const a=[];if(inst==='guitar')a.push(-1);for(let f=(b===0?0:b);f<=b+3;f++)if(pcs.includes(mod(o+f,12)))a.push(f);if(b>0&&b<=3&&pcs.includes(mod(o,12)))a.push(0);return a});
+  const cur=new Array(ns);(function rec(i){if(i===ns){const fr=cur.slice(),k=fr.join();if(seen.has(k))return;seen.add(k);
+    if(fr.every(f=>f<0))return;if(!frHasChord(fr,c,inst)||!frBassOK(fr,c,inst)||!frReal(fr,inst,c,true))return;if(inst==='guitar'){const fd0=fr.filter(f=>f>0),lo=fr[fr.findIndex(f=>f>=0)];if(fd0.length&&lo>Math.min(...fd0)+2)return}const FF=fretFingers(fr).fing,cnt={};FF.forEach((g,i)=>{if(g)(cnt[g]=cnt[g]||[]).push(i)});if((cnt[2]&&cnt[2].length>1)||(cnt[4]&&cnt[4].length>1))return;if(cnt[3]&&cnt[3].length>1&&cnt[3][cnt[3].length-1]-cnt[3][0]!==cnt[3].length-1)return;const fd=fr.filter(f=>f>0),n=fr.filter(f=>f>=0).length;
+    res.push({fr,name:null,tier:3,minF:fd.length?Math.min(...fd):0,first:fr.findIndex(f=>f>=0),sc:n*3-(fd.length?Math.min(...fd):0)*.4-frInnerMutes(fr)*4-(fd.length?Math.max(...fd)-Math.min(...fd):0)});return}
+   for(const f of choices[i]){cur[i]=f;rec(i+1)}})(0)}
+ res.sort((a,b)=>b.sc-a.sc);const out=[],pos=new Set();for(const v of res){const p=(v.minF===0?'o':Math.floor(v.minF/3))+'|'+v.first;if(pos.has(p))continue;pos.add(p);out.push(v);if(out.length>=10)break}return out}
+function frettedVoicings(c,inst,more){if(!FCUR[inst])return[];const C=frettedCands(c,inst).sort((a,b)=>a.tier-b.tier||a.minF-b.minF);
+ const beg=[];for(const v of C){if(beg.length>=4)break;if(v.tier<=1)beg.push(v)}
+ if(beg.length<4)for(const v of C)if(beg.length<4&&!beg.includes(v))beg.push(v);
+ if(beg.length<2){const k=new Set(beg.map(v=>v.fr.join()));for(const v of frettedSearch(c,inst))if(beg.length<2&&!k.has(v.fr.join()))beg.push(v)}
+ beg.sort((a,b)=>a.tier-b.tier||a.minF-b.minF);if(!more)return beg;
+ const k=new Set(beg.map(v=>v.fr.join())),rest=C.filter(v=>!k.has(v.fr.join()));rest.forEach(v=>k.add(v.fr.join()));
+ return rest.concat(frettedSearch(c,inst).filter(v=>!k.has(v.fr.join()))).slice(0,10)}
+/* ---------- bass patterns: root–5th–octave and one-position arpeggios, starting from the bass note ---------- */
+function bassPatterns(c){const tun=TUN.bass,bpc=mod(c.bass.midi,12),out=[],tones=c.tones.map(t=>({d:t.d,pc:mod(t.midi,12)}));
+ const dOf=m=>tones.find(t=>t.pc===mod(m,12)).d;
+ [0,1].forEach(s=>{for(const r of [mod(bpc-tun[s],12),mod(bpc-tun[s],12)+12]){if(r>14)break;const before=out.length;const bm=tun[s]+r;
+  // root–5th–octave (only when the bass note is the root)
+  const f5=c.tones.find(t=>/^(b5|5|#5)$/.test(t.d));
+  if(!c.inv&&f5){const s5=DEG[f5.d],n=[{s,f:r,m:bm},{s:s+1,f:r+s5-5,m:bm+s5},{s:s+2,f:r+2,m:bm+12}];if(n.every(x=>x.f>=0)){const w=Math.max(0,Math.min(...n.map(x=>x.f).filter(f=>f>0))-0);out.push({name:`Root–${f5.d.replace('b','♭').replace('#','♯')}–octave, from the ${['E','A'][s]} string`,notes:n.map(x=>({...x,d:dOf(x.m),fg:x.f===0?0:x.f-Math.max(1,r)+1}))})}}
+  // arpeggio: chord tones from the bass note up to its octave, one finger per fret
+  const seq=[];for(let m=bm;m<=bm+12;m++)if(tones.some(t=>t.pc===mod(m,12)))seq.push(m);
+  for(const w of [r-1,r,r-2,r-3].filter(x=>x>=(r===0?0:1))){let cs=s,ok=true;const n=[];for(const m of seq){let put=null;for(let st=cs;st<4;st++){const f=m-tun[st];if((f>=w&&f<=w+3)||(f===0&&w<=1)){put={s:st,f,m};break}}if(!put){ok=false;break}cs=put.s;n.push(put)}
+   if(ok){out.push({name:`Arpeggio, from the ${['E','A'][s]} string${w<=1&&n.some(x=>x.f===0)?' (open position)':', fret '+Math.max(1,w)}`,notes:n.map(x=>({...x,d:dOf(x.m),fg:x.f===0?0:x.f-Math.max(1,w)+1}))});break}}
+  if(out.length>before)break}});
+ return out}
+function bassBoxSVG(p){const ns=4,top=26,fh=24,frets=5,x0=34,fd=p.notes.map(n=>n.f).filter(f=>f>0),start=fd.length&&Math.max(...fd)>4?Math.min(...fd):1,W=ns*24;
+ let s=`<svg width="${W+50}" height="${top+fh*frets+12}" viewBox="0 0 ${W+50} ${top+fh*frets+12}">`;if(start===1)s+=`<rect x="${x0}" y="${top-3}" width="${(ns-1)*24}" height="4" fill="#ece2c8"/>`;else s+=`<text x="${x0-12}" y="${top+16}" fill="#9c927c" font-size="11" text-anchor="end">${start}fr</text>`;
+ for(let i=0;i<=frets;i++)s+=`<line x1="${x0}" x2="${x0+(ns-1)*24}" y1="${top+i*fh}" y2="${top+i*fh}" stroke="#4a4130"/>`;for(let i=0;i<ns;i++)s+=`<line x1="${x0+i*24}" x2="${x0+i*24}" y1="${top}" y2="${top+frets*fh}" stroke="#7d7058" stroke-width="1.6"/>`;
+ p.notes.forEach((n,k)=>{const x=x0+n.s*24,col=getCol(n.d),lab=n.d.replace(/b/g,'♭').replace(/#/g,'♯');if(n.f===0){s+=`<circle cx="${x}" cy="${top-12}" r="6" fill="none" stroke="${col}" stroke-width="1.6"/>`;return}
+  const y=top+(n.f-start+.5)*fh;s+=`<circle cx="${x}" cy="${y}" r="9" fill="${col}" ${k===0?'stroke="#fff" stroke-width="2"':''}/><text x="${x}" y="${y+3.5}" font-size="9" font-weight="700" text-anchor="middle" fill="#0b0906">${lab}</text><text x="${x+13}" y="${y+4}" font-size="10" fill="#c9b98f">${n.fg}</text>`});
+ return s+'</svg>'}
 const ORD=['','1st','2nd','3rd','4th','5th','6th'];
 /* which finger plays each fretted note: a barre on the lowest fret when it spans unbroken strings, then the remaining notes by fret (then string), each finger further along than the last */
 function fretFingers(fr){const out=fr.map(f=>f>0?null:''),fretted=fr.map((f,i)=>[f,i]).filter(([f])=>f>0).sort((a,b)=>a[0]-b[0]||a[1]-b[1]);if(!fretted.length)return{fing:out,barre:null,ok:true};
  const mn=fretted[0][0],give=(list,start)=>{let o={},p=start;for(const[f,i]of list){const fg=Math.max(p+1,f-mn+1);o[i]=fg;p=fg}if(p>4&&start+list.length<=4){o={};p=start;for(const[f,i]of list){p++;o[i]=p}}return{o,p}};
+ if(fretted.length===1&&fretted[0][0]<=4){out[fretted[0][1]]=fretted[0][0];return{fing:out,barre:null,ok:true}}
  let r=give(fretted,0),barre=null;
+ // a movable shape with several notes on its lowest fret is played with an index-finger barre (e.g. ukulele B♭ 3211, Bm 4222)
+ const atMn=fretted.filter(x=>x[0]===mn).map(x=>x[1]).sort((a,b)=>a-b),topS=fr.reduce((m,f,i)=>f>=0?i:m,-1);
+ if(!fr.includes(0)&&atMn.length>=2&&(atMn.length>=3||atMn.includes(topS))){let ub=true;for(let i=atMn[0];i<=atMn[atMn.length-1];i++)if(!(fr[i]>=mn))ub=false;
+  if(ub){const b={fret:mn,from:atMn[0],to:atMn[atMn.length-1]},rest=fretted.filter(([f,i])=>!(f===mn&&i>=b.from&&i<=b.to)),r2=give(rest,1);if(r2.p<=4){atMn.forEach(i=>r2.o[i]=1);r=r2;barre=b}}}
  if(r.p>4){const idx=fretted.filter(x=>x[0]===mn).map(x=>x[1]).sort((a,b)=>a-b);let unbroken=idx.length>=2;for(let i=idx[0];i<=idx[idx.length-1]&&unbroken;i++)if(!(fr[i]>=mn))unbroken=false;
   if(unbroken){barre={fret:mn,from:idx[0],to:idx[idx.length-1]};const rest=fretted.filter(([f,i])=>!(f===mn&&i>=barre.from&&i<=barre.to));r=give(rest,1);idx.forEach(i=>r.o[i]=1)}}
  if(r.p>4){const grp=[];fretted.forEach(x=>{const g=grp[grp.length-1];if(g&&g[0][0]===x[0]&&x[1]-g[g.length-1][1]===1)g.push(x);else grp.push([x])});const o={};let p=0;for(const g of grp){const fg=Math.max(p+1,g[0][0]-mn+1);g.forEach(([f,i])=>o[i]=fg);p=fg}r={o,p};barre=null}
@@ -1169,31 +1220,6 @@ function boardSVG(c,inst){
   s+=`<circle cx="${x}" cy="${y}" r="7.5" fill="${getCol(t.d)}" ${mod(m,12)===mod(c.bass.midi,12)&&inst==='bass'?'stroke="#fff" stroke-width="2"':''}/><text x="${x}" y="${y+3}" font-size="8" font-weight="700" text-anchor="middle" fill="#0b0906">${t.d.replace(/b/g,'♭').replace(/#/g,'♯')}</text>`}
  return s+'</svg>';
 }
-
-/* ---------- horns & winds ---------- */
-// written = concert + (letters, semitones)
-const HORNS={
- trumpet:{n:'Trumpet in B♭',tr:[1,2],clef:'treble',lo:55,fing:'valves',note:'Written a major 2nd above concert.'},
- trombone:{n:'Trombone',tr:[0,0],clef:'bass',lo:46,fing:'slide',note:'Concert pitch, bass clef. Slide positions 1 (closed) to 7 (furthest).'},
- alto:{n:'Alto sax in E♭',tr:[5,9],clef:'treble',lo:58,fing:null,note:'Written a major 6th above concert.'},
- tenor:{n:'Tenor sax in B♭',tr:[8,14],clef:'treble',lo:58,fing:null,note:'Written a major 9th above concert.'},
- clarinet:{n:'Clarinet in B♭',tr:[1,2],clef:'treble',lo:55,fing:null,note:'Written a major 2nd above concert.'},
- flute:{n:'Flute',tr:[0,0],clef:'treble',lo:60,fing:null,note:'Concert pitch.'}
-};
-const TPT={54:'123',55:'13',56:'23',57:'12',58:'1',59:'2',60:'0',61:'123',62:'13',63:'23',64:'12',65:'1',66:'2',67:'0',68:'23',69:'12',70:'1',71:'2',72:'0',73:'12',74:'1',75:'2',76:'0',77:'1',78:'2',79:'0',80:'23',81:'12'};
-const TBN={40:7,41:6,42:5,43:4,44:3,45:2,46:1,47:7,48:6,49:5,50:4,51:3,52:2,53:1,54:5,55:4,56:3,57:2,58:1,59:4,60:3,61:2,62:1,63:3,64:2,65:1,66:5,67:4,68:3,69:2,70:1};
-const TBNALT={53:'6',58:'5',59:'7',60:'6',61:'5',62:'4',64:'7',65:'6',66:'short 3',67:'short 2'};
-const TPTALT={57:'3',64:'3',69:'3',73:'123',74:'13',75:'23',76:'12',79:'13',81:'3'};
-function hornNotes(c,h){const H=HORNS[h];let base=null;
- return c.tones.map(t=>{const conc=t.midi-60;// relative concert from root octave 4
-  return t}).map((t,i,arr)=>{
-  // written root placed at or above H.lo
-  let wr=mod(c.rpc+H.tr[1],12);let wroot=H.lo+mod(wr-H.lo,12);
-  const wm=wroot+t.s;const conc=wm-H.tr[1];
-  return{d:t.d,concert:conc,w:spell(t.li+H.tr[0],wm)}});
-}
-function valves(f){let s='<svg width="64" height="22">';for(let i=1;i<=3;i++){const on=f.includes(String(i));s+=`<circle cx="${i*20-8}" cy="11" r="7" fill="${on?'#f0d48a':'none'}" stroke="#c9a24a" stroke-width="1.4"/>`}return s+'</svg>'}
-function slide(p){let s='<svg width="84" height="22"><line x1="6" x2="78" y1="11" y2="11" stroke="#4a4130" stroke-width="2"/>';for(let i=1;i<=7;i++)s+=`<line x1="${6+(i-1)*12}" x2="${6+(i-1)*12}" y1="6" y2="16" stroke="#7d7058"/>`;s+=`<circle cx="${6+(p-1)*12}" cy="11" r="5" fill="#f0d48a"/>`;return s+'</svg>'}
 
 /* ---------- render ---------- */
 const $=id=>document.getElementById(id);
@@ -1242,7 +1268,7 @@ function renderKeys(c){const h=homes(c);
 }
 /* instruments */
 function renderInst(c){
- const el=$('inst');document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.i===S.inst));
+ if(!['piano','guitar','uke','bass'].includes(S.inst))S.inst='piano';const el=$('inst');document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.i===S.inst));
  if(S.inst==='piano'){const beg=(S.pmode||'beg')==='beg',B=beginnerNotes(c),v=beg?B.notes:voicing(c);
   let s=`<div class="ctrl"><button class="mini ${beg?'gold':''}" data-pm="beg">Beginner · one hand 1–3–5</button><button class="mini ${beg?'':'gold'}" data-pm="full">Full · two hands</button><span class="note">${beg?'Right hand only, just above middle C. Finger numbers on the keys: thumb = 1.':'Bass note in the left hand, the other notes close together in the right.'} Tap any key to hear it.</span></div><div class="piano" id="pno">`;
   const lo=36,hi=84,whites=[];for(let m=lo;m<=hi;m++)if(NAT.includes(mod(m,12)))whites.push(m);const ww=100/whites.length;
@@ -1254,30 +1280,22 @@ function renderInst(c){
    (B.inv>2?' &nbsp;·&nbsp; This inversion needs the full chord: switch to Full.':'')+
    (B.left.length?`<br><span>Left out for now: the ${B.left.map(t=>t.d.replace(/b/g,'♭').replace(/#/g,'♯')+' ('+pretty(t.name)+')').join(', ')}. Add ${B.left.length>1?'them':'it'} later with your little finger or your left hand, or switch to Full.</span>`:'')+'</div>'}
   el.innerHTML=s;return}
- if(S.inst==='horns'){const H=HORNS[S.horn],ns=hornNotes(c,S.horn);
-  let s='<div class="hornsel">'+Object.entries(HORNS).map(([k,h])=>`<button class="mini ${k===S.horn?'gold':''}" data-horn="${k}">${h.n}</button>`).join('')+'</div>';
-  s+=`<div class="ctrl"><span class="note" style="margin-left:0">Horns play one note at a time, so the chord becomes an arpeggio. ${H.note} Tap a note to hear it.</span></div><div class="hrow">`;
-  ns.forEach(x=>{let fg='';if(H.fing==='valves'){const f=TPT[x.w.midi];fg=f?`<div class="fg">${valves(f)}<br>${f==='0'?'open':f.split('').join('–')}${TPTALT[x.w.midi]?`<small class="alt">alt ${TPTALT[x.w.midi].split('').join('–')}</small>`:''}</div>`:'<div class="fg">—</div>'}
-   if(H.fing==='slide'){const p=TBN[x.w.midi];fg=p?`<div class="fg">${slide(p)}<br>position ${p}${TBNALT[x.w.midi]?`<small class="alt">alt ${TBNALT[x.w.midi]}</small>`:''}</div>`:'<div class="fg">—</div>'}
-   s+=`<div class="hn" data-m="${x.concert}"><b>${pretty(x.w.name)}<sub style="font-size:11px;color:var(--muted)">${x.w.oct}</sub></b><small>${x.d.replace(/b/g,'♭').replace(/#/g,'♯')} · ${H.tr[1]?'written':'concert'}</small>${fg}</div>`});
-  s+='</div><div class="staff" id="hstaff" style="margin-top:14px"></div>';
-  if(!H.fing)s+=`<div class="warn">Fingering diagrams for ${H.n} come in the next build, checked note by note against a published fingering chart before they go in. The written (transposed) notes above are ready to use now.</div>`;
-  el.innerHTML=s;drawStaff($('hstaff'),ns.map(x=>x.w),H.clef,true);return}
  // fretted
- const vb=frettedVoicings(c,S.inst),kb=new Set(vb.map(v=>v.fr.join())),vs=S.more&&S.inst!=='bass'?vb.concat(frettedVoicings(c,S.inst,true).filter(v=>!kb.has(v.fr.join())).map(v=>({...v,more:true})).slice(0,6)):vb;if(S.vi>=vs.length)S.vi=0;
+ const vb=frettedVoicings(c,S.inst),kb=new Set(vb.map(v=>v.fr.join())),vs=S.more&&S.inst!=='bass'?vb.concat(frettedVoicings(c,S.inst,true).filter(v=>!kb.has(v.fr.join())).map(v=>({...v,more:true})).slice(0,8)):vb;if(S.vi>=vs.length)S.vi=0;
  let s='';const nm={guitar:'Guitar · standard tuning E A D G B E',uke:'Ukulele · re-entrant tuning G C E A',bass:'Bass · E A D G'}[S.inst];
  if(S.inst==='bass'){s+=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Bass lines outline the chord: start on the <b style="color:var(--ivory)">${pretty(c.bass.name)}</b> (ringed), then walk through the chord tones.</span></div>`;
-  s+=`<div class="board">${boardSVG(c,'bass')}</div>`;el.innerHTML=s;return}
+  const BP=bassPatterns(c);el._bp=BP;
+  if(BP.length)s+=`<div class="lbl" style="margin-top:6px">Patterns to play · tap one to hear it</div><div class="voicings">${BP.map((p,i)=>`<div class="vbox" data-bpat="${i}">${bassBoxSVG(p)}<div class="nm">${p.name}</div><small>${p.notes.map(n=>n.d.replace(/b/g,'♭').replace(/#/g,'♯')).join(' – ')}</small></div>`).join('')}</div><p class="note">One finger per fret: the small number beside each note is the finger (1 index to 4 little; 0 open string). The ringed note is where you start.</p>`;
+  s+=`<div class="lbl" style="margin-top:14px">Chord tones across the neck</div><div class="board">${boardSVG(c,'bass')}</div>`;el.innerHTML=s;return}
  s+=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Tap a shape to hear it. The numbers under each diagram are the fingers of the fretting hand (1 index, 2 middle, 3 ring, 4 little); a ring across the strings is a barre.${S.inst==='uke'?' The ukulele has no low bass string, so inversions sound the same here.':''}</span><span class="chips" style="margin-left:auto"><button class="chip ${S.more?'':'on'}" data-more="0">Beginner shapes</button><button class="chip ${S.more?'on':''}" data-more="1">More shapes</button></span></div>${S.more?'<div class="note" style="margin:4px 0 8px">More shapes adds three-string grips, one muted inner string and wider stretches. Shapes marked <b>no 5th</b> leave out the 5th, which is normal for 7th chords.</div>':''}`;
  if(!vs.length)s+='<div class="empty">No comfortable shape found in the first 12 frets. Try a simpler chord type or another instrument.</div>';
- else s+='<div class="voicings">'+vs.map((v,i)=>{const fs=TUN[S.inst].length-v.first,lab=v.minF===0?'Open position':`Fret ${v.minF}`,
+ else s+='<div class="voicings">'+vs.map((v,i)=>{const fs=TUN[S.inst].length-v.first,lab=v.name||frLabel(v.fr),
    rs=S.inst==='guitar'?`${S.inv?'Bass':'Root'} on ${ORD[fs]} string`:'';const has5=c.tones.filter(t=>t.d==='5').every(t=>v.fr.some((f,j)=>f>=0&&mod(TUN[S.inst][j]+f,12)===mod(t.midi,12)));return`<div class="vbox ${i===S.vi?'on':''}" data-v="${i}">${boxSVG(v,S.inst,c)}<div class="nm">${lab}</div><small>${rs}${v.more?`<br><b style="color:var(--goldhi)">more</b> · ${TUN[S.inst].length-v.first-v.fr.slice(v.first).filter(f=>f<0).length} strings${has5?'':' · no 5th'}`:''}</small></div>`}).join('')+'</div>';
  s+=`<div class="lbl" style="margin-top:18px">Chord tones across the neck</div><div class="board">${boardSVG(c,S.inst)}</div>`;
  el.innerHTML=s;el._vs=vs;
 }
 function instMidis(c){
  if(S.inst==='piano')return{m:((S.pmode||'beg')==='beg'?beginnerNotes(c).notes:voicing(c)).map(x=>x.midi),gap:0,k:'piano'};
- if(S.inst==='horns')return{m:hornNotes(c,S.horn).map(x=>x.concert),gap:.42,k:'horn'};
  if(S.inst==='bass'){const r=28+mod(c.bass.midi-28,12);const v=voicing(c);return{m:v.map(x=>x.midi-v[0].midi+r),gap:.35,k:'pluck'}}
  const vs=$('inst')._vs||[];const v=vs[S.vi];if(!v)return{m:[],gap:0};return{m:v.fr.map((f,i)=>f<0?null:TUN[S.inst][i]+f).filter(x=>x!==null),gap:.035,k:'pluck'}}
 /* stave */
@@ -1318,16 +1336,16 @@ function renderClimb(c){
 }
 
 /* ---------- events ---------- */
-document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-k],[data-v],[data-m],[data-horn],[data-i],[data-l],[data-room],[data-more]');if(!t)return;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-k],[data-v],[data-m],[data-i],[data-l],[data-room],[data-more],[data-bpat]');if(!t)return;
+ if(t.dataset.bpat!==undefined){const p=($('inst')._bp||[])[+t.dataset.bpat];if(p)play(p.notes.map(n=>n.m),.38,'pluck');return}
  if(t.dataset.more!==undefined){S.more=t.dataset.more==='1';S.vi=0;renderInst(chord());return}
  if(t.dataset.go!==undefined){let[r,q]=t.dataset.go.split('|');S.root=r;S.q=q;S.inv=0;S.vi=0;render();window.scrollTo({top:0,behavior:'smooth'});play(voicing(chord()).map(x=>x.midi));logIt('looked at '+pretty(r+q));return}
  if(t.dataset.k!==undefined){S.key={k:+t.dataset.k,mode:t.dataset.mode};render();return}
  if(t.dataset.v!==undefined){S.vi=+t.dataset.v;document.querySelectorAll('.vbox').forEach((b,i)=>b.classList.toggle('on',i===S.vi));const x=instMidis(chord());play(x.m,x.gap,x.k);return}
- if(t.dataset.horn){S.horn=t.dataset.horn;renderInst(chord());return}
  if(t.dataset.i){S.inst=t.dataset.i;S.vi=0;renderInst(chord());return}
  if(t.dataset.l){S.level=+t.dataset.l;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
  if(t.dataset.room)return;
- if(t.dataset.m!==undefined){play([+t.dataset.m],0,S.inst==='horns'?'horn':S.inst==='piano'?'piano':'pluck')}
+ if(t.dataset.m!==undefined){play([+t.dataset.m],0,S.inst==='piano'?'piano':'pluck')}
 });
 $('selRoot').onchange=e=>{S.root=e.target.value;S.vi=0;render()};
 $('selQual').onchange=e=>{S.q=e.target.value;S.inv=0;S.vi=0;render()};
@@ -2072,7 +2090,7 @@ $('satbSolo').onclick=()=>{VL.solo=VL.solo>=3?-1:VL.solo+1;$('satbSolo').textCon
    (Dorian on re, Phrygian on mi ...). Numbers shown under every syllable.
    ===================================================================== */
 let SCSONGS={"maj": [{"slot": "Blues/jazz", "song": "What a Wonderful World", "artist": "Louis Armstrong", "year": 1967, "where": "Verse and bridge of the Armstrong recording; the whole tune", "listen_for": "A melody that stays entirely inside the major scale, with no borrowed or altered notes: stepwise and leaping diatonic lines over I–iii–IV–iii–ii7.", "key_heard": "F major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/louis-armstrong/what-a-wonderful-world (F major, verse I–iii–IV–iii–ii7)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Pop", "song": "Count On Me", "artist": "Bruno Mars", "year": 2010, "where": "Verse and chorus (same four-bar loop throughout)", "listen_for": "Bright, completely diatonic melody over I–iii–vi–V–IV with no flattened notes anywhere; the sound of plain major.", "key_heard": "C major", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/bruno-mars/count-on-me (C major, all sections, I–iii–vi–V–IV)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Rock", "song": "Don't Stop Believin'", "artist": "Journey", "year": 1981, "where": "Intro piano riff, verses and chorus", "listen_for": "The I–V–vi–IV loop (E–B–C#m–A) with a melody built from the E major scale; the whole song sits in major with no modal colouring.", "key_heard": "E major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/journey/dont-stop-believin (E major in every section; I–V–vi–IV–I)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Musical theatre", "song": "Do-Re-Mi", "artist": "Rodgers & Hammerstein (The Sound of Music; Mary Martin / Julie Andrews)", "year": 1959, "where": "The refrain 'Do, a deer...' where each solfège syllable is sung on its own scale degree", "listen_for": "Do–Re–Mi–Fa–Sol–La–Ti–Do sung up the major scale, syllable by syllable; the lyric literally teaches the scale.", "key_heard": "B♭ major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/rodgers-and-hammerstein/do-re-mi---the-sound-of-music (B♭ major)", "Wikipedia 'Do-Re-Mi': melody built on the major scale in solfège, each syllable sung on its own pitch https://en.wikipedia.org/wiki/Do-Re-Mi"], "genre_note": null, "content": null, "fallback": false}], "ion": [{"slot": "Blues/jazz", "song": "What a Wonderful World", "artist": "Louis Armstrong", "year": 1967, "where": "Verse and bridge of the Armstrong recording; the whole tune", "listen_for": "A melody that stays entirely inside the major scale, with no borrowed or altered notes: stepwise and leaping diatonic lines over I–iii–IV–iii–ii7.", "key_heard": "F major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/louis-armstrong/what-a-wonderful-world (F major, verse I–iii–IV–iii–ii7)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Pop", "song": "Count On Me", "artist": "Bruno Mars", "year": 2010, "where": "Verse and chorus (same four-bar loop throughout)", "listen_for": "Bright, completely diatonic melody over I–iii–vi–V–IV with no flattened notes anywhere; the sound of plain major.", "key_heard": "C major", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/bruno-mars/count-on-me (C major, all sections, I–iii–vi–V–IV)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Rock", "song": "Don't Stop Believin'", "artist": "Journey", "year": 1981, "where": "Intro piano riff, verses and chorus", "listen_for": "The I–V–vi–IV loop (E–B–C#m–A) with a melody built from the E major scale; the whole song sits in major with no modal colouring.", "key_heard": "E major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/journey/dont-stop-believin (E major in every section; I–V–vi–IV–I)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Musical theatre", "song": "Do-Re-Mi", "artist": "Rodgers & Hammerstein (The Sound of Music; Mary Martin / Julie Andrews)", "year": 1959, "where": "The refrain 'Do, a deer...' where each solfège syllable is sung on its own scale degree", "listen_for": "Do–Re–Mi–Fa–Sol–La–Ti–Do sung up the major scale, syllable by syllable; the lyric literally teaches the scale.", "key_heard": "B♭ major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/rodgers-and-hammerstein/do-re-mi---the-sound-of-music (B♭ major)", "Wikipedia 'Do-Re-Mi': melody built on the major scale in solfège, each syllable sung on its own pitch https://en.wikipedia.org/wiki/Do-Re-Mi"], "genre_note": null, "content": null, "fallback": false}], "nmin": [{"slot": "Pop", "song": "Rolling in the Deep", "artist": "Adele", "year": 2010, "where": "Verse (i–v–VII) and chorus (i–VII–VI)", "listen_for": "Minor with a flat sixth and flat seventh and a minor v chord (G minor, not G major): the chord loop i–VII–VI never uses a raised seventh.", "key_heard": "C minor", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/adele/rolling-in-the-deep (C minor; verse i–v–VII, chorus i–VII–VI7–VII, minor v throughout)"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: anger and heartbreak themes, no explicit language."}, "fallback": false}, {"slot": "Rock", "song": "All Along the Watchtower", "artist": "Jimi Hendrix Experience (Bob Dylan song)", "year": 1968, "where": "Verse and the repeating riff/solo loop; Hendrix version", "listen_for": "Three-chord loop i–♭VII–♭VI–♭VII (Cm–B♭–A♭–B♭) which is the classic Aeolian 'rock minor' sound.", "key_heard": "C minor (Hendrix recording)", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/jimi-hendrix/all-along-the-watchtower (C minor / Aeolian; i–VII–VI–VII)", "hellomusictheory.com Songs in the Aeolian Mode (i–VII–VI–VII) https://hellomusictheory.com/learn/songs-in-the-aeolian-mode/", "Wikipedia 'Aeolian mode' lists the song https://en.wikipedia.org/wiki/Aeolian_mode"], "genre_note": null, "content": null, "fallback": false}], "hmin": [{"slot": "Blues/jazz", "song": "Minor Swing", "artist": "Quintette du Hot Club de France (Django Reinhardt & Stéphane Grappelli)", "year": 1937, "where": "Head and every solo chorus; Am–Dm–E7 cycle", "listen_for": "Phrases rise to the raised seventh (G♯) over the E7 chord, then drop the augmented second to the tonic: the 'gypsy jazz' sound.", "key_heard": "A minor (A harmonic minor)", "sources": ["Wikipedia 'Minor Swing' (composition): key A minor; Am / Dm / E7 changes; recorded Paris 25 Nov 1937 https://en.wikipedia.org/wiki/Minor_Swing_(composition)", "Peghead Nation: harmonic minor over Am, Dm6, E7 in Minor Swing https://pegheadnation.com/string-school/courses/theory-mandolin-and-fiddle/harmonic-minor-scale-and-gypsy-jazz/", "HubGuitar repertoire page: scales used = A minor and A harmonic minor https://hubguitar.com/repertoire/minor-swing"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Rock", "song": "Hotel California", "artist": "Eagles", "year": 1976, "where": "Verse chord cycle (Bm–F♯7–A–E–G–D–Em–F♯7); the F♯7 each time", "listen_for": "The F♯7 chord contains A♯, the raised seventh of B minor: that major-V 'pull' back to Bm is the harmonic-minor sound.", "key_heard": "B minor", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/eagles/hotel-california (verse B minor: i – V7 – VII(add9) – IV9 – VI)"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: hedonism and addiction imagery in the lyric."}, "fallback": false}], "dor": [{"slot": "Blues/jazz", "song": "So What", "artist": "Miles Davis (Kind of Blue)", "year": 1959, "where": "Whole head after the bass/piano intro: A sections and the 8-bar bridge", "listen_for": "Two chords only: D Dorian for 16 bars (the natural B is the Dorian note), then the same shape up a semitone in E♭ Dorian for the bridge, then back to D.", "key_heard": "D Dorian (A sections), E♭ Dorian (bridge)", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/miles-davis/so-what (D Dorian, ii7(add11) → i7(add11))", "Wikipedia 'Dorian mode': A sections D Dorian, B section E♭ Dorian https://en.wikipedia.org/wiki/Dorian_mode", "Ethan Hein, Identifying the diatonic modes https://www.ethanhein.com/wp/2024/identifying-the-diatonic-modes/", "hellomusictheory.com Songs in the Dorian Mode https://hellomusictheory.com/learn/songs-in-the-dorian-mode/"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Pop", "song": "Uptown Funk", "artist": "Mark Ronson feat. Bruno Mars", "year": 2014, "where": "The main riff and chorus ('Uptown funk you up')", "listen_for": "The i7 → IV9 shuffle (Dm7 to G9): the major IV chord carries the Dorian raised sixth (B natural over D minor).", "key_heard": "D Dorian", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/mark-ronson/uptown-funk (D Dorian, chorus i7 → IV9)", "Wikipedia 'Dorian mode': Uptown Funk, D Dorian https://en.wikipedia.org/wiki/Dorian_mode"], "genre_note": null, "content": {"language": true, "themes": true, "note": "Mild: some coarse words, swagger and suggestive lines (lyrics not word-checked)."}, "fallback": false}, {"slot": "Rock", "song": "Another Brick in the Wall (Part 2)", "artist": "Pink Floyd", "year": 1979, "where": "Intro bass/guitar riff and verses (i–IV)", "listen_for": "The riff and verse hover on D minor with a major IV chord (G), so the sixth degree is B natural: the Dorian signature.", "key_heard": "D Dorian", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/pink-floyd/another-brick-in-the-wall-(part-2) (D Dorian, all sections)", "Wikipedia 'Dorian mode': Another Brick in the Wall, D Dorian https://en.wikipedia.org/wiki/Dorian_mode"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: anti-school sarcasm; a children's choir sings the chorus."}, "fallback": false}], "lyd": [{"slot": "Rock", "song": "Flying in a Blue Dream", "artist": "Joe Satriani", "year": 1989, "where": "Main theme (instrumental)", "listen_for": "Soaring theme that keeps landing on the raised fourth over a static tonic.", "key_heard": "C Lydian", "sources": ["Wikipedia 'Lydian mode' lists it https://en.wikipedia.org/wiki/Lydian_mode", "fachords.com Guitar Scales Through Examples (C Lydian) https://www.fachords.com/guitar-scale-song-examples/", "thefretboard.co.uk thread cites it as Lydian https://thefretboard.co.uk/discussion/comment/1590883/favicon.ico"], "genre_note": "Instrumental rock; recognisable mainly to guitar students.", "content": null, "fallback": false}], "mix": [{"slot": "Blues/jazz", "song": "All Blues", "artist": "Miles Davis (Kind of Blue)", "year": 1959, "where": "The repeating 6/8 bass vamp and horn riff, then each solo chorus", "listen_for": "A 12-bar blues in 6/8 on G Mixolydian: the F natural (flat seventh) over a dominant tonic chord is the mode's trademark.", "key_heard": "G Mixolydian", "sources": ["Wikipedia 'All Blues': original key G; described as Mixolydian; modal jazz https://en.wikipedia.org/wiki/All_Blues", "hellomusictheory.com Songs in the Mixolydian Mode https://hellomusictheory.com/learn/songs-in-the-mixolydian-mode/", "fachords.com Guitar Scales Through Examples (G Mixolydian) https://www.fachords.com/guitar-scale-song-examples/"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Pop", "song": "Don't Stop 'Til You Get Enough", "artist": "Michael Jackson", "year": 1979, "where": "Opening vocal line and chorus", "listen_for": "The opening 'tritone' leap and the chord pattern with a major chord on the flat seventh (A) beside the tonic (B).", "key_heard": "B Mixolydian", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/michael-jackson/dont-stop-til-you-get-enough (B Mixolydian, chorus VII → I11)", "Ethan Hein, Identifying the diatonic modes (B Mixolydian, chords A/B alternating) https://www.ethanhein.com/wp/2024/identifying-the-diatonic-modes/"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: dance-floor/romantic lyrics."}, "fallback": false}, {"slot": "Rock", "song": "Clocks", "artist": "Coldplay", "year": 2002, "where": "Opening piano riff and verses", "listen_for": "The rolling piano pattern over E♭–B♭m–Fm (I–v–ii) with D♭ as the flat seventh: major tonic with a minor v.", "key_heard": "E♭ Mixolydian", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/coldplay/clocks (E♭ Mixolydian: I – v – ii7)", "hellomusictheory.com Songs in the Mixolydian Mode (E♭ Mixolydian) https://hellomusictheory.com/learn/songs-in-the-mixolydian-mode/", "fachords.com Guitar Scales Through Examples https://www.fachords.com/guitar-scale-song-examples/", "Wikipedia 'Mixolydian mode' lists the song https://en.wikipedia.org/wiki/Mixolydian"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Metal", "song": "Thunderstruck", "artist": "AC/DC", "year": 1990, "where": "Intro riff, verses and chorus", "listen_for": "Verse and chorus chords of B–A–E (I–♭VII–IV): major tonic with a major chord on the flat seventh.", "key_heard": "B Mixolydian", "sources": ["Wikipedia 'Mixolydian mode' lists the song (classed as rock) https://en.wikipedia.org/wiki/Mixolydian", "fachords.com Guitar Scales Through Examples (Thunderstruck listed as Mixolydian) https://www.fachords.com/guitar-scale-song-examples/"], "genre_note": "AC/DC are usually classed as hard rock rather than metal; used as a metal-adjacent stand-in.", "content": null, "fallback": false}], "loc": [{"slot": "Pop", "song": "Army of Me", "artist": "Björk", "year": 1995, "where": "Opening bass riff and the verses (from the first second)", "listen_for": "The grinding bass riff leans on the flat second and flat fifth; the tonic C is heard as unstable because the fifth above it is diminished (G♭, not G).", "key_heard": "C Locrian (riff and verse); chorus shifts to C minor", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/bjork/army-of-me (C Locrian intro and verse; chorus C minor)", "Ethan Hein, Musical simples: Army of Me (bass riff entirely Locrian) https://ethanhein.substack.com/p/musical-simples-army-of-me", "Wikipedia 'Locrian mode': C Locrian bass line https://en.wikipedia.org/wiki/Locrian_mode", "cmuse.org Songs in the Locrian Mode (notes the vocal also suggests Phrygian) https://www.cmuse.org/?p=67866"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: aggressive, confrontational lyric; no explicit language."}, "fallback": false}], "mpent": [{"slot": "Blues/jazz", "song": "Amazing Grace", "artist": "Traditional hymn (John Newton words, 1779)", "year": 1779, "where": "The whole melody, any verse", "listen_for": "Five notes only (do re mi sol la); no fa or ti anywhere in the tune, which is why it sounds open and folk-like.", "key_heard": "Any major key (commonly sung in G, F or D)", "sources": ["Wikipedia 'Pentatonic scale': hymn melodies sometimes pentatonic https://en.wikipedia.org/wiki/Pentatonic_scale", "fachords.com Guitar Scales Through Examples https://www.fachords.com/guitar-scale-song-examples/"], "genre_note": "Fallback: no recognisable jazz example; folk/hymn used.", "content": null, "fallback": true}], "whole": [{"slot": "Blues/jazz", "song": "Voiles (Préludes, Book 1)", "artist": "Claude Debussy", "year": 1910, "where": "Whole opening and closing sections", "listen_for": "Six notes a whole step apart, so no tonic pull: floating, dream-like.", "key_heard": "Whole-tone (A♭/B♭ whole-tone sets)", "sources": ["fachords.com Guitar Scales Through Examples ('stays almost entirely within the whole tone scale') https://www.fachords.com/guitar-scale-song-examples/", "Wikipedia list of pieces using the whole-tone scale; ragajunglism.org whole-tone examples https://ragajunglism.org/scales/whole-tone/"], "genre_note": "Fallback: classical (piano), used because no recognisable jazz example.", "content": null, "fallback": true}, {"slot": "Pop", "song": "You Are the Sunshine of My Life", "artist": "Stevie Wonder", "year": 1973, "where": "The piano intro, before the vocal enters", "listen_for": "An ascending whole-tone run in the piano intro.", "key_heard": "B major (song); whole-tone intro", "sources": ["Wikipedia list of pieces using the whole-tone scale (cites Perone 2006): introduction https://en.wikipedia.org/wiki/List_of_pieces_that_use_the_whole-tone_scale", "fachords.com Guitar Scales Through Examples https://www.fachords.com/guitar-scale-song-examples/", "ragajunglism.org whole-tone examples https://ragajunglism.org/scales/whole-tone/"], "genre_note": "Whole-tone is the intro only; the song itself is major.", "content": null, "fallback": false}], "phrd": [{"slot": "Rock", "song": "Misirlou", "artist": "Dick Dale and His Del-Tones", "year": 1962, "where": "The opening tremolo-picked melody and the solo", "listen_for": "Tremolo-picked melody with the flat second and an augmented second to the major third.", "key_heard": "E Phrygian dominant", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/dick-dale/misirlou (E Phrygian Dominant, verse I–II)", "Wikipedia 'Phrygian dominant scale' lists Misirlou https://en.wikipedia.org/wiki/Phrygian_dominant_scale", "Hooktheory (Greek version) https://www.hooktheory.com/theorytab/view/tetos-dimitriadis/misirlou (D♯ Phrygian Dominant)"], "genre_note": null, "content": null, "fallback": false}]},IVSONGS={"m2": {"up": [{"song": "Theme from Jaws", "artist_or_origin": "John Williams (film Jaws)", "year": 1975, "where": "Two-note bass ostinato, first two notes", "notes": "E–F (alternating; octave varies)", "content": null}, {"song": "The Pink Panther Theme", "artist_or_origin": "Henry Mancini", "year": 1963, "where": "Opening riff, first two notes (then F♯–G)", "notes": "D♯–E", "content": null}], "down": [{"song": "Für Elise", "artist_or_origin": "Ludwig van Beethoven", "year": 1810, "where": "Opening motif, first two notes", "notes": "E–D♯ (E5–D♯5), repeated", "content": null}, {"song": "Joy to the World", "artist_or_origin": "Isaac Watts (words); tune arr. Lowell Mason", "year": 1719, "where": "'Joy' to 'to' = tonic down to leading note (do'–ti)", "notes": "e.g. C5–B4 in C major (D5–C♯5 in D)", "content": null}]}, "M2": {"up": [{"song": "Frère Jacques", "artist_or_origin": "Traditional (French)", "year": null, "where": "'Frè-re Jac-ques': first two notes (do–re)", "notes": "C4–D4 in C", "content": null}, {"song": "Do-Re-Mi", "artist_or_origin": "Rodgers & Hammerstein (The Sound of Music)", "year": 1959, "where": "'Doe, a deer': first two notes (do–re)", "notes": "C4–D4 in C", "content": null}, {"song": "Rudolph the Red-Nosed Reindeer", "artist_or_origin": "Johnny Marks", "year": 1949, "where": "'Ru-dolph': first two notes (sol–la, then sol–mi–do)", "notes": "G4–A4 in C", "content": null}], "down": [{"song": "Mary Had a Little Lamb", "artist_or_origin": "Traditional (children's song)", "year": null, "where": "'Ma-ry': first two notes (mi–re)", "notes": "E4–D4 in C", "content": null}, {"song": "The First Noel", "artist_or_origin": "Traditional (English carol)", "year": null, "where": "'The first': first two notes (mi–re) before the stepwise descent to do", "notes": "E4–D4 in C (carol often sung in D)", "content": null}, {"song": "Friday", "artist_or_origin": "Rebecca Black", "year": 2011, "where": "Chorus hook: the two syllables of 'Fri-day'", "notes": "descending M2 between 'Fri' and 'day' (pitches not stated by sources)", "content": null}]}, "m3": {"up": [{"song": "Greensleeves", "artist_or_origin": "Traditional (English)", "year": null, "where": "'A-las my love': pick-up A to C (first two notes)", "notes": "A4–C5 in A minor (E–G in E minor)", "content": null}, {"song": "Smoke on the Water", "artist_or_origin": "Deep Purple", "year": 1972, "where": "Opening guitar riff, first two notes (then C)", "notes": "G–B♭", "content": null}], "down": [{"song": "Hey Jude", "artist_or_origin": "The Beatles", "year": 1968, "where": "'Hey Ju-': first two notes (so–mi)", "notes": "C–A in F", "content": null}, {"song": "The Star-Spangled Banner", "artist_or_origin": "Francis Scott Key / John Stafford Smith", "year": 1814, "where": "'O say': first two notes (so–mi, then mi–do)", "notes": "e.g. G4–E4 in C (so–mi)", "content": null}, {"song": "This Old Man", "artist_or_origin": "Traditional (English nursery song)", "year": null, "where": "'This old': first two notes (so–mi)", "notes": "G4–E4 in C", "content": null}]}, "M3": {"up": [{"song": "When the Saints Go Marching In", "artist_or_origin": "Traditional (spiritual)", "year": null, "where": "'Oh when': first two notes (do–mi)", "notes": "C4–E4 in C", "content": null}], "down": [{"song": "Swing Low, Sweet Chariot", "artist_or_origin": "Traditional (African-American spiritual)", "year": null, "where": "'Swing low': first two notes (mi–do)", "notes": "M3 down (pitches vary by key)", "content": {"language": false, "themes": true, "note": "Spiritual from the era of slavery; sensitive historical context worth framing."}}, {"song": "Symphony No. 5, 1st movement", "artist_or_origin": "Ludwig van Beethoven", "year": 1808, "where": "Hook: G–G–G then E♭. The falling M3 is the leap after three repeated notes, so the first two notes are a unison", "notes": "G4–E♭4", "content": null}]}, "P4": {"up": [{"song": "Amazing Grace", "artist_or_origin": "Traditional hymn (words John Newton)", "year": null, "where": "'A-ma-zing': first two notes (so–do')", "notes": "e.g. D4–G4 in G (C4–F4 in F)", "content": null}, {"song": "Here Comes the Bride (Bridal Chorus)", "artist_or_origin": "Richard Wagner (Lohengrin)", "year": 1850, "where": "'Here comes': first two notes (so–do')", "notes": "G–C", "content": null}, {"song": "Hedwig's Theme (Harry Potter)", "artist_or_origin": "John Williams", "year": 2001, "where": "Celesta opening, first two notes (then G, F♯, E)", "notes": "B–E (octave varies)", "content": null}], "down": [{"song": "Today", "artist_or_origin": "The Smashing Pumpkins", "year": 1993, "where": "Very first notes of the song: the high two-note guitar intro", "notes": "E♭5–B♭4 sounding (guitars tuned down a semitone; tab shows D–A)", "content": {"language": false, "themes": true, "note": "Lyrics deal with depression and suicidal thoughts; consider using only the instrumental intro."}}]}, "TT": {"up": [{"song": "Maria (West Side Story)", "artist_or_origin": "Leonard Bernstein / Stephen Sondheim", "year": 1957, "where": "'Ma-ri-a': first two notes", "notes": "tritone up (e.g. C–F♯ as given in sources)", "content": null}, {"song": "The Simpsons Theme", "artist_or_origin": "Danny Elfman", "year": 1989, "where": "'The Simp-sons': opening notes (lydian 'do–fi')", "notes": "tritone up (e.g. C–F♯)", "content": null}]}, "P5": {"up": [{"song": "Also sprach Zarathustra (Sunrise)", "artist_or_origin": "Richard Strauss", "year": 1896, "where": "Opening trumpet fanfare: C–G then C", "notes": "C–G (then G–C')", "content": null}, {"song": "Star Wars (Main Title)", "artist_or_origin": "John Williams", "year": 1977, "where": "First bar of the melody: B♭ up to F", "notes": "B♭–F", "content": null}], "down": [{"song": "Minuet in G (BWV Anh. 114)", "artist_or_origin": "Christian Petzold (long attributed to J. S. Bach)", "year": 1725, "where": "Opening of right-hand melody: D then G (then A–B–C–D)", "notes": "D5–G4", "content": null}]}, "m6": {"up": [{"song": "The Entertainer", "artist_or_origin": "Scott Joplin", "year": 1902, "where": "Opening run D–D♯–E (chromatic pick-up), then the leap E up to high C: the iconic m6", "notes": "E4–C5 (after pick-up D–D♯–E)", "content": null}, {"song": "We Are Young", "artist_or_origin": "fun. ft. Janelle Monáe", "year": 2011, "where": "Chorus hook: the stretched word 'fire' covers an ascending m6", "notes": "m6 on the sustained word 'fire' (pitches not stated by sources)", "content": {"language": false, "themes": true, "note": "Lyrics reference drinking and getting drunk."}}]}, "M6": {"up": [{"song": "My Bonnie Lies over the Ocean", "artist_or_origin": "Traditional (Scottish)", "year": null, "where": "'My Bon-': first two notes (so,–mi)", "notes": "G3–E4 in C", "content": null}, {"song": "NBC Chimes", "artist_or_origin": "NBC (US network)", "year": 1927, "where": "Three chime notes G–E–C; the first interval is G up to E", "notes": "G–E (then C)", "content": null}], "down": [{"song": "Man in the Mirror", "artist_or_origin": "Michael Jackson", "year": 1987, "where": "Chorus: after 'I'm' (highest note so far) the voice falls a M6 on 'start-' of 'starting'", "notes": "M6 down on 'I'm'→'start' (pitches not stated)", "content": null}, {"song": "Nobody Knows the Trouble I've Seen", "artist_or_origin": "Traditional (African-American spiritual)", "year": null, "where": "'No-bo-': per UIdaho the interval is so–mi (high to low)", "notes": "M6 down (so–mi; pitches vary by key)", "content": {"language": false, "themes": true, "note": "Spiritual from the era of slavery; sensitive historical context."}}]}, "m7": {"up": [{"song": "Somewhere (West Side Story)", "artist_or_origin": "Leonard Bernstein / Stephen Sondheim", "year": 1957, "where": "'There's a': song opens with an ascending m7, then a descending m2", "notes": "m7 up (key varies)", "content": null}], "down": [{"song": "Watermelon Man", "artist_or_origin": "Herbie Hancock", "year": 1962, "where": "First two notes of the lead melody (Soundfly)", "notes": "m7 down", "content": null}]}, "M7": {"up": [{"song": "Take On Me", "artist_or_origin": "a-ha", "year": 1985, "where": "Chorus hook: 'Take'→'on' is a M7 leap (direction per all list sources)", "notes": "M7 up on 'Take'→'on' (pitches not stated)", "content": null}, {"song": "Don't Know Why", "artist_or_origin": "Norah Jones", "year": 2002, "where": "Per Musical-U: between the first two words ('I waited')", "notes": "M7 up (pitches not stated)", "content": null}], "down": [{"song": "I Love You", "artist_or_origin": "Cole Porter", "year": 1944, "where": "'I' to 'love'", "notes": "M7 down on 'I'→'love'", "content": null}]}, "P8": {"up": [{"song": "Somewhere Over the Rainbow", "artist_or_origin": "Harold Arlen / E. Y. Harburg", "year": 1939, "where": "'Some-where': first two notes", "notes": "octave up (E♭4–E♭5 in the original published key)", "content": null}]}};
-const KS={tab:'scales',tonic:'C',sc:'maj',desc:false,inst:'piano',horn:'trumpet',clef:'treble',ring:'C',
+const KS={tab:'scales',tonic:'C',sc:'maj',desc:false,inst:'piano',clef:'treble',ring:'C',
  iv:{start:'C',k:'M3',dir:'up'},gym:{mode:'name',q:null,right:0,n:0,hist:[],voice:'high',dirs:{up:true,down:true,harm:false}},sing:null};
 const degSemi=d=>{const n=parseInt(d.replace(/[#b]/g,''));let a=0;for(const ch of d.replace(/\d/g,''))a+=ch==='#'?1:-1;return NAT[(n-1)%7]+a+12*Math.floor((n-1)/7)};
 const degPretty=d=>d.replace(/bb/g,'𝄫').replace(/b/g,'♭').replace(/#/g,'♯');
@@ -2182,16 +2200,6 @@ function renderScales(){let sc=SCALES.find(s=>s.k===KS.sc);if(sc.l>S.level){KS.s
 }
 function renderKsInst(T,sc){const el=$('ksInst');document.querySelectorAll('#ksTabs button').forEach(b=>b.classList.toggle('on',b.dataset.kinst===KS.inst));
  if(KS.inst==='piano'){el.innerHTML=`<div class="ctrl"><span class="note" style="margin-left:0">Solfa on the keys, note names below. Tap any key to hear it.</span></div>`+kbHTML(T.map(t=>({midi:t.midi,col:scCol(t,sc),top:solTxt(t.sol),lab:pretty(t.name)})),48,84);return}
- if(KS.inst==='horns'){const H=HORNS[KS.horn];let s='<div class="hornsel">'+Object.entries(HORNS).map(([k,h])=>`<button class="mini ${k===KS.horn?'gold':''}" data-khorn="${k}">${h.n}</button>`).join('')+'</div>';
-  const wr0=spell(LET.indexOf(T[0].name[0])+H.tr[0],T[0].midi+H.tr[1]);let sh=0;while(wr0.midi+sh<H.lo)sh+=12;while(wr0.midi+sh-12>=H.lo)sh-=12;
-  const W=T.map(t=>({t,w:spell(t.li+H.tr[0],t.midi+H.tr[1]+sh),concert:t.midi+sh}));
-  s+=`<div class="ctrl"><span class="note" style="margin-left:0">${H.tr[1]?'Written pitch for '+H.n+': these are the notes you read. ':''}${H.note}</span></div><div class="hrow">`;
-  W.forEach(x=>{let fg='';if(H.fing==='valves'){const f=TPT[x.w.midi];fg=f?`<div class="fg">${valves(f)}<br>${f==='0'?'open':f.split('').join('–')}${TPTALT[x.w.midi]?`<small class="alt">alt ${TPTALT[x.w.midi].split('').join('–')}</small>`:''}</div>`:'<div class="fg">—</div>'}
-   if(H.fing==='slide'){const p=TBN[x.w.midi];fg=p?`<div class="fg">${slide(p)}<br>position ${p}${TBNALT[x.w.midi]?`<small class="alt">alt ${TBNALT[x.w.midi]}</small>`:''}</div>`:'<div class="fg">—</div>'}
-   s+=`<div class="hn" data-m="${x.concert}"><b>${pretty(x.w.name)}<sub style="font-size:11px;color:var(--muted)">${x.w.oct}</sub></b><small>${solTxt(x.t.sol)} · ${degPretty(x.t.d)}</small>${fg}</div>`});
-  s+='</div><div class="staff" id="kshstaff" style="margin-top:12px"></div>';if(!H.fing)s+=`<div class="warn">Fingering diagrams for ${H.n} come after they are checked note by note against a published chart. The written notes above are ready now.</div>`;
-  el.innerHTML=s;const sig=sigFromKS();let wsig=null;if(sig&&!sig.theo){const p=spell(LET.indexOf(sig.par[0])+H.tr[0],pcOf(sig.par)+H.tr[1]);if(Math.abs(POS5[p.name[0]]+7*p.acc)<=7)wsig=p.name}
-  drawLine($('kshstaff'),W.map(x=>({...x.w,under:solTxt(x.t.sol)})),H.clef,wsig,'q');return}
  const nm={guitar:'Guitar · standard tuning',uke:'Ukulele · G C E A',bass:'Bass · E A D G'}[KS.inst];
  const c={tones:T.slice(0,-1).map(t=>({d:t.d,midi:t.midi})),bass:{midi:T[0].midi}};
  el.innerHTML=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Every note of the scale across the neck, numbered by scale degree; home (1) in gold. Find one shape you can play from a low 1 to a high 1, then sing along in solfa.</span></div><div class="board">${boardSVG(c,KS.inst)}</div>`}
@@ -2310,14 +2318,13 @@ function renderKeysRoom(){document.querySelectorAll('#ksTabbar button').forEach(
  document.querySelectorAll('.kpane').forEach(p=>p.hidden=p.id!=='kp-'+KS.tab);
  if(KS.tab==='scales')renderScales();if(KS.tab==='circle')renderCircle();if(KS.tab==='intervals')renderIntervals();
  const c=document.querySelector('.top .crumb');if(c&&ROOM==='keys')c.innerHTML=`Level 1 · <b>${KS.tab==='scales'?scaleName(KS.tonic,KS.sc):KS.tab==='circle'?'The circle of 5ths':'Intervals'}</b>`}
-document.addEventListener('click',e=>{const t=e.target.closest('[data-ktab],[data-kst],[data-ksc],[data-kdir],[data-kclef],[data-kinst],[data-khorn],[data-kgo],[data-kgym],[data-ci],[data-kmode],[data-kis],[data-kiv],[data-kivd],[data-kgm],[data-kgq],[data-kga],[data-kgv],[data-kgd],[data-kss],[data-kplay]');if(!t)return;const d=t.dataset;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ktab],[data-kst],[data-ksc],[data-kdir],[data-kclef],[data-kinst],[data-kgo],[data-kgym],[data-ci],[data-kmode],[data-kis],[data-kiv],[data-kivd],[data-kgm],[data-kgq],[data-kga],[data-kgv],[data-kgd],[data-kss],[data-kplay]');if(!t)return;const d=t.dataset;
  if(d.ktab){KS.tab=d.ktab;micStop();KS.sing=null;renderKeysRoom();return}
  if(d.kst){KS.tonic=d.kst;renderScales();setTimeout(()=>play(scaleTones(KS.tonic,KS.sc,KS.desc).map(x=>x.midi),.22,'piano'),10);renderKeysRoom();return}
  if(d.ksc){KS.sc=d.ksc;renderKeysRoom();play(scaleTones(KS.tonic,KS.sc,KS.desc).map(x=>x.midi),.22,'piano');logIt('looked at '+scaleName(KS.tonic,KS.sc));return}
  if(d.kdir){KS.desc=d.kdir==='down';renderScales();play(scaleTones(KS.tonic,KS.sc,KS.desc).map(x=>x.midi),.22,'piano');return}
  if(d.kclef){KS.clef=d.kclef;renderScales();return}
  if(d.kinst){KS.inst=d.kinst;renderScales();return}
- if(d.khorn){KS.horn=d.khorn;renderScales();return}
  if(d.kplay){const T=scaleTones(KS.tonic,KS.sc,false);if(d.kplay==='up')play(T.map(x=>x.midi),.3,'piano');else play(scaleTones(KS.tonic,KS.sc,true).map(x=>x.midi),.3,'piano');return}
  if(d.kss){if(d.kss==='stop'){KS.sing=null;micStop();$('ksSingBox').innerHTML='';document.querySelectorAll('#ksTiles .stile').forEach(e=>e.classList.remove('now'));return}singScale();return}
  if(d.kgo){const[r,q]=d.kgo.split('|');S.root=r;S.q=q;S.inv=0;S.vi=0;if(Q.find(x=>x.k===q).l>S.level){S.level=6;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b.dataset.l==='6'))}location.hash='seed';room('seed');play(voicing(chord()).map(x=>x.midi));return}
