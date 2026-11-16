@@ -117,8 +117,8 @@ dd{margin:0}
 .voicings{display:flex;gap:16px;flex-wrap:wrap}
 .vbox{background:#0e0c08;border:1px solid var(--line);border-radius:12px;padding:10px 10px 8px;cursor:pointer;text-align:center;transition:border-color .2s}
 .vbox:hover,.vbox.on{border-color:var(--gold)}
-.vbox small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px;max-width:150px}
-.vbox .nm{font-size:12px;color:var(--ivory);margin-top:2px}
+.vbox small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px;max-width:178px;margin-inline:auto;line-height:1.35}
+.vbox .nm{font-size:13px;color:var(--ivory);margin-top:4px;font-weight:600}
 .board{overflow-x:auto;margin-top:16px}
 .empty{color:var(--muted);font-size:14px;padding:16px 0}
 
@@ -993,7 +993,7 @@ button.phslot{cursor:pointer}button.phslot[disabled]{opacity:.4;cursor:default}.
  </section>
 </section>
 </main>
-<footer>Composition Jungle Gym · preview 0.37 · all sound made in your browser · works offline · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
+<footer>Composition Jungle Gym · preview 0.38 · all sound made in your browser · works offline · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
 
 <aside class="journal" id="journal" aria-label="Composer's journal">
  <button class="x" id="closeJ">×</button>
@@ -1100,31 +1100,31 @@ function beginnerNotes(c){
 const TUN={guitar:[40,45,50,55,59,64],uke:[67,60,64,69],bass:[28,33,38,43]};
 // standard shapes from published chord charts; slash shapes sit under their chord and appear when that inversion is chosen
 const FCUR={guitar:{
- 'C|':['x32010','332010:C/G','032010:C/E'],'D|':['xx0232','200232:D/F♯','x00232:D/A'],'E|':['022100'],'F|':['133211:F (full barre)','xx3211:F (small)','x33211:F/C'],'G|':['320003','320033','x20003:G/B'],'A|':['x02220','002220:A/E'],
- 'A|m':['x02210','002210:Am/E','3x2210:Am/G'],'E|m':['022000','x22000:Em/B'],'D|m':['xx0231'],
+ 'C|':['x32010','332010:C/G@432-1-','032010:C/E'],'D|':['xx0232','200232:D/F♯@T--132','x00232:D/A'],'E|':['022100'],'F|':['133211:F (full barre)','xx3211:F (small)','x33211:F/C'],'G|':['320003','320033','x20003:G/B@-2---3'],'A|':['x02220','002220:A/E'],
+ 'A|m':['x02210','002210:Am/E'],'E|m':['022000','x22000:Em/B'],'D|m':['xx0231'],
  'A|7':['x02020'],'B|7':['x21202'],'C|7':['x32310'],'D|7':['xx0212'],'E|7':['020100','022130'],'G|7':['320001'],
- 'A|m7':['x02010'],'E|m7':['022030','020000'],'D|m7':['xx0211'],
- 'C|maj7':['x32000'],'D|maj7':['xx0222'],'E|maj7':['021100'],'F|maj7':['xx3210'],'G|maj7':['320002'],'A|maj7':['x02120'],
- 'A|sus2':['x02200'],'D|sus2':['xx0230'],'A|sus4':['x02230'],'D|sus4':['xx0233'],'E|sus4':['022200'],'C|sus4':['x33011'],'G|sus4':['330013'],
- 'C|6':['x32210'],'A|6':['x02222'],'D|6':['xx0202'],'E|6':['022120'],'G|6':['320000'],'A|m6':['x02212'],'D|m6':['xx0201'],'E|m6':['022020'],
+ 'A|m7':['x02010','3x2210:Am7/G@4-231-'],'B|m7':['x20202@-2-3-4'],'E|m7':['022030','020000'],'D|m7':['xx0211@---211'],
+ 'C|maj7':['x32000@-32---'],'D|maj7':['xx0222'],'E|maj7':['021100'],'F|maj7':['xx3210'],'G|maj7':['320002@32---1'],'A|maj7':['x02120'],
+ 'A|sus2':['x02200'],'D|sus2':['xx0230@---13-'],'A|sus4':['x02230'],'D|sus4':['xx0233@---134'],'E|sus4':['022200'],'C|sus4':['x33011@-34-11'],'G|sus4':['330013'],
+ 'C|6':['x32210'],'A|6':['x02222@--1111'],'D|6':['xx0202'],'E|6':['022120'],'G|6':['320000'],'A|m6':['x02212'],'D|m6':['xx0201'],'E|m6':['022020'],
  'C|add9':['x32030'],'G|add9':['320203'],'E|add9':['024100'],'A|add9':['x02420'],'E|madd9':['024000'],'A|madd9':['x02410'],
- 'E|9':['020102'],'C|9':['x32333'],'E|m9':['022032'],'B|m7b5':['x2323x'],'C|aug':['x32110'],
- 'A|7sus4':['x02030'],'E|7sus4':['020200'],'D|7sus4':['xx0213'],'G|7sus4':['330011'],
+ 'E|9':['020102'],'C|9':['x32333'],'E|m9':['022032'],'B|m7b5':['x2323x'],'E|m7b5':['012030@-12-3-'],'A|m7b5':['x01213@--1324'],'D|m7b5':['xx0111@---111'],'D|dim7':['xx0101@---1-2'],'E|dim7':['012020@-12-3-'],'A|dim7':['x01212@--1324'],'E|aug':['032110@-3211-'],'G|aug':['321003@321--4'],'A|aug':['x03221@--4231'],'D|aug':['xx0332@---231'],'F|add9':['xx3213@--3214'],'A|9':['x02423@--1312'],'C|aug':['x32110@-3211-'],
+ 'A|7sus4':['x02030'],'E|7sus4':['020200'],'D|7sus4':['xx0213'],'G|7sus4':['330011@34--11'],
  'E|5':['022xxx'],'A|5':['x022xx'],'D|5':['xx023x']},
  uke:{'C|':['0003'],'D|':['2220'],'E|':['1402','4442'],'F|':['2010'],'G|':['0232'],'A|':['2100'],'Bb|':['3211'],'B|':['4322'],'Db|':['1114'],'Eb|':['0331'],'F#|':['3121'],
- 'A|m':['2000'],'B|m':['4222'],'C|m':['0333'],'D|m':['2210'],'E|m':['0432'],'F|m':['1013'],'G|m':['0231'],'F#|m':['2120'],'Db|m':['1104'],'Bb|m':['3111'],
+ 'A|m':['2000'],'B|m':['4222'],'C|m':['0333@-111'],'D|m':['2210'],'E|m':['0432'],'F|m':['1013'],'G|m':['0231'],'F#|m':['2120'],'Db|m':['1104@11-4'],'Bb|m':['3111'],
  'A|7':['0100'],'B|7':['2322'],'C|7':['0001'],'D|7':['2223'],'E|7':['1202'],'F|7':['2310'],'G|7':['0212'],'Bb|7':['1211'],
- 'A|m7':['0000'],'B|m7':['2222'],'C|m7':['3333'],'D|m7':['2213'],'E|m7':['0202'],'G|m7':['0211'],
+ 'A|m7':['0000'],'B|m7':['2222'],'C|m7':['3333'],'D|m7':['2213'],'E|m7':['0202'],'G|m7':['0211@-211'],
  'C|maj7':['0002'],'D|maj7':['2224'],'F|maj7':['2413','5500'],'G|maj7':['0222'],'A|maj7':['1100'],'Bb|maj7':['3210'],
  'D|sus2':['2200'],'G|sus2':['0230'],'C|sus4':['0013'],'D|sus4':['0230'],'G|sus4':['0233'],'A|sus4':['2200'],
  'C|6':['0000'],'F|6':['2213'],'G|6':['0202'],'C|add9':['0203'],'F|add9':['0010'],
- 'E|dim7':['0101'],'B|m7b5':['2212'],'C|aug':['1003'],'E|7sus4':['2202'],'G|7sus4':['0213'],'C|5':['0033']}};
+ 'E|dim7':['0101'],'G|dim7':['0101'],'Bb|dim7':['0101'],'Db|dim7':['0101'],'A|dim7':['2323@1324'],'C|dim7':['2323@1324'],'Eb|dim7':['2323@1324'],'F#|dim7':['2323@1324'],'B|m7b5':['2212'],'G|m7b5':['0111@-111'],'A|m7b5':['2333@1234'],'D|m7b5':['1213@1324'],'C|aug':['1003'],'E|aug':['1003'],'Ab|aug':['1003'],'Eb|aug':['0332@-231'],'G|aug':['0332@-231'],'B|aug':['0332@-231'],'F|aug':['2110@312-'],'A|aug':['2110@312-'],'Db|aug':['2110@312-'],'G|dim':['0131@-132'],'Eb|dim':['2320@132-'],'E|7sus4':['2202'],'G|7sus4':['0213'],'C|5':['0033']}};
 // movable guitar shapes: offsets from the root's fret on the root's string (null = muted)
 const FMOV={E:{s:0,q:{'':[0,2,2,1,0,0],m:[0,2,2,0,0,0],'7':[0,2,0,1,0,0],m7:[0,2,0,0,0,0],maj7:[0,null,1,1,0,null],sus4:[0,2,2,2,0,0],'7sus4':[0,2,0,2,0,0],dim7:[0,null,-1,0,-1,null],m7b5:[0,null,0,0,-1,null],'5':[0,2,2,null,null,null]}},
  A:{s:1,q:{'':[null,0,2,2,2,0],m:[null,0,2,2,1,0],'7':[null,0,2,0,2,0],m7:[null,0,2,0,1,0],maj7:[null,0,2,1,2,0],sus2:[null,0,2,2,0,0],sus4:[null,0,2,2,3,0],'7sus4':[null,0,2,0,3,0],'6':[null,0,2,2,2,2],m6:[null,0,2,2,1,2],
   '9':[null,0,-1,0,0,0],maj9:[null,0,-1,1,0,null],m9:[null,0,-2,0,0,null],m7b5:[null,0,1,0,1,null],dim7:[null,0,1,-1,1,null],dim:[null,0,1,2,1,null],aug:[null,0,-1,-2,-2,null],'5':[null,0,2,2,null,null]}},
  D:{s:2,q:{'':[null,null,0,2,3,2],m:[null,null,0,2,3,1],'7':[null,null,0,2,1,2],m7:[null,null,0,2,1,1],maj7:[null,null,0,2,2,2],sus2:[null,null,0,2,3,0],sus4:[null,null,0,2,3,3]}}};
-const pfr=s=>{const[a,n]=s.split(':');return{fr:a.length===6||a.length===4?[...a].map(ch=>ch==='x'?-1:+ch):a.split(',').map(x=>x==='x'?-1:+x),name:n||null}};
+const pfr=s=>{const[s1,fg]=s.split('@'),[a,n]=s1.split(':');return{fr:a.length===6||a.length===4?[...a].map(ch=>ch==='x'?-1:+ch):a.split(',').map(x=>x==='x'?-1:+x),name:n||null,fg:fg?[...fg].map(ch=>ch==='-'?'':ch==='T'?'T':+ch):null}};
 function frSounds(fr,inst){return fr.map((f,i)=>f<0?null:TUN[inst][i]+f)}
 function frInnerMutes(fr){const s=fr.map((f,i)=>f>=0?i:-1).filter(i=>i>=0);if(!s.length)return 0;let m=0;for(let i=s[0];i<=s[s.length-1];i++)if(fr[i]<0)m++;return m}
 // the chord's notes: every required tone present, nothing outside the chord
@@ -1135,16 +1135,16 @@ function frBassOK(fr,c,inst){if(inst!=='guitar')return true;const s=frSounds(fr,
 function frReal(fr,inst,c,innerOK){const fd=fr.filter(f=>f>0);if(fd.length){if(Math.max(...fd)-Math.min(...fd)>3)return false;if(fr.includes(0)&&Math.max(...fd)>4)return false;if(!fretFingers(fr).ok)return false}
  const n=fr.filter(f=>f>=0).length;if(inst==='uke'&&n<4)return false;if(inst==='guitar'&&c.q.k!=='5'&&n<4)return false;if(frInnerMutes(fr)>(innerOK?1:0))return false;return true}
 function frLabel(fr){const fd=fr.filter(f=>f>0);return!fd.length||fr.includes(0)&&Math.max(...fd)<=4?'Open position':'Fret '+Math.min(...fd)}
-function frettedCands(c,inst){const out=[],seen=new Set(),add=(fr,name,tier)=>{const k=fr.join();if(seen.has(k))return;if(!frHasChord(fr,c,inst)||!frBassOK(fr,c,inst))return;seen.add(k);const fd=fr.filter(f=>f>0);out.push({fr,name,tier,minF:fd.length?Math.min(...fd):0,first:fr.findIndex(f=>f>=0)})};
+function frettedCands(c,inst){const out=[],seen=new Set(),add=(fr,name,tier,x={})=>{const k=fr.join();if(seen.has(k))return;if(!frHasChord(fr,c,inst)||!frBassOK(fr,c,inst))return;seen.add(k);const fd=fr.filter(f=>f>0);out.push({fr,name,tier,minF:fd.length?Math.min(...fd):0,first:fr.findIndex(f=>f>=0),...x})};
  const rootN=c.tones[0].name,rpc=c.rpc,qk=c.q.k,lib=FCUR[inst];
  // 1. curated shapes for this chord (matched by pitch, so C♯ and D♭ share shapes)
- Object.entries(lib).forEach(([k,L])=>{const[r,q]=k.split('|');if(q!==qk||pcOf(r)!==rpc)return;L.forEach(s=>{const p=pfr(s);add(p.fr,p.name||`Open ${pretty(rootN)}${qk==='m'?'m':qk}`,0)})});
+ Object.entries(lib).forEach(([k,L])=>{const[r,q]=k.split('|');if(q!==qk||pcOf(r)!==rpc)return;L.forEach(s=>{const p=pfr(s);add(p.fr,p.name,0,{fg:p.fg,cur:1})})});
  if(inst==='guitar'){
   // 2. movable shapes (E, A and D shapes), every position up to fret 12
-  Object.entries(FMOV).forEach(([sh,M])=>{const o=M.q[qk];if(!o)return;let r=mod(rpc-TUN.guitar[M.s],12);for(const rr of [r,r+12]){if(rr<1||rr>12)continue;const fr=o.map(x=>x===null?-1:x+rr);if(fr.some(f=>f===0))continue;if(!frReal(fr,inst,c,true))continue;add(fr,`${sh}-shape barre, fret ${Math.min(...fr.filter(f=>f>0))}`,sh==='D'?2:1)}})}
+  Object.entries(FMOV).forEach(([sh,M])=>{const o=M.q[qk];if(!o)return;let r=mod(rpc-TUN.guitar[M.s],12);for(const rr of [r,r+12]){if(rr<1||rr>12)continue;const fr=o.map(x=>x===null?-1:x+rr);if(fr.some(f=>f===0))continue;if(!frReal(fr,inst,c,true))continue;add(fr,null,sh==='D'?2:1,{sh})}})}
  else{
   // 2. ukulele: an open shape of the same chord type moved up the neck, the open strings becoming a barre
-  Object.entries(lib).forEach(([k,L])=>{const[r,q]=k.split('|');if(q!==qk)return;const sh=mod(rpc-pcOf(r),12);if(!sh)return;L.forEach(s=>{const p=pfr(s);const fr=p.fr.map(f=>f+sh);if(!frReal(fr,inst,c,false))return;add(fr,`${pretty(r)}${q==='m'?'m':q} shape moved up ${sh} fret${sh>1?'s':''}`,sh<=5?1:2)})})}
+  Object.entries(lib).forEach(([k,L])=>{const[r,q]=k.split('|');if(q!==qk)return;const sh=mod(rpc-pcOf(r),12);if(!sh)return;L.forEach(s=>{const p=pfr(s);const fr=p.fr.map(f=>f+sh);if(!frReal(fr,inst,c,false))return;add(fr,null,sh<=5?1:2,{from:pretty(r)+(q==='m'?'m':pretty(q)),up:sh})})})}
  return out}
 // 3. More shapes: a search kept to realistic shapes
 function frettedSearch(c,inst){const tun=TUN[inst],ns=tun.length,pcs=c.tones.map(t=>mod(t.midi,12)),res=[],seen=new Set();
@@ -1154,13 +1154,35 @@ function frettedSearch(c,inst){const tun=TUN[inst],ns=tun.length,pcs=c.tones.map
     res.push({fr,name:null,tier:3,minF:fd.length?Math.min(...fd):0,first:fr.findIndex(f=>f>=0),sc:n*3-(fd.length?Math.min(...fd):0)*.4-frInnerMutes(fr)*4-(fd.length?Math.max(...fd)-Math.min(...fd):0)});return}
    for(const f of choices[i]){cur[i]=f;rec(i+1)}})(0)}
  res.sort((a,b)=>b.sc-a.sc);const out=[],pos=new Set();for(const v of res){const p=(v.minF===0?'o':Math.floor(v.minF/3))+'|'+v.first;if(pos.has(p))continue;pos.add(p);out.push(v);if(out.length>=10)break}return out}
-function frettedVoicings(c,inst,more){if(!FCUR[inst])return[];const C=frettedCands(c,inst).sort((a,b)=>a.tier-b.tier||a.minF-b.minF);
- const beg=[];for(const v of C){if(beg.length>=4)break;if(v.tier<=1)beg.push(v)}
- if(beg.length<4)for(const v of C)if(beg.length<4&&!beg.includes(v))beg.push(v);
- if(beg.length<2){const k=new Set(beg.map(v=>v.fr.join()));for(const v of frettedSearch(c,inst))if(beg.length<2&&!k.has(v.fr.join()))beg.push(v)}
- beg.sort((a,b)=>a.tier-b.tier||a.minF-b.minF);if(!more)return beg;
+const frIsOpen=fr=>{const fd=fr.filter(f=>f>0);return fr.includes(0)&&(!fd.length||Math.max(...fd)<=4)};
+const FR_CEIL=7; // beginner view: shapes whose lowest fret is 7 or below, unless nothing lower exists
+const frSpan=fr=>{const fd=fr.filter(f=>f>0);return fd.length?Math.max(...fd)-Math.min(...fd):0},frN=fr=>fr.filter(f=>f>0).length;
+// open chart shapes first; then lowest position; at the same position chart and movable shapes before search results, then the smaller stretch and fewer fingers
+const frOrder=(a,b)=>((a.tier<3&&frIsOpen(a.fr))?0:1)-((b.tier<3&&frIsOpen(b.fr))?0:1)||a.minF-b.minF||a.tier-b.tier||frSpan(a.fr)-frSpan(b.fr)||frN(a.fr)-frN(b.fr);
+function frettedVoicings(c,inst,more){if(!FCUR[inst])return[];const C=frettedCands(c,inst).sort(frOrder),low=v=>v.minF<=FR_CEIL;
+ const beg=[];for(const v of C){if(beg.length>=4)break;if(v.tier<=1&&low(v))beg.push(v)}
+ for(const v of C)if(beg.length<4&&!beg.includes(v)&&low(v))beg.push(v);
+ if(beg.length<2){const k=new Set(beg.map(v=>v.fr.join()));for(const v of frettedSearch(c,inst).filter(low).sort(frOrder))if(beg.length<2&&!k.has(v.fr.join())){beg.push(v);k.add(v.fr.join())}}
+ if(beg.length<2)for(const v of C)if(beg.length<2&&!beg.includes(v))beg.push(v);
+ beg.sort(frOrder);if(!more)return beg;
  const k=new Set(beg.map(v=>v.fr.join())),rest=C.filter(v=>!k.has(v.fr.join()));rest.forEach(v=>k.add(v.fr.join()));
- return rest.concat(frettedSearch(c,inst).filter(v=>!k.has(v.fr.join()))).slice(0,10)}
+ return rest.concat(frettedSearch(c,inst).filter(v=>!k.has(v.fr.join()))).sort(frOrder).slice(0,10)}
+/* fingering for a shape: the chart fingering when the library has one, otherwise worked out; a finger on two or more strings at one fret is a barre */
+function vFingers(v){if(!v.fg)return fretFingers(v.fr);const fing=v.fr.map((f,i)=>f>0?v.fg[i]:'');let barre=null;
+ const by={};fing.forEach((g,i)=>{if(g!==''&&g!=='T')(by[g+'|'+v.fr[i]]=by[g+'|'+v.fr[i]]||[]).push(i)});
+ Object.entries(by).forEach(([k,ix])=>{if(ix.length<2)return;const f=+k.split('|')[1];let ok=true;for(let i=ix[0];i<=ix[ix.length-1];i++)if(!(v.fr[i]>=f))ok=false;if(ok&&(!barre||ix.length>barre.to-barre.from+1))barre={fret:f,from:ix[0],to:ix[ix.length-1]}});
+ return{fing,barre,ok:true}}
+/* honest names: "Open" only when open strings ring; "barre" only when there is one; the position is the root's fret */
+const UKS=['G','C','E','A'];
+function frRootAt(v,c,inst){const tun=TUN[inst],rp=mod(c.tones[0].midi,12);let best=null;
+ v.fr.forEach((f,i)=>{if(f<0)return;if(mod(tun[i]+f,12)!==rp)return;const m=tun[i]+f;if(!best||m<best.m)best={i,f,m}});return best}
+function shapeInfo(v,c,inst){const F=vFingers(v),open=frIsOpen(v.fr),sym=pretty(c.sym),b=F.barre,ra=frRootAt(v,c,inst);
+ let nm=v.name;
+ if(!nm)nm=open?`Open ${sym}`:v.sh?`${v.sh}-shape${b?' barre':''}`:v.from?`${v.from} shape${b?' barre':''}`:b?'Barre shape':'Moveable shape';
+ let sub='';
+ if(inst==='guitar'){const fs=TUN.guitar.length-v.first,bf=v.fr[v.first];sub=`${c.inv?'Bass':'Root'} on ${ORD[fs]} string`+(!open&&!c.inv?` · fret ${bf}`:'')}
+ else{if(open)sub='Open strings ring';else if(v.from&&b)sub=`Barre at fret ${b.fret} · up ${v.up} fret${v.up>1?'s':''}`;else if(v.from)sub=`Moved up ${v.up} fret${v.up>1?'s':''}`;else if(b)sub=`Barre at fret ${b.fret}`;else if(ra)sub=`Root at fret ${ra.f}, ${UKS[ra.i]} string`}
+ return{nm,sub,F,open,ra}}
 /* ---------- bass patterns: root–5th–octave and one-position arpeggios, starting from the bass note ---------- */
 function bassPatterns(c){const tun=TUN.bass,bpc=mod(c.bass.midi,12),out=[],tones=c.tones.map(t=>({d:t.d,pc:mod(t.midi,12)}));
  const dOf=m=>tones.find(t=>t.pc===mod(m,12)).d;
@@ -1195,18 +1217,34 @@ function fretFingers(fr){const out=fr.map(f=>f>0?null:''),fretted=fr.map((f,i)=>
  if(r.p>4){const grp=[];fretted.forEach(x=>{const g=grp[grp.length-1];if(g&&g[0][0]===x[0]&&x[1]-g[g.length-1][1]===1)g.push(x);else grp.push([x])});const o={};let p=0;for(const g of grp){const fg=Math.max(p+1,g[0][0]-mn+1);g.forEach(([f,i])=>o[i]=fg);p=fg}r={o,p};barre=null}
  Object.entries(r.o).forEach(([i,fg])=>out[+i]=fg);return{fing:out,barre,ok:r.p<=4}}
 function boxSVG(v,inst,c){
- const ns=TUN[inst].length,W=ns*20+8,top=26,fh=24,frets=5;
+ // chord diagram: nut or fret label beside the root's row, solid barre bar, root ringed, fingers and string names underneath
+ const tun=TUN[inst],ns=tun.length,sp=inst==='uke'?26:22,fh=26,frets=5,x0=44,top=30,gw=(ns-1)*sp;
  const fretted=v.fr.filter(f=>f>0),start=fretted.length&&Math.max(...fretted)>4?Math.min(...fretted):1;
- const FG=fretFingers(v.fr);let s=`<svg width="${W+40}" height="${top+fh*frets+30}" viewBox="0 0 ${W+40} ${top+fh*frets+30}">`;const x0=34;
- if(start===1)s+=`<rect x="${x0}" y="${top-3}" width="${(ns-1)*20}" height="4" fill="#ece2c8"/>`;else s+=`<text x="${x0-12}" y="${top+16}" fill="#9c927c" font-size="11" text-anchor="end">${start}fr</text>`;
- for(let i=0;i<=frets;i++)s+=`<line x1="${x0}" x2="${x0+(ns-1)*20}" y1="${top+i*fh}" y2="${top+i*fh}" stroke="#4a4130"/>`;
- for(let i=0;i<ns;i++)s+=`<line x1="${x0+i*20}" x2="${x0+i*20}" y1="${top}" y2="${top+frets*fh}" stroke="#7d7058"/>`;
- v.fr.forEach((f,i)=>{const x=x0+i*20;if(f<0)s+=`<text x="${x}" y="${top-9}" fill="#c8473b" font-size="12" text-anchor="middle">×</text>`;
-  else{const m=TUN[inst][i]+f,t=c.tones.find(t=>mod(t.midi,12)===mod(m,12)),col=getCol(t.d);
-   if(f===0)s+=`<circle cx="${x}" cy="${top-12}" r="5" fill="none" stroke="${col}" stroke-width="1.6"/>`;
-   else{const y=top+(f-start+.5)*fh;s+=`<circle cx="${x}" cy="${y}" r="8" fill="${col}"/><text x="${x}" y="${y+3.5}" font-size="9" font-weight="700" text-anchor="middle" fill="#0b0906">${t.d.replace(/b/g,'♭').replace(/#/g,'♯')}</text>`}}});
- if(FG.barre){const y=top+(FG.barre.fret-start+.5)*fh;s+=`<rect x="${x0+FG.barre.from*20-9}" y="${y-8}" width="${(FG.barre.to-FG.barre.from)*20+18}" height="16" rx="8" fill="none" stroke="#f0d48a" stroke-width="1.6" opacity=".85"/>`}
- FG.fing.forEach((f,i)=>{if(f!=null&&f!=='')s+=`<text x="${x0+i*20}" y="${top+frets*fh+16}" fill="#c9b98f" font-size="11" text-anchor="middle">${f}</text>`});
+ const FG=v.fg||v.sh||v.from||v.tier!==undefined?vFingers(v):fretFingers(v.fr),ra=frRootAt(v,c,inst),fing=(S.dots||'deg')==='fing';
+ const H=top+fh*frets+44,W=x0+gw+24,y=f=>top+(f-start+.5)*fh,xs=i=>x0+i*sp,dg=d=>d.replace(/b/g,'♭').replace(/#/g,'♯');
+ const STR=inst==='uke'?['G','C','E','A']:['E','A','D','G','B','E'];
+ let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="chord diagram">`;
+ // nut or position
+ if(start===1)s+=`<rect x="${x0-1.5}" y="${top-4}" width="${gw+3}" height="5" rx="1.5" fill="#ece2c8"/>`;
+ const lf=ra&&ra.f>=start&&ra.f>0&&start>1?ra.f:start;
+ if(start>1)s+=`<text x="${x0-15}" y="${y(lf)+4}" fill="#c9a24a" font-size="11" font-weight="600" text-anchor="end">${lf}fr</text>`;
+ // frets and strings
+ for(let i=start===1?1:0;i<=frets;i++)s+=`<line x1="${x0}" x2="${x0+gw}" y1="${top+i*fh}" y2="${top+i*fh}" stroke="#4a4130" stroke-width="${i===0?1.4:1}"/>`;
+ for(let i=0;i<ns;i++){const w=inst==='guitar'?1+(ns-1-i)*.16:1.2;s+=`<line x1="${xs(i)}" x2="${xs(i)}" y1="${top}" y2="${top+frets*fh}" stroke="#8a7c60" stroke-width="${w.toFixed(2)}"/>`}
+ // barre bar under the dots
+ if(FG.barre){const b=FG.barre;s+=`<rect x="${xs(b.from)-11}" y="${y(b.fret)-10}" width="${(b.to-b.from)*sp+22}" height="20" rx="10" fill="rgba(240,212,138,.26)" stroke="#f0d48a" stroke-width="1.3"/>`}
+ v.fr.forEach((f,i)=>{const x=xs(i);
+  if(f<0){s+=`<text x="${x}" y="${top-10}" fill="#c8473b" font-size="13" text-anchor="middle">×</text>`;return}
+  const m=tun[i]+f,t=c.tones.find(t=>mod(t.midi,12)===mod(m,12)),col=getCol(t.d),isR=t.d==='1';
+  if(f===0){s+=`<circle cx="${x}" cy="${top-14}" r="5.5" fill="none" stroke="${col}" stroke-width="1.7"/>`+(isR?`<circle cx="${x}" cy="${top-14}" r="8.5" fill="none" stroke="${col}" stroke-width=".9" opacity=".7"/>`:'');return}
+  const yy=y(f),lab=fing?(FG.fing[i]===''||FG.fing[i]==null?'':FG.fing[i]):dg(t.d);
+  if(isR)s+=`<circle cx="${x}" cy="${yy}" r="12.5" fill="none" stroke="#ece2c8" stroke-width="1.2" opacity=".75"/>`;
+  s+=`<circle cx="${x}" cy="${yy}" r="10" fill="${col}"/><text x="${x}" y="${yy+3.6}" font-size="${String(lab).length>1?9:10.5}" font-weight="700" text-anchor="middle" fill="#0b0906">${lab}</text>`});
+ // under the grid: fingers (or degrees when the dots show fingers), then string names
+ const yb=top+frets*fh;
+ v.fr.forEach((f,i)=>{let t='';if(fing){if(f>=0){const m=tun[i]+f,tt=c.tones.find(q=>mod(q.midi,12)===mod(m,12));t=dg(tt.d)}}else{const g=FG.fing[i];t=g===''||g==null?'':g}
+  if(t!=='')s+=`<text x="${xs(i)}" y="${yb+17}" fill="#e8d9b0" font-size="11.5" font-weight="600" text-anchor="middle">${t}</text>`;
+  s+=`<text x="${xs(i)}" y="${yb+34}" fill="#7d7058" font-size="9.5" letter-spacing=".5" text-anchor="middle">${STR[i]}</text>`});
  return s+'</svg>';
 }
 const COLS={'var(--goldhi)':'#f0d48a','var(--green)':'#8fbf6a','var(--ivory)':'#ece2c8','var(--red)':'#c8473b','var(--violet)':'#a493d8'};
@@ -1287,10 +1325,9 @@ function renderInst(c){
   const BP=bassPatterns(c);el._bp=BP;
   if(BP.length)s+=`<div class="lbl" style="margin-top:6px">Patterns to play · tap one to hear it</div><div class="voicings">${BP.map((p,i)=>`<div class="vbox" data-bpat="${i}">${bassBoxSVG(p)}<div class="nm">${p.name}</div><small>${p.notes.map(n=>n.d.replace(/b/g,'♭').replace(/#/g,'♯')).join(' – ')}</small></div>`).join('')}</div><p class="note">One finger per fret: the small number beside each note is the finger (1 index to 4 little; 0 open string). The ringed note is where you start.</p>`;
   s+=`<div class="lbl" style="margin-top:14px">Chord tones across the neck</div><div class="board">${boardSVG(c,'bass')}</div>`;el.innerHTML=s;return}
- s+=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Tap a shape to hear it. The numbers under each diagram are the fingers of the fretting hand (1 index, 2 middle, 3 ring, 4 little); a ring across the strings is a barre.${S.inst==='uke'?' The ukulele has no low bass string, so inversions sound the same here.':''}</span><span class="chips" style="margin-left:auto"><button class="chip ${S.more?'':'on'}" data-more="0">Beginner shapes</button><button class="chip ${S.more?'on':''}" data-more="1">More shapes</button></span></div>${S.more?'<div class="note" style="margin:4px 0 8px">More shapes adds three-string grips, one muted inner string and wider stretches. Shapes marked <b>no 5th</b> leave out the 5th, which is normal for 7th chords.</div>':''}`;
+ s+=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Tap a shape to hear it. Under each diagram: the fretting-hand fingers (1 index, 2 middle, 3 ring, 4 little, T thumb), then the string names. A bar across the strings is a barre; the ringed note is the root; the fret number sits beside the root's fret.${S.inst==='uke'?' The ukulele has no low bass string, so inversions sound the same here.':''}</span><span class="chips" style="margin-left:auto"><span class="lbl" style="margin:0 6px 0 0;align-self:center">In the dots</span><button class="chip ${(S.dots||'deg')==='deg'?'on':''}" data-dots="deg">Degrees</button><button class="chip ${S.dots==='fing'?'on':''}" data-dots="fing" style="margin-right:12px">Fingers</button><button class="chip ${S.more?'':'on'}" data-more="0">Beginner shapes</button><button class="chip ${S.more?'on':''}" data-more="1">More shapes</button></span></div>${S.more?'<div class="note" style="margin:4px 0 8px">More shapes adds three-string grips, one muted inner string and wider stretches. Shapes marked <b>no 5th</b> leave out the 5th, which is normal for 7th chords.</div>':''}`;
  if(!vs.length)s+='<div class="empty">No comfortable shape found in the first 12 frets. Try a simpler chord type or another instrument.</div>';
- else s+='<div class="voicings">'+vs.map((v,i)=>{const fs=TUN[S.inst].length-v.first,lab=v.name||frLabel(v.fr),
-   rs=S.inst==='guitar'?`${S.inv?'Bass':'Root'} on ${ORD[fs]} string`:'';const has5=c.tones.filter(t=>t.d==='5').every(t=>v.fr.some((f,j)=>f>=0&&mod(TUN[S.inst][j]+f,12)===mod(t.midi,12)));return`<div class="vbox ${i===S.vi?'on':''}" data-v="${i}">${boxSVG(v,S.inst,c)}<div class="nm">${lab}</div><small>${rs}${v.more?`<br><b style="color:var(--goldhi)">more</b> · ${TUN[S.inst].length-v.first-v.fr.slice(v.first).filter(f=>f<0).length} strings${has5?'':' · no 5th'}`:''}</small></div>`}).join('')+'</div>';
+ else s+='<div class="voicings">'+vs.map((v,i)=>{const SI=shapeInfo(v,c,S.inst),lab=SI.nm,rs=SI.sub;const has5=c.tones.filter(t=>t.d==='5').every(t=>v.fr.some((f,j)=>f>=0&&mod(TUN[S.inst][j]+f,12)===mod(t.midi,12)));return`<div class="vbox ${i===S.vi?'on':''}" data-v="${i}">${boxSVG(v,S.inst,c)}<div class="nm">${lab}</div><small>${rs}${v.more?`<br><b style="color:var(--goldhi)">more</b> · ${TUN[S.inst].length-v.first-v.fr.slice(v.first).filter(f=>f<0).length} strings${has5?'':' · no 5th'}`:''}</small></div>`}).join('')+'</div>';
  s+=`<div class="lbl" style="margin-top:18px">Chord tones across the neck</div><div class="board">${boardSVG(c,S.inst)}</div>`;
  el.innerHTML=s;el._vs=vs;
 }
@@ -1336,9 +1373,10 @@ function renderClimb(c){
 }
 
 /* ---------- events ---------- */
-document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-k],[data-v],[data-m],[data-i],[data-l],[data-room],[data-more],[data-bpat]');if(!t)return;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-k],[data-v],[data-m],[data-i],[data-l],[data-room],[data-more],[data-dots],[data-bpat]');if(!t)return;
  if(t.dataset.bpat!==undefined){const p=($('inst')._bp||[])[+t.dataset.bpat];if(p)play(p.notes.map(n=>n.m),.38,'pluck');return}
  if(t.dataset.more!==undefined){S.more=t.dataset.more==='1';S.vi=0;renderInst(chord());return}
+ if(t.dataset.dots!==undefined){S.dots=t.dataset.dots;renderInst(chord());return}
  if(t.dataset.go!==undefined){let[r,q]=t.dataset.go.split('|');S.root=r;S.q=q;S.inv=0;S.vi=0;render();window.scrollTo({top:0,behavior:'smooth'});play(voicing(chord()).map(x=>x.midi));logIt('looked at '+pretty(r+q));return}
  if(t.dataset.k!==undefined){S.key={k:+t.dataset.k,mode:t.dataset.mode};render();return}
  if(t.dataset.v!==undefined){S.vi=+t.dataset.v;document.querySelectorAll('.vbox').forEach((b,i)=>b.classList.toggle('on',i===S.vi));const x=instMidis(chord());play(x.m,x.gap,x.k);return}
