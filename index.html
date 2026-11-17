@@ -696,6 +696,12 @@ button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visi
 button:active:not(:disabled){transform:translateY(1px)}
 button:disabled{cursor:default;opacity:.45}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+/* one Stop for everything */
+.tstop{background:var(--red,#c8473b);color:#fff;border:0;border-radius:22px;padding:7px 16px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 0 0 0 rgba(200,71,59,.5);animation:tstopPulse 1.6s ease-out infinite}
+@keyframes tstopPulse{0%{box-shadow:0 0 0 0 rgba(200,71,59,.45)}100%{box-shadow:0 0 0 10px rgba(200,71,59,0)}}
+[data-playing]{border-color:var(--red,#c8473b)!important;color:#fff!important;background:rgba(200,71,59,.25)!important}
+@media (max-width:760px){.top{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(11,9,6,.98)}.tstop{position:fixed;right:14px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:8;padding:11px 20px;font-size:15px}}
 </style></head>
 <body>
 
@@ -722,6 +728,7 @@ button:disabled{cursor:default;opacity:.45}
  <span class="crumb">Seed Bank · <b id="crumbSym">Bm7</b></span>
  <form class="search" id="searchForm"><input id="q" placeholder="Type a chord: Bm7, F#dim7, Ebmaj9…" autocomplete="off"><button>Find</button></form>
  <div class="lvl" id="lvl"><button data-l="4">Stage 4</button><button data-l="5">Stage 5</button><button data-l="6" class="on">Stage 6</button></div>
+ <button class="tstop" id="tStop" hidden title="Stop all sound (Esc)">■ Stop</button>
  <button class="jbtn" id="openJ">✎ Journal</button>
 </header>
 
@@ -1081,7 +1088,7 @@ button:disabled{cursor:default;opacity:.45}
  </section>
 </section>
 </main>
-<footer>Composition Jungle Gym · preview 0.43 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
+<footer>Composition Jungle Gym · preview 0.44 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
 
 <aside class="journal" id="journal" aria-label="Composer's journal">
  <button class="x" id="closeJ">×</button>
@@ -1175,8 +1182,10 @@ function smpTone(m,t0,k,vel){const B=SBUF[k];if(!B)return false;let best=null;fo
  const a=ac(),src=a.createBufferSource(),g=a.createGain(),len=SMP[k].len;src.buffer=B[best];src.playbackRate.value=Math.pow(2,(m-best)/12);
  const pk=1.5*vel;g.gain.setValueAtTime(pk,t0);g.gain.setValueAtTime(pk,t0+len);g.gain.exponentialRampToValueAtTime(.0001,t0+len+.45);
  src.connect(g);g.connect(MAST);src.start(t0);src.stop(t0+len+.5);ACT.push(src);if(ACT.length>600)ACT.splice(0,300);return true}
-let AC,MAST;const ACT=[];
-function ac(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MAST=AC.createGain();MAST.gain.value=.7;const comp=AC.createDynamicsCompressor();MAST.connect(comp);comp.connect(AC.destination)}if(AC.state==='suspended')AC.resume();if(!SLOAD.piano)setTimeout(()=>loadSamples('piano'),0);return AC}
+let AC,MAST,COMP;
+/* every sounding or scheduled source node is registered here and removes itself when it ends, so Stop can always reach it */
+const ACT={s:new Set(),push(...n){n.forEach(x=>{if(!x)return;this.s.add(x);try{x.addEventListener('ended',()=>this.s.delete(x))}catch(e){}})},forEach(f){[...this.s].forEach(f)},get length(){return this.s.size},set length(v){if(!v)this.s.clear()},splice(){},clear(){this.s.clear()}};
+function ac(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MAST=AC.createGain();MAST.gain.value=.7;COMP=AC.createDynamicsCompressor();MAST.connect(COMP);COMP.connect(AC.destination)}if(AC.state==='suspended')AC.resume();if(!SLOAD.piano)setTimeout(()=>loadSamples('piano'),0);return AC}
 const hz=m=>440*Math.pow(2,(m-69)/12);
 function tone(m,t0,kind,vel=1){const sk=smpKind(kind);if(sk){if(smpTone(m,t0,sk,vel))return;loadSamples(sk);if(kind!=='piano')kind='pluck'}
  const a=ac(),o=a.createOscillator(),o2=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
@@ -1503,7 +1512,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-
  if(t.dataset.v!==undefined){S.vi=+t.dataset.v;document.querySelectorAll('.vbox').forEach((b,i)=>b.classList.toggle('on',i===S.vi));const x=instMidis(chord());play(x.m,x.gap,x.k);return}
  if(t.dataset.i){S.inst=t.dataset.i;S.vi=0;const k=smpKind(S.inst==='piano'?'piano':S.inst==='bass'?'bass':S.inst);if(k)loadSamples(k);renderInst(chord());return}
  if(t.dataset.gtone){S.gtone=t.dataset.gtone;loadSamples(smpKind('guitar'));renderInst(chord());return}
- if(t.dataset.l){S.level=+t.dataset.l;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
+ if(t.dataset.l){S.level=+t.dataset.l;try{localStorage.setItem('cjg_stage',S.level)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
  if(t.dataset.room)return;
  if(t.dataset.m!==undefined){play([+t.dataset.m],0,S.inst==='piano'?'piano':'pluck')}
 });
@@ -1650,7 +1659,9 @@ function voiceProg(list){let pr=null,pb=null;
 /* ---------- playback ---------- */
 const PLAY={on:false,timers:[],src:null};
 function stopAll(){PLAY.on=false;PLAY.timers.forEach(clearTimeout);PLAY.timers=[];
- if(AC){const t=AC.currentTime;ACT.forEach(o=>{try{o.stop(t+.02)}catch(e){}});ACT.length=0}
+ if(AC&&MAST){const t=AC.currentTime,old=MAST,g=old.gain.value;try{old.gain.cancelScheduledValues(t);old.gain.setValueAtTime(g,t);old.gain.linearRampToValueAtTime(0,t+.04)}catch(e){}
+  ACT.forEach(o=>{try{o.stop(t+.05)}catch(e){}});ACT.clear();MAST=AC.createGain();MAST.gain.value=g;MAST.connect(COMP);setTimeout(()=>{try{old.disconnect()}catch(e){}},300)}
+ if(typeof C1!=='undefined'&&C1.droneOn){C1.droneOn=false;if(typeof C1DR!=='undefined')C1DR=[]}
  document.querySelectorAll('.now').forEach(e=>e.classList.remove('now'));setPlayBtns()}
 function setPlayBtns(){const g=$('gPlay');if(g)g.textContent=PLAY.on&&PLAY.src==='gym'?'■ Stop':'▶ Play';const o=$('oHear');if(o)o.textContent=PLAY.on&&PLAY.src==='oracle'?'■ Stop':'▶ Hear the hand'}
 function playList(list,src,onStep,loop){
@@ -1909,16 +1920,24 @@ let ROOM='seed';
 function setCrumb(){const c=document.querySelector('.top .crumb');
  if(ROOM==='keys'){c.innerHTML='Level 1 · <b>Keys &amp; Scales</b>';return}if(ROOM==='analysis'){c.innerHTML='Level 3 · <b>Analysis</b>';return}if(ROOM==='ear'){c.innerHTML='Level 3 · <b>Ear Lab</b>';return}if(ROOM==='forms'){c.innerHTML='Level 3 · <b>Forms</b>'+(F.open?' · '+FORMS.find(x=>x.k===F.open).t:'');return}
  c.innerHTML=ROOM==='seed'?`Seed Bank · <b id="crumbSym">${$('sym').textContent}</b>`:ROOM==='gym'?`The Gym · <b>${keyName(K)}</b> · ${P.length} chord${P.length===1?'':'s'}`:ROOM==='voice'?`Level 2 · <b>Voices</b> · ${$('sym').textContent}`:ROOM==='climbs'?`Level 3 · <b>The Climbs</b>`:`The Oracle · <b>${keyName(K)}</b>`}
-function room(r){if(!['seed','keys','gym','oracle','climbs','voice','forms','analysis','ear'].includes(r))r='seed';if(ROOM==='ear'&&r!=='ear'&&PLAY.src==='ear')stopAll();if(ROOM==='keys'&&r!=='keys'&&typeof micStop==='function'){micStop();KS.sing=null}ROOM=r;
+function room(r){if(!['seed','keys','gym','oracle','climbs','voice','forms','analysis','ear'].includes(r))r='seed';if(typeof ROOM!=='undefined'&&ROOM&&ROOM!==r)stopAll();if(ROOM==='ear'&&r!=='ear'&&PLAY.src==='ear')stopAll();if(ROOM==='keys'&&r!=='keys'&&typeof micStop==='function'){micStop();KS.sing=null}ROOM=r;
  document.querySelectorAll('.room').forEach(s=>s.hidden=s.id!=='room-'+r);
  document.querySelectorAll('.rail button,.tabbar button[data-room],.msheet button[data-room]').forEach(b=>b.classList.toggle('on',b.dataset.room===r));const tm=document.getElementById('tbMore');if(tm)tm.classList.toggle('on',['keys','forms','analysis','ear','oracle'].includes(r));const ms=document.getElementById('msheet');if(ms)ms.hidden=true;
  document.querySelectorAll('[data-ask]').forEach(e=>{const q=rnd(QS);e.innerHTML=`<span class="disp">Before you climb</span><span class="q">${q}</span><button class="mini" data-openj>Answer it in your journal</button>`});
  if(r==='gym')renderGym();if(r==='oracle')renderOracle();if(r==='climbs')renderClimbs();if(r==='voice')renderVoices();if(r==='seed')render();if(r==='keys')renderKeysRoom();if(r==='forms')renderForms();if(r==='analysis')renderAnalysis();if(r==='ear')renderEar();
- setCrumb();sylMount(true);window.scrollTo(0,0)}
-window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&h!==ROOM)room(h)});
+ setCrumb();sylMount(true);window.scrollTo(0,0);LASTROUTE=curRoute()}
+/* routes: #room, #climbs/3, #forms/rondo. Back, Forward and reload return to the same place; changing place stops the sound */
+function curRoute(){if(ROOM==='climbs'&&CL.open!==null&&CL.open!==undefined)return'climbs/'+(CL.open+1);if(ROOM==='forms'&&F.open)return'forms/'+F.open;return ROOM||'seed'}
+function applyRoute(h){h=(h||'').replace(/^#/,'')||'seed';const[r,sub]=h.split('/');stopAll();
+ if(r==='climbs')CL.open=sub&&+sub>=1&&+sub<=CLIMBS.length?+sub-1:null;
+ if(r==='forms')F.open=sub&&FORMS.some(f=>f.k===sub&&f.live)?sub:null;
+ room(r);LASTROUTE=curRoute()}
+var LASTROUTE=null;
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1)||'seed';if(h!==curRoute())applyRoute(h);else LASTROUTE=h});
+document.addEventListener('click',()=>setTimeout(()=>{const r=curRoute();if(r!==LASTROUTE){if(LASTROUTE!==null)stopAll();LASTROUTE=r;if((location.hash.slice(1)||'seed')!==r)location.hash=r}},0));
 
 document.addEventListener('click',e=>{const t=e.target.closest('[data-load],[data-room],[data-pa],[data-pi],[data-add],[data-fam],[data-keep],[data-tc],[data-die],[data-o],[data-openj]');if(!t)return;
- if(t.dataset.room){e.stopImmediatePropagation();const r=t.dataset.room;location.hash=r;room(r);return}
+ if(t.dataset.room){e.stopImmediatePropagation();const r=t.dataset.room;if(r==='climbs')CL.open=null;if(r==='forms')F.open=null;stopAll();location.hash=r;room(r);return}
  if(t.dataset.load){const[r,mode]=t.dataset.load.split('|');if(mode!==K.mode){K.mode=mode;K.k=mode==='min'?mod(K.k-3,12):mod(K.k+3,12)}P=[];G.sel=-1;addRomans(r);location.hash='gym';room('gym');return}
  if(t.dataset.openj!==undefined){$('journal').classList.add('open');renderLog();return}
  if(t.dataset.pa){e.stopImmediatePropagation();const i=+t.closest('[data-pi]').dataset.pi,ch=P[i],a=t.dataset.pa;
@@ -5353,7 +5372,7 @@ function c13RenderFugue(ctx,ctxName,sd){const sub=c13Sub(),S=c13Line(sub,ctx),A=
   <div class="lbl" style="margin-top:12px">Fugues to find</div><ul class="note" style="margin:0 0 0 18px;padding:0;line-height:1.6"><li>Bach, Well-Tempered Clavier I, Fugue No. 2 in C minor, BWV 847: three voices, a clear countersubject, a model exposition</li><li>Bach, Well-Tempered Clavier I, Fugue No. 1 in C major, BWV 846: four voices, full of stretto</li><li>Bach, "Little" Fugue in G minor, BWV 578 (organ)</li><li>Palestrina, Missa Papae Marcelli: imitative entries in the modal style</li></ul></section>`;
  c13Draw($('c13Sub'),[{L:S}]);c13Draw($('c13Ans'),[{L:S,lab:'subject'},{L:A,lab:'answer',col:'#c9b98f'}]);
  const bad={};csIss.filter(x=>x.sev==='err'&&x.cells).forEach(x=>x.cells.forEach(c=>bad['0_'+c]=1));c13Draw($('c13CS'),[{L:c13Line(cs,ctx)},{L:S,col:'#c9b98f'}],{bad});
- c13Draw($('c13Expo'),c13Expo(sub,cs,ctx).map((L,i)=>({L,col:['#ece2c8','#c9b98f','#a99d84'][i]})),{bw:110});{const F=c13Fugue(sub,cs,ctx),bad={};[[0,1],[0,2],[1,2]].forEach(([a,b])=>c13Pair(F.V[a],F.V[b]).filter(x=>x.sev==='err'&&!(b===2&&F.ped&&x.cells.every(c=>c>=F.ped[0]&&c<=F.ped[1]))).forEach(x=>x.cells.forEach(c=>{bad[a+'_'+c]=1;bad[b+'_'+c]=1})));c13Draw($('c13Fugue'),F.V.map((L,i)=>({L,col:['#ece2c8','#c9b98f','#a99d84'][i]})),{bw:104,bad})}c13TransDraw(ctx);hBtns()}
+ c13Draw($('c13Expo'),c13Expo(sub,cs,ctx).map((L,i)=>({L,col:['#ece2c8','#c9b98f','#a99d84'][i]})),{bw:110});if(c13Line(sub,ctx).some(Boolean)){const F=c13Fugue(sub,cs,ctx),bad={};[[0,1],[0,2],[1,2]].forEach(([a,b])=>c13Pair(F.V[a],F.V[b]).filter(x=>x.sev==='err'&&!(b===2&&F.ped&&x.cells.every(c=>c>=F.ped[0]&&c<=F.ped[1]))).forEach(x=>x.cells.forEach(c=>{bad[a+'_'+c]=1;bad[b+'_'+c]=1})));c13Draw($('c13Fugue'),F.V.map((L,i)=>({L,col:['#ece2c8','#c9b98f','#a99d84'][i]})),{bw:104,bad})}c13TransDraw(ctx);hBtns()}
 function c13SubIssHTML(iss){const e=iss.filter(x=>x.sev==='err');return(!iss.length?'<div class="ok" style="margin-top:8px">✓ A good subject: it starts clearly, has a profile, and ends ready for the answer.</div>':'')+c13Iss(iss)}
 function c13Expo(sub,cs,ctx){const n=sub.length,S=c13Line(sub,ctx),A=c13Answer(sub,ctx,C13.ans),CS=cs.every(x=>x!=null)?c13Line(cs,ctx):Array(n).fill(null),CSa=CS.map(p=>p?(ctx.modal?{...c2Pitch(p.dn+4),on:p.on}:{...c13Tr(p,4,7),on:p.on}):null),blank=Array(n).fill(null);
  const lo=L=>L.map(p=>p?(ctx.modal?{...c2Pitch(p.dn-7),on:p.on}:{...c13Tr(p,-7,-12),on:p.on}):null),up=L=>L.map(p=>p?(ctx.modal?{...c2Pitch(p.dn+7),on:p.on}:{...c13Tr(p,7,12),on:p.on}):null);
@@ -5402,7 +5421,7 @@ function c13TransHTML(ctx){const sub=c13Sub();if(sub.filter(c=>typeof c==='numbe
 function c13TransDraw(ctx){const sub=c13Sub();if(!$('c13Tr'))return;const S=c13Line(sub,ctx);
  c13Draw($('c13Tr'),[{L:S},{L:c13TLine('inv',sub,ctx),col:'#c9b98f'},{L:c13TLine('aug',sub,ctx),col:'#a493d8'}],{bw:104});c13Draw($('c13TrDim'),[{L:S}],{half:true,bw:150});
  const T=C13.tr;if(T.sel&&$('c13TC')){const L=c13ComboLines(T.sel.kind,T.sel.d,T.sel.iv,sub,ctx);c13Draw($('c13TC'),L.map((x,i)=>({L:x,col:i?'#c9b98f':'#ece2c8'})),{bw:104})}}
-function c13FugueHTML(ctx){const sub=c13Sub(),cs=c13CurCS(),P=C13.plan,F=c13Fugue(sub,cs,ctx),pairs=[[0,1],[0,2],[1,2]],iss=[];pairs.forEach(([a,b])=>c13Pair(F.V[a],F.V[b]).filter(x=>x.sev==='err'&&!(b===2&&F.ped&&x.cells.every(c=>c>=F.ped[0]&&c<=F.ped[1]))).forEach(x=>iss.push({...x,msg:['top','middle','bottom'][a]+' and '+['top','middle','bottom'][b]+': '+x.msg})));
+function c13FugueHTML(ctx){if(!c13Line(c13Sub(),ctx).some(Boolean))return'<p class="note">Write your subject on the ladder first: tap a note in each column. The whole fugue is built from it.</p>';const sub=c13Sub(),cs=c13CurCS(),P=C13.plan,F=c13Fugue(sub,cs,ctx),pairs=[[0,1],[0,2],[1,2]],iss=[];pairs.forEach(([a,b])=>c13Pair(F.V[a],F.V[b]).filter(x=>x.sev==='err'&&!(b===2&&F.ped&&x.cells.every(c=>c>=F.ped[0]&&c<=F.ped[1]))).forEach(x=>iss.push({...x,msg:['top','middle','bottom'][a]+' and '+['top','middle','bottom'][b]+': '+x.msg})));
  const opt=(k,v,lab)=>`<button class="chip ${P[k]===v?'on':''}" data-c13pl="${k},${v}">${lab}</button>`,cols=['#c9a24a','#8fbf6a','#a493d8','#7fb3c8','#c9b98f','#e0a060'];
  return`<div class="go" style="margin-bottom:6px"><span class="lbl" style="margin:0 8px 0 0">Middle entry 1</span>${opt('me1','rel',ctx.modal?'on the 3rd':'relative key')}${opt('me1','sub',ctx.modal?'on the 4th':'subdominant')}${opt('me1','dom',ctx.modal?'on the 5th':'dominant')}</div>
  <div class="go" style="margin-bottom:6px"><span class="lbl" style="margin:0 8px 0 0">Middle entry 2</span>${opt('me2','none','none')}${opt('me2','rel',ctx.modal?'on the 3rd':'relative key')}${opt('me2','sub',ctx.modal?'on the 4th':'subdominant')}</div>
@@ -5769,8 +5788,8 @@ function sylMount(force){const c=sylCtx();const sec=document.getElementById('roo
  if(!b){b=document.createElement('div');b.className='sylbar';sec.insertBefore(b,sec.firstChild)}b.dataset.c=c;b.innerHTML=sylBar(c)}
 document.addEventListener('toggle',e=>{if(e.target.classList&&e.target.classList.contains('syl'))SYLOPEN=e.target.open},true);
 document.addEventListener('click',()=>setTimeout(()=>sylMount(),0));
-function sylGo(c){if(/^c\d+$/.test(c)){CL.open=+c.slice(1);location.hash='climbs';room('climbs');return}
- if(c.startsWith('f:')){F.open=c.slice(2);F.sel=null;location.hash='forms';room('forms');return}
+function sylGo(c){if(/^c\d+$/.test(c)){location.hash='climbs/'+(+c.slice(1)+1);return}
+ if(c.startsWith('f:')){F.sel=null;location.hash='forms/'+c.slice(2);return}
  location.hash=c;room(c)}
 function sylPanel(){const by=$('sylBy')?$('sylBy').value:'e',vs=by==='e'?Object.entries(SYLE):by==='l'?Object.entries(SYLL):Object.keys(SYLO).map(k=>[k,k]);
  const sel=$('sylVal');if(!sel)return;const cur=sel.dataset.by===by?sel.value:vs[0][0];sel.dataset.by=by;sel.innerHTML=vs.map(([k,l])=>`<option value="${k}" ${k===cur?'selected':''}>${l}</option>`).join('');
@@ -6014,6 +6033,26 @@ setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
   const k=Math.min(1,Math.max(.72,av/w));sv.style.width=(w*k)+'px';sv.style.height=(h*k)+'px'};
  let t;addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(()=>document.querySelectorAll('svg.vfx').forEach(vfFit),120)})})();
 
-render();renderLog();room(location.hash.slice(1)||'seed');
+/* transport: a Stop button whenever anything sounds; Esc (or Space, outside text fields) stops; a ▶ button becomes ■ Stop while its music plays (re-marked if the page redraws it); starting new music stops the old */
+(function(){const ts=document.getElementById('tStop');const busy=()=>ACT.length>0||PLAY.on||(typeof C1!=='undefined'&&C1.droneOn);
+ const sig=x=>[...x.attributes].filter(t=>t.name.startsWith('data-')&&!['data-t','data-playing','data-orig'].includes(t.name)).map(t=>t.name+'='+t.value).join('&')+'|'+(x.dataset.orig!==undefined?x.dataset.orig:x.innerHTML).replace(/<[^>]*>/g,'').trim();
+ let PK=null;
+ const unmark=()=>document.querySelectorAll('[data-playing]').forEach(x=>{x.innerHTML=x.dataset.orig;delete x.dataset.playing;delete x.dataset.orig});
+ const mark=b=>{if(b.dataset.playing)return;b.dataset.orig=b.innerHTML;b.dataset.playing='1';b.innerHTML=b.textContent.trim()==='▶'?'■':'■ Stop'};
+ const find=()=>PK&&[...document.querySelectorAll('button')].find(x=>x.offsetParent&&!x.dataset.playing&&sig(x)===PK);
+ ts.onclick=()=>stopAll();
+ setInterval(()=>{const b=busy();ts.hidden=!b;if(!b){PK=null;unmark();return}const m=find();if(m)mark(m)},150);
+ addEventListener('keydown',e=>{if(e.key==='Escape'&&busy()){stopAll();return}
+  if(e.key===' '&&busy()){const a=document.activeElement,tag=a&&a.tagName;if(!/INPUT|TEXTAREA|SELECT/.test(tag)&&!(a&&a.isContentEditable)){e.preventDefault();stopAll()}}});
+ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.id==='tStop')return;
+  if(b.dataset.playing||(busy()&&PK&&sig(b)===PK)){e.stopImmediatePropagation();e.preventDefault();stopAll();PK=null;unmark();return}
+  if(!/^\s*▶/.test(b.textContent))return;
+  if(busy())stopAll();unmark();const key=sig(b);
+  setTimeout(()=>{if(!busy())return;PK=key;const m=b.isConnected&&/^\s*▶/.test(b.textContent)?b:find();if(m)mark(m)},40)},true)})();
+/* remember the stage between visits */
+(()=>{try{const l=+localStorage.getItem('cjg_stage');if([4,5,6].includes(l)){S.level=l;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}}catch(e){}})();
+/* journal drafts are kept as you type */
+(()=>{try{const D=JSON.parse(localStorage.getItem('cjg_jdraft')||'[]');[1,2,3,4].forEach(i=>{const t=$('j'+i);if(!t)return;if(D[i-1]&&!t.value)t.value=D[i-1];t.addEventListener('input',()=>{try{localStorage.setItem('cjg_jdraft',JSON.stringify([1,2,3,4].map(k=>$('j'+k)?$('j'+k).value:'')))}catch(e){}})})}catch(e){}})();
+render();renderLog();applyRoute(location.hash.slice(1));
 </script>
 </body></html>
