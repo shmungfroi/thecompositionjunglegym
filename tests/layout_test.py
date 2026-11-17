@@ -44,4 +44,5 @@ async def main():
         await b.close()
     bad={k:v for k,v in res.items() if not k.endswith('errors') and (v['overlap'] or v['clipped'] or v['offscreen'])}
     print(json.dumps({'views':len([k for k in res if not k.endswith('errors')]),'views_with_findings':len(bad),'findings':bad,'page_errors':{k:v for k,v in res.items() if k.endswith('errors') and v}},ensure_ascii=False,indent=1))
+    sys.exit(1 if bad or any(v for k,v in res.items() if k.endswith('errors')) else 0)
 asyncio.run(main())

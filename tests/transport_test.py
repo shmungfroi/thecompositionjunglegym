@@ -80,4 +80,5 @@ async def main():
             if not okk: fails.append(('nav',lab,'',str(s)))
         await b.close()
     print(json.dumps({'stats':stats,'nav':nav,'fails':fails[:40],'n_fails':len(fails),'page_errors':errs[:5]},ensure_ascii=False,indent=1))
+    sys.exit(1 if fails or errs or stats['silent']!=stats['trials'] else 0)
 asyncio.run(main())

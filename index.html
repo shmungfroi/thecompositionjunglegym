@@ -2102,7 +2102,8 @@ function renderVoicingLab(){
 const RANGE={S:[60,79],A:[55,74],T:[48,67],B:[40,60]};
 function chordInfo(ch,k){const c=chordOf(ch.root,ch.q,ch.inv||0),a=analyse(ch,k),pcs=c.tones.map(t=>mod(t.midi,12));
  const deg={};c.tones.forEach(t=>deg[mod(t.midi,12)]=t.d);
- const LT=mod(k.k+11,12),dom=a.dia&&(a.d===4||a.d===6);
+ // dominant function needs the leading note: V and vii° (and their 7ths), not the minor v or the subtonic VII of a minor key
+ const LT=mod(k.k+11,12),dom=a.dia&&(a.d===4||a.d===6)&&pcs.includes(LT);
  const aug6=/\+6$/.test(c.q.k);
  return{c,a,pcs,deg,bassPc:mod(c.bass.midi,12),rootPc:c.rpc,LT,dom,aug6,
   third:c.tones.find(t=>/3|^2$|^4$/.test(t.d)),seventh:c.tones.find(t=>/7/.test(t.d)),fifth:aug6?null:c.tones.find(t=>/^5$/.test(t.d))}}
@@ -6078,7 +6079,7 @@ setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
  addEventListener('scroll',()=>requestAnimationFrame(track),{passive:true});setTimeout(wire,300)})();
 /* draw the student's line through the note-entry grid */
 (function(){function draw(){document.querySelectorAll('.c2ladw').forEach(w=>{w.querySelectorAll('svg.c2line').forEach(x=>x.remove());if(!w.offsetParent)return;
-  const on=[...w.querySelectorAll('.c2c.on')].map(b=>({i:+b.dataset.c2c.split(',')[0],b})).sort((a,b)=>a.i-b.i);if(on.length<2)return;
+  const on=[...w.querySelectorAll('.c2c.on')].map(b=>({i:+(b.dataset.c2c||b.dataset.c2k||'0').split(',')[0],b})).sort((a,b)=>a.i-b.i);if(on.length<2)return;
   const R=w.getBoundingClientRect(),pts=on.map(({b})=>{const r=b.getBoundingClientRect();return[(r.left+r.width/2-R.left+w.scrollLeft).toFixed(1),(r.top+r.height/2-R.top).toFixed(1)]});
   const sv=document.createElementNS('http://www.w3.org/2000/svg','svg');sv.setAttribute('class','c2line');sv.setAttribute('width',w.scrollWidth);sv.setAttribute('height',w.scrollHeight);
   sv.innerHTML=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#f0d48a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".45"/>`;w.prepend(sv)})}

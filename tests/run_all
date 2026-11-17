@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Run every regression suite (charter, Part B) from a fresh clone.
+#   tests/run_all            run everything
+#   tests/run_all earlab     run the suites whose names contain "earlab"
+# Needs: python3 with playwright and music21, node/npm, and Chrome (or Playwright's Chromium).
+# Exit status is non-zero if any suite fails. A summary is written to tests/last_run.json.
+set -u
+HERE="$(cd "$(dirname "$0")" && pwd)"
+REPO="$(cd "$HERE/.." && pwd)"
+if [ ! -d "$HERE/harness/node_modules/vexflow" ]; then
+  echo "Installing the test harness (VexFlow 4.2.3 and fonts) ..."
+  (cd "$HERE/harness" && npm install --silent --no-audit --no-fund) || { echo "npm install failed"; exit 2; }
+fi
+python3 -c "import playwright, music21" 2>/dev/null || { echo "Needs: pip install playwright music21"; exit 2; }
+
+# order: quick and basic first
+SUITES="content_lint unit_test sound_test earlab_test chordshape_test spelling_test counterpoint_test pageerrors_test layout_test transport_test"
+FILTER="${1:-}"
+FAILED=0
+SUMMARY="{"
+for s in $SUITES; do
+  f="$HERE/$s.py"
+  [ -n "$FILTER" ] && [[ "$s" != *"$FILTER"* ]] && continue
+  if [ ! -f "$f" ]; then
+    echo "--- $s: MISSING"; SUMMARY="$SUMMARY\"$s\":\"missing\","; FAILED=1; continue
+  fi
+  echo "--- $s"
+  start=$(date +%s)
+  out="$(python3 "$f" "$REPO" 2>&1)"; code=$?
+  secs=$(( $(date +%s) - start ))
+  echo "$out" | tail -n 40
+  if [ $code -eq 0 ]; then st=pass; else st=FAIL; FAILED=1; fi
+  echo "--- $s: $st (${secs}s)"
+  SUMMARY="$SUMMARY\"$s\":{\"result\":\"$st\",\"seconds\":$secs},"
+done
+SUMMARY="${SUMMARY%,}}"
+echo "$SUMMARY" | python3 -m json.tool > "$HERE/last_run.json" 2>/dev/null || echo "$SUMMARY" > "$HERE/last_run.json"
+cat "$HERE/last_run.json"
+exit $FAILED
