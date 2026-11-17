@@ -538,7 +538,7 @@ body.teacher .song .tn{display:block}
 .c2set .chip small{color:var(--muted);margin-left:4px}.c2set .chip.on small{color:inherit;opacity:.75}
 .c2listen{margin-top:10px;font-size:13.5px}.c2listen ul{margin:4px 0 0 18px;padding:0;color:var(--ivory);line-height:1.6}
 .c2g2{grid-template-columns:minmax(300px,1fr) minmax(300px,1fr);align-items:start;margin-top:10px}@media(max-width:900px){.c2g2{grid-template-columns:1fr}}
-.c2h4{font-family:'Poiret One',serif;color:var(--goldhi);font-size:19px;margin:18px 0 6px;font-weight:400}
+.c2h4{font-family:'Poiret One',Outfit,sans-serif;color:var(--goldhi);font-size:19px;margin:18px 0 6px;font-weight:400}
 .c2rules{margin:0 0 0 18px;padding:0;line-height:1.65;font-size:14px;color:var(--ivory)}
 .c2ladw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#0e0c08;padding:6px;margin-bottom:10px}
 .c2lad{border-collapse:separate;border-spacing:2px;font-size:12px}
@@ -610,6 +610,24 @@ button.phslot{cursor:pointer}button.phslot[disabled]{opacity:.4;cursor:default}.
 .fplan{border-collapse:collapse;font-size:13.5px}.fplan th{text-align:left;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:400;padding:0 12px 4px 0}.fplan td{padding:3px 12px 3px 0}
 .fplan input{width:58px;background:#0e0c08;color:var(--ivory);border:1px solid var(--line);border-radius:6px;padding:3px 6px}
 @media(max-width:720px){.fline{grid-template-columns:1fr 1fr}.flab{grid-column:1/-1;flex-direction:row;gap:8px;align-items:baseline}}
+
+/* 0.41 corrections: one control style, fitted scores, climb header spacing, no orphans */
+select:not(#_){font:inherit;font-size:14px;line-height:1.2;color:var(--ivory);background:#0e0c08 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23c9a24a' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;-webkit-appearance:none;appearance:none;border:1px solid var(--line);border-radius:8px;padding:7px 30px 7px 11px;min-height:36px;cursor:pointer}
+select:not(#_):hover{border-color:rgba(201,162,74,.55)}select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.pick select{min-width:120px}
+.pick label .rng{display:flex;align-items:center;gap:10px;min-height:36px}
+.pick label .rng b{font-weight:600;font-size:14px;letter-spacing:0;text-transform:none;color:var(--ivory);white-space:nowrap;min-width:62px}
+.pick input[type=range]{margin-top:0}
+.path{margin:16px 0 24px}
+p,li,small,.note{text-wrap:pretty}h1,h2,h3,h4{text-wrap:balance}
+svg.vfx{display:block;max-width:none}
+/* nothing wider than the screen: grid items may shrink, wide tables and diagrams scroll inside their panel */
+.grid>*,.clgrid>*,.seedgrid>*,.vcgrid>*,.c6hear>*,.card{min-width:0}
+.c6hear{grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))}
+.card h3,.cltop{flex-wrap:wrap;row-gap:6px}
+.frame,.c2ladw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media (max-width:760px){.card table{display:block;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}.gq{flex-wrap:wrap}}
+.vfhost{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 </style></head>
 <body>
 
@@ -915,7 +933,7 @@ button.phslot{cursor:pointer}button.phslot[disabled]{opacity:.4;cursor:default}.
   <div class="pick">
    <label>Key<select id="gKey" class="keySel"></select></label>
    <label>Mode<select id="gMode" class="modeSel"><option value="maj">major</option><option value="min">minor</option></select></label>
-   <label>Tempo · <span id="gBpmV">90</span> bpm<input type="range" id="gBpm" min="50" max="170" value="90"></label>
+   <label>Tempo<span class="rng"><input type="range" id="gBpm" min="50" max="170" value="90" aria-label="Tempo"><b><span id="gBpmV">90</span> bpm</b></span></label>
    <label>Metre<select id="gMet"></select></label>
    <label>Groove<select id="gPat"></select></label>
   </div>
@@ -993,7 +1011,7 @@ button.phslot{cursor:pointer}button.phslot[disabled]{opacity:.4;cursor:default}.
  </section>
 </section>
 </main>
-<footer>Composition Jungle Gym · preview 0.40 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
+<footer>Composition Jungle Gym · preview 0.41 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
 
 <aside class="journal" id="journal" aria-label="Composer's journal">
  <button class="x" id="closeJ">×</button>
@@ -5885,6 +5903,13 @@ document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.cl
 document.addEventListener('change',e=>{if(e.target.id==='earLet'){EAR.letters=e.target.checked;earSave();renderEar()}});
 
 setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
+/* fit every VexFlow score to its panel: shrink to fit (not below 72%), then scroll sideways; refit when the window changes */
+(function(){if(!window.Vex)return;const P=Vex.Flow.SVGContext.prototype,rs=P.resize;
+ P.resize=function(w,h){const r=rs.call(this,w,h);const sv=this.svg;if(sv){sv.classList.add('vfx');sv.setAttribute('viewBox',`0 0 ${w} ${h}`);sv.dataset.w=w;sv.dataset.h=h;requestAnimationFrame(()=>vfFit(sv))}return r};
+ window.vfFit=sv=>{const host=sv.parentElement;if(!host||!sv.isConnected)return;host.classList.add('vfhost');const cs=getComputedStyle(host),av=host.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),w=+sv.dataset.w,h=+sv.dataset.h;if(!w||!av)return;
+  const k=Math.min(1,Math.max(.72,av/w));sv.style.width=(w*k)+'px';sv.style.height=(h*k)+'px'};
+ let t;addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(()=>document.querySelectorAll('svg.vfx').forEach(vfFit),120)})})();
+
 render();renderLog();room(location.hash.slice(1)||'seed');
 </script>
 </body></html>
