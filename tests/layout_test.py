@@ -5,7 +5,9 @@ import sys,asyncio,json,pathlib
 import pathlib as _p
 REPO_ARG=sys.argv[1] if len(sys.argv)>1 else '.'
 sys.argv=['x',str(_p.Path(REPO_ARG).resolve()),'/tmp','1440']
-exec(open('/home/claude/tools/shoot.py').read().split('async def main')[0])
+sys.path.insert(0,str(_p.Path(__file__).resolve().parent/'harness'));import cjg
+from playwright.async_api import async_playwright
+route=cjg.make_route(sys.argv[1])
 DET=open(str(_p.Path(__file__).with_name('layout_detect.js'))).read()
 SC=['chorale','ohaupt','jesu','k331a','k331d','k545','maple','entertainer','chopin7','chopin20']
 FORMS=['phrase','blues12','jazzblues','minblues','rhythm','rag','rondo','tv','sonata','sonrondo']
@@ -26,7 +28,7 @@ async def main():
     widths=[int(w) for w in (sys.argv_w if False else ['1440','1024','390'])]
     res={}
     async with async_playwright() as p:
-        b=await p.chromium.launch(executable_path='/usr/bin/google-chrome')
+        b=await cjg.launch(p,args=[])
         for W in widths:
             pg=await b.new_page(viewport={'width':W,'height':900});errs=[];pg.on('pageerror',lambda e:errs.append(str(e)[:150]))
             await pg.route('**/*',route);await pg.goto('http://app/index.html');await pg.wait_for_timeout(1500)

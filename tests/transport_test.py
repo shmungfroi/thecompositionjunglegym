@@ -1,21 +1,13 @@
 """Transport and navigation test for the Composition Jungle Gym.
-Run: python3 tests/transport_test.py <repo dir>   (needs playwright, Chrome, local vexflow + fonts as in the build sandbox)
+Run: python3 tests/transport_test.py <repo dir>   (needs playwright and Chrome; run tests/run_all once to install the harness)
 Every play-type button in every room and climb must: start sound, show the top-bar Stop, turn into a Stop itself,
 and leave silence (0 nodes sounding 0.25 s later) when stopped by the same button, by the top-bar Stop, by Esc, or by leaving.
 Navigation: Back/Forward/reload must move between rooms, climbs and forms."""
 import sys,asyncio,json,pathlib,mimetypes
 from playwright.async_api import async_playwright
-REPO=pathlib.Path(sys.argv[1] if len(sys.argv)>1 else '.').resolve();T=pathlib.Path('/home/claude/tools')
-async def route(r):
-    u=r.request.url
-    if '/__f/' in u: return await r.fulfill(path=str(T/'node_modules/@fontsource'/u.split('/__f/')[1]),content_type='font/woff2')
-    if 'vexflow' in u: return await r.fulfill(path=str(T/'node_modules/vexflow/build/cjs/vexflow.js'),content_type='application/javascript')
-    if 'fonts.googleapis' in u: return await r.fulfill(path=str(T/'fonts.css'),content_type='text/css')
-    if u.startswith('http://app/'):
-        p=REPO/(u[len('http://app/'):].split('?')[0].split('#')[0] or 'index.html')
-        if p.exists(): return await r.fulfill(path=str(p),content_type=mimetypes.guess_type(str(p))[0] or 'text/html')
-        return await r.fulfill(status=404)
-    await r.abort()
+REPO=pathlib.Path(sys.argv[1] if len(sys.argv)>1 else '.').resolve()
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent/'harness'));import cjg
+route=cjg.make_route(REPO)
 HOOK="""(()=>{window.__N=[];for(const P of [AudioScheduledSourceNode.prototype,AudioBufferSourceNode.prototype]){const st=P.start,sp=P.stop;
 P.start=function(t=0,...a){this.__r={s:t||0,e:Infinity,born:performance.now()};if(this instanceof AudioBufferSourceNode&&this.buffer&&!this.loop)this.__r.e=(t||0)+this.buffer.duration/(this.playbackRate.value||1);__N.push(this.__r);return st.call(this,t,...a)};
 P.stop=function(t=0){if(this.__r)this.__r.e=Math.min(this.__r.e,(t||0)<=this.context.currentTime?this.context.currentTime:t);return sp.call(this,t)}}})()"""
@@ -25,7 +17,7 @@ SOUND="()=>{const n=AC?AC.currentTime:0;return __N.filter(x=>x.e>n+0.25).length}
 async def main():
     fails=[];stats={'trials':0,'silent':0}
     async with async_playwright() as p:
-        b=await p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--autoplay-policy=no-user-gesture-required'])
+        b=await cjg.launch(p)
         pg=await b.new_page(viewport={'width':1440,'height':900});errs=[];pg.on('pageerror',lambda e:errs.append(str(e)[:200]))
         await pg.add_init_script(HOOK);await pg.route('**/*',route);await pg.goto('http://app/index.html');await pg.wait_for_timeout(1500)
         await pg.evaluate("ac();Promise.all(['piano','guitar-steel','guitar-nylon','bass'].map(k=>loadSamples(k)))");await pg.wait_for_timeout(2500)
