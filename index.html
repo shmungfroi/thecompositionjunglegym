@@ -628,6 +628,37 @@ svg.vfx{display:block;max-width:none}
 .frame,.c2ladw{overflow-x:auto;-webkit-overflow-scrolling:touch}
 @media (max-width:760px){.card table{display:block;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}.gq{flex-wrap:wrap}}
 .vfhost{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+
+/* phones: bottom tab bar, two-row top bar, rooms list in a sheet */
+.tabbar,.msheet{display:none}
+@media (max-width:760px){
+ :root{--top:96px}
+ .rail{display:none}
+ .top{left:0;height:var(--top);flex-wrap:wrap;align-content:center;row-gap:8px;column-gap:10px;padding:8px 12px}
+ .top .t{flex:1;font-size:15px;letter-spacing:2.5px}.top .tw{display:none}.top .crumb{display:none}
+ .search{order:3;flex:1 1 100%;max-width:none;margin:0}.search input{padding:9px 14px;font-size:16px}
+ .lvl{display:flex}.lvl button{padding:6px 9px;font-size:12px}
+ .top .jbtn{display:none}
+ main{margin-left:0;padding:calc(var(--top) + 14px) 14px calc(84px + env(safe-area-inset-bottom))}
+ .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:7;background:rgba(15,13,9,.97);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom))}
+ .tabbar button{background:none;border:0;color:var(--muted);padding:6px 0 4px;display:flex;flex-direction:column;align-items:center;gap:3px;font:inherit;font-size:10.5px;letter-spacing:.5px;cursor:pointer;min-height:52px}
+ .tabbar svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+ .tabbar button.on{color:var(--goldhi)}.tabbar button.on svg{filter:drop-shadow(0 0 6px rgba(240,212,138,.35))}
+ .msheet:not([hidden]){display:block;position:fixed;inset:0;z-index:8;background:rgba(5,4,2,.6)}
+ .msb{position:absolute;left:0;right:0;bottom:0;background:#14110b;border-top:1px solid var(--gold);border-radius:18px 18px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom));max-height:80vh;overflow:auto}
+ .msh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.msh .disp{font-size:24px;color:var(--goldhi)}
+ .msg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .msg button{display:flex;align-items:center;gap:10px;background:#0e0c08;border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--ivory);font:inherit;font-size:14px;cursor:pointer;text-align:left}
+ .msg button.on{border-color:var(--gold);color:var(--goldhi)}
+ .msg svg{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+ .mslvl{display:flex;border:1px solid var(--line);border-radius:22px;overflow:hidden}.mslvl button{flex:1;background:none;border:0;padding:10px;color:var(--muted);font:inherit;font-size:14px;cursor:pointer}.mslvl button.on{background:var(--gold);color:var(--ink);font-weight:600}
+}
+
+/* climbs grouped; cards the same height with the button at the foot */
+.clgrp{grid-column:1/-1;margin:18px 0 -4px}.clgrp:first-child{margin-top:0}
+.clgh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.clgh .disp{font-size:30px;font-weight:400;color:var(--goldhi)}.clgh small{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.climb .go{margin-top:auto;padding-top:12px}.climb .n{font-size:52px}
 </style></head>
 <body>
 
@@ -647,8 +678,10 @@ svg.vfx{display:block;max-width:none}
  <button data-room="oracle"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><circle cx="15" cy="9" r="1"/><circle cx="9" cy="15" r="1"/></svg><small>Oracle</small></button>
 </nav>
 
+<nav class="tabbar" aria-label="Rooms"></nav>
+<div class="msheet" id="msheet" hidden><div class="msb" role="dialog" aria-label="More rooms"><div class="msh"><span class="disp">More rooms</span><button class="mini" id="msClose" aria-label="Close">✕</button></div><div class="msg" id="msRooms"></div><div class="lbl" style="margin:16px 0 8px">Stage</div><div class="mslvl" id="msLvl"></div><button class="jbtn" id="msJ" style="margin-top:16px;width:100%">✎ Journal</button></div></div>
 <header class="top">
- <span class="t disp">COMPOSITION JUNGLE GYM</span>
+ <span class="t disp"><span class="tw">COMPOSITION </span>JUNGLE GYM</span>
  <span class="crumb">Seed Bank · <b id="crumbSym">Bm7</b></span>
  <form class="search" id="searchForm"><input id="q" placeholder="Type a chord: Bm7, F#dim7, Ebmaj9…" autocomplete="off"><button>Find</button></form>
  <div class="lvl" id="lvl"><button data-l="4">Stage 4</button><button data-l="5">Stage 5</button><button data-l="6" class="on">Stage 6</button></div>
@@ -1011,7 +1044,7 @@ svg.vfx{display:block;max-width:none}
  </section>
 </section>
 </main>
-<footer>Composition Jungle Gym · preview 0.41 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
+<footer>Composition Jungle Gym · preview 0.42 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
 
 <aside class="journal" id="journal" aria-label="Composer's journal">
  <button class="x" id="closeJ">×</button>
@@ -1841,7 +1874,7 @@ function setCrumb(){const c=document.querySelector('.top .crumb');
  c.innerHTML=ROOM==='seed'?`Seed Bank · <b id="crumbSym">${$('sym').textContent}</b>`:ROOM==='gym'?`The Gym · <b>${keyName(K)}</b> · ${P.length} chord${P.length===1?'':'s'}`:ROOM==='voice'?`Level 2 · <b>Voices</b> · ${$('sym').textContent}`:ROOM==='climbs'?`Level 3 · <b>The Climbs</b>`:`The Oracle · <b>${keyName(K)}</b>`}
 function room(r){if(!['seed','keys','gym','oracle','climbs','voice','forms','analysis','ear'].includes(r))r='seed';if(ROOM==='ear'&&r!=='ear'&&PLAY.src==='ear')stopAll();if(ROOM==='keys'&&r!=='keys'&&typeof micStop==='function'){micStop();KS.sing=null}ROOM=r;
  document.querySelectorAll('.room').forEach(s=>s.hidden=s.id!=='room-'+r);
- document.querySelectorAll('.rail button').forEach(b=>b.classList.toggle('on',b.dataset.room===r));
+ document.querySelectorAll('.rail button,.tabbar button[data-room],.msheet button[data-room]').forEach(b=>b.classList.toggle('on',b.dataset.room===r));const tm=document.getElementById('tbMore');if(tm)tm.classList.toggle('on',['keys','forms','analysis','ear','oracle'].includes(r));const ms=document.getElementById('msheet');if(ms)ms.hidden=true;
  document.querySelectorAll('[data-ask]').forEach(e=>{const q=rnd(QS);e.innerHTML=`<span class="disp">Before you climb</span><span class="q">${q}</span><button class="mini" data-openj>Answer it in your journal</button>`});
  if(r==='gym')renderGym();if(r==='oracle')renderOracle();if(r==='climbs')renderClimbs();if(r==='voice')renderVoices();if(r==='seed')render();if(r==='keys')renderKeysRoom();if(r==='forms')renderForms();if(r==='analysis')renderAnalysis();if(r==='ear')renderEar();
  setCrumb();sylMount(true);window.scrollTo(0,0)}
@@ -2474,9 +2507,11 @@ function renderClimbs(){
  document.querySelectorAll('#room-climbs > .ask, #room-climbs > .path, #room-climbs > .head').forEach(e=>e.hidden=CL.open!==null);
  if(CL.open!==null){$('climbList').hidden=true;$('climbDetail').hidden=false;renderClimbDetail();return}
  $('climbList').hidden=false;$('climbDetail').hidden=true;
- $('climbList').innerHTML=CLIMBS.map((c,i)=>`<div class="climb ${c.go||c.full?'':'dim'}"><div class="n">${i+1}</div><h4>${c.t}</h4><div class="st">${c.st}</div><p>${c.p}</p>
- <div class="stat ${c.go||c.full?'live':''}">${c.full?'Full climb open':c.go?'In the Gym now · full climb coming':'Full climb coming'}</div>
- ${c.full?`<div class="go" style="margin-top:10px"><button class="mini gold" data-clopen="${i}">Start this climb →</button></div>`:c.go?`<div class="go" style="margin-top:10px">${c.go.map(g=>`<button class="chip" data-load="${g[1]}|${g[2]}">⤒ ${g[0]}</button>`).join('')}</div>`:''}</div>`).join('')}
+ const CARD=(c,i)=>`<div class="climb ${c.go||c.full?'':'dim'}"><div class="n">${i+1}</div><h4>${c.t}</h4><div class="st">${c.st}</div><p>${c.p}</p>
+ ${c.full?'':`<div class="stat ${c.go?'live':''}">${c.go?'In the Gym now · full climb coming':'Full climb coming'}</div>`}
+ ${c.full?`<div class="go"><button class="mini gold" data-clopen="${i}">Start this climb →</button></div>`:c.go?`<div class="go" style="margin-top:10px">${c.go.map(g=>`<button class="chip" data-load="${g[1]}|${g[2]}">⤒ ${g[0]}</button>`).join('')}</div>`:''}</div>`;
+ const GROUPS=[['Foundations','drones and modes, two-voice counterpoint, keys and cadences, the three chords and the loop',0,5],['Harmony','falling 5ths, borrowed and secondary chords',5,8],['Jazz','the ii–V–I, substitution and reharmonisation',8,11],['Beyond','harmony without function, and imitation and fugue',11,CLIMBS.length]];
+ $('climbList').innerHTML=GROUPS.map(([g,d,a,b])=>`<div class="clgrp"><h3 class="clgh"><span class="disp">${g}</span><small>Climbs ${a+1}–${b} · ${d}</small></h3></div>`+CLIMBS.slice(a,b).map((c,k)=>CARD(c,a+k)).join('')).join('')}
 function renderClimbDetail(){if(CL.open===0)return renderClimb1();if(CL.open===12)return renderClimb13();if(CL.open===1)return renderClimb2();if(CL.open===11)return renderClimb12();if(CL.open===10)return renderClimb11();if(CL.open===9)return renderClimb10();if(CL.open===8)return renderClimb9();if(CL.open===7)return renderClimb8();if(CL.open===6)return renderClimb7();if(CL.open===5)return renderClimb6();if(CL.open===4)return renderClimb5();if(CL.open===3)return renderClimb4();return renderClimb3()}
 function renderClimb3(){const key=CL.key,mode=key.mode,L=cadsFor(mode);if(!L.find(c=>c.k===CL.ex))CL.ex=L[0].k;const ex=CADS.find(c=>c.k===CL.ex);
  const r=realise(ex[mode],key),kn=keyName(key);
@@ -5903,6 +5938,18 @@ document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.cl
 document.addEventListener('change',e=>{if(e.target.id==='earLet'){EAR.letters=e.target.checked;earSave();renderEar()}});
 
 setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
+/* phones: bottom tab bar built from the rail; More opens a sheet with the other rooms, the stage and the journal */
+(function(){const rail=document.querySelector('.rail'),tb=document.querySelector('.tabbar');if(!rail||!tb)return;
+ const btn=r=>rail.querySelector(`button[data-room="${r}"]`),MAIN=['seed','voice','climbs','gym'],MORE=['keys','forms','analysis','ear','oracle'];
+ tb.innerHTML=MAIN.map(r=>{const b=btn(r);return`<button data-room="${r}" class="${b.classList.contains('on')?'on':''}">${b.querySelector('svg').outerHTML}<span>${b.querySelector('small').textContent}</span></button>`}).join('')+
+  `<button id="tbMore" aria-haspopup="dialog"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>More</span></button>`;
+ const ms=document.getElementById('msheet');
+ document.getElementById('msRooms').innerHTML=MORE.map(r=>{const b=btn(r);return`<button data-room="${r}">${b.querySelector('svg').outerHTML}${b.querySelector('small').textContent}</button>`}).join('');
+ const syncLvl=()=>{document.getElementById('msLvl').innerHTML=[...document.querySelectorAll('#lvl button')].map(b=>`<button data-msl="${b.dataset.l}" class="${b.classList.contains('on')?'on':''}">${b.textContent}</button>`).join('')};
+ document.getElementById('tbMore').onclick=()=>{syncLvl();ms.hidden=false};
+ document.getElementById('msClose').onclick=()=>ms.hidden=true;ms.addEventListener('click',e=>{if(e.target===ms)ms.hidden=true;const l=e.target.closest('[data-msl]');if(l){document.querySelector(`#lvl button[data-l="${l.dataset.msl}"]`).click();syncLvl()}});
+ document.getElementById('msJ').onclick=()=>{ms.hidden=true;document.getElementById('openJ').click()};
+ addEventListener('keydown',e=>{if(e.key==='Escape')ms.hidden=true})})();
 /* fit every VexFlow score to its panel: shrink to fit (not below 72%), then scroll sideways; refit when the window changes */
 (function(){if(!window.Vex)return;const P=Vex.Flow.SVGContext.prototype,rs=P.resize;
  P.resize=function(w,h){const r=rs.call(this,w,h);const sv=this.svg;if(sv){sv.classList.add('vfx');sv.setAttribute('viewBox',`0 0 ${w} ${h}`);sv.dataset.w=w;sv.dataset.h=h;requestAnimationFrame(()=>vfFit(sv))}return r};
