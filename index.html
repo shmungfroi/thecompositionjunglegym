@@ -702,6 +702,14 @@ button:disabled{cursor:default;opacity:.45}
 @keyframes tstopPulse{0%{box-shadow:0 0 0 0 rgba(200,71,59,.45)}100%{box-shadow:0 0 0 10px rgba(200,71,59,0)}}
 [data-playing]{border-color:var(--red,#c8473b)!important;color:#fff!important;background:rgba(200,71,59,.25)!important}
 @media (max-width:760px){.top{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(11,9,6,.98)}.tstop{position:fixed;right:14px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:8;padding:11px 20px;font-size:15px}}
+
+/* 0.45 layout and text fixes */
+.rung .hs{width:auto;height:auto}                                   /* hand-sign descriptions were squeezed into the 24 px Ear Lab icon box */
+.bar small{position:static;display:block;text-align:right;margin:-2px 0 2px;line-height:1.2}   /* bar labels sit above the chord, never on it */
+.fbar{padding-top:6px}.fbar small{position:static;display:block;margin:0 0 4px;line-height:1.2}
+.fstrip{height:auto;min-height:34px}.fstrip span{white-space:normal;text-align:center;line-height:1.1;padding:3px;word-break:break-word}
+#anCtl{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}#anCtl label{display:inline-flex;align-items:center;gap:6px}#anCtl .sp{flex:1}
+@media (max-width:760px){.vrv>svg{min-width:720px}.vrv{overflow:auto}}   /* scores stay readable on phones and scroll sideways */
 </style></head>
 <body>
 
@@ -1088,7 +1096,7 @@ button:disabled{cursor:default;opacity:.45}
  </section>
 </section>
 </main>
-<footer>Composition Jungle Gym · preview 0.44 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
+<footer>Composition Jungle Gym · preview 0.45 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
 
 <aside class="journal" id="journal" aria-label="Composer's journal">
  <button class="x" id="closeJ">×</button>
@@ -2747,7 +2755,7 @@ function c5Play(onStep){const{list,key}=c5List();stopAll();const a=ac(),V=voiceP
 function c5Wheel(){const R=86,cx=120,cy=120;let s=`<svg viewBox="0 0 240 240" class="wheel">`;s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#3a3226" stroke-dasharray="4 5"/>`;
  C5LOOP.forEach((r,i)=>{const a=-Math.PI/2+i*Math.PI/2,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a),on=C5.rot===i,f=analyse(parseRoman(r,C5.key),C5.key).f;
   s+=`<g class="wn ${on?'on':''}" data-c5rot="${i}"><circle cx="${x}" cy="${y}" r="30" style="stroke:${FN[f]}"/><text x="${x}" y="${y-2}" text-anchor="middle" class="r">${r}</text><text x="${x}" y="${y+15}" text-anchor="middle" class="c">${pretty(parseRoman(r,C5.key).root)}${r==='vi'?'m':''}</text></g>`});
- s+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" class="ctr">start on</text><text x="${cx}" y="${cy+14}" text-anchor="middle" class="ctr big">${C5LOOP[C5.rot]}</text></svg>`;return s}
+ s+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" class="ctr">start on</text><text x="${cx}" y="${cy+18}" text-anchor="middle" class="ctr big">${C5LOOP[C5.rot]}</text></svg>`;return s}
 function renderClimb5(){const key=C5.key,kn=keyName(key),F=C5FAM.filter(x=>x.l<=S.level);if(!F.find(x=>x.k===C5.fam))C5.fam='pop';const{list,key:lk}=c5List(),rot=C5ROT[C5.rot];
  const keySel=C5KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
  const vt=(k,lab,tip)=>`<button class="chip ${C5.v[k]?'on':''}" data-c5v="${k}" title="${tip}">${lab}</button>`;
@@ -5467,13 +5475,19 @@ const AN={tab:'score',score:'chorale',layers:{harm:false,cad:true,form:true},met
 function anLoadMeta(){if(AN.meta)return Promise.resolve(AN.meta);return fetch('scores/meta.json').then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>AN.meta=j)}
 function anLoadSvg(k){if(AN.svg[k])return Promise.resolve(AN.svg[k]);return fetch(`scores/${k}.svg`).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>AN.svg[k]=t)}
 const ANCOL={gold:'rgba(201,162,74,.20)',green:'rgba(143,191,106,.18)',violet:'rgba(164,147,216,.20)',tan:'rgba(201,185,143,.12)'},ANLINE={gold:'#c9a24a',green:'#8fbf6a',violet:'#a493d8',tan:'#c9b98f'};
+/* overlay labels (cadences, chords, sections) never sit on each other: each one that collides drops a row */
+function anDeclash(svg){const groups=new Map();[...svg.querySelectorAll('text.anov')].forEach(t=>{const p=t.parentNode;(groups.get(p)||groups.set(p,[]).get(p)).push(t)});
+ groups.forEach(L=>{const placed=[];L.map(t=>({t,b:t.getBBox()})).sort((a,b)=>a.b.y-b.b.y||a.b.x-b.b.x).forEach(({t,b})=>{const h=b.height*1.1;let dy=0;
+  for(let k=0;k<8;k++){const y0=b.y+dy,y1=y0+b.height;if(!placed.some(p=>b.x<p.x1+60&&b.x+b.width>p.x0-60&&y0<p.y1&&y1>p.y0))break;dy+=h}
+  if(dy)t.setAttribute('y',+t.getAttribute('y')+dy);placed.push({x0:b.x,x1:b.x+b.width,y0:b.y+dy,y1:b.y+dy+b.height})})})}
 function anDecorate(){const k=AN.score,m=AN.meta&&AN.meta[k],box=$('anScore');if(!m||!box)return;const svg=box.querySelector('svg');if(!svg)return;const NS='http://www.w3.org/2000/svg';
  svg.querySelectorAll('.anov').forEach(e=>e.remove());const SB=new Map();svg.querySelectorAll('.system').forEach(x=>SB.set(x,x.getBBox()));const sysOf=g=>{const x=g.closest('.system');return[x,x?SB.get(x):g.getBBox()]};const W=(svg.querySelector('svg.definition-scale')||svg).viewBox.baseVal.width||21000;const mid=n=>{const r=m.measures.find(x=>x[0]==String(n));return r&&svg.querySelector(`[data-id="${r[1]}"]`)};
  if(AN.layers.form)m.sections.forEach(([lab,a,b,col,txt])=>{const segs=new Map();for(let n=a;n<=b;n++){const g=mid(n);if(!g)continue;const bb0=g.getBBox(),bls=[...g.querySelectorAll('.barLine')].map(x=>x.getBBox()),st=g.querySelector('.staff'),sx=st?st.getBBox().x:bb0.x,bb={x:Math.max(bb0.x,sx-40),width:0},xe=bls.length?Math.max(...bls.map(r=>r.x+r.width)):bb0.x+bb0.width;bb.width=xe-bb.x;const[sys,sb]=sysOf(g);const k=sys||g.parentNode;const s0=segs.get(k);if(!s0)segs.set(k,{x0:bb.x,x1:bb.x+bb.width,sb,g});else{s0.x0=Math.min(s0.x0,bb.x);s0.x1=Math.max(s0.x1,bb.x+bb.width)}}
   let first=true;segs.forEach((v,k)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('class','anov');r.setAttribute('x',v.x0);r.setAttribute('y',v.sb.y-120);r.setAttribute('width',v.x1-v.x0);r.setAttribute('height',v.sb.height+240);r.setAttribute('fill',ANCOL[col]);r.style.stroke='none';k.insertBefore(r,k.firstChild);
    if(first){const t=document.createElementNS(NS,'text');t.setAttribute('class','anov');t.setAttribute('x',v.x0+40);t.setAttribute('y',v.sb.y-200);t.setAttribute('font-size','300');t.setAttribute('fill',ANLINE[col]);t.style.fontFamily='Outfit';t.textContent=lab;k.appendChild(t);first=false}})});
  if(AN.layers.cad)m.cads.forEach(c=>{const g=svg.querySelector(`[data-id="${c.id}"]`);if(!g)return;const bb=g.getBBox(),[sys,sb]=sysOf(g),t=document.createElementNS(NS,'text');t.setAttribute('class','anov');const right=bb.x>W*.62;t.setAttribute('x',right?bb.x+bb.width+150:bb.x-150);if(right)t.setAttribute('text-anchor','end');t.setAttribute('y',sb.y+sb.height+520);t.setAttribute('font-size','280');t.setAttribute('fill','#f0d48a');t.style.fontFamily='Outfit';t.textContent=`${c.ch}: ${c.t}`;(sys||g.parentNode).appendChild(t)});
- if(AN.layers.harm)m.labels.forEach(l=>{const g=svg.querySelector(`[data-id="${l.id}"]`);if(!g)return;const bb=g.getBBox(),[sys,sb]=sysOf(g),t=document.createElementNS(NS,'text');t.setAttribute('class','anov');t.setAttribute('x',bb.x);t.setAttribute('y',sb.y+sb.height+220);t.setAttribute('font-size','260');t.setAttribute('fill','#a99d84');t.style.fontFamily='Outfit';t.textContent=l.t;(sys||g.parentNode).appendChild(t)})}
+ if(AN.layers.harm)m.labels.forEach(l=>{const g=svg.querySelector(`[data-id="${l.id}"]`);if(!g)return;const bb=g.getBBox(),[sys,sb]=sysOf(g),t=document.createElementNS(NS,'text');t.setAttribute('class','anov');t.setAttribute('x',bb.x);t.setAttribute('y',sb.y+sb.height+220);t.setAttribute('font-size','260');t.setAttribute('fill','#a99d84');t.style.fontFamily='Outfit';t.textContent=l.t;(sys||g.parentNode).appendChild(t)});
+ anDeclash(svg)}
 function anPlay(){const m=AN.meta&&AN.meta[AN.score];if(!m)return;stopAll();const a=ac(),sp=AN.speed,t0=a.currentTime+.15;MAST.gain.value=.32;PLAY.on=true;PLAY.src='an';
  m.events.forEach(([ms,p,d])=>{if(ms/sp>600000)return;tone(p,t0+ms/1000/sp,'piano')});
  const svg=$('anScore')&&$('anScore').querySelector('svg');let last=null;
