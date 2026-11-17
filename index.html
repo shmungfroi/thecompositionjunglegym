@@ -993,7 +993,7 @@ button.phslot{cursor:pointer}button.phslot[disabled]{opacity:.4;cursor:default}.
  </section>
 </section>
 </main>
-<footer>Composition Jungle Gym · preview 0.39 · all sound made in your browser · works offline · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
+<footer>Composition Jungle Gym · preview 0.40 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com</footer>
 
 <aside class="journal" id="journal" aria-label="Composer's journal">
  <button class="x" id="closeJ">×</button>
@@ -1073,11 +1073,25 @@ function voicing(c){
   return[out[0],...best.r]}
  return out;
 }
-/* ---------- audio (synthesised locally) ---------- */
+/* ---------- audio: sampled instruments, with the built-in synth as a fallback ---------- */
+/* Piano: Versilian Community Sample Library, Steinway B (CC0). Guitar and bass: FluidR3_GM by Frank Wen (CC BY 3.0), via midi-js-soundfonts. See audio/CREDITS.md. */
+const SMP={piano:{dir:'audio/piano/',notes:Array.from({length:34},(_,i)=>36+2*i),len:2.6},
+ 'guitar-steel':{dir:'audio/guitar-steel/',lo:40,hi:88,len:2.4},'guitar-nylon':{dir:'audio/guitar-nylon/',lo:40,hi:96,len:2.4},bass:{dir:'audio/bass/',lo:28,hi:67,len:1.5}};
+const SBUF={},SLOAD={};
+function smpNotes(k){const d=SMP[k];return d.notes||Array.from({length:d.hi-d.lo+1},(_,i)=>d.lo+i)}
+function loadSamples(k){if(SLOAD[k]||!SMP[k]||location.protocol==='file:')return SLOAD[k];const a=ac();SBUF[k]={};
+ SLOAD[k]=Promise.all(smpNotes(k).map(m=>fetch(SMP[k].dir+m+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((ok,no)=>a.decodeAudioData(b,ok,no))).then(buf=>{SBUF[k][m]=buf}).catch(()=>{})));return SLOAD[k]}
+function smpKind(kind){if(kind==='piano')return'piano';if(kind==='bass')return'bass';if(kind==='guitar')return S.gtone==='nylon'?'guitar-nylon':'guitar-steel';if(kind==='uke')return'guitar-nylon';
+ if(kind==='pluck')return S.inst==='bass'?'bass':S.inst==='guitar'?(S.gtone==='nylon'?'guitar-nylon':'guitar-steel'):S.inst==='uke'?'guitar-nylon':'guitar-steel';return null}
+function smpTone(m,t0,k,vel){const B=SBUF[k];if(!B)return false;let best=null;for(const n in B){const d=Math.abs(n-m);if(d<=3&&(best===null||d<Math.abs(best-m)))best=+n}if(best===null)return false;
+ const a=ac(),src=a.createBufferSource(),g=a.createGain(),len=SMP[k].len;src.buffer=B[best];src.playbackRate.value=Math.pow(2,(m-best)/12);
+ const pk=1.5*vel;g.gain.setValueAtTime(pk,t0);g.gain.setValueAtTime(pk,t0+len);g.gain.exponentialRampToValueAtTime(.0001,t0+len+.45);
+ src.connect(g);g.connect(MAST);src.start(t0);src.stop(t0+len+.5);ACT.push(src);if(ACT.length>600)ACT.splice(0,300);return true}
 let AC,MAST;const ACT=[];
-function ac(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MAST=AC.createGain();MAST.gain.value=.7;const comp=AC.createDynamicsCompressor();MAST.connect(comp);comp.connect(AC.destination)}if(AC.state==='suspended')AC.resume();return AC}
+function ac(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MAST=AC.createGain();MAST.gain.value=.7;const comp=AC.createDynamicsCompressor();MAST.connect(comp);comp.connect(AC.destination)}if(AC.state==='suspended')AC.resume();if(!SLOAD.piano)setTimeout(()=>loadSamples('piano'),0);return AC}
 const hz=m=>440*Math.pow(2,(m-69)/12);
-function tone(m,t0,kind,vel=1){const a=ac(),o=a.createOscillator(),o2=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
+function tone(m,t0,kind,vel=1){const sk=smpKind(kind);if(sk){if(smpTone(m,t0,sk,vel))return;loadSamples(sk);if(kind!=='piano')kind='pluck'}
+ const a=ac(),o=a.createOscillator(),o2=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
  const dur=kind==='pluck'?1.8:kind==='horn'?1.1:2.6;
  o.type=kind==='pluck'?'sawtooth':kind==='horn'?'sawtooth':'triangle';o2.type='sine';o.frequency.value=hz(m);o2.frequency.value=hz(m)*2;
  f.type='lowpass';f.frequency.setValueAtTime(kind==='pluck'?3200:kind==='horn'?900:2400,t0);f.frequency.exponentialRampToValueAtTime(kind==='horn'?1800:500,t0+(kind==='horn'?.15:dur));
@@ -1342,9 +1356,9 @@ function renderInst(c){
  let s='';const nm={guitar:'Guitar · standard tuning E A D G B E',uke:'Ukulele · re-entrant tuning G C E A',bass:'Bass · E A D G'}[S.inst];
  if(S.inst==='bass'){s+=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Bass lines outline the chord: start on the <b style="color:var(--ivory)">${pretty(c.bass.name)}</b> (ringed), then walk through the chord tones.</span></div>`;
   const BP=bassPatterns(c);el._bp=BP;
-  if(BP.length)s+=`<div class="ctrl" style="margin-top:6px"><span class="lbl" style="margin:0">Patterns to play · tap one to hear it</span><span class="chips" style="margin-left:auto"><span class="lbl" style="margin:0 6px 0 0;align-self:center">In the dots</span><button class="chip ${(S.dots||'deg')==='deg'?'on':''}" data-dots="deg">Degrees</button><button class="chip ${S.dots==='fing'?'on':''}" data-dots="fing">Fingers</button></span></div><div class="voicings">${BP.map((p,i)=>`<div class="vbox" data-bpat="${i}">${bassBoxSVG(p,c)}<div class="nm">${p.nm}</div><small>${p.sub}<br>${p.notes.map(n=>n.d.replace(/b/g,'♭').replace(/#/g,'♯')).join(' – ')}</small></div>`).join('')}</div><p class="note">One finger per fret (1 index to 4 little; 0 open string). With Degrees the finger is the small number beside each note; with Fingers the degree is beside it. Play from the ringed note upwards; string names are under each diagram.${BP.some(p=>p.shift)?' A dashed violet line marks a position shift.':''}</p>`;
+  if(BP.length)s+=`<div class="ctrl" style="margin-top:6px"><span class="lbl" style="margin:0">Patterns to play · tap one to hear it</span><span class="chips" style="margin-left:auto">${S.inst==='guitar'?`<span class="lbl" style="margin:0 6px 0 0;align-self:center">Sound</span><button class="chip ${S.gtone==='nylon'?'':'on'}" data-gtone="steel">Steel</button><button class="chip ${S.gtone==='nylon'?'on':''}" data-gtone="nylon" style="margin-right:12px">Nylon</button>`:''}<span class="lbl" style="margin:0 6px 0 0;align-self:center">In the dots</span><button class="chip ${(S.dots||'deg')==='deg'?'on':''}" data-dots="deg">Degrees</button><button class="chip ${S.dots==='fing'?'on':''}" data-dots="fing">Fingers</button></span></div><div class="voicings">${BP.map((p,i)=>`<div class="vbox" data-bpat="${i}">${bassBoxSVG(p,c)}<div class="nm">${p.nm}</div><small>${p.sub}<br>${p.notes.map(n=>n.d.replace(/b/g,'♭').replace(/#/g,'♯')).join(' – ')}</small></div>`).join('')}</div><p class="note">One finger per fret (1 index to 4 little; 0 open string). With Degrees the finger is the small number beside each note; with Fingers the degree is beside it. Play from the ringed note upwards; string names are under each diagram.${BP.some(p=>p.shift)?' A dashed violet line marks a position shift.':''}</p>`;
   s+=`<div class="lbl" style="margin-top:14px">Chord tones across the neck</div><div class="board">${boardSVG(c,'bass')}</div>`;el.innerHTML=s;return}
- s+=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Tap a shape to hear it. Under each diagram: the fretting-hand fingers (1 index, 2 middle, 3 ring, 4 little, T thumb), then the string names. A bar across the strings is a barre; the ringed note is the root; the fret number sits beside the root's fret.${S.inst==='uke'?' The ukulele has no low bass string, so inversions sound the same here.':''}</span><span class="chips" style="margin-left:auto"><span class="lbl" style="margin:0 6px 0 0;align-self:center">In the dots</span><button class="chip ${(S.dots||'deg')==='deg'?'on':''}" data-dots="deg">Degrees</button><button class="chip ${S.dots==='fing'?'on':''}" data-dots="fing" style="margin-right:12px">Fingers</button><button class="chip ${S.more?'':'on'}" data-more="0">Beginner shapes</button><button class="chip ${S.more?'on':''}" data-more="1">More shapes</button></span></div>${S.more?'<div class="note" style="margin:4px 0 8px">More shapes adds three-string grips, one muted inner string and wider stretches. Shapes marked <b>no 5th</b> leave out the 5th, which is normal for 7th chords.</div>':''}`;
+ s+=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Tap a shape to hear it. Under each diagram: the fretting-hand fingers (1 index, 2 middle, 3 ring, 4 little, T thumb), then the string names. A bar across the strings is a barre; the ringed note is the root; the fret number sits beside the root's fret.${S.inst==='uke'?' Sound: nylon-string guitar samples tuned to the ukulele (no free ukulele recordings yet). The ukulele has no low bass string, so inversions sound the same here.':''}</span><span class="chips" style="margin-left:auto">${S.inst==='guitar'?`<span class="lbl" style="margin:0 6px 0 0;align-self:center">Sound</span><button class="chip ${S.gtone==='nylon'?'':'on'}" data-gtone="steel">Steel</button><button class="chip ${S.gtone==='nylon'?'on':''}" data-gtone="nylon" style="margin-right:12px">Nylon</button>`:''}<span class="lbl" style="margin:0 6px 0 0;align-self:center">In the dots</span><button class="chip ${(S.dots||'deg')==='deg'?'on':''}" data-dots="deg">Degrees</button><button class="chip ${S.dots==='fing'?'on':''}" data-dots="fing" style="margin-right:12px">Fingers</button><button class="chip ${S.more?'':'on'}" data-more="0">Beginner shapes</button><button class="chip ${S.more?'on':''}" data-more="1">More shapes</button></span></div>${S.more?'<div class="note" style="margin:4px 0 8px">More shapes adds three-string grips, one muted inner string and wider stretches. Shapes marked <b>no 5th</b> leave out the 5th, which is normal for 7th chords.</div>':''}`;
  if(!vs.length)s+='<div class="empty">No comfortable shape found in the first 12 frets. Try a simpler chord type or another instrument.</div>';
  else s+='<div class="voicings">'+vs.map((v,i)=>{const SI=shapeInfo(v,c,S.inst),lab=SI.nm,rs=SI.sub;const has5=c.tones.filter(t=>t.d==='5').every(t=>v.fr.some((f,j)=>f>=0&&mod(TUN[S.inst][j]+f,12)===mod(t.midi,12)));return`<div class="vbox ${i===S.vi?'on':''}" data-v="${i}">${boxSVG(v,S.inst,c)}<div class="nm">${lab}</div><small>${rs}${v.more?`<br><b style="color:var(--goldhi)">more</b> · ${TUN[S.inst].length-v.first-v.fr.slice(v.first).filter(f=>f<0).length} strings${has5?'':' · no 5th'}`:''}</small></div>`}).join('')+'</div>';
  s+=`<div class="lbl" style="margin-top:18px">Chord tones across the neck</div><div class="board">${boardSVG(c,S.inst)}</div>`;
@@ -1392,14 +1406,15 @@ function renderClimb(c){
 }
 
 /* ---------- events ---------- */
-document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-k],[data-v],[data-m],[data-i],[data-l],[data-room],[data-more],[data-dots],[data-bpat]');if(!t)return;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-k],[data-v],[data-m],[data-i],[data-l],[data-room],[data-more],[data-dots],[data-gtone],[data-bpat]');if(!t)return;
  if(t.dataset.bpat!==undefined){const p=($('inst')._bp||[])[+t.dataset.bpat];if(p)play(p.notes.map(n=>n.m),.38,'pluck');return}
  if(t.dataset.more!==undefined){S.more=t.dataset.more==='1';S.vi=0;renderInst(chord());return}
  if(t.dataset.dots!==undefined){S.dots=t.dataset.dots;renderInst(chord());return}
  if(t.dataset.go!==undefined){let[r,q]=t.dataset.go.split('|');S.root=r;S.q=q;S.inv=0;S.vi=0;render();window.scrollTo({top:0,behavior:'smooth'});play(voicing(chord()).map(x=>x.midi));logIt('looked at '+pretty(r+q));return}
  if(t.dataset.k!==undefined){S.key={k:+t.dataset.k,mode:t.dataset.mode};render();return}
  if(t.dataset.v!==undefined){S.vi=+t.dataset.v;document.querySelectorAll('.vbox').forEach((b,i)=>b.classList.toggle('on',i===S.vi));const x=instMidis(chord());play(x.m,x.gap,x.k);return}
- if(t.dataset.i){S.inst=t.dataset.i;S.vi=0;renderInst(chord());return}
+ if(t.dataset.i){S.inst=t.dataset.i;S.vi=0;const k=smpKind(S.inst==='piano'?'piano':S.inst==='bass'?'bass':S.inst);if(k)loadSamples(k);renderInst(chord());return}
+ if(t.dataset.gtone){S.gtone=t.dataset.gtone;loadSamples(smpKind('guitar'));renderInst(chord());return}
  if(t.dataset.l){S.level=+t.dataset.l;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
  if(t.dataset.room)return;
  if(t.dataset.m!==undefined){play([+t.dataset.m],0,S.inst==='piano'?'piano':'pluck')}
@@ -5869,6 +5884,7 @@ document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.cl
  if(d.earscore){AN.score=d.earscore;AN.tab='score';location.hash='analysis';room('analysis');return}});
 document.addEventListener('change',e=>{if(e.target.id==='earLet'){EAR.letters=e.target.checked;earSave();renderEar()}});
 
+setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
 render();renderLog();room(location.hash.slice(1)||'seed');
 </script>
 </body></html>
