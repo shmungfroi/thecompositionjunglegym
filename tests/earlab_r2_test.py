@@ -28,8 +28,8 @@ STATE = """()=>{const svg=document.querySelector('#earMel svg');if(!svg)return n
   labels:[...svg.querySelectorAll('text:not(.melsol)')].map(t=>t.textContent),aria:document.querySelector('#earMel').getAttribute('aria-label'),frameR:fr.right,
   cardR:document.querySelector('#earMain .card').getBoundingClientRect().right,docW:document.documentElement.scrollWidth,vw:innerWidth,
   rungs:[...document.querySelectorAll('.earstep')].map(b=>({s:b.dataset.earsol,dis:b.disabled,last:b.classList.contains('last'),home:b.classList.contains('home'),now:b.classList.contains('now'),h:b.getBoundingClientRect().height,al:b.getAttribute('aria-label'),sm:!!b.querySelector('small'),hm:!!b.querySelector('.hm')})),
-  listen:!!document.querySelector('.earlad.listen'),slotsOld:document.querySelectorAll('.earslots').length,strip:(document.querySelector('.melscore .earres')||{}).textContent||'',
-  stripCls:(document.querySelector('.melscore .earres')||{}).className||'',lbl:document.querySelector('.melscore .lbl').textContent,
+  listen:!!document.querySelector('.earlad.listen'),slotsOld:document.querySelectorAll('.earslots').length,strip:(document.querySelector('.melres .earres')||{}).textContent||'',
+  stripCls:(document.querySelector('.melres .earres')||{}).className||'',lbl:document.querySelector('.melscore .lbl').textContent,
   btn:{chk:(document.querySelector('[data-earchk]')||{}).disabled,und:(document.querySelector('[data-hist="ear:u"]')||{}).disabled,red:(document.querySelector('[data-hist="ear:r"]')||{}).disabled}}}"""
 
 def sol(st, row='0'): return [s['t'] for s in sorted(st['rows'][row]['sol'], key=lambda s: s['i'])]
@@ -109,7 +109,7 @@ async def run(p, w):
             check(sol(st) == a, f'{tag}: reveal solfa')
             lg = await pg.evaluate("""()=>{const svg=document.querySelector('#earMel svg'),k=svg.getBoundingClientRect().width/svg.viewBox.baseVal.width;
               const L=[...svg.querySelectorAll('.vf-stavenote > path')].map(p=>[p.getAttribute('stroke'),p.getAttribute('stroke-width')*k]);
-              const S=svg.querySelector('g.vf-stave');return{L,sl:[S.getAttribute('stroke'),S.getAttribute('stroke-width')*k]}}""")
+              const S=svg.querySelector('g.vf-stave>path');return{L,sl:[S.getAttribute('stroke'),S.getAttribute('stroke-width')*k]}}""")
             check(lg['sl'][0] == 'rgba(236,226,200,.45)' and abs(lg['sl'][1] - 1) < .05, f'{tag}: staff lines 1 px at 45%: {lg["sl"]}')
             LEDGERS[0] += len(lg['L'])
             check(all(l[0] == 'rgba(236,226,200,.7)' and abs(l[1] - 1.2) < .05 for l in lg['L']), f'{tag}: ledger lines 70% ivory 1.2 px: {lg["L"][:2]}')
@@ -157,7 +157,14 @@ async def run(p, w):
           const top=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top'));scrollTo(0,scrollY+l.bottom-300);const s2=document.querySelector('.melscore').getBoundingClientRect();return{above:s.bottom<=l.top+8,top,s2:s2.top}}""")
         await pg.wait_for_timeout(200)
         r2 = await pg.evaluate("document.querySelector('.melscore').getBoundingClientRect().top")
-        check(r['above'], f'{w}px: stave above the ladder'); check(r['top'] < r2 < r['top'] + 12, f'{w}px: stave pinned under the top bar ({r2} vs --top {r["top"]})')
+        cover = await pg.evaluate("""()=>{const t=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top'));const e=document.elementFromPoint(200,t+2);return !!(e&&e.closest('.melscore'))}""")
+        check(cover, f'{w}px: no strip of the ladder shows between the top bar and the pinned stave (FR-20)')
+        # FR-19: the result strip is outside the pinned block, between it and the ladder
+        await pg.evaluate(NEWQ, [2, 8]); await pg.evaluate("""()=>{const q=EAR.q;EAR.ans=q.a.slice(1).map((x,i)=>i===0?q.a[2]:x);EAR.done=true;EAR.res={ok:false,given:EAR.ans.slice()};renderEar()}""")
+        f19 = await pg.evaluate("""()=>{scrollTo(0,0);const e=document.querySelector('.earres'),s=document.querySelector('.melscore').getBoundingClientRect(),l=document.querySelector('.earlad').getBoundingClientRect(),r=e.getBoundingClientRect();return{inside:!!e.closest('.melscore'),between:r.top>=s.bottom-8&&r.bottom<=l.top+1,r:[r.top,r.bottom],s:[s.top,s.bottom],l:[l.top]}}""")
+        check(not f19['inside'] and f19['between'], f'{w}px: result strip outside the pinned block, between stave and ladder (FR-19) {f19}')
+        await pg.evaluate(NEWQ, [2, 8]); await pg.evaluate("document.querySelectorAll('.earstep')[3].click()")
+        check(r['above'], f'{w}px: stave above the ladder'); check(r['top'] - .5 <= r2 < r['top'] + 12, f'{w}px: stave pinned under the top bar ({r2} vs --top {r["top"]})')
     else:
         # live resize across 760 px redraws at the phone staff-space
         await pg.evaluate(NEWQ, [2, 8]); await pg.set_viewport_size({'width': 390, 'height': 900}); await pg.wait_for_timeout(500)
