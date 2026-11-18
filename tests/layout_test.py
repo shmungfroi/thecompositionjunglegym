@@ -18,6 +18,7 @@ def views():
     for r in ['keys','voice','oracle','climbs','forms','ear']: V.append((r,f"location.hash='{r}'"))
     V.append(('gym',"location.hash='gym';if(!P.length){for(const r of ['I','vi','ii','V','I','IV','V7','I'])document.querySelector(`[data-add=\"${r}\"]`)?.click()}"))
     for k in range(1,14): V.append((f'climbs/{k}',f"location.hash='climbs/{k}'"))
+    V.append(('climbs/13/fugue',"location.hash='climbs/13';setTimeout(()=>document.querySelector('[data-c13tab=\"fugue\"]')?.click(),50)"))
     for f in FORMS: V.append((f'forms/{f}',f"location.hash='forms/{f}'"))
     for s in SC: V.append((f'analysis/{s}',f"location.hash='analysis';AN.tab='score';AN.score='{s}';AN.layers={{harm:true,cad:true,form:true}};room('analysis')"))
     V.append(('analysis/prog',"location.hash='analysis';AN.tab='prog';room('analysis')"))
@@ -36,6 +37,8 @@ async def main():
                 await pg.evaluate(js);await pg.wait_for_timeout(1300 if name.startswith('analysis') else 500)
                 await pg.evaluate("scrollTo(0,0)")
                 r=await pg.evaluate(DET)
+                sw=await pg.evaluate('document.documentElement.scrollWidth-innerWidth')
+                if sw>1: r['offscreen']=list(r['offscreen'])+[f'page scrolls sideways by {sw}px']
                 res[f'{W} {name}']=r
                 if r['overlap'] or r['clipped'] or r['offscreen']:
                     pass
