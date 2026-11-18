@@ -152,7 +152,7 @@ dd{margin:0}
 .toast{opacity:0;position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel2);border:1px solid var(--gold);color:var(--ivory);padding:10px 18px;border-radius:22px;font-size:14px;z-index:9;transition:transform .3s}
 .toast.show{transform:translateX(-50%);opacity:1}
 footer{margin-left:var(--rail);padding:0 26px 26px;color:var(--muted);font-size:12.5px}
-footer a{color:var(--gold)}footer .sylpanel{margin:12px 0 0;max-width:720px}footer .sylpanel summary{font-size:12px}footer .sylpanel .note{font-size:12.5px;margin:8px 0}
+footer a{color:var(--gold)}footer .sylpanel{margin:12px 0 0;max-width:600px}footer .sylpanel summary{font-size:12px;width:fit-content;padding:8px 12px 8px 0}footer .sylpanel .note{font-size:12.5px;margin:8px 0;line-height:1.55}footer .sylpanel .note b{color:var(--ivory)}
 
 /* ===== shared ===== */
 .pick label:has(input[type=range]){min-width:150px}
@@ -632,6 +632,7 @@ svg.vfx{display:block;max-width:none}
 /* phones: bottom tab bar, two-row top bar, rooms list in a sheet */
 .tabbar,.msheet{display:none}
 @media (max-width:760px){
+ footer{margin-left:0;padding:0 14px calc(84px + env(safe-area-inset-bottom))}
  :root{--top:96px}
  .rail{display:none}
  .top{left:0;height:var(--top);flex-wrap:wrap;align-content:center;row-gap:8px;column-gap:10px;padding:8px 12px}
@@ -1098,11 +1099,11 @@ button:disabled{cursor:default;opacity:.45}
 </main>
 <footer>Composition Jungle Gym · preview 0.46 · sampled piano (VCSL Steinway B, CC0), guitar and bass (FluidR3_GM by Frank Wen, CC BY 3.0); without the samples the built-in synth plays · no accounts, no tracking · a sister to <i>The Garden of Earthly Sounds</i> · suggestions and corrections: shmungfroi@gmail.com
  <details class="sylpanel" id="credits"><summary>Credits</summary>
-  <p class="note"><b>Scores (Analysis room).</b> Bach chorales, Mozart sonatas and Joplin rags: Craig Stuart Sapp's Humdrum editions, CC BY-NC-SA 4.0. Chopin, Preludes Op. 28 Nos. 7 and 20: The Fryderyk Chopin Institute (NIFC), Chopin first editions in Humdrum, CC BY 4.0. Engraved with Verovio (LGPL; the score images are generated output). The analysis and form layers are the Composition Jungle Gym's own.</p>
+  <p class="note"><b>Scores (Analysis room).</b> Bach chorales, Mozart sonatas and Joplin rags: Craig Stuart Sapp's Humdrum editions, CC BY-NC-SA 4.0. Chopin, Preludes Op. 28 Nos. 7 and 20: The Fryderyk Chopin Institute (NIFC), Chopin first editions in Humdrum, CC BY 4.0. Engraved with Verovio (LGPL). The analysis and form layers are the Composition Jungle Gym's own.</p>
   <p class="note"><b>Curwen hand signs.</b> Drawings © 2003 Kodály Music Education Institute of Australia (KMEIA), used with permission.</p>
   <p class="note"><b>Sound.</b> Piano: Versilian Community Sample Library (VCSL) Steinway B, CC0. Guitar and bass: FluidR3_GM by Frank Wen, rendered by midi-js-soundfonts (Benjamin Gleitzman), CC BY 3.0.</p>
   <p class="note"><b>Software and type.</b> Notation: VexFlow (MIT), loaded from jsDelivr. Fonts: Outfit and Poiret One (SIL Open Font Licence 1.1), from Google Fonts.</p>
-  <p class="note">Because some of the score data is CC BY-NC-SA 4.0, the app as a whole is for non-commercial educational use. Full details are in NOTICE.md in the repository. © Justin Ossher.</p>
+  <p class="note">Because some of the score data is CC BY-NC-SA 4.0, the app as a whole is for non-commercial educational use. Full details are in <a href="NOTICE.md">NOTICE.md</a>. © Justin Ossher.</p>
  </details></footer>
 
 <aside class="journal" id="journal" aria-label="Composer's journal">
