@@ -16,21 +16,7 @@ INDEX = (REPO / 'index.html').read_text(encoding='utf-8')
 META = (REPO / 'scores' / 'meta.json').read_text(encoding='utf-8')
 
 # Known entries with no recorded sources (OQ6, Justin's open question): (song, artist)
-KNOWN_NO_SOURCES = {
-    ('Johnny B. Goode', 'Chuck Berry'),
-    ('Sk8er Boi', 'Avril Lavigne'),
-    ('Smells Like Teen Spirit', 'Nirvana'),
-    ('Stick It to the Man', 'School of Rock the Musical cast (Andrew Lloyd Webber)'),
-    ('Enter Sandman', 'Metallica'),
-    ('Sweet Home Chicago', 'Robert Johnson / The Blues Brothers'),
-    ('Twist and Shout', 'The Beatles'),
-    ('Heartbreak Hotel', 'Elvis Presley'),
-    ('Sweet Georgia Brown', 'Ben Bernie, Maceo Pinkard & Kenneth Casey'),
-    ('Nothing Else Matters', 'Metallica'),
-    ('Champagne Supernova', 'Oasis'),
-    ('The Girl from Ipanema', 'Stan Getz & João Gilberto (with Astrud Gilberto)'),
-    ('I Loves You, Porgy', 'George Gershwin / DuBose Heyward (Porgy and Bess)'),
-}
+KNOWN_NO_SOURCES = set()  # OQ6 closed (L69): every song entry now has real source URLs
 
 report = {'cadence_names': {'failures': []}, 'censor_terms': {'failures': []},
           'sources': {'failures': []}, 'credits': {'failures': []}}
@@ -91,7 +77,10 @@ for q, x in entries:
     srcs = x.get('sources') or []
     urls = [u for u in srcs if re.match(r'https?://', str(u))]
     good = len(srcs) >= 2 and len(urls) >= 1 or len(urls) >= 1 and len(srcs) == 1
-    if good:
+    if good and not any('already verified' in str(u) for u in srcs):
+        continue
+    if any('already verified' in str(u) for u in srcs):
+        report['sources']['failures'].append({'song': x['song'], 'artist': x['artist'], 'sources': srcs, 'why': 'placeholder source text'})
         continue
     if key in KNOWN_NO_SOURCES:
         exceptions_seen.add(key)
