@@ -27,11 +27,9 @@ A browser app for learning composition. It runs as one HTML file, with no build 
 - `index.html`: the whole app. It loads VexFlow from jsDelivr.
 - `scores/`: the Analysis room's scores, engraved with Verovio, and `meta.json` (events, sections, cadences). These must be served over HTTP. GitHub Pages does this; opening the file directly from disk does not.
 
-## Credits and licences for the score data
+## Credits and licences
 
-- **Bach chorales, Mozart sonatas, Joplin rags:** Craig Stuart Sapp's Humdrum editions, CC BY-NC-SA 4.0.
-- **Chopin, Preludes Op. 28 Nos. 7 and 20:** The Fryderyk Chopin Institute (NIFC), Chopin first editions in Humdrum, CC BY 4.0.
-- **Curwen hand-sign drawings:** © 2003 Kodály Music Education Institute of Australia (KMEIA).
+Every third-party source, its licence, and the changes made are listed in [NOTICE.md](NOTICE.md) and in the Credits panel in the app's footer (sound credits are also in `audio/CREDITS.md`).
 
 Because some of the score data is CC BY-NC-SA 4.0, the app as a whole is for non-commercial educational use.
 

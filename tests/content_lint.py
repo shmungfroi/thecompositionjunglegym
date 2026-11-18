@@ -105,7 +105,12 @@ report['sources']['known_exceptions_now_sourced'] = sorted(' / '.join(k) for k i
 NEED = ['Bach chorales', 'Mozart', 'Joplin', 'Craig Stuart Sapp', 'CC BY-NC-SA 4.0', 'Chopin', 'Op. 28 Nos. 7 and 20',
         'Fryderyk Chopin Institute', 'NIFC', 'CC BY 4.0', 'VCSL', 'CC0', 'FluidR3_GM', 'Frank Wen', 'CC BY 3.0', 'Curwen',
         'Kodály Music Education Institute of Australia', 'KMEIA', '2003', 'VexFlow', 'MIT', 'jsDelivr', 'Outfit',
-        'Poiret One', 'SIL', 'OFL', 'Verovio', 'LGPL', 'non-commercial']
+        'Poiret One', 'SIL', 'OFL', 'Verovio', 'LGPL', 'non-commercial',
+        "First Editions of Fryderyk Chopin's Music", 'Copyright 2017-2021 The Fryderyk Chopin Institute (https://nifc.pl)',
+        'https://chopinscores.org', 'Copyright (C) 2009 Craig Stuart Sapp', 'Copyright (C) 2004-2018 Craig Stuart Sapp',
+        'Copyright (C) 2004-2021 Craig Stuart Sapp', 'licenses/by/3.0/us/', 'Leipzig', 'Bravura',
+        'permission confirmed by Justin Ossher', 'github.com/craigsapp/bach-370-chorales',
+        'github.com/craigsapp/mozart-piano-sonatas', 'github.com/craigsapp/joplin', 'chopin-first-editions']
 nt = REPO / 'NOTICE.md'
 if not nt.exists():
     report['credits']['failures'].append('NOTICE.md missing')
@@ -121,12 +126,46 @@ else:
     foot = fm.group(1)
     if not re.search(r'<summary[^>]*>\s*Credits\s*</summary>|<a [^>]*>\s*Credits\s*</a>|<button[^>]*>\s*Credits\s*</button>', foot):
         report['credits']['failures'].append('footer has no Credits link')
-    text = re.sub(r'<[^>]+>', ' ', foot)
+    text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', foot.replace('<br>', ' '))).replace('&amp;', '&')
     for t in ['Sapp', 'Chopin Institute', 'NIFC', 'Curwen', 'Kodály Music Education Institute of Australia', 'KMEIA', 'used with permission',
-              'CC BY-NC-SA 4.0', 'CC BY 4.0', 'Verovio']:
+              'CC BY-NC-SA 4.0', 'CC BY 4.0', 'Verovio',
+              "First Editions of Fryderyk Chopin's Music", 'Copyright 2017-2021 The Fryderyk Chopin Institute (https://nifc.pl)',
+              'https://chopinscores.org', 'Copyright (C) 2009 Craig Stuart Sapp', 'Copyright (C) 2004-2018 Craig Stuart Sapp',
+              'Copyright (C) 2004-2021 Craig Stuart Sapp', 'Leipzig', 'Bravura']:
         if t not in text:
             report['credits']['failures'].append(f'on-screen credits do not mention "{t}"')
 
-report['passed'] = not any(report[k]['failures'] for k in ('cadence_names', 'censor_terms', 'sources', 'credits'))
+# on-screen links, README pointer, meta.json licence on every score
+for u in ['creativecommons.org/licenses/by-nc-sa/4.0/', 'creativecommons.org/licenses/by/4.0/', 'creativecommons.org/licenses/by/3.0/us/',
+          'creativecommons.org/publicdomain/zero/1.0/', 'github.com/craigsapp/bach-370-chorales', 'github.com/craigsapp/mozart-piano-sonatas',
+          'github.com/craigsapp/joplin', 'github.com/pl-wnifc/humdrum-chopin-first-editions']:
+    if fm and u not in fm.group(1):
+        report['credits']['failures'].append(f'on-screen credits have no link to {u}')
+rd = REPO / 'README.md'
+if not rd.exists() or 'NOTICE.md' not in rd.read_text(encoding='utf-8'):
+    report['credits']['failures'].append('README.md does not point to NOTICE.md')
+try:
+    for k, v in json.loads(META).items():
+        if 'src' in v and not re.search(r'Analysis layer[^.]*\(CC BY(-NC-SA)? 4\.0\)|Form layer[^.]*\(CC BY(-NC-SA)? 4\.0\)', v['src']):
+            report['credits']['failures'].append(f'meta.json {k}: src does not state the annotation layer licence')
+except Exception as e:
+    report['credits']['failures'].append(f'meta.json unreadable: {e}')
+
+# lyric lint: content-warning text must describe, not quote (no quoted words, no known lyric words)
+WARN_TEXT = []
+wm = re.search(r'const WARN=\{(.*?)\};', INDEX, re.S)
+if wm:
+    WARN_TEXT += re.findall(r"n:'((?:[^'\\]|\\.)*)'", wm.group(1))
+WARN_TEXT += [str(x.get('suitability') or '') for _, x in entries]
+for mm in re.finditer(r'"content": \{[^{}]*?"note": "((?:[^"\\]|\\.)*)"', INDEX):
+    WARN_TEXT.append(mm.group(1))
+QUOTED = re.compile(r"(^|[\s(])(['\"\u2018\u201c])[^'\"\u2019\u201d]{2,}(['\"\u2019\u201d])(?![A-Za-z])")
+LYRICWORD = re.compile(r'libido|mulatto|pissed|deaf, dumb|white boy|\bdamn\b', re.I)
+report['lyric_words'] = {'failures': []}
+for s in WARN_TEXT:
+    if QUOTED.search(s) or LYRICWORD.search(s):
+        report['lyric_words']['failures'].append(s)
+
+report['passed'] = not any(report[k]['failures'] for k in ('cadence_names', 'censor_terms', 'sources', 'credits', 'lyric_words'))
 print(json.dumps(report, ensure_ascii=False, indent=1))
 sys.exit(0 if report['passed'] else 1)
