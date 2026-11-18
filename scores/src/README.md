@@ -1,7 +1,7 @@
 # Score sources (Analysis room)
 
 The ten Humdrum encodings the Analysis scores are engraved from, unchanged, with each repository's licence in `licences/`.
-`engrave.py` turns them into `scores/<key>.svg` (desktop, 880 px), `scores/<key>.t.svg` (tablet, 560 px) and `scores/<key>.p.svg` (phone, 280 px, fits a 360 px screen) with Verovio 6.4.1 (`pip install verovio==6.4.1`, then `python3 scores/src/engrave.py` from the repo root).
+`engrave.py` turns them into `scores/<key>.svg` (desktop, 880 px), `scores/<key>.t.svg` (tablet, 560 px) and `scores/<key>.p.svg` (phone, 336 px in an edge-to-edge frame, fits a 360 px screen) with Verovio 6.4.1 (`pip install verovio==6.4.1`, then `python3 scores/src/engrave.py` from the repo root).
 
 | Key | File | Repository | Revision (HEAD when fetched, 19 Nov 2026) | Licence |
 |---|---|---|---|---|
