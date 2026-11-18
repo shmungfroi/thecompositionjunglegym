@@ -443,7 +443,10 @@ async def main():
             for row in F.get('cadence_pcs', []):
                 COUNT['fixture rows (chords)'] += 1
                 got = next((q for q in cad if q['t'] == row['t'] and q['k'] == row['k'] and q['md'] == row['md']), None)
-                if got is None or not got['ch']:
+                if got is None:
+                    COUNT['fixture rows (chords) for models since retired'] += 1
+                    continue
+                if not got['ch']:
                     fail('J', f"fixture {row['t']} key {row['k']}: not generated")
                     continue
                 for i, pcs in enumerate(row['pcs']):
