@@ -1,7 +1,7 @@
 # Score sources (Analysis room)
 
 The ten Humdrum encodings the Analysis scores are engraved from, unchanged, with each repository's licence in `licences/`.
-`engrave.py` turns them into `scores/<key>.svg` (desktop, 880 px), `scores/<key>.t.svg` (tablet, 600 px) and `scores/<key>.p.svg` (phone, 280 px, fits a 360 px screen) with Verovio 6.4.1 (`pip install verovio==6.4.1`, then `python3 scores/src/engrave.py` from the repo root).
+`engrave.py` turns them into `scores/<key>.svg` (desktop, 880 px), `scores/<key>.t.svg` (tablet, 560 px) and `scores/<key>.p.svg` (phone, 280 px, fits a 360 px screen) with Verovio 6.4.1 (`pip install verovio==6.4.1`, then `python3 scores/src/engrave.py` from the repo root).
 
 | Key | File | Repository | Revision (HEAD when fetched, 19 Nov 2026) | Licence |
 |---|---|---|---|---|
@@ -35,3 +35,7 @@ Verovio names notes and bars after their line in the Humdrum file (`note-L23F1`,
 - Instrument tokens (`*I"…`, `*I'…`, `*Ipiano`, `*ICklav`…) are blanked in memory, so there are no voice labels and no first-system indent.
 - Verovio's embedded stylesheet is removed (its id-scoped `stroke` rule overrode the app's CSS); the hidden placeholders it styled are removed too. The NIFC encoders' editorial notes (`!LO:TX:…:problem`) are not part of the score and are left out.
 - Bar numbers, tempo and expression text are set in final pixels (11 px, 14 px, 14 px); their fonts and colours come from the app's CSS on `.vrv`.
+- **Common time (0.47 fix IC-1).** K. 545, O Haupt, Jesu meine Freude and Op. 28/20 mark the metre `*M4/4` with `*met(c)`. Verovio 6.4.1 imports that as a `meterSig sym="common"` with `visible="false"` plus an empty `mensur`, so no time signature was drawn. `engrave.py` loads the Humdrum, takes Verovio's MEI, removes `visible="false"` from common-time meter signatures and drops the empty `mensur`, then reloads the MEI and engraves it. The source files are untouched; element ids pass through the MEI unchanged (the bar, anchor and note checks still pass), and the script stops if any engraving lacks a time signature.
+- **Embedded Bravura text font.** Verovio sets some dynamics as SMuFL text (the *f* of "*f* stacc." in the Maple Leaf Rag) and embeds a Bravura `@font-face` for it. That `@font-face` block is kept when the rest of the stylesheet is removed (in the first 0.47 engraving it was removed too, so that *f* did not show).
+- **System spacing (design review FA-5).** Verovio's minimum gap between systems is 4 staff-spaces beyond each system's notation, plus room for the overlay rows the app draws. That is tighter than the standard's 9 staff-spaces where the notes stay inside the staves, so that 3 systems fit a 768–800 px tall screen where the score allows it.
+- **Last systems (FA-8).** If the last system would hold one bar, `spacingLinear` is stepped down by 0.01, at most 5 times. K. 331 Var. III (all three engravings) and O Haupt (desktop and phone) still end with a one-bar system after 5 steps.

@@ -55,7 +55,7 @@ Each score in `scores/` is an SVG engraved from a Humdrum encoding, with timing,
 |---|---|---|
 | VexFlow 4.2.3 (music notation) | Loaded from jsDelivr | MIT |
 | Bravura music font (VexFlow's default, used by the app) | Steinberg Media Technologies, bundled in VexFlow | SIL Open Font Licence 1.1 |
-| Bravura music font (outlines embedded in the Analysis score SVGs, engraved with Verovio) | Steinberg Media Technologies, via Verovio | SIL Open Font Licence 1.1 |
+| Bravura music font (outlines embedded in the Analysis score SVGs, engraved with Verovio) | Steinberg Media Technologies, via Verovio | SIL Open Font Licence 1.1 (full text: `fonts/bravura/OFL.txt`, from github.com/steinbergmedia/bravura) |
 | EB Garamond (tempo and expression text in the Analysis scores; self-hosted woff2, Latin subset, 500, 500 italic, 700; `fonts/eb-garamond/`, licence in `fonts/eb-garamond/OFL.txt`) | The EB Garamond Project Authors (github.com/octaviopardo/EBGaramond12), packaged by Fontsource (`@fontsource/eb-garamond` 5.3.0) | SIL Open Font Licence 1.1 |
 | Outfit and Poiret One (fonts) | Google Fonts | SIL Open Font Licence 1.1 |
 | Verovio (engraving tool) | https://www.verovio.org | LGPL |

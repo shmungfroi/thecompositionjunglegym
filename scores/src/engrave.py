@@ -4,12 +4,14 @@ Run from the repo root:   python3 scores/src/engrave.py          (needs: pip ins
 
 For each score it writes three engravings, all shown 1:1 (never stretched):
   scores/<key>.svg      desktop: Verovio scale 40 (staff-space 7.2 px), 880 px systems
-  scores/<key>.t.svg    tablet:  scale 40, 600 px systems (panels narrower than 880 px, wider than a phone)
+  scores/<key>.t.svg    tablet:  scale 40, 560 px systems (panels narrower than 880 px, wider than a phone; fits 768 px portrait)
   scores/<key>.p.svg    phone:   scale 33 (staff-space 5.94 px), 280 px systems (fits a 360 px screen), spacingLinear 0.2, spacingNonLinear 0.5
 House standard (SPEC, "House engraving standard"): Bravura; Verovio's embedded stylesheet stripped (colours and line
 weights come from the app's CSS on .vrv); Humdrum instrument-name tokens blanked (no voice labels, no first-system
 indent); chorales as closed score on a grand staff (Humdrum filter satb2gs); stave gap 6 staff-spaces (8 for the
-chorales); between systems 9 staff-spaces plus room for the overlay rows the app draws; text set in final px.
+chorales); between systems Verovio's minimum gap of 4 staff-spaces beyond each system's own notation plus room for the overlay
+rows the app draws (design review FA-5, 19 Nov: tighter than the standard's 9 staff-spaces where the notes stay inside
+the staves, so that 3 systems fit a 768-800 px tall screen); a one-bar last system is avoided where a slightly tighter spacing allows; text set in final px.
 
 The app's analysis data (scores/meta.json) addresses notes and bars by the ids Verovio gives the UNFILTERED source
 (note-L<line>F<field>, measure-L<line>). satb2gs rewrites the file, so for the chorales every note and bar of the
@@ -29,12 +31,12 @@ SRC = {  # key: (file, repo, revision the app's ids were made from; see scores/s
 CHORALES = {'chorale', 'ohaupt', 'jesu'}
 VARIANTS = {  # suffix: (scale, system width px, extra options)
     '': (40, 880, {}),
-    '.t': (40, 600, {}),
+    '.t': (40, 560, {}),
     '.p': (33, 280, {'spacingLinear': 0.2, 'spacingNonLinear': 0.5}),
 }
 LEFT_PX = 22  # room for the brace / bracket left of the staves (never clipped)
 # overlay rows the app draws (final px): form rule + label above the system, harmony row, cadence-tag row below
-ROW_ABOVE_FORM, ROW_HARM, ROW_CAD = 24, 24, 20
+ROW_ABOVE_FORM, ROW_HARM, ROW_CAD = 24, 20, 16
 # final-px text sizes (SPEC, Text table)
 PX = {'mNum': 11, 'tempo': 14, 'dir': 14, 'ending': 12, 'reh': 12, 'other': 12}
 
@@ -55,6 +57,18 @@ def toolkit(opts, data):
     tk.setOptions(opts)
     if not tk.loadData(data):
         raise SystemExit('Verovio could not load the data')
+    # Common time. K. 545, O Haupt, Jesu meine Freude and Op. 28/20 mark it *met(c). Verovio 6.4.1 turns that into a
+    # meterSig sym="common" with visible="false" plus an empty mensur, so no time signature is drawn. Fix it in the
+    # MEI (the source files stay untouched): make the common-time meterSig visible, drop the empty mensur, reload.
+    # Element ids are carried over unchanged in the MEI, so meta.json's ids still match.
+    mei = tk.getMEI()
+    fixed = re.sub(r'(<meterSig [^>]*sym="common"[^>]*?) visible="false"', r'\1', mei)
+    fixed = re.sub(r'<mensur xml:id="[^"]*" */>', '', fixed)
+    if fixed != mei:
+        tk = verovio.toolkit()
+        tk.setOptions(opts)
+        if not tk.loadData(fixed):
+            raise SystemExit('Verovio could not reload the corrected MEI')
     return tk
 
 
@@ -106,7 +120,9 @@ def base_opts(scale, width, extra, spacing_system, staff_gap, margins):
 
 def post(svg, scale, idm):
     """strip the embedded stylesheet, give canonical ids back, set text in final px."""
-    svg = re.sub(r'<style[^>]*>.*?</style>', '', svg, flags=re.S)
+    # drop Verovio's stylesheet, but keep its embedded Bravura @font-face: dynamics such as "f stacc." are set as
+    # SMuFL text and need it (outlines elsewhere are paths, not text)
+    svg = re.sub(r'<style[^>]*>(?!\s*@font-face).*?</style>', '', svg, flags=re.S)
     # NIFC editorial notes to the encoders (!LO:TX:...:problem) are not part of the score
     svg = re.sub(r'<g [^>]*class="dir problem"[^>]*>.*?</g>', '', svg, flags=re.S)
     # Verovio's stylesheet hid its expansion/section placeholders; with the stylesheet gone, remove them
@@ -119,6 +135,9 @@ def post(svg, scale, idm):
         size = PX.get(mm.group(2).split()[0], PX['other'])
         return mm.group(1) + re.sub(r'<tspan font-size="\d+px"', f'<tspan font-size="{round(size / upx)}px"', mm.group(3))
     svg = re.sub(r'(<g [^>]*class="(mNum[^"]*|tempo|dir|ending|reh)"[^>]*>)(.*?</g>)', resize, svg, flags=re.S)
+    # words inside dynamics ("stacc.") in final px; the SMuFL glyph tspans (font-family="Bravura") keep their size
+    svg = re.sub(r'(<g [^>]*class="dynam"[^>]*>)(.*?</g>)',
+                 lambda mm: mm.group(1) + re.sub(r'<tspan font-size="\d+px"', f'<tspan font-size="{round(PX["dir"] / upx)}px"', mm.group(2)), svg, flags=re.S)
     return svg
 
 
@@ -133,6 +152,8 @@ def verify(key, svg, meta, tk_canon):
     miss = need - ids
     if miss:
         raise SystemExit(f'{key}: overlay anchors missing from the engraving: {sorted(miss)[:5]}')
+    if not re.search(r'class="meterSig"><use href="#E0[89]', svg):
+        raise SystemExit(f'{key}: no time signature drawn')
     ev = sorted(note_table(tk_canon).values())
     me = sorted(tuple(x) for x in m['events'])
     pool = collections.defaultdict(list)  # meta.json rounds onsets down, Verovio to nearest: allow 2 ms
@@ -162,10 +183,21 @@ def main():
         staff_gap = 16 if key in CHORALES else 12
         for suf, (scale, width, extra) in VARIANTS.items():
             half_space_px = 9 * scale / 100  # one MEI unit (half a staff-space) in px
-            spacing_system = 18 + round((above + below) / half_space_px)
-            opts = base_opts(scale, width, extra, spacing_system, staff_gap, (max(14, 8 + above), 8 + below))
-            tk_c = toolkit(opts, raw)
-            canon = tk_c.renderToSVG(1)
+            spacing_system = 8 + round((above + below) / half_space_px)
+            opts = base_opts(scale, width, extra, spacing_system, staff_gap, (max(6, 8 + above), 8 + below))
+            # avoid a one-bar last system: step spacingLinear down by 0.01, at most 5 times
+            lin0 = opts.get('spacingLinear', 0.25)
+            for step in range(6):
+                opts['spacingLinear'] = round(lin0 - 0.01 * step, 2)
+                tk_c = toolkit(opts, raw)
+                canon = tk_c.renderToSVG(1)
+                parts = canon.split('data-class="system"')
+                if len(parts) <= 2 or parts[-1].count('data-class="measure"') > 1:
+                    break
+            if step == 5 and parts[-1].count('data-class="measure"') == 1:
+                opts['spacingLinear'] = lin0
+                tk_c = toolkit(opts, raw)
+                canon = tk_c.renderToSVG(1)
             if tk_c.getPageCount() != 1:
                 raise SystemExit(f'{key}{suf}: more than one page')
             idm = None
