@@ -1517,7 +1517,7 @@ const ENG=(()=>{
  function vk(name,oct){const L=name[0].toUpperCase(),a=name.slice(1),acc=(a.match(/#/g)||[]).length-(a.match(/b/g)||[]).length;
   if(Math.abs(acc)<=2)return{key:`${L.toLowerCase()}${a}/${oct}`,acc,name:L+a,oct,resp:null};
   const li=LT.indexOf(L),midi=12*(oct+1)+NATS[li]+acc;let best=null;
-  for(const d of [1,-1,2,-2]){const l2=((li+d)%7+7)%7,o2=oct+Math.floor((li+d)/7),base=12*(o2+1)+NATS[l2],a2=midi-base;if(Math.abs(a2)<=2&&(!best||Math.abs(a2)<Math.abs(best.acc)))best={l2,o2,acc:a2}}
+  for(const d of [1,-1,2,-2]){if(best&&Math.abs(d)===2)break;const l2=((li+d)%7+7)%7,o2=oct+Math.floor((li+d)/7),base=12*(o2+1)+NATS[l2],a2=midi-base;if(Math.abs(a2)<=2&&(!best||Math.abs(a2)<Math.abs(best.acc)))best={l2,o2,acc:a2}}
   const nm=LT[best.l2]+(best.acc>0?'#'.repeat(best.acc):'b'.repeat(-best.acc));
   return{key:`${nm.toLowerCase()}/${best.o2}`,acc:best.acc,name:nm,oct:best.o2,resp:{from:L+a,to:nm}}}
  const accOf=n=>n>0?'#'.repeat(n):n<0?'b'.repeat(-n):'n';
@@ -1562,7 +1562,7 @@ const ENG=(()=>{
   svg.querySelectorAll('g.vf-stavebarline rect,g.vf-staveconnector rect,g.vf-staveconnector path').forEach(p=>{p.setAttribute('fill',BARC);p.removeAttribute('stroke')});
   svg.querySelectorAll('text').forEach(t=>{if(t.dataset.px)return;const fs=parseFloat(t.getAttribute('font-size')||t.style.fontSize||12),px=Math.max(11,fs);t.setAttribute('font-size',(px/k).toFixed(2));t.style.fontSize='';t.dataset.px=px;if(!t.style.fontFamily)t.style.fontFamily='Outfit'});
   if(RESP.length){const d=document.createElement('div');d.className='sfnote';d.innerHTML=RESP.map(r=>`Theoretical spelling: <b>${pr(r.from)}</b>, shown on the stave as <b>${pr(r.to)}</b> (the same note).`).join('<br>');S.el.appendChild(d);S.el.dataset.resp=RESP.map(r=>r.from+'>'+r.to).join(',')}else delete S.el.dataset.resp;
-  const pw=S.el.clientWidth;if(S.sysW&&S.sysW*k>avail(S.el)+2)wireScroll(S);
+  S.svg.dataset.incomplete=(S.incomplete||[]).join(';');if(S.sysW&&S.sysW*k>avail(S.el)+2)wireScroll(S);
   return S}
  /* phones: a bar wider than the screen scrolls, with a right-edge fade and a bar counter */
  function wireScroll(S){const el=S.el;el.classList.add('scrolls');const c=document.createElement('div');c.className='sfcount';el.appendChild(c);
@@ -1590,7 +1590,7 @@ const ENG=(()=>{
     top/bottom: logical space above the top stave / below the bottom stave for overlays; mid: extra between staves
     end: final barline (default true); barAttr: attribute put on each bar's highlight rect */
  function score(el,sp){const VF=Vex.Flow,ns=sp.staves.length,gap=(sp.gap||6)*10+(sp.mid||0),n=sp.n,beats=sp.beats||(()=>4),k=space(sp.task||'exercise')/10;
-  const x0=sp.conn==='brace'?26:sp.conn==='bracket'?18:4,avL=(sp.availPx||avail(el))/k-x0-6;
+  const x0=sp.conn==='brace'?26:sp.conn==='bracket'?18:4,avL=(sp.availPx||avail(el))/k-x0-14;
   const hdr=first=>{let w=0;sp.staves.forEach(s=>{const st=new VF.Stave(0,0,400);if(s.clef)st.addClef(s.clef);if(s.ks)st.addKeySignature(s.ks);if(first&&sp.time)st.addTimeSignature(sp.time);w=Math.max(w,st.getNoteStartX())});return w+8};
   const head0=hdr(true),headN=hdr(false);
   const nat=[],mx=[];for(let b=0;b<n;b++){const B=sp.build(b,true),f=new VF.Formatter();const all=[];B.forEach(s=>{if(s.voices.length){f.joinVoices(s.voices);all.push(...s.voices)}});
@@ -1601,7 +1601,7 @@ const ENG=(()=>{
   sys.forEach((s,si)=>{s.y0=10+top+si*sysStep});
   const H=sys[sys.length-1].y0+(ns-1)*(40+gap)+40+bot+12;
   let W=0;sys.forEach((s,si)=>{const ww=(si?headN:head0)+s.w.reduce((a,b)=>a+b,0);s.width=ww;W=Math.max(W,ww)});
-  const S=open(el,sp.task||'exercise',x0+W+8,H);S.sys=sys;S.bars=[];S.barX=[];S.sysW=x0+W+8;S.x0=x0;S.gap=gap;
+  const S=open(el,sp.task||'exercise',x0+W+8,H);S.sys=sys;S.bars=[];S.barX=[];S.incomplete=[];S.sysW=x0+W+8;S.x0=x0;S.gap=gap;
   const hl=document.createElementNS(NS,'g');hl.setAttribute('class','bhls');S.svg.appendChild(hl);
   sys.forEach((s,si)=>{let x=x0;const ys=sp.staves.map((_,v)=>s.y0-40+v*(40+gap));
    for(let b=s.from;b<s.to;b++){const fb=b===s.from,w=s.w[b-s.from]+(fb?(si?headN:head0):0),B=sp.build(b,false),sts=[];
@@ -1614,6 +1614,8 @@ const ENG=(()=>{
     const f=new VF.Formatter(),all=[];B.forEach(s2=>{if(s2.voices.length){f.joinVoices(s2.voices);all.push(...s2.voices)}});
     if(all.length){const jw=sts[0].getNoteEndX()-sts[0].getNoteStartX()-(sp.inner||14);f.format(all,Math.max(10,jw));B.forEach((s2,v)=>{s2.voices.forEach(vo=>{vo.getTickables().forEach(t=>{t._sys=si;t._bar=b});vo.draw(S.ctx,sts[v])});(s2.beams||[]).forEach(bm=>bm.setContext(S.ctx).draw())})}
     const r=document.createElementNS(NS,'rect'),yt=sts[0].getYForLine(0)-12,yb=sts[ns-1].getYForLine(4)+12;r.setAttribute('x',x+(fb?(si?headN:head0)-8:0));r.setAttribute('y',yt);r.setAttribute('width',w-(fb?(si?headN:head0)-8:0));r.setAttribute('height',yb-yt);r.setAttribute('class','bhl');r.dataset.bar=b;if(sp.barAttr)r.setAttribute(sp.barAttr,b);hl.appendChild(r);
+    // self-check hook: every non-empty voice fills its bar
+    const want=beats(b)*Vex.Flow.RESOLUTION/4;B.forEach((s2,v)=>s2.voices.forEach(vo=>{if(vo.getTickables().length&&Math.abs(vo.getTicksUsed().value()-want)>1)S.incomplete.push(`bar ${b+1} stave ${v+1}`)}));
     S.bars[b]={sys:si,x,w,staves:sts,data:B,nx:sts[0].getNoteStartX()};S.barX[b]=x;x+=w}
    if(si>0&&sp.barNums!==false)txt(S,x0+2,s.y0-(sp.barNumDy||16),s.from+1,'bar')});
   hl.parentNode.insertBefore(hl,hl.parentNode.firstChild);
@@ -2385,7 +2387,7 @@ function renderSATB(L,labels){
 function drawSATB(el,S4,L){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,drawSATB,arguments);
  const VF=Vex.Flow,N=S4.length,nb=Math.ceil(N/2),ksig=KEYN[K.mode][K.k]+(K.mode==='min'?'m':''),key={k:K.k,mode:K.mode},k=ENG.space('exercise')/10;
  const SP=S4.map((V,i)=>{const c=chordOf(L[i].root,L[i].q,L[i].inv||0);return V.map(m=>{const tt=c.tones.find(t=>mod(t.midi,12)===mod(m,12)),s=spell(tt.li,m);return ENG.vk(s.name,s.oct)})});
- const FC={T:'#8fbf6a',PD:'#c9a24a',D:'#c8473b'},info=L.map(ch=>{const a=analyse(ch,key),rn=ENG.rnText(ch.rn||a.num,ch.inv||0,/7|9|ø|°7/.test(ch.q||'')||/7/.test(ch.rn||a.num)),c=chordOf(ch.root,ch.q,ch.inv||0);return{rn,col:FC[a.f]||'#a493d8',sym:pretty(c.sym)+(ch.inv?'/'+pretty(c.bass.name):'')}});
+ const FC={T:'#8fbf6a',PD:'#c9a24a',D:'#c8473b'},info=L.map(ch=>{const a=analyse(ch,key),raw=ch.rn||a.num,rn=ENG.rnText(raw,ch.inv||0,/7|9|ø|°7/.test(ch.q||'')||/7/.test(raw)),c=chordOf(ch.root,ch.q,ch.inv||0);return{raw,rn,col:FC[a.f]||'#a493d8',sym:pretty(c.sym)+(ch.inv?'/'+pretty(c.bass.name):'')}});
  const rnW=info.map(x=>ENG.tw(x.rn,'rn')/k+14);
  const build=b=>{const ch=[2*b,2*b+1].filter(i=>i<N),dur=ch.length===1&&N%2?'w':'h';
   const mk=(v,clef,stem)=>{const ns=ch.map(i=>{ENG.note(SP[i][v]);return new VF.StaveNote({clef,keys:[SP[i][v].key],duration:dur,stem_direction:stem})});return new VF.Voice({num_beats:4,beat_value:4}).setMode(VF.Voice.Mode.SOFT).addTickables(ns)};
@@ -2394,7 +2396,7 @@ function drawSATB(el,S4,L){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,dra
   beats:()=>4,minBar:b=>[2*b,2*b+1].filter(i=>i<N).reduce((s,i)=>s+rnW[i],0)+20});
  // romans under each chord, centred on the bass note, one row per system
  S.sys.forEach(sy=>{let lo=-1e9;for(let b=sy.from;b<sy.to;b++){const bv=S.bars[b].data[1].voices[1].getTickables();lo=Math.max(lo,ENG.ext(bv).lo,S.bars[b].staves[1].getYForLine(4)+8)}
-  const y=lo+16+12/k;for(let b=sy.from;b<sy.to;b++)S.bars[b].data[1].voices[1].getTickables().forEach((n,j)=>{const i=2*b+j,x=(n.getNoteHeadBeginX()+n.getNoteHeadEndX())/2;const t=ENG.rn(S,x,y,info[i].rn,info[i].col);t.classList.add('rnl');t.dataset.rn=info[i].rn;t.dataset.sym=info[i].sym;t.dataset.i=i})});
+  const y=lo+16+12/k;for(let b=sy.from;b<sy.to;b++)S.bars[b].data[1].voices[1].getTickables().forEach((n,j)=>{const i=2*b+j,x=(n.getNoteHeadBeginX()+n.getNoteHeadEndX())/2;const t=ENG.rn(S,x,y,info[i].rn,info[i].col);t.classList.add('rnl');t.dataset.rn=info[i].rn;t.dataset.rnraw=String(info[i].raw).replace(/b/g,'♭');t.dataset.sym=info[i].sym;t.dataset.i=i})});
  ENG.finish(S)}
 function playCols(cols,src,onStep){stopAll();if(!cols.length)return;const a=ac(),spb=60/G.tempo;MAST.gain.value=.4;let t=a.currentTime+.08;PLAY.on=true;PLAY.src=src;
  cols.forEach((col,i)=>{col.forEach((m,v)=>{if(VL.solo<0||src!=='satb'||VL.solo===v)tone(m,t,'piano')});PLAY.timers.push(setTimeout(()=>onStep&&onStep(i),(t-a.currentTime)*1000));t+=2*spb});
@@ -2749,7 +2751,6 @@ function renderClimb3(){const key=CL.key,mode=key.mode,L=cadsFor(mode);if(!L.fin
    <div class="cads">${L.map(c=>`<button class="cad ${c.k===CL.ex?'on':''}" data-clex="${c.k}"><b>${c.n}</b><span>${c.ch}</span><small>${c.feel}</small></button>`).join('')}</div>
    <p class="note" style="margin:10px 0 0">Tap a cadence to hear its phrase. Sing the top line back in solfa, then sing just the bass.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-clplay>▶ Play</button><button class="mini" data-clgym>⤴ Open in the Gym</button></h3>
-   <div class="clrn">${r.L.map(ch=>{const f=fnOf(ch,key);return`<span style="--c:${FN[f]||'var(--violet)'}">${ch.rn.replace(/b/g,'♭')}<small>${pretty(chordOf(ch.root,ch.q,ch.inv).sym)}${ch.inv?'/'+pretty(chordOf(ch.root,ch.q,ch.inv).bass.name):''}</small></span>`}).join('<i>→</i>')}</div>
    <div class="staff" id="clStaff"></div>
    <dl><dt>Also called</dt><dd>${ex.us} (US)</dd><dt>How it works</dt><dd>${ex.why}</dd><dt>Where you hear it</dt><dd>${ex.where}</dd></dl></section>
  </div>
@@ -3357,7 +3358,7 @@ function c9Draw(el,V,key,vt){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,c
   minBar:i=>ENG.tw(syms[i],'sym')/k+30});
  // chord symbols left-aligned to the notehead, one row per system above the top stave
  S.sys.forEach(sy=>{let hi=1e9;for(let b=sy.from;b<sy.to;b++)hi=Math.min(hi,ENG.ext(S.bars[b].data[0].voices[0].getTickables()).hi,S.bars[b].staves[0].getYForLine(0)-10);
-  for(let b=sy.from;b<sy.to;b++){const n=S.bars[b].data[0].voices[0].getTickables()[0];ENG.txt(S,n.getNoteHeadBeginX(),hi-10,syms[b],'sym',{cls:'sym'})}});
+  for(let b=sy.from;b<sy.to;b++){const n=S.bars[b].data[0].voices[0].getTickables()[0];ENG.txt(S,n.getNoteHeadBeginX(),hi-10,syms[b],'sym',{cls:'csym'})}});
  ENG.finish(S)}
 function c9Play(V,onStep,opt={}){stopAll();const a=ac(),spb=60/Math.max(G.tempo,100);MAST.gain.value=.36;let t=a.currentTime+.08;PLAY.on=true;PLAY.src='climb';
  V.forEach((v,i)=>{const b=v.bass.midi;tone(b,t,'piano');tone(opt.guide?b:b+7,t+2*spb,'piano');
@@ -3605,7 +3606,7 @@ function c11Draw(el,rns,key){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,c
   minBar:b=>2*Math.max(ENG.tw(sym[2*b],'sym'),ENG.tw(sym[2*b+1],'sym'),ENG.tw(rnT[2*b],'rn'),ENG.tw(rnT[2*b+1],'rn'))/k+40});
  S.sys.forEach(sy=>{let hi=1e9,lo=-1e9;for(let b=sy.from;b<sy.to;b++){hi=Math.min(hi,ENG.ext(S.bars[b].data[0].voices[0].getTickables()).hi,S.bars[b].staves[0].getYForLine(0)-10);lo=Math.max(lo,ENG.ext(S.bars[b].data[1].voices[0].getTickables()).lo,S.bars[b].staves[1].getYForLine(4)+8)}
   for(let b=sy.from;b<sy.to;b++){const tn=S.bars[b].data[0].voices[0].getTickables(),bn=S.bars[b].data[1].voices[0].getTickables();
-   [2*b,2*b+1].forEach((i,j)=>{const nt=tn[j===0?0:mel[2*b].n],nb=bn[j];ENG.txt(S,nt.getNoteHeadBeginX(),hi-10,sym[i],'sym',{cls:'sym'});ENG.rn(S,(nb.getNoteHeadBeginX()+nb.getNoteHeadEndX())/2,lo+12+12/k,rnT[i],'#ece2c8')})}});
+   [2*b,2*b+1].forEach((i,j)=>{const nt=tn[j===0?0:mel[2*b].n],nb=bn[j];ENG.txt(S,nt.getNoteHeadBeginX(),hi-10,sym[i],'sym',{cls:'csym'});ENG.rn(S,(nb.getNoteHeadBeginX()+nb.getNoteHeadEndX())/2,lo+12+12/k,rnT[i],'#ece2c8')})}});
  ENG.finish(S)}
 function c11Rn(r){if(r==='I6')return'I add6';return r.replace(/:2$/,'⁶₄').replace(/:1$/,'⁶').replace(/b(?=[IVX])/g,'♭').replace('#','♯')}
 function c11Motion(a,b){const d=mod(pcOf(a.root)-pcOf(b.root),12);return d===7?'↓5th':d===1?'↘ semitone':d===11?'↗ semitone':d===0?'same root':d===5?'↑5th':d===2||d===10?'step':'3rd'}

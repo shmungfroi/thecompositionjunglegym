@@ -26,6 +26,10 @@ Sections
      right bass. Climb 11's whole reharmonisation vocabulary is checked in every key.
   M  Climb 12: modal vamps on every tonic (music21 RomanNumeral and ChordSymbol), chromatic-mediant chains
      (music21 intervals), planing shapes (interval spelling), tintinnabuli (T-voice in the triad).
+  R  R3 (0.47): the stave never receives more than a double accidental. Every scale, interval and Chords-room chord
+     (every root spelling x every quality) whose spelling needs a triple sharp or flat is drawn without error, shows
+     the enharmonic respelling (same pitch per music21, adjacent letter, at most a double accidental) and flags it
+     in the frame (data-resp) with a visible "Theoretical spelling" note.
   D  Displayed labels in the climbs: every bar/numeral chip rendered shows a chord symbol whose root matches music21.
 
   X  page errors and exceptions thrown while rendering any climb state.
@@ -35,7 +39,7 @@ Counts on v0.46 (about 90 s): 43,847 checks. Keys room: 18 tonics x 17 scales x 
 signatures; 5,238 chords of the key); circle 24 keys (315 checks); intervals 578 x 3. Climbs: 1,627 distinct
 progressions captured from 2,007 renders plus builders and quizzes; 9,236 chord-vs-music21 checks, 6,120 SATB chords,
 2,472 jazz voicings, 2,764 piano voicings, 1,248 climb-12 checks, 10,636 displayed labels.
-Known failures are listed in KNOWN below (SP-1, SP-2, SP-3): they are reported but do not fail the run.
+Known failures are listed in KNOWN below (SP-2, SP-3; SP-1 was fixed in 0.47 by R3): they are reported but do not fail the run.
 """
 import sys, asyncio, json, pathlib, collections, re, itertools, time
 
@@ -51,10 +55,6 @@ COUNT = collections.Counter()
 
 # id -> (section, regex on the failure message, description). Matching failures are reported, not counted.
 KNOWN = {
-    'SP-1': (('K', 'I'), r'throws while drawing: .*Invalid key name: (F###|BBBB)',
-             'Spellings that need a triple sharp or flat crash the VexFlow staff: A♯ and E♯ chromatic and E♯ octatonic '
-             '(F♯𝄪), A♯ up an augmented 6th (F♯𝄪), G♭ down an augmented 6th (B♭𝄫). The spelling itself agrees with '
-             'music21; the tab throws and stops rendering.'),
     'SP-2': (('K',), r'chord \d.* shows .*(♭b|♯♯)',
              'Chords-of-the-key buttons show double accidentals as "B♭b" / "F♯♯" instead of "B𝄫" / "F𝄪" '
              '(pretty() only converts a trailing double accidental, and a chord symbol has a suffix after the root).'),
@@ -284,15 +284,65 @@ KEYS_JS = r"""()=>{S.level=6;ROOM='keys';KS.tab='scales';renderKeysRoom();
    tiles:[...document.querySelectorAll('#ksTiles .stile')].map(e=>({n:e.querySelector('b').textContent,so:e.querySelector('.so').textContent,d:e.querySelector('small').textContent,m:+e.dataset.m})),
    steps:[...document.querySelectorAll('#ksTiles .stp')].map(e=>e.textContent),
    sig:$('ksSig').textContent,sigRed:!!$('ksSig').querySelector('span[style*="red"]'),alt:alt?alt.dataset.kst:null,
-   form:$('ksForm').textContent,sol:$('ksSol').textContent,staff:cap[cap.length-1]||null,
+   form:$('ksForm').textContent,sol:$('ksSol').textContent,staff:cap[cap.length-1]||null,resp:$('ksStaff').dataset.resp||'',svg:!!$('ksStaff').querySelector('svg'),
    ladder:[...document.querySelectorAll('#ksLadder .rung')].map(e=>({sy:e.querySelector('.sy').textContent,nm:e.querySelector('.nm').textContent,nb:e.querySelector('.nb').textContent})),
    chords:[...document.querySelectorAll('#ksChords .kchords')].map(row=>[...row.querySelectorAll('.kc')].map(b=>({num:b.querySelector('.rn').textContent,sym:b.querySelector('b').textContent})))})}}
  window.drawLine=dl;
  KS.tab='intervals';renderKeysRoom();const iv=[];
  for(const start of PADS.flat())for(const x of IVS)for(const dir of ['up','down']){KS.iv={start,k:x.k,dir};let err=null;try{renderIntervals()}catch(e){err=String(e).slice(0,160)}
   iv.push({err,start,k:x.k,dir,name:$('ivName').textContent,sub:$('ivSub').textContent,dd:[...document.querySelectorAll('#ivFacts dd')].map(e=>e.textContent),
-   kb:[...document.querySelectorAll('#ivKb .lit')].map(e=>+e.dataset.m)})}
+   kb:[...document.querySelectorAll('#ivKb .lit')].map(e=>+e.dataset.m),resp:$('ivStaff').dataset.resp||'',svg:!!$('ivStaff').querySelector('svg')})}
  return{tonics:T,scales:out,circle,iv,levels:SCALES.map(s=>[s.k,s.l]),ivlev:IVS.map(x=>[x.k,x.l])}}"""
+
+CHORDS_JS = r"""()=>{S.level=6;location.hash='seed';room('seed');const out=[];const cap=[];const ds=drawStaff;
+ window.drawStaff=function(el,notes){if(el&&el.id==='staff')cap.push(notes.map(n=>({n:n.name,o:n.oct,m:n.midi})));return ds.apply(this,arguments)};
+ for(const L of 'CDEFGAB')for(const a of ['bb','b','','#','##'])for(const q of Q){S.root=L+a;S.q=q.k;cap.length=0;let err=null;try{render()}catch(e){err=String(e).slice(0,160)}
+  out.push({root:L+a,q:q.k,err,notes:cap[cap.length-1]||null,resp:$('staff').dataset.resp||'',svg:!!$('staff').querySelector('svg'),note:($('staff').querySelector('.sfnote')||{}).textContent||''})}
+ window.drawStaff=ds;return out}"""
+
+
+def accn(name):
+    return name[1:].count('#') - name[1:].count('b')
+
+
+def check_resp(sec, where, names, resp, note_ok=True):
+    """R3: the stave never receives more than a double accidental. Every triple in `names` (app spelling, '#'/'b')
+    must be flagged in the frame's data-resp as from>to, and the respelling must be the same pitch (music21) with
+    at most a double accidental on an adjacent letter."""
+    triples = sorted({n for n in names if abs(accn(n)) > 2})
+    got = dict(x.split('>') for x in resp.split(',') if x) if resp else {}
+    if not triples:
+        if got:
+            fail(sec, f"{where}: flagged {resp} but nothing needs a triple accidental")
+        return
+    COUNT['R3: stave views that reach a triple accidental'] += 1
+    for t in triples:
+        if t not in got:
+            fail(sec, f"{where}: {t} reaches the stave unflagged")
+            continue
+        to = got[t]
+        pa, pb = m21pitch.Pitch(t.replace('b', '-')), m21pitch.Pitch(to.replace('b', '-'))
+        if pa.pitchClass != pb.pitchClass or abs(accn(to)) > 2 or (('CDEFGAB'.index(to[0]) - 'CDEFGAB'.index(t[0])) % 7) not in (1, 6):
+            fail(sec, f"{where}: {t} respelled as {to}: not the same note on a neighbouring letter")
+        else:
+            ok(sec, 'triple accidental respelled and flagged')
+    if not note_ok:
+        fail(sec, f"{where}: no visible 'Theoretical spelling' note")
+
+
+def check_chords_room(R):
+    for r in R:
+        where = f"Chords room {r['root']}{r['q']}"
+        if r['err']:
+            fail('R', f"{where}: throws while drawing: {r['err']}")
+            continue
+        if r['notes'] is None:
+            continue
+        ok('R', 'Chords room staves drawn')
+        if not r['svg']:
+            fail('R', f"{where}: no stave drawn")
+        check_resp('R', where, [n['n'] for n in r['notes']], r['resp'], ('Theoretical spelling' in r['note']) or not r['resp'])
+
 
 def ivname(iv):
     n = iv.generic.undirected
@@ -313,6 +363,10 @@ def check_keys(D):
         exp = expected_scale(t, sk, desc)
         if r['err']:
             fail('K', f"{where}: the Scales tab throws while drawing: {r['err']}")
+        if r.get('staff'):
+            if not r['svg']:
+                fail('K', f"{where}: no stave drawn")
+            check_resp('K', where, r['staff']['names'], r['resp'])
         got = [m21name(x['n']) for x in r['tiles']]
         if got != exp:
             fail('K', f"{where}: spelled {' '.join(map(pretty, got))}, music21 {' '.join(map(pretty, exp))}")
@@ -491,6 +545,10 @@ def check_keys(D):
         want_sub = f"{pretty(a.name)} {r['dir']} to {pretty(b.name)}"
         if r['err']:
             fail('I', f"{where}: the Intervals tab throws while drawing: {r['err']}")
+        elif not r['svg']:
+            fail('I', f"{where}: no stave drawn")
+        else:
+            check_resp('I', where, [appname(a.name), appname(b.name)], r['resp'])
         if r['sub'] != want_sub:
             fail('I', f"{where}: shows '{r['sub']}', music21 '{want_sub}'")
         else:
@@ -531,7 +589,7 @@ CLIMBS_JS = r"""async()=>{
  W('c9Voice',(a,r)=>put({t:'c9v',vt:a[1],V:r.map(v=>({bass:v.bass.name,bm:v.bass.midi,up:v.up.map(n=>n.name),um:v.up.map(n=>n.midi),root:v.ch.root,kind:v.ch.kind,rn:v.ch.rn,sym:c9Sym(v.ch,a[1])}))}));
  W('c11Ch',(a,r)=>{if(r&&r.root)put({t:'jazz',toks:[a[0]],key:{k:a[1].k,mode:a[1].mode},L:[nm(r)]})});
  const scrape=key=>{const bars=[...document.querySelectorAll('#climbDetail .bar')].map(e=>({b:(e.querySelector('b')||{}).textContent||'',s:(e.querySelector('span')||{}).textContent||''}));
-  const rn=[...document.querySelectorAll('#climbDetail .clrn > span')].map(e=>({s:e.childNodes[0].textContent,b:(e.querySelector('small')||{}).textContent||''}));
+  const rn=[...document.querySelectorAll('#climbDetail svg text.rnl')].map(e=>({s:e.dataset.rnraw,b:e.dataset.sym||''}));
   DOM.push({ctx:CTX,key:key?{k:key.k,mode:key.mode}:null,bars,rn})};
  const R=(key)=>{try{renderClimbDetail()}catch(e){ERR.push(CTX+': '+String(e).slice(0,200))}scrape(key)};
  const LV=[4,5,6];ROOM='climbs';
@@ -902,6 +960,9 @@ async def main():
         D = await pg.evaluate(KEYS_JS)
         COUNT['tonics offered in the Scales tab'] = len(D['tonics'])
         check_keys(D)
+        R = await pg.evaluate(CHORDS_JS)
+        COUNT['Chords room chords drawn (root spellings x qualities)'] = len(R)
+        check_chords_room(R)
         await pg.goto('http://app/index.html#climbs/3')
         await pg.wait_for_timeout(1200)
         C = await pg.evaluate(CLIMBS_JS)
