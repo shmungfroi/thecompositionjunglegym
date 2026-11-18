@@ -592,6 +592,31 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .earsolrow{position:relative;height:20px;color:var(--gold);font-size:14px;margin-top:-4px}.earsolrow span{position:absolute;top:0}
 .hsw{position:relative;display:inline-flex;width:64px;height:34px;align-items:center;justify-content:center}.hsi{max-width:64px;max-height:34px;object-fit:contain}.hsw em{position:absolute;right:-4px;top:-4px;font-style:normal;color:var(--goldhi);font-size:12.5px}
 .hs{width:24px;height:24px;color:var(--gold)}.earrhy{min-height:100px}
+/* R2: Ear Lab melody desk (ladder beside the stave) */
+.meldesk{display:grid;grid-template-columns:292px minmax(0,1fr);grid-template-areas:"lad score" "lad acts";grid-template-rows:auto 1fr;gap:14px 28px;align-items:start;margin-top:4px}
+.meldesk .earlad{grid-area:lad;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:26px;gap:0;max-width:none;margin:0}
+.melscore{grid-area:score;min-width:0}.melacts{grid-area:acts;min-width:0}
+.melscore .lbl{margin-bottom:8px}
+.melfr{position:relative;display:inline-block;max-width:100%;background:#0e0c08;border:1px solid var(--line);border-radius:12px;padding:16px;line-height:0;vertical-align:top}
+.melfr svg{display:block;overflow:visible}.melfr svg text{font-family:Outfit,system-ui,sans-serif}
+.melfr .vf-stavenote.now path[fill=none]{stroke:var(--goldhi)}.melfr .vf-stavenote.now path:not([fill=none]){fill:var(--goldhi)}.melfr text.now{fill:var(--goldhi)}
+.melscore .earres{margin:12px 0 0;font-size:14px;line-height:1.5}
+.melacts .go{margin-top:0!important}.melacts .note{display:inline-block;margin-top:10px}
+.meldesk .earstep{grid-column:1;margin:1.5px 0;padding:0 12px 0 8px;gap:12px;min-height:0;text-align:left;font-size:16px;font-family:inherit}
+.meldesk .hsw{width:76px;height:40px;flex:none}.meldesk .hsi{max-width:76px;max-height:40px}
+.meldesk .earstep b{font-weight:400;min-width:30px;font-size:16px}.meldesk .earstep small{font-size:12.5px}
+.earstep .hm{margin-left:auto;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.earstep.home{box-shadow:inset 3px 0 0 var(--gold)}.earstep.last{border-color:var(--gold)}
+.earstep.now{border-color:var(--goldhi);background:rgba(240,212,138,.08)}
+.meldesk .earstep[disabled]{cursor:default;opacity:.55}
+.earstep:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (max-width:760px){
+ .meldesk{display:flex;flex-direction:column;align-items:stretch;gap:12px}.melscore{order:-1}.melacts{order:2}
+ .melscore{position:sticky;top:calc(var(--top) + 6px);z-index:3;background:linear-gradient(180deg,#15120d 88%,rgba(21,18,13,0));padding-bottom:10px;margin-bottom:-6px}
+ .melfr{display:block;padding:14px 12px}
+ .meldesk .earlad{grid-auto-rows:24px}.meldesk .earstep{margin:.5px 0}
+ .meldesk .hsw{width:64px;height:34px}.meldesk .hsi{max-width:64px;max-height:34px}
+}
 .phexp select{background:#0e0c08;color:var(--ivory);border:1px solid var(--line);border-radius:6px;padding:2px 4px}.phexp td,.phexp th{padding:4px 6px}
 .anpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}@media(max-width:900px){.anpick{grid-template-columns:1fr 1fr}}.anpick .cad b{font-size:14px}
 .vrv{background:#0e0c08;border:1px solid var(--line);border-radius:12px;max-height:72vh;overflow:auto;padding:34px 10px 10px}.vrv>svg{width:100%;height:auto;display:block}.vrv g.annow{fill:#f0d48a;color:#f0d48a}
@@ -5956,7 +5981,7 @@ function earPlay(what){const q=EAR.q;if(!q)return;stopAll();const A=ac();let t=A
  else if(q.d==='rhy'){for(let i=0;i<4;i++)earClick(t+i*.6,i?0:2);t+=2.4;let p=0;q.a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest)c2Tone(67,t+p*.15,Math.max(.12,d*.15*.9),1);p+=d}));for(let i=0;i<p/4;i++)earClick(t+i*.6,-1)}
  else if(q.d==='qual'){const n=q.notes;n.forEach(m=>c2Tone(m,t,1.2,1));n.forEach((m,i)=>c2Tone(m,t+1.5+i*.4,.5,1));n.forEach(m=>c2Tone(m,t+1.6+n.length*.4,1.4,1))}
  else if(q.d==='cad'||q.d==='bass'){if(what!=='nokey')t=earKeyCue(q.key,t);const src=what==='bassonly'?q.ch.map(c=>[c[0]]):q.ch;src.forEach((c,i)=>{const last=i===src.length-1;c.forEach(m=>c2Tone(m,t,last?1.8:1,1));t+=1.1})}
- else if(q.d==='mel'){if(what!=='nokey'){t=earKeyCue(q.key,t)}const notes=what==='first'?q.midi.slice(0,1):q.midi;notes.forEach((m,i)=>c2Tone(m,t+i*.65,.6,1))}
+ else if(q.d==='mel'){if(what!=='nokey'){t=earKeyCue(q.key,t)}const notes=what==='first'?q.midi.slice(0,1):q.midi;notes.forEach((m,i)=>c2Tone(m,t+i*.65,.6,1));if(EAR.done)earMelFollow(q,0,notes.length,t)}
  else if(q.d==='blind'){const m=AN.meta[q.score],tn=EAR.blindTonic(q.key);[tn-12,tn,tn+(/minor/.test(q.key)?3:4),tn+7].forEach(x=>c2Tone(x,t,1.3,1));t+=1.8;
   // event times can sit a millisecond either side of a barline, so allow 5 ms; each note sounds for its written length, cut at the end of the cadence chord
   m.events.forEach(([ms,p,d])=>{if(ms>=q.s-5&&ms<q.e-5)tone(p,t+Math.max(0,ms-q.s)/1000,'piano',1,Math.min(d,q.e-ms)/1000)})}
@@ -6001,6 +6026,77 @@ HIST.ear=mkHist(()=>EAR.ans,v=>{EAR.ans=v;renderEar()});
 function earNew(){EAR.done=false;EAR.res=null;EAR.ans=[];HIST.ear.u=[];HIST.ear.r=[];
  if(EAR.drill==='blind'&&!EAR.blind){EAR.q=null;renderEar();earLoadBlind().then(()=>{EAR.q=earGen('blind',earLvl());renderEar();earPlay()}).catch(()=>{$('earMain')&&($('earMain').querySelector('.earq').innerHTML='<p class="note">The scores could not be loaded. Blind analysis needs the score files that come with the published app.</p>')});return}
  EAR.q=earGen(EAR.drill,earLvl());renderEar();earPlay()}
+/* ---- R2: melody desk (hand-sign ladder beside the stave) ---- */
+// R2: to be moved onto the shared engraving layer after merge
+// Draws a one-system exercise stave (7 px staff-space desktop / 6.5 px phone, set by opts.ss) with solfa underneath.
+// opts: {rows:[{label?,cells:[{n:{s,o}|null,col?,tcol?}]}], cur:index of the place being written (-1 none), avail:px, ss:px, reserve:[{s,o}...]}
+// Every note sits at a fixed advance (empty places are GhostNotes), so nothing moves as notes arrive and stacked rows align.
+function earMelStave(el,notes,key,opts){el.innerHTML='';if(!window.Vex)return null;
+ const VF=Vex.Flow,IV='#ece2c8',MUTED='#9c927c',GOLD='#c9a24a',LINE='rgba(236,226,200,.45)',LEDG='rgba(236,226,200,.7)',BARL='rgba(236,226,200,.8)';
+ const ss=opts.ss||7,sc=ss/10,U=opts.avail/sc,X0=2/sc,rows=opts.rows||[{cells:notes.map(n=>({n,col:IV}))}],N=rows[0].cells.length,ks=KEYN.maj[earDo(key).m%12];
+ const st0=new VF.Stave(0,0,400);st0.addClef('treble').addKeySignature(ks);const lead=st0.getNoteStartX()+6,END=16;
+ const adv=Math.max(35,Math.min(50,(U-lead-END)/N));
+ const pos=n=>{const sp=eSolSpell(n,key);return{sp,line:(sp.oct-4)*3.5+'CDEFGAB'.indexOf(sp.name[0])/2-1}};
+ const ext=[...rows.flatMap(r=>r.cells.filter(c=>c.n).map(c=>c.n)),...(opts.reserve||[]),...notes].map(n=>pos(n).line);
+ const hi=Math.max(4,...ext.map(l=>l<2?l+3.5:l+.5)),lo=Math.min(0,...ext.map(l=>l>=2?l-3.5:l-.5));
+ const lblH=rows.some(r=>r.label)?20/sc:0,above=(hi-4)*10+8+lblH,below=-lo*10+12,rowH=above+40+below+18/sc,rowGap=rows.length>1?14/sc:0;
+ const w=lead+N*adv+END,W=X0+w+2/sc,H=rows.length*rowH+(rows.length-1)*rowGap;
+ const r=new VF.Renderer(el,VF.Renderer.Backends.SVG);r.resize(W*sc,H*sc);const ctx=r.getContext();ctx.scale(sc,sc);ctx.setFillStyle(IV);ctx.setStrokeStyle(IV);
+ const svg=el.querySelector('svg');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('width',W*sc);svg.setAttribute('height',H*sc);svg.style.width=W*sc+'px';svg.style.height=H*sc+'px';svg.setAttribute('aria-hidden','true');
+ const NS='http://www.w3.org/2000/svg',texts=[],order='FCGDAEB',sh=['G','D','A','E','B','F#','C#'],fl=['F','Bb','Eb','Ab','Db','Gb'],keyAcc={};
+ if(sh.includes(ks))for(let i=0;i<=sh.indexOf(ks);i++)keyAcc[order[i]]=1;if(fl.includes(ks))for(let i=0;i<=fl.indexOf(ks);i++)keyAcc['BEADGCF'[i]]=-1;
+ const xs=[];
+ rows.forEach((row,ri)=>{const top=ri*(rowH+rowGap),sy=top+above-40;
+  if(row.label)texts.push({x:X0,y:top+11/sc,t:row.label,fill:MUTED,size:11,ls:1.5,anchor:'start'});
+  const stv=new VF.Stave(X0,sy,w);stv.setStyle({strokeStyle:LINE,fillStyle:IV,lineWidth:1/sc});stv.addClef('treble').addKeySignature(ks);stv.setBegBarType(VF.Barline.type.NONE).setEndBarType(VF.Barline.type.END);stv.setNoteStartX(X0+lead);stv.setContext(ctx).draw();
+  const sns=row.cells.map(c=>{if(!c.n)return new VF.GhostNote({duration:'q'});const p=pos(c.n).sp,L=p.name[0],sn=new VF.StaveNote({keys:[`${L.toLowerCase()}${accStr(p.acc)}/${p.oct}`],duration:'q',auto_stem:true});
+   if(p.acc!==(keyAcc[L]||0))sn.addModifier(new VF.Accidental(p.acc===0?'n':accStr(p.acc)),0);
+   const col=c.col||IV;sn.setStyle({fillStyle:col,strokeStyle:col});sn.setLedgerLineStyle({strokeStyle:LEDG,lineWidth:1.2/sc,fillStyle:LEDG});return sn});
+  const v=new VF.Voice({num_beats:N,beat_value:4}).setMode(VF.Voice.Mode.SOFT);v.addTickables(sns);new VF.Formatter().joinVoices([v]).format([v],N*adv);
+  sns.forEach((sn,i)=>sn.getTickContext().setX(i*adv+adv*.32));v.draw(ctx,stv);
+  const base=top+above+40+below+13/sc,cx=[];
+  sns.forEach((sn,i)=>{const c=row.cells[i];let x;
+   if(c.n){x=(sn.getNoteHeadBeginX()+sn.getNoteHeadEndX())/2;const g=svg.querySelector('#vf-'+sn.getAttribute('id'));
+    if(g){g.setAttribute('data-mi',i);g.setAttribute('data-row',ri);const hd=g.querySelector('.vf-notehead');if(hd){const bb=hd.getBBox(),dx=x-(bb.x+bb.width/2);if(Math.abs(dx)>.05)g.setAttribute('transform',`translate(${dx} 0)`)}} // an accidental pushes the head left: put every head on its fixed x
+    texts.push({x,y:base,t:eSolTxt(c.n),fill:c.tcol||c.col||IV,size:12.5,mi:i,row:ri})}
+   else{x=X0+lead+i*adv+adv*.32+8/sc;texts.push({rule:true,x,y:base-1/sc,cur:i===opts.cur})}
+   cx.push(x*sc)});xs.push(cx)});
+ svg.querySelectorAll('rect').forEach(e=>{if(!e.closest('.vf-stavenote'))e.setAttribute('fill',BARL)});
+ texts.forEach(t=>{if(t.rule){const l=document.createElementNS(NS,'rect'),ww=14/sc,h=(t.cur?2:1)/sc;l.setAttribute('x',t.x-ww/2);l.setAttribute('y',t.y-h+1/sc);l.setAttribute('width',ww);l.setAttribute('height',h);l.setAttribute('fill',t.cur?GOLD:'rgba(236,226,200,.3)');l.setAttribute('class','melslot'+(t.cur?' cur':''));svg.appendChild(l);return}
+  const e=document.createElementNS(NS,'text');e.setAttribute('x',t.x);e.setAttribute('y',t.y);e.setAttribute('font-size',t.size/sc);e.setAttribute('text-anchor',t.anchor||'middle');e.setAttribute('fill',t.fill);e.setAttribute('stroke','none');e.setAttribute('font-weight',400);
+  if(t.ls)e.setAttribute('letter-spacing',t.ls/sc);if(t.mi!==undefined){e.setAttribute('class','melsol');e.setAttribute('data-mi',t.mi);e.setAttribute('data-row',t.row)}
+  e.textContent=t.ls?t.t.toUpperCase():t.t;svg.appendChild(e)});
+ return{W:W*sc,H:H*sc,adv,xs}}
+function eSolParse(tx){const m=tx.match(/^([a-z]+)([,']*)$/);return{s:m[1],o:(m[2].match(/'/g)||[]).length-(m[2].match(/,/g)||[]).length}}
+function eSolName(s){return{d:'do',r:'re',m:'mi',f:'fa',s:'so',l:'la',t:'ti',si:'si'}[s]||s}
+function earMelLadderHTML(q,lock,full){const[lo,hi]=q.range,A=EAR.ans,last=A.length&&!lock?A[A.length-1]:null,home=q.mode==='min'?'l':'d',dis=!lock&&full?'disabled':'';let h='';
+ for(let i=hi,k=0;i>=lo;i--,k++){const n=eSolOf(i,q.mode),tx=eSolTxt(n),sp=eSolSpell(n,q.key),isH=n.s===home;
+  h+=`<button class="earstep${isH?' home':''}${tx===last?' last':''}" style="grid-row:${2*k+1}/span 2" data-earsol="${tx}" ${dis} aria-label="${eSolName(n.s)}${n.o<0?' low':n.o>0?' high':''}${isH?', home note':''}">${ehsign(n.s)}<b>${tx}</b>${EAR.letters?`<small>${pretty(sp.name)}</small>`:''}${isH&&n.o===(q.mode==='min'?-1:0)?'<span class="hm">home</span>':''}</button>`}
+ return`<div class="earlad${lock?' listen':''}" role="group" aria-label="Solfa ladder, high to low">${h}</div>`}
+function earMelWrong(q){const g=EAR.res&&EAR.res.given;return g?q.a.slice(1).filter((x,i)=>g[i]!==x).length:0}
+function earMelDeskHTML(q){const lock=EAR.done,A=EAR.ans,full=A.length>=q.a.length-1,res=EAR.res;let strip='';
+ if(lock){const bad=res.given!==null&&!res.ok,n=earMelWrong(q),tot=q.a.length-1;
+  strip=`<div class="earres ${res.ok?'ok':'bad'}"><b>${res.ok?'Correct.':res.given===null?'Here it is.':'Not this time.'}</b> ${res.ok?'Sing it once more with the hand signs.':res.given===null?'Sing it back with the hand signs, then try the next one.':`${n} of the ${tot} notes you wrote ${n===1?'differs':'differ'}. Compare the two staves, then sing the melody with the hand signs.`}</div>`}
+ const aria=lock?'The melody: '+q.a.join(' ')+'.'+(res.given&&!res.ok?' You wrote: '+[q.a[0],...res.given].join(' ')+'.':''):'Your melody so far: '+[q.a[0],...A].join(' ');
+ return`<div class="meldesk">${earMelLadderHTML(q,lock,full)}
+  <div class="melscore"><div class="lbl">${lock?`Melody · ${q.a.length} notes`:`Write the melody · ${A.length+1} of ${q.a.length} notes`}</div><div class="melfr" id="earMel" role="img" aria-label="${aria}"></div>${strip}</div>
+  <div class="melacts">${earEditBtns(full)}<label class="note"><input type="checkbox" id="earLet" ${EAR.letters?'checked':''}> show letter names</label></div></div>`}
+function earMelMount(q){const el=document.getElementById('earMel');if(!el)return;const phone=innerWidth<=760,ss=phone?6.5:7,cs=getComputedStyle(el),IV='#ece2c8',GIVEN='#c9b98f',RED='#c8473b';
+ const avail=Math.min(880,el.parentElement.clientWidth)-parseFloat(cs.paddingLeft)*2-2,lock=EAR.done,A=EAR.ans,res=EAR.res;
+ const truth=q.notes.map((n,i)=>({n,col:i===0?GIVEN:IV}));let rows;
+ if(!lock)rows=[{cells:q.notes.map((n,i)=>i===0?{n,col:GIVEN}:A[i-1]?{n:eSolParse(A[i-1]),col:IV}:{n:null})}];
+ else if(res.ok||res.given===null)rows=[{cells:truth}];
+ else rows=[{label:'You wrote',cells:q.notes.map((n,i)=>i===0?{n,col:GIVEN}:res.given[i-1]?{n:eSolParse(res.given[i-1]),col:res.given[i-1]===q.a[i]?IV:RED}:{n:null})},{label:'The melody',cells:truth}];
+ const [lo,hi]=q.range;EAR.melSig={phone,w:Math.round(el.parentElement.clientWidth)};
+ return earMelStave(el,q.notes,q.key,{rows,cur:lock?-1:A.length+1,avail,ss,reserve:[eSolOf(lo,q.mode),eSolOf(hi,q.mode)]})}
+window.addEventListener('resize',()=>{clearTimeout(EAR.melRz);EAR.melRz=setTimeout(()=>{const q=EAR.q,el=document.getElementById('earMel');if(!q||q.d!=='mel'||!el)return;const g=EAR.melSig||{};if(g.phone!==(innerWidth<=760)||g.w!==Math.round(el.parentElement.clientWidth))earMelMount(q)},120)});
+// replay at the reveal: each note on the stave and its rung light up in time (a state change only, no animation)
+function earMelNowClear(){document.querySelectorAll('#earMain .now').forEach(e=>e.classList.remove('now'))}
+function earMelNow(q,i){earMelNowClear();const rows=document.querySelectorAll('#earMel [data-row]'),last=rows.length?Math.max(...[...rows].map(e=>+e.getAttribute('data-row'))):0;
+ document.querySelectorAll(`#earMel [data-row="${last}"][data-mi="${i}"]`).forEach(e=>e.classList.add('now'));
+ const r=[...document.querySelectorAll('#earMain .earstep')].find(b=>b.dataset.earsol===q.a[i]);if(r)r.classList.add('now')}
+function earMelFollow(q,first,count,t0){const A=ac();earMelNowClear();for(let i=0;i<count;i++){const k=first+i,ms=Math.max(0,(t0+i*.65-A.currentTime)*1000);
+ PLAY.timers.push(setTimeout(()=>earMelNow(q,k),ms));PLAY.timers.push(setTimeout(earMelNowClear,ms+600))}}
 /* ---- the room ---- */
 const EARHOW={metre:'Count along. Where does the strongest click fall, and how many beats come before it returns? Then listen inside each beat: does it split in two (simple) or in three (compound)? The speed changes each time (60–120 bpm), so do not use tempo as a clue.',
  rhy:'You hear a count-in of four clicks, then the rhythm on one note. Tap it back on your knee before you answer, then build it beat by beat.',
@@ -6022,10 +6118,7 @@ function earBuildHTML(q){const lock=EAR.done,A=EAR.ans;
   ${earEditBtns(used===tot)}`}
  if(q.d==='bass'){return`<div class="lbl">Name chords 2–4 in ${keyName(q.key)}</div><div class="earslots">${[0,1,2,3].map(i=>`<div class="earslot ${i===A.length+1&&!lock?'cur':''}">${i===0?'I':A[i-1]||'?'}${lock&&i>0?`<small class="${A[i-1]===q.a[i]?'okt':'badt'}">${q.a[i]}</small>`:''}</div>`).join('')}</div>
   <div class="chips">${q.opts.map(o=>`<button class="chip" data-earrn="${o}" ${lock||A.length>=3?'disabled':''}>${o}</button>`).join('')}</div>${earEditBtns(A.length===3)}`}
- if(q.d==='mel'){const[lo,hi]=q.range,lad=[];for(let i=hi;i>=lo;i--)lad.push(eSolOf(i,q.mode));
-  return`<div class="lbl">Write the melody · ${A.length+1} of ${q.a.length} notes</div><div class="earslots">${q.a.map((x,i)=>`<div class="earslot ${i===A.length+1&&!lock?'cur':''}">${i===0?x:A[i-1]||'?'}${lock&&i>0?`<small class="${A[i-1]===x?'okt':'badt'}">${x}</small>`:''}</div>`).join('')}</div>
-  <div class="earlad">${lad.map(n=>{const tx=eSolTxt(n),sp=eSolSpell(n,q.key);return`<button class="earstep" data-earsol="${tx}" ${lock||A.length>=q.a.length-1?'disabled':''}>${ehsign(n.s)}<b>${tx}</b>${EAR.letters?`<small>${pretty(sp.name)}</small>`:''}</button>`}).join('')}</div>
-  <label class="note"><input type="checkbox" id="earLet" ${EAR.letters?'checked':''}> show letter names</label>${earEditBtns(A.length===q.a.length-1)}`}
+ if(q.d==='mel')return earMelDeskHTML(q);
  return''}
 function earEditBtns(full){return EAR.done?'':`<div class="go" style="margin-top:8px"><button class="mini" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="mini" data-hist="ear:r" title="Redo">↷ Redo</button><button class="mini" data-earclr>Clear</button><span class="sp"></span><button class="mini gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
 function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(),s=earSt();
@@ -6037,13 +6130,13 @@ function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(
    ${q&&q.d==='bass'?`<button class="mini" data-earplay="bassonly">Bass only</button>`:''}${q&&q.d==='mel'?`<button class="mini" data-earplay="first">First note</button>`:''}
    <button class="mini" data-earstop>■ Stop</button><span class="sp"></span>${q&&!EAR.done?`<button class="mini" data-earshow>Show me</button>`:''}<button class="mini ${EAR.done||!q?'gold':''}" data-earnew>${q?'Next question →':'Start →'}</button></div>
   <div class="earq">${q?earOptsHTML(q)+earBuildHTML(q):`<p class="note">${EAR.drill==='blind'&&!EAR.blind?'Press Start to load the scores.':'Press Start to hear the first question.'}</p>`}</div>
-  ${EAR.done&&q?`<div class="earres ${EAR.res.ok?'ok':'bad'}"><b>${EAR.res.ok?'Correct.':EAR.res.given===null?'Here it is.':'Not this time.'}</b> ${earAnsTxt(q)}</div><div id="earNote"></div>`:''}
+  ${EAR.done&&q&&q.d!=='mel'?`<div class="earres ${EAR.res.ok?'ok':'bad'}"><b>${EAR.res.ok?'Correct.':EAR.res.given===null?'Here it is.':'Not this time.'}</b> ${earAnsTxt(q)}</div><div id="earNote"></div>`:''}
   <div class="earstat">Score ${s.ok} / ${s.n} · streak ${s.streak} · best ${s.best}<span class="sp"></span><button class="mini" data-earreset>Reset score</button><button class="mini" data-earjournal>Save to journal</button></div>
  </section>
  <section class="card"><h3>Listening for it</h3>${earTips(EAR.drill)}</section>`;
  if(q&&q.d==='rhy'&&!EAR.done)earRhyDraw($('earRhy'),EAR.ans,q.bars);
- if(EAR.done&&q&&$('earNote')){if(q.d==='rhy')earRhyDraw($('earNote'),q.a,q.bars);if(q.d==='mel')earMelDraw($('earNote'),q.notes,q.key);
-  if(q.d==='blind')$('earNote').innerHTML=`<p class="note">From ${q.t||q.score}. <button class="mini" data-earscore="${q.score}">Open this score in Analysis</button></p>`}
+ if(q&&q.d==='mel')earMelMount(q);
+ if(EAR.done&&q&&$('earNote')){if(q.d==='rhy')earRhyDraw($('earNote'),q.a,q.bars);  if(q.d==='blind')$('earNote').innerHTML=`<p class="note">From ${q.t||q.score}. <button class="mini" data-earscore="${q.score}">Open this score in Analysis</button></p>`}
  hBtns();sylMount(true)}
 function earTips(d){const T={
  metre:'<p>Simple metres split each beat in two; compound metres split it in three (6/8 is two beats of three quavers, not six beats). Irregular metres mix groups of 2 and 3: 5/4 here is felt 3+2, 7/8 as 2+2+3.</p>',
@@ -6056,11 +6149,12 @@ function earTips(d){const T={
 document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earplay],[data-earstop],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earreset],[data-earjournal],[data-earscore]');if(!t)return;const d=t.dataset;
  if(d.eardr){stopAll();EAR.drill=d.eardr;EAR.q=null;EAR.done=false;EAR.ans=[];earSave();renderEar();return}
  if(d.earlv){EAR.lvl[EAR.drill]=+d.earlv;earSave();EAR.q=null;EAR.done=false;EAR.ans=[];renderEar();return}
- if(d.earplay){earPlay(d.earplay);return}if(d.earstop!==undefined){stopAll();return}
+ if(d.earplay){earPlay(d.earplay);return}if(d.earstop!==undefined){stopAll();earMelNowClear();return}
  if(d.earnew!==undefined){earNew();return}
  if(d.earans!==undefined&&EAR.q&&!EAR.done){earMark(d.earans===EAR.q.a,d.earans);renderEar();return}
  if(d.earcell&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earcell);renderEar();return}
  if(d.earrn&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earrn);renderEar();return}
+ if(d.earsol&&EAR.done&&EAR.q&&EAR.q.d==='mel'){const n=eSolParse(d.earsol);c2Tone(eSolMidi(n,EAR.q.key),ac().currentTime+.02,.5,1);return}
  if(d.earsol&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earsol);const n=d.earsol.match(/^([a-z]+)([,']*)$/),o=(n[2].match(/'/g)||[]).length-(n[2].match(/,/g)||[]).length;c2Tone(eSolMidi({s:n[1],o},EAR.q.key),ac().currentTime+.02,.5,1);renderEar();return}
  if(d.earclr!==undefined){HIST.ear.push();EAR.ans=[];renderEar();return}
  if(d.earchk!==undefined){earCheck();return}
