@@ -4,6 +4,8 @@ Run: python3 tests/score_measure_test.py <repo dir>
 For every visible VexFlow score (svg.vfx inside a .sframe) in every view below:
   S  staff-space: the gap between staff lines, measured on screen, is the task value (glance 6 px; exercise 7 px on
      desktop >= 900 px, 6.5 px on phones) within 0.15 px.
+  R  whole-bar rests centred in their bar within 2 px (FR-2).
+  K  climb 4: each chord card's edges within 4 px of its bar's barlines (K2).
   T  text: every SVG text renders at >= 11 px, except stacked figured-bass figures (class fig) at 9 px.
   O  no sideways overflow on desktop: the score frame never scrolls sideways at 1440 and 1024.
   L  ledger lines: ivory at 70% (never #444), 1.2 px on screen.
@@ -58,7 +60,14 @@ MEASURE = r"""(W)=>{const out=[];const desk=document.documentElement.clientWidth
   if(svg.dataset.incomplete)f.push('B incomplete: '+svg.dataset.incomplete);
   for(let i=0;i<T.length;i++)for(let j=i+1;j<T.length;j++){const a=T[i].r,b=T[j].r;if(T[i].fig||T[j].fig)continue;const ix=Math.min(a.right,b.right)-Math.max(a.left,b.left),iy=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);
    if(ix>1&&iy>1&&ix*iy>0.2*Math.min(a.width*a.height,b.width*b.height))f.push(`X "${T[i].t}" over "${T[j].t}"`)}
-  out.push({id,task,n:sp.length,f:[...new Set(f)].slice(0,6),resp:fr.dataset.resp||''})});return out}"""
+  // FR-2: a whole-bar rest is centred in its bar
+  svg.querySelectorAll('g.vf-stavenote[data-mid]').forEach(g=>{const m=svg.getScreenCTM(),x=+g.dataset.mid*m.a+m.e,hs=[...g.querySelectorAll('.vf-notehead')].map(h=>h.getBoundingClientRect()).filter(r=>r.width>0),r=hs.length?(()=>{const R=Math.max(...hs.map(h=>h.right)),w=Math.min(...hs.map(h=>h.width));return{left:R-w,right:R}})():g.getBoundingClientRect();if(Math.abs((r.left+r.right)/2-x)>2)f.push(`R rest or chord off centre by ${((r.left+r.right)/2-x).toFixed(1)} px`)});
+  out.push({id,task,n:sp.length,f:[...new Set(f)].slice(0,6),resp:fr.dataset.resp||''})});
+ // K2: climb 4 cards sit on their bars (card edge within 4 px of the bar's barlines)
+ [0,1].forEach(si=>{const cs=document.querySelectorAll(`#c4C${si} .c4card`),rs=document.querySelectorAll(`#c4S${si} rect.bhl`);if(!cs.length)return;const f=[];
+  cs.forEach((c,i)=>{const a=c.getBoundingClientRect(),b=rs[i]&&rs[i].getBoundingClientRect();if(!b){f.push('K no bar for card '+(si*4+i+1));return}if(Math.abs(a.left-3-b.left)>4||Math.abs(a.right+3-b.right)>4)f.push(`K card ${si*4+i+1} off its bar: ${(a.left-3-b.left).toFixed(1)}/${(a.right+3-b.right).toFixed(1)} px`)});
+  out.push({id:'c4 cards '+si,task:'cards',n:1,f,resp:''})});
+ return out}"""
 
 async def main():
     res, total, fails, errs = {}, 0, 0, {}

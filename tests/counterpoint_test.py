@@ -1201,7 +1201,7 @@ async def main():
                 if e:
                     fail('C', f'{c["src"]} has errors: {desc}: {e}')
         # rule-card examples: the bad version shows its rule, the good one does not
-        exs = await pg.evaluate("()=>Object.entries(C2EXAMPLES).map(([k,e])=>({k,code:C2CODE[e.rule],sp:e.sp,pos:e.pos,good:e.good,bad:e.bad,open:!!e.open,br:e.br||[],appg:c2Check({k:'ex',cf:e.good.cf,open:e.open},e.sp,e.pos,e.good.cp.map(s=>c2Parse(s.replace('#','')).dn),e.br||[]).iss.map(x=>x.code),appb:c2Check({k:'ex',cf:e.bad.cf,open:e.open},e.sp,e.pos,e.bad.cp.map(s=>c2Parse(s.replace('#','')).dn),e.br||[]).iss.map(x=>x.code)}))")
+        exs = await pg.evaluate("()=>Object.entries(C2EXAMPLES).map(([k,e])=>({k,msg:e.msg,code:C2CODE[e.rule],sp:e.sp,pos:e.pos,good:e.good,bad:e.bad,open:!!e.open,br:e.br||[],appg:c2Check({k:'ex',cf:e.good.cf,open:e.open},e.sp,e.pos,e.good.cp.map(s=>c2Parse(s.replace('#','')).dn),e.br||[]).iss.map(x=>x.code),appb:c2Check({k:'ex',cf:e.bad.cf,open:e.open},e.sp,e.pos,e.bad.cp.map(s=>c2Parse(s.replace('#','')).dn),e.br||[]).iss.map(x=>x.code)}))")
         for e in exs:
             code = e['code']  # the rule the card illustrates (an 'Allowed' card, e.g. S3c, illustrates the rule it is the exception to)
             if code != e['k'].split('_')[0]:
@@ -1211,6 +1211,19 @@ async def main():
             bd = [x[0] for x in check(e['bad']['cf'], e['sp'], e['pos'], [parse(s.replace('#', '')).dn for s in e['bad']['cp']], e['br'], open_=e['open'])[0]]
             if code in g or code not in bd:
                 fail('C', f'rule card {e["k"]}: good example gives {g}, bad gives {bd}')
+            # 0.47 FR-3: a "follows the rule" example breaks no Must rule at all. An open fragment may begin on an
+            # imperfect consonance (H2 is about the first note of a whole piece), but never on a dissonance.
+            ge = [x for x in check(e['good']['cf'], e['sp'], e['pos'], [parse(s.replace('#', '')).dn for s in e['good']['cp']], e['br'], open_=e['open'])[0] if x[1] == 'err']
+            first = iv(parse(e['good']['cf'][0]), parse(e['good']['cp'][0].replace('#', '')))
+            # every card is an excerpt: the H2 "begin on a perfect consonance" rule is waived when it starts on a consonance
+            other = [x[0] for x in ge if not (x[0] == 'H2' and code != 'H2' and first.cls != 'D')]
+            COUNT['rule-card good examples with no error (FR-3)'] += 1
+            if other:
+                fail('C', f'rule card {e["k"]}: the "follows the rule" example breaks {other} (first interval {first.name})')
+            be = [x[0] for x in check(e['bad']['cf'], e['sp'], e['pos'], [parse(s.replace('#', '')).dn for s in e['bad']['cp']], e['br'], open_=e['open'])[0] if x[1] == 'err']
+            bfirst = iv(parse(e['bad']['cf'][0]), parse(e['bad']['cp'][0].replace('#', '')))
+            if bfirst.cls == 'D' and code != 'H2' and not str(e.get('msg', '')).startswith('Bar 1'):
+                fail('C', f'rule card {e["k"]}: the "breaks it" example also opens on a dissonance ({bfirst.name})')
             if sorted(g) != sorted(e['appg']) or sorted(bd) != sorted(e['appb']):
                 fail('C', f'rule card {e["k"]}: app {e["appg"]}/{e["appb"]} vs mine {g}/{bd}')
 
