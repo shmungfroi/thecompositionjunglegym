@@ -249,7 +249,7 @@ async def main():
         # ---------------- C: tells ----------------
         tells = await pg.evaluate("""()=>{let s=17;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o={cad:[],metre:[],qual:[]};
             for(const l of [1,2,3])for(let i=0;i<5000;i++){const c=earGen('cad',l,R);o.cad.push({l,a:c.a,n:c.ch.length,lo:Math.min(...c.ch.flat()),hi:Math.max(...c.ch.flat()),
-                s2:c.rns[1],fin:c.ch[c.ch.length-1][3]});
+                s2:c.rns[1],open:c.ch[0].join(','),fin:c.ch[c.ch.length-1][3]});
               const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
               const q=earGen('qual',l,R);o.qual.push({l,a:q.a,lo:q.notes[0],hi:q.notes[q.notes.length-1]})}return o}""")
         MARGIN = 0.05
@@ -263,6 +263,8 @@ async def main():
         tell('cadences', tells['cad'], 'number of chords', lambda r: r['n'], lambda r: r['a'])
         tell('cadences', tells['cad'], 'lowest note (6-semitone bands)', lambda r: r['lo'] // 6, lambda r: r['a'])
         tell('cadences', tells['cad'], 'highest note (6-semitone bands)', lambda r: r['hi'] // 6, lambda r: r['a'])
+        tell('cadences', tells['cad'], 'second chord', lambda r: r['s2'], lambda r: r['a'])
+        tell('cadences', tells['cad'], 'opening voicing', lambda r: r['open'], lambda r: r['a'])
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['comp'])
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['a'])
         tell('chord quality', tells['qual'], 'lowest note (6-semitone bands)', lambda r: r['lo'] // 6, lambda r: r['a'])
@@ -330,13 +332,15 @@ async def main():
                 if c not in cats:
                     fail('E', f'level {l}: answer {c} occurs but has no button')
         # E3: the relabelled cadences
-        want = {('k331d', 2): 'vii°7/V – V', ('chopin7', 1): 'V7 – I', ('jesu', 4): 'V65/V – V', ('ohaupt', 1): 'V/vi – vi',
+        want = {('k331d', 2): 'vii°7/V – V', ('chopin7', 1): 'V7 – I', ('jesu', 4): 'V7/V – V', ('jesu', 1): 'V65/V – V', ('ohaupt', 1): 'V/vi – vi',
                 ('chorale', 3): 'V7/IV – IV', ('jesu', 3): 'V/III – III'}
         for (k, i), ch in want.items():
             if meta[k]['cads'][i]['ch'] != ch:
                 fail('E', f'{k} cadence {i+1}: chords "{meta[k]["cads"][i]["ch"]}", expected "{ch}"')
         if 'Picardy' not in meta['jesu']['cads'][5]['t']:
             fail('E', 'Jesu final cadence does not mention the Picardy third')
+        if meta['chopin7']['cads'][1].get('bar') not in (None, 15):
+            fail('E', 'Chopin 7 final cadence still shows bar %s' % meta['chopin7']['cads'][1].get('bar'))
         if 'cadential 6/4' in meta['chopin7']['cads'][1]['t'] or 'cadential 6/4 to close' in json.dumps(meta['chopin7']['sections'], ensure_ascii=False):
             fail('E', 'Chopin 7 still calls its final cadence a cadential 6/4')
         if 'Befiehl du deine Wege' not in meta['ohaupt']['t']:

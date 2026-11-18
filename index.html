@@ -5537,7 +5537,7 @@ function renderAnalysis(){const el=$('anMain');if(!el)return;const t=AN.tab;
  const b=$('anBody');
  if(t==='prog'){b.innerHTML=`<section class="card"><h3>My progression · from the Gym</h3>${anProgHTML()}</section>`;return}
  if(t==='map'){b.innerHTML=`<section class="card"><h3>Listening map · any recording</h3><p class="note" style="margin:0 0 10px">For music whose score can't be shown here (pop, jazz, film, contemporary Australian music, your own band): listen, and note the time each section starts and what you hear. The map draws itself to scale. Nothing is copied from the recording.</p><div id="anMapW">${anMapHTML()}</div></section>`;return}
- const S=[['chorale','Bach: Aus meines Herzens Grunde','chorale · cadences'],['ohaupt','Bach: O Haupt voll Blut und Wunden','chorale · cadences'],['jesu','Bach: Jesu, meine Freude','minor-key chorale'],['k331a','Mozart K. 331: the theme','period, rounded binary'],['k331d','Mozart K. 331: Variation III','minore'],['k545','Mozart K. 545','sonata form'],['maple','Joplin: Maple Leaf Rag','rag strains'],['entertainer','Joplin: The Entertainer','rag strains'],['chopin7','Chopin: Prelude No. 7','Romantic miniature'],['chopin20','Chopin: Prelude No. 20','Romantic: chromatic bass']];
+ const S=[['chorale','Bach: Aus meines Herzens Grunde','chorale · cadences'],['ohaupt','Bach: Befiehl du deine Wege (tune: O Haupt voll Blut und Wunden)','chorale · cadences'],['jesu','Bach: Jesu, meine Freude','minor-key chorale'],['k331a','Mozart K. 331: the theme','period, rounded binary'],['k331d','Mozart K. 331: Variation III','minore'],['k545','Mozart K. 545','sonata form'],['maple','Joplin: Maple Leaf Rag','rag strains'],['entertainer','Joplin: The Entertainer','rag strains'],['chopin7','Chopin: Prelude No. 7','Romantic miniature'],['chopin20','Chopin: Prelude No. 20','Romantic: chromatic bass']];
  b.innerHTML=`<div class="anpick">${S.map(s=>`<button class="cad ${AN.score===s[0]?'on':''}" data-ansc="${s[0]}"><b>${s[1]}</b><small>${s[2]}</small></button>`).join('')}</div>
  <section class="card"><h3 id="anTitle">Loading…<span class="sp"></span></h3>
   <div class="go" style="margin-bottom:8px" id="anCtl"></div>
@@ -5868,14 +5868,17 @@ const CADL={perfect:'Perfect (authentic)',plagal:'Plagal',imperfect:'Imperfect (
 /* Cadence models for the common-practice drill (tradition: Tonal/common practice). Only common-practice successions: no V–IV, no ii–I.
    Every category has models of the same lengths at each level, and the length is drawn first, so the number of chords never gives the answer away.
    Level 1: major, triads (root position and 1st inversion), 4 chords. Level 2: adds minor, 7ths and 5-chord models. Level 3 (Stage 6): adds the cadential 6/4 and the Phrygian cadence. */
-const CADT={1:{maj:{perfect:['I IV V I','I ii:1 V I','I ii V I'],plagal:['I vi IV I','I ii:1 IV I','I I:1 IV I'],imperfect:['I vi ii V','I IV ii:1 V','I I:1 IV V'],interrupted:['I IV V vi','I ii:1 V vi','I ii V vi']}},
- 2:{maj:{perfect:['I IV V I','I ii:1 V7 I','I ii V7 I','I vi ii:1 V I','I vi IV V7 I','I IV ii V7 I'],plagal:['I vi IV I','I ii:1 IV I','I I:1 IV I','I V vi IV I','I iii vi IV I','I vi ii:1 IV I'],
-   imperfect:['I vi ii V','I IV ii:1 V','I I:1 IV V','I vi IV ii:1 V','I V vi ii V','I iii vi IV V'],interrupted:['I IV V vi','I ii:1 V7 vi','I ii V vi','I vi ii:1 V vi','I IV ii V7 vi','I iii IV V vi']},
-  min:{perfect:['i iv V i','i ii°:1 V7 i','i VI V i','i VI iv V i','i VI ii°:1 V7 i','i III iv V i'],plagal:['i VI iv i','i i:1 iv i','i ii°:1 iv i','i V VI iv i','i III VI iv i','i VI ii°:1 iv i'],
-   imperfect:['i VI iv V','i iv ii°:1 V','i i:1 iv V','i III iv ii°:1 V','i VI iv ii°:1 V','i V VI iv V'],interrupted:['i iv V VI','i ii°:1 V7 VI','i iv V7 VI','i VI iv V VI','i III iv V7 VI','i iv ii°:1 V VI']}}};
+/* The second chord is drawn from the same set in every category (at each level, mode and length), so it never hints at the answer;
+   only the last chords (the cadence itself) differ. */
+const CADT={1:{maj:{perfect:['I vi V I','I ii:1 V I','I I:1 V I'],plagal:['I vi IV I','I ii:1 IV I','I I:1 IV I'],imperfect:['I vi IV V','I ii:1 IV V','I I:1 IV V'],interrupted:['I vi V vi','I ii:1 V vi','I I:1 V vi']}},
+ 2:{maj:{perfect:['I vi V7 I','I ii:1 V I','I I:1 V7 I','I vi ii:1 V I','I iii IV V7 I','I I:1 IV V7 I'],plagal:['I vi IV I','I ii:1 IV I','I I:1 IV I','I vi ii:1 IV I','I iii vi IV I','I I:1 vi IV I'],
+   imperfect:['I vi IV V','I ii:1 IV V','I I:1 IV V','I vi IV ii:1 V','I iii vi ii V','I I:1 vi IV V'],interrupted:['I vi V7 vi','I ii:1 V vi','I I:1 V7 vi','I vi ii:1 V vi','I iii IV V7 vi','I I:1 IV V vi']},
+  min:{perfect:['i VI V i','i ii°:1 V7 i','i i:1 V i','i III iv V i','i VI ii°:1 V7 i','i iv ii°:1 V i'],plagal:['i VI iv i','i ii°:1 iv i','i i:1 iv i','i III VI iv i','i VI ii°:1 iv i','i iv i:1 iv i'],
+   imperfect:['i VI iv V','i ii°:1 iv V','i i:1 iv V','i III VI iv V','i VI iv ii°:1 V','i iv VI ii°:1 V'],interrupted:['i VI V VI','i ii°:1 V7 VI','i i:1 V VI','i III iv V VI','i VI ii°:1 V7 VI','i iv ii°:1 V VI']}}};
 CADT[3]={maj:{},min:{}};
-const CAD3={maj:{perfect:['I IV I:2 V I','I ii:1 I:2 V7 I'],imperfect:['I ii:1 I:2 V','I vi IV I:2 V'],interrupted:['I ii:1 I:2 V vi']},
- min:{perfect:['i iv i:2 V i','i ii°:1 i:2 V7 i'],imperfect:['i VI iv:1 V','i i:1 iv:1 V','i iv i:2 V','i III VI iv:1 V'],interrupted:['i iv i:2 V VI']}};
+// Stage 6 additions: one per category for each length and mode, with the same second chord across categories
+const CAD3={maj:{perfect:['I IV I:2 V I'],plagal:['I IV vi IV I'],imperfect:['I IV ii:1 I:2 V'],interrupted:['I IV I:2 V vi']},
+ min:{perfect:['i III V i','i VI i:2 V i'],plagal:['i III iv i','i VI III iv i'],imperfect:['i III iv:1 V','i VI i:1 iv:1 V'],interrupted:['i III V VI','i VI i:2 V VI']}};
 ['maj','min'].forEach(md=>Object.keys(CADL).forEach(c=>CADT[3][md][c]=CADT[2][md][c].concat((CAD3[md][c]||[]))));
 const CKEYS2={maj:[0,2,5,7,10,3,9],min:[9,4,2,7,0]};
 function cadSub(rns){const s=rns.join(' ');return/(^| )(iv|IV):1 V$/.test(s)?'Phrygian cadence (iv⁶–V)':/:2 V7? (I|i|vi|VI)?$/.test(s)?'with a cadential 6/4':''}
@@ -5890,9 +5893,11 @@ function earSATB(L,key,reg={b:47,s:70}){return withKey(key,()=>{const I=L.map(ch
   return c});
  if(C.some(c=>!c.length))return null;
  const bad=(P,N,a,b)=>pairIssues(P,N,a,b).some(e=>e.sev==='error'||e.rule==='contrary'||e.rule==='overlap');
- let best=C[0].map(x=>({cost:x.cost,path:[x.v]}));
+ // the opening chord's voicing is chosen on its own (the best single voicing for this key and register), so it never depends on the cadence
+ const c0=C[0].slice().sort((a,b)=>a.cost-b.cost),go=start=>{let best=start.map(x=>({cost:x.cost,path:[x.v]}));
  for(let i=1;i<C.length;i++){best=C[i].map(n=>{let bb=null;for(const p of best){const P=p.path[p.path.length-1];if(bad(P,n.v,I[i-1],I[i]))continue;const cc=p.cost+n.cost+moveCost(P,n.v,I[i-1],I[i]);if(!bb||cc<bb.cost)bb={cost:cc,path:p.path.concat([n.v])}}return bb}).filter(Boolean).sort((a,b)=>a.cost-b.cost).slice(0,80);if(!best.length)return null}
- return best[0].path})}
+ return best[0].path};
+ return go(c0.slice(0,1))||go(c0)})}
 function earProg(rns,key,reg){const L=cadList(rns.join(' '),key),V=earSATB(L,key,reg);return{L,V,ch:V?V.map(v=>v.slice()):null}}
 function earGenCad(l,r){const mode=l===1?'maj':epick(['maj','maj','min'],r),key={k:epick(CKEYS2[mode],r),mode},ts=CADT[l][mode];
  const a=epick(Object.keys(CADL),r),lens=[...new Set(Object.values(ts).flat().map(x=>x.split(' ').length))],n=epick(lens,r);
