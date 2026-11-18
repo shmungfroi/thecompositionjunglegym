@@ -1220,8 +1220,16 @@ async def main():
             COUNT['rule-card good examples with no error (FR-3)'] += 1
             if other:
                 fail('C', f'rule card {e["k"]}: the "follows the rule" example breaks {other} (first interval {first.name})')
-            be = [x[0] for x in check(e['bad']['cf'], e['sp'], e['pos'], [parse(s.replace('#', '')).dn for s in e['bad']['cp']], e['br'], open_=e['open'])[0] if x[1] == 'err']
+            # "Breaks it" shows exactly one fault: the card's rule. Its only error (after the same fragment H2 waiver) is
+            # the card's rule; for a Should rule (a warning) it has no error at all. Documented companion: H5's crossing
+            # makes the V4 overlap warning too (warnings other than the card's are not counted as errors).
+            ball = check(e['bad']['cf'], e['sp'], e['pos'], [parse(s.replace('#', '')).dn for s in e['bad']['cp']], e['br'], open_=e['open'])[0]
             bfirst = iv(parse(e['bad']['cf'][0]), parse(e['bad']['cp'][0].replace('#', '')))
+            be = [x[0] for x in ball if x[1] == 'err' and not (x[0] == 'H2' and code != 'H2' and bfirst.cls != 'D')]
+            must = any(x[0] == code and x[1] == 'err' for x in ball)
+            COUNT['rule-card bad examples with exactly their own fault'] += 1
+            if (must and be != [code]) or (not must and (be or code not in [x[0] for x in ball])):
+                fail('C', f'rule card {e["k"]}: the "breaks it" example gives errors {be} (card rule {code})')
             if bfirst.cls == 'D' and code != 'H2' and not str(e.get('msg', '')).startswith('Bar 1'):
                 fail('C', f'rule card {e["k"]}: the "breaks it" example also opens on a dissonance ({bfirst.name})')
             if sorted(g) != sorted(e['appg']) or sorted(bd) != sorted(e['appb']):
