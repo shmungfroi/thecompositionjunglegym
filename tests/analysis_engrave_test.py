@@ -48,7 +48,7 @@ MEASURE = r"""()=>{const box=document.getElementById('anScore'),svg=box&&box.que
  const met=[...svg.querySelectorAll('g.meterSig')].map(g=>{const r=g.getBoundingClientRect();return{w:r.width,h:r.height,vis:getComputedStyle(g).visibility}});
  const pin=document.getElementById('anPin'),wrap=document.getElementById('anWrap');
  return{gaps,svgW:sr.width,svgH:sr.height,attrW:svg.width.baseVal.value,vbW:ds.viewBox.baseVal.width,box:R(box),client:{w:box.clientWidth,h:box.clientHeight,sw:box.scrollWidth,sh:box.scrollHeight},
-  ox:getComputedStyle(box).overflowX,pageSW:document.documentElement.scrollWidth,innerW:innerWidth,ov,vt,heads,sys,met,boxW:box.getBoundingClientRect().width,phone:wrap.classList.contains('phone'),pin:pin?R(pin):null,pinTxt:pin?pin.textContent:'',
+  ox:getComputedStyle(box).overflowX,padX:parseFloat(getComputedStyle(box).paddingLeft)+parseFloat(getComputedStyle(box).paddingRight),pageSW:document.documentElement.scrollWidth,innerW:innerWidth,ov,vt,heads,sys,met,boxW:box.getBoundingClientRect().width,phone:wrap.classList.contains('phone'),pin:pin?R(pin):null,pinTxt:pin?pin.textContent:'',
   side:wrap.classList.contains('side'),idx:[...document.querySelectorAll('#anIdx button')].map(b=>({txt:b.textContent,box:R(b)})),suf:AN.v&&AN.v.suf,
   bars:[...svg.querySelectorAll('g.measure')].map(g=>g.getAttribute('data-id')),notes:[...svg.querySelectorAll('g.note')].map(g=>g.getAttribute('data-id'))}}"""
 
@@ -116,7 +116,7 @@ async def main():
                     fail('C', f'{tag}: score box scrolls sideways (scrollWidth {r["client"]["sw"]} > {r["client"]["w"]}, overflow-x {r["ox"]})')
                 if r['pageSW'] > r['innerW']:
                     fail('C', f'{tag}: page is {r["pageSW"]} px wide in a {r["innerW"]} px viewport')
-                if r['svgW'] > r['box']['r'] - r['box']['l'] - 2 * 16 - 2 + 0.5:
+                if r['svgW'] > r['client']['w'] - r['padX'] + 0.5:
                     fail('C', f'{tag}: score {r["svgW"]:.0f} px does not fit the frame')
                 # D systems in view (desktop)
                 # IC-1: a time signature is drawn (the first system) in every score and engraving
