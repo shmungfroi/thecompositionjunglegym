@@ -96,7 +96,7 @@ def base_opts(scale, width, extra, spacing_system, staff_gap, margins):
     o = {'svgHtml5': True, 'svgRemoveXlink': True, 'font': 'Bravura', 'scale': scale,
          'pageWidth': round(width * 100 / scale), 'pageMarginLeft': round(LEFT_PX * 100 / scale), 'pageMarginRight': 0,
          'pageMarginTop': round(margins[0] * 100 / scale), 'pageMarginBottom': round(margins[1] * 100 / scale),
-         'svgFormatRaw': True,
+         'svgFormatRaw': True, 'xmlIdSeed': 1,
          'pageHeight': 60000, 'adjustPageHeight': True, 'breaks': 'auto', 'header': 'none', 'footer': 'none',
          'spacingStaff': staff_gap, 'spacingSystem': spacing_system, 'justifyVertically': False,
          'mnumInterval': 0, 'minLastJustification': 0.8}
