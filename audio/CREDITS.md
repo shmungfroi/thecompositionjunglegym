@@ -4,7 +4,7 @@ The Composition Jungle Gym plays these recorded samples. Every file was checked 
 
 | Folder | Instrument | Source | Licence |
 |---|---|---|---|
-| `piano/` | Steinway B grand piano, no sustain pedal, close microphones, middle velocity, every second semitone C2–A♯7 (G♯7 dropped: 76 cents flat) | Versilian Community Sample Library (VCSL), https://github.com/sgossner/VCSL | CC0 1.0 (public domain dedication) |
+| `piano/` | Steinway B grand piano, no sustain pedal, close microphones, middle velocity, every second semitone from C2 to F♯7 (34 files, MIDI 36–102; nothing above F♯7 is shipped) | Versilian Community Sample Library (VCSL), https://github.com/sgossner/VCSL | CC0 1.0 (public domain dedication) |
 | `guitar-steel/` | Steel-string acoustic guitar, E2–E6, every semitone | FluidR3_GM soundfont by Frank Wen, rendered per note by midi-js-soundfonts (Benjamin Gleitzman), https://github.com/gleitz/midi-js-soundfonts | Creative Commons Attribution 3.0 |
 | `guitar-nylon/` | Nylon-string guitar, E2–C7, every semitone (also used for the ukulele) | as above | Creative Commons Attribution 3.0 |
 | `bass/` | Electric bass, finger style, E1–G4, every semitone | as above | Creative Commons Attribution 3.0 |
