@@ -594,7 +594,8 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .hs{width:24px;height:24px;color:var(--gold)}.earrhy{min-height:100px}
 .phexp select{background:#0e0c08;color:var(--ivory);border:1px solid var(--line);border-radius:6px;padding:2px 4px}.phexp td,.phexp th{padding:4px 6px}
 .anpick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}@media(max-width:900px){.anpick{grid-template-columns:1fr 1fr}}.anpick .cad b{font-size:14px}
-.vrv{background:#0e0c08;border:1px solid var(--line);border-radius:12px;max-height:72vh;overflow:auto;padding:34px 10px 10px}.vrv>svg{width:100%;height:auto;display:block}.vrv g.annow{fill:#f0d48a;color:#f0d48a}
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/eb-garamond/eb-garamond-latin-700-normal.woff2) format('woff2')}@font-face{font-family:'EB Garamond';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/eb-garamond/eb-garamond-latin-500-normal.woff2) format('woff2')}@font-face{font-family:'EB Garamond';font-style:italic;font-weight:500;font-display:swap;src:url(fonts/eb-garamond/eb-garamond-latin-500-italic.woff2) format('woff2')}
+.vrv{position:relative;background:#0e0c08;border:1px solid var(--line);border-radius:12px;max-height:max(420px,calc(100vh - var(--top) - 8px));overflow-x:hidden;overflow-y:auto;padding:0 16px 16px;color:#ece2c8;overscroll-behavior:contain}/* Analysis scores (Verovio, Bravura): engraved for this width and shown 1:1, never stretched; colours and line weights set here, not by Verovio */.vrv>svg{display:block;overflow:visible;max-width:none}.vrv svg{color:#ece2c8;fill:#ece2c8}.vrv svg path,.vrv svg rect,.vrv svg polygon,.vrv svg polyline,.vrv svg ellipse{stroke:currentColor}.vrv g.staff>path{stroke:rgba(236,226,200,.45);stroke-width:1px;vector-effect:non-scaling-stroke}.vrv g.ledgerLines path{stroke:rgba(236,226,200,.7);stroke-width:1.2px;vector-effect:non-scaling-stroke}.vrv g.barLine,.vrv g.grpSym{color:rgba(236,226,200,.8);fill:rgba(236,226,200,.8)}.vrv g.mNum text{fill:#9c927c;font-family:Outfit,sans-serif;font-weight:400;font-style:normal}.vrv g.tempo text{font-family:'EB Garamond',serif;font-weight:700;font-style:normal}.vrv g.dir text{font-family:'EB Garamond',serif;font-style:italic;font-weight:500}.vrv g.ending text,.vrv g.reh text{font-family:Outfit,sans-serif;font-weight:500}.vrv g.annow{fill:#f0d48a;color:#f0d48a}.vrv g.annow g.staff>path{stroke:rgba(240,212,138,.6)}.vrv text.anov{font-family:Outfit,sans-serif;stroke:none}.vrv line.anov{vector-effect:non-scaling-stroke}.vrv .anpin{position:sticky;top:0;z-index:2;margin:0 -16px 0;padding:7px 16px 5px;background:#0e0c08;border-bottom:1px solid rgba(236,226,200,.08);font:500 11px/1.3 Outfit,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9c927c;min-height:26px;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vrv .anpin b{font-weight:500}.vrv:focus-visible{outline:2px solid var(--goldhi,#f0d48a);outline-offset:2px}.anwrap{display:block}.anwrap.side{display:flex;gap:16px;align-items:flex-start}.anwrap.side .vrv{flex:0 0 auto}.anidx{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.anwrap.side .anidx{order:2;flex:1 1 170px;max-width:220px;flex-direction:column;flex-wrap:nowrap;margin:0;position:sticky;top:calc(var(--top) + 16px)}.anidx button{display:flex;align-items:center;gap:7px;min-height:32px;padding:5px 11px;border-radius:16px;border:1px solid var(--line);background:transparent;color:var(--ivory);font:400 12.5px/1.25 Outfit,sans-serif;text-align:left;cursor:pointer}.anidx button i{flex:0 0 auto;width:12px;height:2px;background:var(--c)}.anidx button small{color:#9c927c;font-size:11px;margin-left:auto;padding-left:6px;white-space:nowrap}.anidx button[aria-current=true]{border-color:var(--c);background:rgba(236,226,200,.05)}.anidx button:hover{border-color:var(--c)}.anwrap.phone .vrv{margin:0 -14px}.anwrap.phone .anidx button small{display:none}
 .sfbig{display:flex;gap:3px;margin:-6px 0 10px}.sfbig span{border-bottom:3px solid var(--c);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding-bottom:3px;text-align:center}
 .sfin{background:#0e0c08;color:var(--ivory);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font:inherit;font-size:14px}
 .tvplan{display:flex;flex-direction:column;gap:6px}.tvrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:#0e0c08;cursor:pointer}.tvrow b{min-width:58px;color:var(--goldhi)}.tvrow.on,.tvrow.now{box-shadow:0 0 0 2px var(--goldhi)}.tvrow .chip{font-size:12.5px;padding:3px 9px}
@@ -710,7 +711,7 @@ button:disabled{cursor:default;opacity:.45}
 .fbar{padding-top:6px}.fbar small{position:static;display:block;margin:0 0 4px;line-height:1.2}
 .fstrip{height:auto;min-height:34px}.fstrip span{white-space:normal;text-align:center;line-height:1.1;padding:3px;word-break:break-word}
 #anCtl{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}#anCtl label{display:inline-flex;align-items:center;gap:6px}#anCtl .sp{flex:1}
-@media (max-width:760px){.vrv>svg{min-width:720px}.vrv{overflow:auto}}   /* scores stay readable on phones and scroll sideways */
+@media (prefers-reduced-motion:reduce){.vrv{scroll-behavior:auto}}
 </style></head>
 <body>
 
@@ -1107,7 +1108,7 @@ button:disabled{cursor:default;opacity:.45}
   <p class="note"><b>Changes made.</b> The Composition Jungle Gym engraved the scores to SVG and added timing, cadence and form annotations. The score images and annotations (scores/*.svg and scores/meta.json) are shared under the licence of their source: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> for Bach, Mozart and Joplin (ShareAlike), <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> for Chopin. Verovio (LGPL) is only the engraving tool.</p>
   <p class="note"><b>Curwen hand signs.</b> Drawings © 2003 Kodály Music Education Institute of Australia (KMEIA), used with permission.</p>
   <p class="note"><b>Sound.</b> Piano: Versilian Community Sample Library (VCSL) Steinway B, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0</a>. Guitar and bass: FluidR3_GM by Frank Wen, rendered by midi-js-soundfonts (Benjamin Gleitzman), <a href="https://creativecommons.org/licenses/by/3.0/us/" target="_blank" rel="noopener">CC BY 3.0</a>. Samples were trimmed, re-encoded and levelled.</p>
-  <p class="note"><b>Software and type.</b> Notation: VexFlow (MIT), loaded from jsDelivr, drawing with the Bravura music font (SIL Open Font Licence 1.1). The score SVGs contain outlines of Verovio's Leipzig music font (SIL Open Font Licence 1.1). Fonts: Outfit and Poiret One (SIL Open Font Licence 1.1), from Google Fonts.</p>
+  <p class="note"><b>Software and type.</b> Notation: VexFlow (MIT), loaded from jsDelivr, drawing with the Bravura music font (SIL Open Font Licence 1.1). The Analysis scores are engraved with Verovio (LGPL) and contain outlines of the Bravura music font (SIL Open Font Licence 1.1). Fonts: Outfit and Poiret One (SIL Open Font Licence 1.1), from Google Fonts; EB Garamond (The EB Garamond Project Authors, SIL Open Font Licence 1.1), self-hosted from Fontsource, for tempo and expression marks in the scores.</p>
   <p class="note">Because some of the score data is <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>, the app as a whole is for non-commercial educational use. Full details are in <a href="NOTICE.md">NOTICE.md</a>. © Justin Ossher.</p>
  </details></footer>
 
@@ -5488,28 +5489,100 @@ function c13CurCS(){const ctx=c13Ctx(),sub=c13Sub(),key=(C13.ownOn?'own':C13.sys
 /* =====================================================================
    ANALYSIS ROOM (Level 3): score analysis (Verovio), my progression, listening maps
    ===================================================================== */
-const AN={tab:'score',score:'chorale',layers:{harm:false,cad:true,form:true},meta:null,svg:{},speed:1,map:LS.get('cjg_anmap')||{}};
+const AN={tab:'score',score:'chorale',layers:{harm:false,cad:true,form:true},meta:null,svg:{},speed:1,map:LS.get('cjg_anmap')||{},v:null};
 function anLoadMeta(){if(AN.meta)return Promise.resolve(AN.meta);return fetch('scores/meta.json').then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>AN.meta=j)}
-function anLoadSvg(k){if(AN.svg[k])return Promise.resolve(AN.svg[k]);return fetch(`scores/${k}.svg`).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>AN.svg[k]=t)}
+/* three engravings per score (scores/src/engrave.py): '' desktop 880 px systems at staff-space 7.2 px, '.t' 600 px at 7.2 px, '.p' phone 308 px at 5.9 px */
+function anLoadSvg(k,suf=''){const id=k+suf;if(AN.svg[id])return Promise.resolve(AN.svg[id]);return fetch(`scores/${k}${suf}.svg`).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>AN.svg[id]=t)}
+const ANV=[['',880],['.t',600],['.p',308]],ANIDXW=186;
+/* which engraving and layout fit this panel: the index sits beside the score when there is room, otherwise it is a chip row above it */
+function anLayout(){const w=$('anWrap');const W=w?w.clientWidth:0,side=W>=880+34+ANIDXW,phone=W<520,avail=(side?W-ANIDXW:W)-34+(phone?28:0);let suf='.p';for(const[s,x]of ANV)if(avail>=x){suf=s;break}return{side,phone,suf}}
 const ANCOL={gold:'rgba(201,162,74,.20)',green:'rgba(143,191,106,.18)',violet:'rgba(164,147,216,.20)',tan:'rgba(201,185,143,.12)'},ANLINE={gold:'#c9a24a',green:'#8fbf6a',violet:'#a493d8',tan:'#c9b98f'};
-/* overlay labels (cadences, chords, sections) never sit on each other: each one that collides drops a row */
-function anDeclash(svg){const groups=new Map();[...svg.querySelectorAll('text.anov')].forEach(t=>{const p=t.parentNode;(groups.get(p)||groups.set(p,[]).get(p)).push(t)});
- groups.forEach(L=>{const placed=[];L.map(t=>({t,b:t.getBBox()})).sort((a,b)=>a.b.y-b.b.y||a.b.x-b.b.x).forEach(({t,b})=>{const h=b.height*1.1;let dy=0;
-  for(let k=0;k<8;k++){const y0=b.y+dy,y1=y0+b.height;if(!placed.some(p=>b.x<p.x1+60&&b.x+b.width>p.x0-60&&y0<p.y1&&y1>p.y0))break;dy+=h}
-  if(dy)t.setAttribute('y',+t.getAttribute('y')+dy);placed.push({x0:b.x,x1:b.x+b.width,y0:b.y+dy,y1:b.y+dy+b.height})})})}
+/* NSW cadence names, two words, for the tag in the score; the full sentence stays in the table under it. A label that names no cadence gets no tag. */
+const anCadTag=t=>{const x=/^(Perfect|Imperfect|Plagal|Interrupted)\b/.exec(t||'');return x?x[1]+' cadence':null};
+/* the section index: form sections, or for the chorales (no form layer) the phrases, each ending at a fermata cadence */
+function anIndex(m){const bi=n=>m.measures.findIndex(x=>x[0]==String(n));
+ if(m.sections.length)return m.sections.map(([lab,a,b,col])=>({lab,mi:Math.max(0,bi(a)),col:ANLINE[col]||'#c9b98f',sub:a===b?`bar ${a}`:`bars ${a}–${b}`}));
+ return m.cads.map((c,i)=>{const s=i?m.cads[i-1].e:0;let j=0;m.measures.forEach((x,k)=>{if(x[2]<=s+5)j=k});return{lab:`Phrase ${i+1}`,mi:j,col:'#c9b98f',sub:m.measures[j][0]?`from bar ${m.measures[j][0]}`:`upbeat to bar ${(m.measures.slice(j).find(x=>x[0])||['1'])[0]}`}})}
+function anSysTop(g){const box=$('anScore'),s=g&&g.closest('g.system');if(!box||!s)return 0;return s.getBoundingClientRect().top-box.getBoundingClientRect().top+box.scrollTop}
+function anPinH(){const p=$('anPin');return p?p.offsetHeight:0}
+function anScrollTo(top){const box=$('anScore');if(!box)return;const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;AN.jumping=true;clearTimeout(AN.jt);AN.jt=setTimeout(()=>{AN.jumping=false;anPinUpdate()},rm?50:1200);box.scrollTo({top:Math.max(0,top),behavior:rm?'auto':'smooth'})}
+function anJump(i){const m=AN.meta[AN.score],it=anIndex(m)[i],svg=$('anScore')&&$('anScore').querySelector('svg');if(!it||!svg)return;AN.pinLock=i;const g=svg.querySelector(`[data-id="${m.measures[it.mi][1]}"]`);anScrollTo(i===0?0:anSysTop(g)-anPinH()-4)}
+function anPinUpdate(){const m=AN.meta&&AN.meta[AN.score],box=$('anScore'),pin=$('anPin');if(!m||!box||!pin)return;const svg=box.querySelector('svg');if(!svg)return;const L=anIndex(m);if(!L.length){pin.textContent=m.short||'';return}
+ /* the section of the first bar of the top system in view */
+ const lim=box.scrollTop+anPinH()+8,bt=box.getBoundingClientRect().top-box.scrollTop;let top=null;for(const s of svg.querySelectorAll('g.system')){if(s.getBoundingClientRect().bottom-bt>lim){top=s;break}}
+ const fm=top&&top.querySelector('g.measure'),mi=fm?m.measures.findIndex(x=>x[1]===fm.getAttribute('data-id')):0;let cur=0;L.forEach((it,i)=>{if(it.mi<=mi)cur=i});
+ /* after a jump, the section jumped to stays pinned while its system is the top one (it may start part-way through that system) */
+ if(AN.pinLock!=null){const it=L[AN.pinLock],g=it&&svg.querySelector(`[data-id="${m.measures[it.mi][1]}"]`);if(g&&top&&g.closest('g.system')===top||(g&&box.scrollTop+box.clientHeight>=box.scrollHeight-2&&anSysTop(g)<box.scrollTop+box.clientHeight))cur=AN.pinLock;else if(!AN.jumping)AN.pinLock=null}
+ if(pin.dataset.cur===String(cur))return;pin.dataset.cur=cur;const it=L[cur];pin.innerHTML=`<b style="color:${it.col}">${it.lab}</b> · ${it.sub}`;
+ document.querySelectorAll('#anIdx button').forEach((b,i)=>b.setAttribute('aria-current',i===cur?'true':'false'))}
+/* overlays, in the score's own units but sized in final screen px (SPEC, Text table) */
 function anDecorate(){const k=AN.score,m=AN.meta&&AN.meta[k],box=$('anScore');if(!m||!box)return;const svg=box.querySelector('svg');if(!svg)return;const NS='http://www.w3.org/2000/svg';
- svg.querySelectorAll('.anov').forEach(e=>e.remove());const SB=new Map();svg.querySelectorAll('.system').forEach(x=>SB.set(x,x.getBBox()));const sysOf=g=>{const x=g.closest('.system');return[x,x?SB.get(x):g.getBBox()]};const W=(svg.querySelector('svg.definition-scale')||svg).viewBox.baseVal.width||21000;const mid=n=>{const r=m.measures.find(x=>x[0]==String(n));return r&&svg.querySelector(`[data-id="${r[1]}"]`)};
- if(AN.layers.form)m.sections.forEach(([lab,a,b,col,txt])=>{const segs=new Map();for(let n=a;n<=b;n++){const g=mid(n);if(!g)continue;const bb0=g.getBBox(),bls=[...g.querySelectorAll('.barLine')].map(x=>x.getBBox()),st=g.querySelector('.staff'),sx=st?st.getBBox().x:bb0.x,bb={x:Math.max(bb0.x,sx-40),width:0},xe=bls.length?Math.max(...bls.map(r=>r.x+r.width)):bb0.x+bb0.width;bb.width=xe-bb.x;const[sys,sb]=sysOf(g);const k=sys||g.parentNode;const s0=segs.get(k);if(!s0)segs.set(k,{x0:bb.x,x1:bb.x+bb.width,sb,g});else{s0.x0=Math.min(s0.x0,bb.x);s0.x1=Math.max(s0.x1,bb.x+bb.width)}}
-  let first=true;segs.forEach((v,k)=>{const r=document.createElementNS(NS,'rect');r.setAttribute('class','anov');r.setAttribute('x',v.x0);r.setAttribute('y',v.sb.y-120);r.setAttribute('width',v.x1-v.x0);r.setAttribute('height',v.sb.height+240);r.setAttribute('fill',ANCOL[col]);r.style.stroke='none';k.insertBefore(r,k.firstChild);
-   if(first){const t=document.createElementNS(NS,'text');t.setAttribute('class','anov');t.setAttribute('x',v.x0+40);t.setAttribute('y',v.sb.y-200);t.setAttribute('font-size','300');t.setAttribute('fill',ANLINE[col]);t.style.fontFamily='Outfit';t.textContent=lab;k.appendChild(t);first=false}})});
- if(AN.layers.cad)m.cads.forEach(c=>{const g=svg.querySelector(`[data-id="${c.id}"]`);if(!g)return;const bb=g.getBBox(),[sys,sb]=sysOf(g),t=document.createElementNS(NS,'text');t.setAttribute('class','anov');const right=bb.x>W*.62;t.setAttribute('x',right?bb.x+bb.width+150:bb.x-150);if(right)t.setAttribute('text-anchor','end');t.setAttribute('y',sb.y+sb.height+520);t.setAttribute('font-size','280');t.setAttribute('fill','#f0d48a');t.style.fontFamily='Outfit';t.textContent=`${c.ch}: ${c.t}`;(sys||g.parentNode).appendChild(t)});
- if(AN.layers.harm)m.labels.forEach(l=>{const g=svg.querySelector(`[data-id="${l.id}"]`);if(!g)return;const bb=g.getBBox(),[sys,sb]=sysOf(g),t=document.createElementNS(NS,'text');t.setAttribute('class','anov');t.setAttribute('x',bb.x);t.setAttribute('y',sb.y+sb.height+220);t.setAttribute('font-size','260');t.setAttribute('fill','#a99d84');t.style.fontFamily='Outfit';t.textContent=l.t;(sys||g.parentNode).appendChild(t)});
- anDeclash(svg)}
+ svg.querySelectorAll('.anov').forEach(e=>e.remove());
+ const ds=svg.querySelector('svg.definition-scale')||svg,VB=ds.viewBox.baseVal,u=VB.width/(svg.width.baseVal.value||svg.getBoundingClientRect().width),P=px=>px*u;
+ const pm=svg.querySelector('g.page-margin'),PM=pm?pm.transform.baseVal.consolidate().matrix:{e:0,f:0},xmin=-PM.e+P(2),xmax=VB.width-PM.e-P(2),ymin=-PM.f;
+ const mk=(tag,at,par,cls)=>{const e=document.createElementNS(NS,tag);for(const a in at)e.setAttribute(a,at[a]);e.setAttribute('class','anov'+(cls?' '+cls:''));if(par)par.appendChild(e);return e};
+ const lines=g=>[...g.querySelectorAll(':scope>path')].map(p=>p.getBBox());
+ /* engraved words (tempo, expression) were placed with Verovio's own text metrics; with EB Garamond in place, move any that touch a notehead clear of it */
+ {svg.querySelectorAll('g.dir text,g.tempo text').forEach(t=>{const s=t.closest('g.system');if(!s)return;const H=[...s.querySelectorAll('g.notehead')].map(h=>h.getBBox());
+  for(let k=0;k<4;k++){const b=t.getBBox(),hit=H.find(h=>h.x<b.x+b.width&&h.x+h.width>b.x&&h.y<b.y+b.height&&h.y+h.height>b.y);if(!hit)break;const down=b.y+b.height/2>hit.y+hit.height/2;
+   const dy=down?hit.y+hit.height-b.y+P(2):hit.y-(b.y+b.height)-P(2);t.setAttribute('y',+t.getAttribute('y')+dy)}})}
+ const SB=new Map();svg.querySelectorAll('g.system').forEach(s=>{const b=s.getBBox(),st=[...s.querySelectorAll('g.staff')],L0=st.length?lines(st[0]):[],L1=st.length?lines(st[st.length-1]):[];
+  SB.set(s,{x:b.x,y:b.y,bot:b.y+b.height,top:L0.length?Math.min(...L0.map(r=>r.y)):b.y,low:L1.length?Math.max(...L1.map(r=>r.y)):b.y+b.height})});
+ const mid=n=>{const r=m.measures.find(x=>x[0]==String(n));return r&&svg.querySelector(`[data-id="${r[1]}"]`)};
+ const barX=g=>{const st=g.querySelector('g.staff'),L=st?lines(st):[];if(L.length)return[Math.min(...L.map(r=>r.x)),Math.max(...L.map(r=>r.x+r.width))];const b=g.getBBox();return[b.x,b.x+b.width]};
+ const fit=(t,x,anchor)=>{const w=t.getComputedTextLength();let x0=anchor==='middle'?x-w/2:anchor==='end'?x-w:x;x0=Math.max(xmin,Math.min(x0,xmax-w));t.setAttribute('x',x0);t.removeAttribute('text-anchor');return[x0,x0+w]};
+ /* A5: form as 2 px rules in the section colour above the system, end ticks at the true start and end, "(cont.)" on continuation systems */
+ if(AN.layers.form&&m.sections.length){const lab=new Map();
+  m.sections.forEach(([name,a,b,col])=>{const c=ANLINE[col]||'#c9b98f',segs=[];for(let n=a;n<=b;n++){const g=mid(n);if(!g)continue;const s=g.closest('g.system'),[x0,x1]=barX(g);let sg=segs.find(q=>q.s===s);if(!sg)segs.push({s,x0,x1,start:n===a});else{sg.x0=Math.min(sg.x0,x0);sg.x1=Math.max(sg.x1,x1)}}
+   segs.forEach((sg,i)=>{const B=SB.get(sg.s),end=i===segs.length-1,y=Math.max(ymin+P(20),Math.min(B.y,B.top-P(6))-P(5)),x0=sg.x0+(sg.start?P(1.5):0),x1=sg.x1-(end?P(1.5):0);
+    mk('line',{x1:x0,y1:y,x2:x1,y2:y,stroke:c,'stroke-width':2},sg.s,'anform');
+    if(sg.start)mk('line',{x1:x0,y1:y-P(1),x2:x0,y2:y+P(6),stroke:c,'stroke-width':2},sg.s,'anform');
+    if(end)mk('line',{x1:x1,y1:y-P(1),x2:x1,y2:y+P(6),stroke:c,'stroke-width':2},sg.s,'anform');
+    const t=mk('text',{y:y-P(5),'font-size':P(11),'letter-spacing':P(1.3),'font-weight':500,fill:c},sg.s,'anlab');t.textContent=name.toUpperCase();
+    if(!sg.start){const ct=document.createElementNS(NS,'tspan');ct.setAttribute('fill','#9c927c');ct.textContent=' (cont.)';t.appendChild(ct)}
+    (lab.get(sg.s)||lab.set(sg.s,[]).get(sg.s)).push({t,x:x0+(sg.start?P(4):0),cont:!sg.start})})});
+  /* labels sharing a system never overprint: a continuation label shrinks to "(cont.)", then an earlier label is shortened with an ellipsis (the full names are in the index, the pinned bar and the table) */
+  lab.forEach(L=>{L.forEach((q,i)=>{const nx=i<L.length-1?L[i+1].x-P(10):xmax;let r=fit(q.t,q.x,'start');
+    if(r[1]>nx&&q.cont){q.t.textContent='';const ct=document.createElementNS(NS,'tspan');ct.setAttribute('fill','#9c927c');ct.textContent='(cont.)';q.t.appendChild(ct);r=fit(q.t,q.x,'start')}
+    if(r[1]>nx&&!q.cont){const full=q.t.textContent;let n=full.length;while(n>1&&r[1]>nx){n--;q.t.textContent=full.slice(0,n).trimEnd()+'…';r=fit(q.t,q.x,'start')}}
+    if(i<L.length-1&&L[i+1].x<r[1]+P(10))L[i+1].x=r[1]+P(10)})})}
+ /* A8: harmony row at a fixed distance below each system; stacked figures; an unchanged chord is not repeated */
+ const harmOn=AN.layers.harm&&m.labels.length,rowY=new Map(),harmBox=[];
+ svg.querySelectorAll('g.system').forEach(s=>{const B=SB.get(s);rowY.set(s,Math.max(B.bot,B.low+P(14))+P(8))});
+ if(harmOn){let prevT=null;const ends=new Map();
+  m.labels.forEach(l=>{if(l.t===prevT)return;prevT=l.t;const g=svg.querySelector(`[data-id="${l.id}"]`);if(!g)return;const s=g.closest('g.system'),hb=(g.querySelector('.notehead')||g).getBBox(),cx=hb.x+hb.width/2,y0=rowY.get(s)+P(12);
+   const x=/^(.*?)(\d{1,2})$/.exec(l.t),num=x?x[1]:l.t,fig=x?x[2]:'';const t=mk('text',{x:cx,y:y0,'font-size':P(12.5),'font-weight':400,fill:'#ece2c8'},s,'anharm');t.textContent=num;
+   const wn=t.getComputedTextLength();let wf=0;const ts=[];
+   if(fig){const f=fig.length===2?[fig[0],fig[1]]:[fig];f.forEach((d,i)=>{const sp=document.createElementNS(NS,'tspan');sp.setAttribute('font-size',P(9));sp.textContent=d;t.appendChild(sp);ts.push(sp)});wf=Math.max(...ts.map(sp=>sp.getComputedTextLength()))+P(1)}
+   let x0=cx-(wn+wf)/2;const pe=ends.get(s);if(pe!=null&&x0<pe+P(4))x0=pe+P(4);x0=Math.max(xmin,Math.min(x0,xmax-wn-wf));t.setAttribute('x',x0);
+   ts.forEach((sp,i)=>{sp.setAttribute('x',x0+wn+P(1));sp.setAttribute('y',ts.length===2?(i?y0+P(4.5):y0-P(5.5)):y0-P(4.5))});
+   ends.set(s,x0+wn+wf);harmBox.push({s,x0,x1:x0+wn+wf,y1:y0+P(ts.length===2?7:3)})})}
+ /* A9: short NSW cadence tag at the cadence chord, below the harmony row, with a hairline leader */
+ if(AN.layers.cad&&m.cads.length)m.cads.forEach(c=>{const tag=anCadTag(c.t);if(!tag)return;const g=svg.querySelector(`[data-id="${c.id}"]`);if(!g)return;const s=g.closest('g.system'),hb=(g.querySelector('.notehead')||g).getBBox(),cx=hb.x+hb.width/2;
+  const top=rowY.get(s)+(harmOn?P(24):P(2)),t=mk('text',{y:top+P(12),'font-size':P(12.5),'font-weight':500,fill:'#f0d48a'},s,'ancad');t.textContent=tag;fit(t,cx,'middle');
+  const ch=[...s.querySelectorAll('g.note')].map(n=>(n.querySelector('.notehead')||n).getBBox()).filter(b=>Math.abs(b.x+b.width/2-cx)<P(5));
+  let yEnd=Math.max(SB.get(s).low,...ch.map(b=>b.y+b.height))+P(4);const hl=harmBox.find(h=>h.s===s&&h.x0-P(2)<=cx&&cx<=h.x1+P(2));if(hl)yEnd=hl.y1+P(3);
+  if(top-P(2)>yEnd)mk('line',{x1:cx,y1:yEnd,x2:cx,y2:top-P(2),stroke:'rgba(240,212,138,.55)','stroke-width':1},s,'anlead')});
+ anPinUpdate()}
+/* R1: every note sounds for its written length and is released at its end (as E6 in blind analysis); A11: the playing system moves to the top third, one smooth move per system */
 function anPlay(){const m=AN.meta&&AN.meta[AN.score];if(!m)return;stopAll();const a=ac(),sp=AN.speed,t0=a.currentTime+.15;MAST.gain.value=.32;PLAY.on=true;PLAY.src='an';
- m.events.forEach(([ms,p,d])=>{if(ms/sp>600000)return;tone(p,t0+ms/1000/sp,'piano')});
- const svg=$('anScore')&&$('anScore').querySelector('svg');let last=null;
- m.measures.forEach(([n,id,ms])=>PLAY.timers.push(setTimeout(()=>{if(!svg)return;const g=svg.querySelector(`[data-id="${id}"]`);if(last)last.classList.remove('annow');if(g){g.classList.add('annow');last=g;if($('anFollow')&&$('anFollow').checked){const r=g.getBoundingClientRect(),bx=$('anScore').getBoundingClientRect();if(r.top<bx.top+40||r.bottom>bx.bottom-40)$('anScore').scrollTop+=r.top-bx.top-80}}},(t0-a.currentTime)*1000+ms/sp)));
+ m.events.forEach(([ms,p,d])=>{if(ms/sp>600000)return;tone(p,t0+ms/1000/sp,'piano',1,d/1000/sp)});
+ const svg=$('anScore')&&$('anScore').querySelector('svg');let last=null,lastSys=null;
+ m.measures.forEach(([n,id,ms])=>PLAY.timers.push(setTimeout(()=>{if(!svg)return;const g=svg.querySelector(`[data-id="${id}"]`);if(last)last.classList.remove('annow');if(g){g.classList.add('annow');last=g;const s=g.closest('g.system');
+  if(s!==lastSys){lastSys=s;if($('anFollow')&&$('anFollow').checked){const box=$('anScore'),top=anSysTop(g)-anPinH()-4,h=box.clientHeight;const rel=top-box.scrollTop;if(rel<0||rel>h/3-anPinH())anScrollTo(top)}}}},(t0-a.currentTime)*1000+ms/sp)));
  const end=Math.max(...m.events.map(e=>e[0]+e[2]));PLAY.timers.push(setTimeout(()=>{if(last)last.classList.remove('annow');stopAll()},(end/sp)+600))}
+/* show the score in the engraving that fits; called on render and when the panel changes width */
+function anShowScore(){const m=AN.meta&&AN.meta[AN.score],w=$('anWrap');if(!m||!w)return Promise.resolve();const L=anLayout();AN.v=L;w.classList.toggle('side',L.side);w.classList.toggle('phone',L.phone);
+ const idx=anIndex(m);$('anIdx').innerHTML=idx.map((it,i)=>`<button type="button" data-anjump="${i}" style="--c:${it.col}" aria-current="${i?'false':'true'}"><i></i>${it.lab}<small>${it.sub}</small></button>`).join('');$('anIdx').setAttribute('aria-label',m.sections.length?'Sections':'Phrases');
+ return anLoadSvg(AN.score,L.suf).then(svg=>{if(AN.tab!=='score'||!$('anScore'))return;const box=$('anScore');box.innerHTML=`<div class="anpin" id="anPin"></div>${svg}`;const sv=box.querySelector('svg');
+  box.style.width=L.side&&sv?(sv.width.baseVal.value+34)+'px':'';anDecorate();anSpacer();
+  /* the overlays are measured in their fonts: measure again once the web fonts have arrived */
+  if(document.fonts&&document.fonts.status!=='loaded')document.fonts.ready.then(()=>{if(AN.tab==='score'&&$('anScore')&&$('anScore').querySelector('svg')===sv){anDecorate();anSpacer()}})})}
+/* room after a long score so the last section can scroll up under the pinned bar */
+function anSpacer(){const box=$('anScore'),m=AN.meta&&AN.meta[AN.score];if(!box||!m)return;let sp=$('anSpace');if(sp)sp.remove();if(box.scrollHeight<=box.clientHeight+2)return;const L=anIndex(m),it=L[L.length-1],svg=box.querySelector('svg'),g=it&&svg.querySelector(`[data-id="${m.measures[it.mi][1]}"]`);if(!g)return;
+ const need=box.clientHeight-anPinH()-4-(box.scrollHeight-anSysTop(g));if(need>0){sp=document.createElement('div');sp.id='anSpace';sp.style.height=need+'px';box.appendChild(sp)}}
+document.addEventListener('scroll',e=>{if(e.target&&e.target.id==='anScore')anPinUpdate()},true);
+let anRT=0;addEventListener('resize',()=>{clearTimeout(anRT);anRT=setTimeout(()=>{if(ROOM!=='analysis'||AN.tab!=='score'||!AN.v||!$('anWrap'))return;const L=anLayout();if(L.suf!==AN.v.suf||L.side!==AN.v.side||L.phone!==AN.v.phone)anShowScore()},200)});
 /* ---------- my progression ---------- */
 function anProg(){if(!P.length)return null;const rows=[];let beat=0;const isV=x=>x.dia&&x.d===4&&/^V/.test(x.num),isI=x=>x.dia&&x.d===0,isIV=x=>x.dia&&x.d===3,isVI=x=>x.dia&&x.d===5;
  const A=P.map(ch=>analyse(ch,K));P.forEach((ch,i)=>{const a=A[i],c=chordOf(ch.root,ch.q,ch.inv||0),bar=Math.floor(beat/4)+1,end=(beat+(ch.beats||4))%4===0?Math.floor((beat+(ch.beats||4))/4):null;let cad=null;
@@ -5547,15 +5620,16 @@ function renderAnalysis(){const el=$('anMain');if(!el)return;const t=AN.tab;
  b.innerHTML=`<div class="anpick">${S.map(s=>`<button class="cad ${AN.score===s[0]?'on':''}" data-ansc="${s[0]}"><b>${s[1]}</b><small>${s[2]}</small></button>`).join('')}</div>
  <section class="card"><h3 id="anTitle">Loading…<span class="sp"></span></h3>
   <div class="go" style="margin-bottom:8px" id="anCtl"></div>
-  <div class="vrv" id="anScore"><div class="empty">Loading the score…</div></div>
+  <div class="anwrap" id="anWrap"><nav class="anidx" id="anIdx" aria-label="Sections"></nav><div class="vrv" id="anScore" tabindex="0" role="region" aria-label="Score"><div class="empty">Loading the score…</div></div></div>
   <div id="anInfo" style="margin-top:10px"></div></section>`;
- Promise.all([anLoadMeta(),anLoadSvg(AN.score)]).then(([meta,svg])=>{if(AN.tab!=='score')return;const m=meta[AN.score];$('anTitle').innerHTML=`${m.t}<span class="sp"></span><span class="note">${m.key}</span>`;
+ anLoadMeta().then(meta=>{if(AN.tab!=='score')return;const m=meta[AN.score];$('anTitle').innerHTML=`${m.t}<span class="sp"></span><span class="note">${m.key}</span>`;
   $('anCtl').innerHTML=`<button class="mini gold" data-anplay>▶ Play</button><button class="mini" data-fplay="stop">■ Stop</button><label class="note">Speed <select data-anspd>${[[.75,'slower'],[1,'as written'],[1.25,'faster']].map(([v,l])=>`<option value="${v}" ${AN.speed===v?'selected':''}>${l}</option>`).join('')}</select></label><label class="note"><input type="checkbox" id="anFollow" checked> follow</label><span class="sp"></span><span class="lbl" style="margin:0 6px 0 0">Layers</span>${m.sections.length?`<label class="note"><input type="checkbox" data-anly="form" ${AN.layers.form?'checked':''}> form</label>`:''}${m.cads.length?`<label class="note"><input type="checkbox" data-anly="cad" ${AN.layers.cad?'checked':''}> cadences</label>`:''}${m.labels.length?`<label class="note"><input type="checkbox" data-anly="harm" ${AN.layers.harm?'checked':''}> chord on every beat</label>`:''}`;
-  $('anScore').innerHTML=svg;anDecorate();
+  anShowScore().catch(()=>{$('anScore').innerHTML='<div class="empty">The score files could not be loaded. They load from the published app; open it online to see them.</div>'});
   $('anInfo').innerHTML=`${m.sections.length?`<table class="cadtab"><tr><th>Section</th><th>Bars</th><th>Key and notes</th></tr>${m.sections.map(s=>`<tr><td><b style="color:${ANLINE[s[3]]}">${s[0]}</b></td><td>${s[1]}–${s[2]}</td><td>${s[4]}</td></tr>`).join('')}</table>`:''}
    ${m.cads.length?`<table class="cadtab"><tr><th>Phrase</th><th>Last chords</th><th>Cadence</th></tr>${m.cads.map((c,i)=>`<tr><td>${c.bar?'ends bar '+c.bar:(i+1)+' (fermata)'}</td><td>${c.ch}</td><td>${c.t}</td></tr>`).join('')}</table><p class="note">${m.cads[0].bar?`Cadences at bars ${m.cads.map(c=>c.bar).join(', ')}.`:'Each fermata marks the end of a line of the hymn.'} The cadence labels are computed by the app from the notes${m.labels.length?'; the "chord on every beat" layer is computed too and can be confused by passing notes':''}: check them against your own ears and eyes.</p>`:''}
    <p class="note" style="margin-top:10px">${m.src}</p>`}).catch(()=>{$('anScore').innerHTML='<div class="empty">The score files could not be loaded. They load from the published app; open it online to see them.</div>'})}
-document.addEventListener('click',e=>{if(ROOM!=='analysis')return;const t=e.target.closest('[data-antab],[data-ansc],[data-anplay],[data-anrep],[data-anmadd],[data-anmx],[data-anmsave]');if(!t)return;const d=t.dataset;
+document.addEventListener('click',e=>{if(ROOM!=='analysis')return;const t=e.target.closest('[data-antab],[data-ansc],[data-anplay],[data-anrep],[data-anmadd],[data-anmx],[data-anmsave],[data-anjump]');if(!t)return;const d=t.dataset;
+ if(d.anjump!==undefined){anJump(+d.anjump);return}
  if(d.antab){AN.tab=d.antab;stopAll();renderAnalysis();return}
  if(d.ansc){AN.score=d.ansc;stopAll();renderAnalysis();return}
  if(d.anplay!==undefined){anPlay();return}

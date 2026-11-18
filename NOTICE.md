@@ -30,7 +30,9 @@ Each score in `scores/` is an SVG engraved from a Humdrum encoding, with timing,
 - Chopin first editions in Humdrum, Breitkopf & Härtel first edition (Leipzig, 1839): https://github.com/pl-wnifc/humdrum-chopin-first-editions
 - Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
-**Changes made.** The Composition Jungle Gym converted the encodings and engraved them to SVG with Verovio, and added timing, cadence and form annotations.
+**Source files.** The ten encodings used are kept unchanged in `scores/src/` with each repository's licence (`scores/src/licences/`); `scores/src/README.md` gives the file, repository and revision of each.
+
+**Changes made.** The Composition Jungle Gym engraved the encodings to SVG with Verovio 6.4.1 (`scores/src/engrave.py`): instrument-name tokens blanked, the chorales set on a grand staff with the Humdrum filter satb2gs, the NIFC encoders' editorial notes left out, and the result restyled; it also added timing, cadence and form annotations.
 
 **ShareAlike.** The score images (`scores/*.svg`) and the analysis data in `scores/meta.json` are derived from these encodings and are shared under the licence of their source: CC BY-NC-SA 4.0 for the Bach, Mozart and Joplin scores (including their annotations), and CC BY 4.0 for the NIFC Chopin scores (including their annotations). Verovio (LGPL) is only the engraving tool; it does not set the licence of the output.
 
@@ -53,7 +55,8 @@ Each score in `scores/` is an SVG engraved from a Humdrum encoding, with timing,
 |---|---|---|
 | VexFlow 4.2.3 (music notation) | Loaded from jsDelivr | MIT |
 | Bravura music font (VexFlow's default, used by the app) | Steinberg Media Technologies, bundled in VexFlow | SIL Open Font Licence 1.1 |
-| Leipzig music font (outlines embedded in the score SVGs) | Verovio | SIL Open Font Licence 1.1 |
+| Bravura music font (outlines embedded in the Analysis score SVGs, engraved with Verovio) | Steinberg Media Technologies, via Verovio | SIL Open Font Licence 1.1 |
+| EB Garamond (tempo and expression text in the Analysis scores; self-hosted woff2, Latin subset, 500, 500 italic, 700; `fonts/eb-garamond/`, licence in `fonts/eb-garamond/OFL.txt`) | The EB Garamond Project Authors (github.com/octaviopardo/EBGaramond12), packaged by Fontsource (`@fontsource/eb-garamond` 5.3.0) | SIL Open Font Licence 1.1 |
 | Outfit and Poiret One (fonts) | Google Fonts | SIL Open Font Licence 1.1 |
 | Verovio (engraving tool) | https://www.verovio.org | LGPL |
 
