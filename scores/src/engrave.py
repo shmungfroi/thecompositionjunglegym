@@ -5,7 +5,7 @@ Run from the repo root:   python3 scores/src/engrave.py          (needs: pip ins
 For each score it writes three engravings, all shown 1:1 (never stretched):
   scores/<key>.svg      desktop: Verovio scale 40 (staff-space 7.2 px), 880 px systems
   scores/<key>.t.svg    tablet:  scale 40, 560 px systems (panels narrower than 880 px, wider than a phone; fits 768 px portrait)
-  scores/<key>.p.svg    phone:   scale 33 (staff-space 5.94 px), 336 px systems in an edge-to-edge phone frame (fits a 360 px screen; decision a), spacingLinear 0.2, spacingNonLinear 0.5
+  scores/<key>.p.svg    phone:   scale 33 (staff-space 5.94 px), 336 px systems in an edge-to-edge phone frame (fits a 360 px screen; decision a); chorales on the phone at spacingLinear 0.3, spacingNonLinear 0.6 (decision b), spacingLinear 0.2, spacingNonLinear 0.5
 House standard (SPEC, "House engraving standard"): Bravura; Verovio's embedded stylesheet stripped (colours and line
 weights come from the app's CSS on .vrv); Humdrum instrument-name tokens blanked (no voice labels, no first-system
 indent); chorales as closed score on a grand staff (Humdrum filter satb2gs); stave gap 6 staff-spaces (8 for the
@@ -184,7 +184,10 @@ def main():
         for suf, (scale, width, extra) in VARIANTS.items():
             half_space_px = 9 * scale / 100  # one MEI unit (half a staff-space) in px
             spacing_system = 8 + round((above + below) / half_space_px)
-            opts = base_opts(scale, width, extra, spacing_system, staff_gap, (max(6, 8 + above), 8 + below))
+            ex = dict(extra)
+            if key in CHORALES and suf == '.p':  # decision (b): wider phone spacing so numerals sit under their chords
+                ex.update({'spacingLinear': 0.3, 'spacingNonLinear': 0.6})
+            opts = base_opts(scale, width, ex, spacing_system, staff_gap, (max(6, 8 + above), 8 + below))
             # avoid a one-bar last system: step spacingLinear down by 0.01, at most 5 times
             lin0 = opts.get('spacingLinear', 0.25)
             for step in range(6):
