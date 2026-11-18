@@ -5491,9 +5491,9 @@ function c13CurCS(){const ctx=c13Ctx(),sub=c13Sub(),key=(C13.ownOn?'own':C13.sys
    ===================================================================== */
 const AN={tab:'score',score:'chorale',layers:{harm:false,cad:true,form:true},meta:null,svg:{},speed:1,map:LS.get('cjg_anmap')||{},v:null};
 function anLoadMeta(){if(AN.meta)return Promise.resolve(AN.meta);return fetch('scores/meta.json').then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>AN.meta=j)}
-/* three engravings per score (scores/src/engrave.py): '' desktop 880 px systems at staff-space 7.2 px, '.t' 600 px at 7.2 px, '.p' phone 308 px at 5.9 px */
+/* three engravings per score (scores/src/engrave.py): '' desktop 880 px systems at staff-space 7.2 px, '.t' 600 px at 7.2 px, '.p' phone 280 px at 5.9 px */
 function anLoadSvg(k,suf=''){const id=k+suf;if(AN.svg[id])return Promise.resolve(AN.svg[id]);return fetch(`scores/${k}${suf}.svg`).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>AN.svg[id]=t)}
-const ANV=[['',880],['.t',600],['.p',308]],ANIDXW=186;
+const ANV=[['',880],['.t',600],['.p',280]],ANIDXW=186;
 /* which engraving and layout fit this panel: the index sits beside the score when there is room, otherwise it is a chip row above it */
 function anLayout(){const w=$('anWrap');const W=w?w.clientWidth:0,side=W>=880+34+ANIDXW,phone=W<520,avail=(side?W-ANIDXW:W)-34+(phone?28:0);let suf='.p';for(const[s,x]of ANV)if(avail>=x){suf=s;break}return{side,phone,suf}}
 const ANCOL={gold:'rgba(201,162,74,.20)',green:'rgba(143,191,106,.18)',violet:'rgba(164,147,216,.20)',tan:'rgba(201,185,143,.12)'},ANLINE={gold:'#c9a24a',green:'#8fbf6a',violet:'#a493d8',tan:'#c9b98f'};
@@ -5542,10 +5542,11 @@ function anDecorate(){const k=AN.score,m=AN.meta&&AN.meta[k],box=$('anScore');if
     if(!sg.start){const ct=document.createElementNS(NS,'tspan');ct.setAttribute('fill','#9c927c');ct.textContent=' (cont.)';t.appendChild(ct)}
     (lab.get(sg.s)||lab.set(sg.s,[]).get(sg.s)).push({t,x:x0+(sg.start?P(4):0),cont:!sg.start})})});
   /* labels sharing a system never overprint: a continuation label shrinks to "(cont.)", then an earlier label is shortened with an ellipsis (the full names are in the index, the pinned bar and the table) */
-  lab.forEach(L=>{L.forEach((q,i)=>{const nx=i<L.length-1?L[i+1].x-P(10):xmax;let r=fit(q.t,q.x,'start');
-    if(r[1]>nx&&q.cont){q.t.textContent='';const ct=document.createElementNS(NS,'tspan');ct.setAttribute('fill','#9c927c');ct.textContent='(cont.)';q.t.appendChild(ct);r=fit(q.t,q.x,'start')}
-    if(r[1]>nx&&!q.cont){const full=q.t.textContent;let n=full.length;while(n>1&&r[1]>nx){n--;q.t.textContent=full.slice(0,n).trimEnd()+'…';r=fit(q.t,q.x,'start')}}
-    if(i<L.length-1&&L[i+1].x<r[1]+P(10))L[i+1].x=r[1]+P(10)})})}
+  lab.forEach(L=>{for(let i=0;i<L.length;i++){const q=L[i];if(i)q.x=Math.max(q.x,L[i-1].end+P(10));q.x=Math.max(q.x,xmin);const lim=i<L.length-1?Math.max(L[i+1].x,q.x+P(30))-P(10):xmax;
+    const put=()=>{q.t.setAttribute('x',q.x);return q.x+q.t.getComputedTextLength()};let e=put();
+    if(e>lim&&q.cont){q.t.textContent='';const ct=document.createElementNS(NS,'tspan');ct.setAttribute('fill','#9c927c');ct.textContent='(cont.)';q.t.appendChild(ct);e=put()}
+    if(e>lim&&!q.cont){const full=q.t.textContent;let n=full.length;while(n>1&&e>lim){n--;q.t.textContent=full.slice(0,n).trimEnd()+'…';e=put()}}
+    q.end=e}})}
  /* A8: harmony row at a fixed distance below each system; stacked figures; an unchanged chord is not repeated */
  const harmOn=AN.layers.harm&&m.labels.length,rowY=new Map(),harmBox=[];
  svg.querySelectorAll('g.system').forEach(s=>{const B=SB.get(s);rowY.set(s,Math.max(B.bot,B.low+P(14))+P(8))});
@@ -5554,9 +5555,12 @@ function anDecorate(){const k=AN.score,m=AN.meta&&AN.meta[k],box=$('anScore');if
    const x=/^(.*?)(\d{1,2})$/.exec(l.t),num=x?x[1]:l.t,fig=x?x[2]:'';const t=mk('text',{x:cx,y:y0,'font-size':P(12.5),'font-weight':400,fill:'#ece2c8'},s,'anharm');t.textContent=num;
    const wn=t.getComputedTextLength();let wf=0;const ts=[];
    if(fig){const f=fig.length===2?[fig[0],fig[1]]:[fig];f.forEach((d,i)=>{const sp=document.createElementNS(NS,'tspan');sp.setAttribute('font-size',P(9));sp.textContent=d;t.appendChild(sp);ts.push(sp)});wf=Math.max(...ts.map(sp=>sp.getComputedTextLength()))+P(1)}
-   let x0=cx-(wn+wf)/2;const pe=ends.get(s);if(pe!=null&&x0<pe+P(4))x0=pe+P(4);x0=Math.max(xmin,Math.min(x0,xmax-wn-wf));t.setAttribute('x',x0);
-   ts.forEach((sp,i)=>{sp.setAttribute('x',x0+wn+P(1));sp.setAttribute('y',ts.length===2?(i?y0+P(4.5):y0-P(5.5)):y0-P(4.5))});
-   ends.set(s,x0+wn+wf);harmBox.push({s,x0,x1:x0+wn+wf,y1:y0+P(ts.length===2?7:3)})})}
+   (ends.get(s)||ends.set(s,[]).get(s)).push({t,ts,wn,w:wn+wf,x0:cx-(wn+wf)/2,y0})});
+  /* numerals sit centred under their chord; where two would touch, they are spread just enough (forward, then back from the right edge) */
+  ends.forEach((L,s)=>{const gap=P(4);for(let i=0;i<L.length;i++){if(i)L[i].x0=Math.max(L[i].x0,L[i-1].x0+L[i-1].w+gap);L[i].x0=Math.max(L[i].x0,xmin)}
+   for(let i=L.length-1;i>=0;i--){const lim=i<L.length-1?L[i+1].x0-gap:xmax;if(L[i].x0+L[i].w>lim)L[i].x0=lim-L[i].w}
+   L.forEach(q=>{const{t,ts,wn,x0,y0}=q;t.setAttribute('x',x0);ts.forEach((sp,i)=>{sp.setAttribute('x',x0+wn+P(1));sp.setAttribute('y',ts.length===2?(i?y0+P(4.5):y0-P(5.5)):y0-P(4.5))});
+    harmBox.push({s,x0,x1:x0+q.w,y1:y0+P(ts.length===2?7:3)})})})}
  /* A9: short NSW cadence tag at the cadence chord, below the harmony row, with a hairline leader */
  if(AN.layers.cad&&m.cads.length)m.cads.forEach(c=>{const tag=anCadTag(c.t);if(!tag)return;const g=svg.querySelector(`[data-id="${c.id}"]`);if(!g)return;const s=g.closest('g.system'),hb=(g.querySelector('.notehead')||g).getBBox(),cx=hb.x+hb.width/2;
   const top=rowY.get(s)+(harmOn?P(24):P(2)),t=mk('text',{y:top+P(12),'font-size':P(12.5),'font-weight':500,fill:'#f0d48a'},s,'ancad');t.textContent=tag;fit(t,cx,'middle');

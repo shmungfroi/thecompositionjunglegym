@@ -5,7 +5,7 @@ Run from the repo root:   python3 scores/src/engrave.py          (needs: pip ins
 For each score it writes three engravings, all shown 1:1 (never stretched):
   scores/<key>.svg      desktop: Verovio scale 40 (staff-space 7.2 px), 880 px systems
   scores/<key>.t.svg    tablet:  scale 40, 600 px systems (panels narrower than 880 px, wider than a phone)
-  scores/<key>.p.svg    phone:   scale 33 (staff-space 5.94 px), 308 px systems, spacingLinear 0.2, spacingNonLinear 0.5
+  scores/<key>.p.svg    phone:   scale 33 (staff-space 5.94 px), 280 px systems (fits a 360 px screen), spacingLinear 0.2, spacingNonLinear 0.5
 House standard (SPEC, "House engraving standard"): Bravura; Verovio's embedded stylesheet stripped (colours and line
 weights come from the app's CSS on .vrv); Humdrum instrument-name tokens blanked (no voice labels, no first-system
 indent); chorales as closed score on a grand staff (Humdrum filter satb2gs); stave gap 6 staff-spaces (8 for the
@@ -30,7 +30,7 @@ CHORALES = {'chorale', 'ohaupt', 'jesu'}
 VARIANTS = {  # suffix: (scale, system width px, extra options)
     '': (40, 880, {}),
     '.t': (40, 600, {}),
-    '.p': (33, 308, {'spacingLinear': 0.2, 'spacingNonLinear': 0.5}),
+    '.p': (33, 280, {'spacingLinear': 0.2, 'spacingNonLinear': 0.5}),
 }
 LEFT_PX = 22  # room for the brace / bracket left of the staves (never clipped)
 # overlay rows the app draws (final px): form rule + label above the system, harmony row, cadence-tag row below

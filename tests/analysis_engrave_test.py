@@ -1,7 +1,7 @@
 """Analysis engraving test (0.47, S-3/S-6, A1-A11, register R1). Self-check written by the Analysis builder.
 Run: python3 tests/analysis_engrave_test.py <repo dir>
 
-All ten Analysis scores, every layer on, at 1440 x 900 and 390 x 900:
+All ten Analysis scores, every layer on, at 1440 x 900 and 390 x 900 (and 360 x 900, the narrowest common phone):
   A  staff-space: 7.2 px at 1440 (Verovio scale 40), 5.94 px at 390 (scale 33), +-0.15 px, measured on screen
   B  shown 1:1: the SVG is drawn at its engraved pixel size (no stretch), and the engraving matches the viewport
   C  vertical scroll only: nothing in the score box or the page overflows sideways
@@ -22,7 +22,7 @@ import cjg
 from playwright.async_api import async_playwright
 
 SC = ['chorale', 'ohaupt', 'jesu', 'k331a', 'k331d', 'k545', 'maple', 'entertainer', 'chopin7', 'chopin20']
-WIDTHS = {1440: (7.2, ''), 390: (5.94, '.p')}
+WIDTHS = {1440: (7.2, ''), 390: (5.94, '.p'), 360: (5.94, '.p')}
 NSW = re.compile(r'^(Perfect|Imperfect|Plagal|Interrupted) cadence$')
 
 MEASURE = r"""()=>{const box=document.getElementById('anScore'),svg=box&&box.querySelector('svg');if(!svg)return{err:'no svg'};
