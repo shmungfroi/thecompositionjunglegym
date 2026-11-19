@@ -545,11 +545,19 @@ def check_keys(D):
         dom = k.tonic.transpose('P5')
         sub = k.tonic.transpose('P4')
         # neighbours: spelled exactly as music21 spells a P5 / P4 above the tonic (0.48 R6 fix: no enharmonic respelling)
-        mm = re.match(r'(\S+) \(one step clockwise.*\) · (\S+) \(one step back', nb)
+        # IC_TERMS_048 M4: a minor key's neighbours are minor keys, so they must read as minor: "E♭ minor", or lower case "e♭" as on
+        # the inner ring; an upper-case letter with no mode word reads as major (and a major key's neighbours must not read as minor)
+        mm = re.match(r'(\S+)( major| minor)? \(one step clockwise.*\) · (\S+)( major| minor)? \(one step back', nb)
         if not mm:
             fail('C', f"{where}: neighbours text '{nb}'")
         else:
-            for got, want, lab in [(mm.group(1), dom, 'dominant'), (mm.group(2), sub, 'subdominant')]:
+            for got, mw, want, lab in [(mm.group(1), mm.group(2), dom, 'dominant'), (mm.group(3), mm.group(4), sub, 'subdominant')]:
+                mode_read = mw.strip() if mw else ('minor' if got[0].islower() else 'major')
+                if mode_read != ('minor' if mn else 'major') or (mw and got[0].islower()):
+                    fail('C', f"{where}: {lab} key reads '{got}{mw or ''}', which reads as {mode_read} (case/mode word)")
+                else:
+                    ok('C', 'neighbour keys read in the right mode (case or mode word)')
+                got = got[0].upper() + got[1:]
                 g = m21key.Key(m21name(got).lower() if mn else m21name(got))
                 if got != pretty(want.name) or abs(g.sharps) > 7 or abs(g.sharps - k.sharps) != 1:
                     fail('C', f"{where}: {lab} key {got} vs {pretty(want.name)}")

@@ -713,13 +713,13 @@ async def main():
         for md, txt in ii['fb'].items():
             vi = 'vi' if md == 'maj' else 'VI'
             COUNT['I feedback checks'] += 1
-            if not txt.startswith(f'V sets up the close, then the bass steps up to {vi}') or 'comes on the way, but the cadence itself is interrupted' not in txt or f'(V–{vi})' not in txt:
+            if not txt.startswith(f'An interrupted cadence: V sets up the close, then the bass steps up to {vi}') or 'comes on the way, but the cadence itself is interrupted' not in txt or f'(V–{vi})' not in txt:
                 fail('I', f'{md} feedback: {txt}')
         # the card's result panel, answered Interrupted: the spec sentence plus the 6/4 sentence (one source, CAD64INT)
         for md, txt in ii['panelRight'].items():
             vi, I = ('vi', 'I') if md == 'maj' else ('VI', 'i')
             COUNT['I feedback checks'] += 1
-            if not txt.startswith(f'V sets up the close, then the bass steps up to {vi}') or f'A cadential 6/4 ({I}⁶₄, the home chord over the dominant bass) comes on the way, but the cadence itself is interrupted (V–{vi}).' not in txt:
+            if not txt.startswith(f'An interrupted cadence: V sets up the close, then the bass steps up to {vi}') or f'A cadential 6/4 ({I}⁶₄, the home chord over the dominant bass) comes on the way, but the cadence itself is interrupted (V–{vi}).' not in txt:
                 fail('I', f'{md} panel, answered Interrupted: {txt}')
         if 'cadential 6/4' in ii['plain'].lower():
             fail('I', f"a plain interrupted cadence mentions the 6/4: {ii['plain']}")

@@ -31,6 +31,11 @@ appears), and after every click the page is scanned:
       L8 (0.48 merge) a hand-written bracket after a term names the full US term ("imperfect cadence (US: half)" fails);
       C1 (0.48 merge) a short cadence answer button ("Perfect", "Imperfect", "Interrupted" beside other cadence names in one answer
           group) carries the FULL US term on hover ("US: authentic cadence"), never a shortened one ("US: authentic").
+      M1i (IC_TERMS_048 M1) a heading kept free of brackets (data-notm, e.g. the Ear Lab answer headline) that names a term
+          still has the US term on screen in its own panel (outside screen-reader-only text);
+      M3i (IC_TERMS_048 M3) a button whose own title names an Australian term ("crotchet" on a rhythm tile) carries its US hover;
+      M4i (IC_TERMS_048 M4) the circle of fifths prints a minor key's neighbour keys as minor keys (lower case or "minor");
+      S2  a dotted value pairs with a dotted US value ("dotted crotchet" = "dotted quarter note").
       Targeted cases run first: the Gym reader fed I-IV-V-I, I-IV-I, I-V, V6-I and an empty progression; a page fragment
       with the exact strings the independent check quoted; buttons whose text changes; every Ear Lab cadence feedback
       sentence (right, wrong, Nearly on and off) for every answer pair; the Ear Lab rung 3 cadence buttons.
@@ -97,12 +102,13 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
  // this file's own finder for the Australian terms (independent of the page's TERMS rx)
  const FIND={iac:/(?<![A-Za-z])perfect cadences?, less final(?![A-Za-z])/gi,perfect:/(?<![A-Za-z])perfect cadences?(?!, less final)(?![A-Za-z])/gi,
   imperfect:/(?<![A-Za-z])imperfect cadences?(?![A-Za-z])/gi,interrupted:/(?<![A-Za-z])interrupted cadences?(?![A-Za-z])/gi,
-  crotchet:/(?<![A-Za-z])crotchets?(?: rests?)?(?![A-Za-z])/gi,quaver:/(?<![A-Za-z])quavers?(?: rests?)?(?![A-Za-z])/gi,minim:/(?<![A-Za-z])minims?(?: rests?)?(?![A-Za-z])/gi,
-  semibreve:/(?<![A-Za-z])semibreves?(?: rests?)?(?![A-Za-z])/gi,semiquaver:/(?<![A-Za-z])semiquavers?(?: rests?)?(?![A-Za-z])/gi,
+  crotchet:/(?<![A-Za-z])(?:dotted )?crotchets?(?: rests?)?(?![A-Za-z])/gi,quaver:/(?<![A-Za-z])(?:dotted )?quavers?(?: rests?)?(?![A-Za-z])/gi,minim:/(?<![A-Za-z])(?:dotted )?minims?(?: rests?)?(?![A-Za-z])/gi,
+  semibreve:/(?<![A-Za-z])(?:dotted )?semibreves?(?: rests?)?(?![A-Za-z])/gi,semiquaver:/(?<![A-Za-z])(?:dotted )?semiquavers?(?: rests?)?(?![A-Za-z])/gi,
   bar:/(?<![-\u2011A-Za-z])(?<!bars? by[- ])bars?(?![- ]by[- ]bars?\b)(?![- ]?(?:lines?|chart|graph))(?![A-Za-z])/gi,stave:/(?<![A-Za-z])staves?(?![A-Za-z])/gi,
-  tone:/(?<![A-Za-z])(?:whole tones?(?![- ]scales?)|(?<=\ba )tone(?=$|\)| (?:higher|lower|above|below|apart|up|down)\b))(?![A-Za-z])/gi,
+  tone:/(?<![A-Za-z])(?:whole tones?(?![- ]scales?)|(?<=\ba )tone(?=$|\)| (?:higher|lower|above|below|under|apart|up|down)\b))(?![A-Za-z])/gi,
   semitone:/(?<![A-Za-z])semitones?(?![A-Za-z])/gi};
- const usOf=(k,w)=>{const u=RULE[k][1];if(!u)return null;const pl=/s$/i.test(w);if(/rests?$/i.test(w))return u.replace(/ note$/,' rest')+(pl?'s':'');return pl?(k==='stave'?'staffs':u+'s'):u};
+ const usOf0=(k,w)=>{const u=RULE[k][1];if(!u)return null;const pl=/s$/i.test(w);if(/rests?$/i.test(w))return u.replace(/ note$/,' rest')+(pl?'s':'');return pl?(k==='stave'?'staffs':u+'s'):u};
+ const usOf=(k,w)=>{const u=usOf0(k,w);return u&&/^dotted /i.test(w)?'dotted '+u:u};   // S2: a dotted value stays dotted
  const termsIn=t=>{const o=[];for(const k in FIND){if(!RULE[k][1])continue;FIND[k].lastIndex=0;let m;while((m=FIND[k].exec(t)))o.push([k,m[0],m.index])}return o};
  const BTN='button,[role="button"],.chip,option,.pill,.fbar>small';
  // C1: a button whose own text is just the short cadence name, in an answer group with at least one other cadence name, stands for the term
@@ -131,6 +137,10 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
    if(/\(US/.test(s))add('T3',where+': button/chip shows a bracket: "'+s.trim().slice(0,70)+'"');
    const el=b,tl=el.getAttribute('title')||'',got=usList(tl),want=new Set(termsIn(ownText(el)).map(([k,w])=>usOf(k,w)));
    const sc=shortCad(el);if(sc)want.add(RULE[sc][1]);
+   // M3i: terms named in the button's own title (the part that is not the US hover or the IAC note) need their US hover too
+   const appT=tl.split(' · ').filter(x=>!/^US: /.test(x)&&!/is still a perfect cadence/.test(x)).join(' · ');
+   // (bar and stave are scoped: a later mention needs no pairing, so a hover that merely mentions a bar is left alone)
+   termsIn(appT).forEach(([k,w])=>{const u=usOf(k,w);if(u&&k!=='bar'&&k!=='stave'&&!want.has(u)){want.add(u);if(!got.includes(u))add('T3',where+': button titled "'+appT.slice(0,60)+'" names a term with no US hover "US: '+u+'" (M3i; title "'+tl+'")')}});
    got.forEach(u=>{if(/^(authentic|half|deceptive)$/i.test(u))add('T6',where+': shortened US term on hover (C1) "US: '+u+'" on "'+s.trim().slice(0,60)+'"; expected the full term')});
    // T3 / T6 M3: every term on the button has its hover, in the right form (plural, rest)
    want.forEach(u=>{if(!got.includes(u))add('T3',where+': "'+s.trim().slice(0,60)+'" has no hover "US: '+u+'" (title "'+tl+'")')});
@@ -168,6 +178,12 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
    if(gotU!==want)add('T6',where+': hand-written bracket after "'+a.textContent+'" reads "US: '+c[1]+'", expected "US: '+want+'" (L8): "'+(a.parentElement.textContent||'').trim().slice(0,80)+'"')});
   // T6 L7: no dotted underline where the bracket shows
   M.querySelectorAll('abbr.tm').forEach(a=>{if(a.offsetParent&&bracketed(a)&&!a.closest('[data-notm]')&&getComputedStyle(a).textDecorationLine!=='none')add('T6',where+': "'+a.textContent+'" is underlined although its bracket shows (L7)')});
+  // M1i: a heading kept clean of brackets (data-notm) that names a term: the US term must be on screen in its panel, outside
+  // screen-reader-only text and outside data-notm (so it is the term pass's bracket, or a hand-written one in the prose)
+  M.querySelectorAll('[data-notm]').forEach(h=>{if(!h.matches('h1,h2,h3,h4,h5,h6,[role="heading"]')||h.closest('svg'))return;const f=termsIn(h.textContent);if(!f.length)return;
+   const box=h.closest('.el-result,.card,section,.room')||M,tw=document.createTreeWalker(box,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest('[data-notm],.el-sr,script,style,svg,button')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+   let vis='',n;while((n=tw.nextNode()))vis+=n.nodeValue;window.__TN.notmHeads=(window.__TN.notmHeads||0)+1;
+   f.forEach(([k,w])=>{const u=usOf(k,w);if(u&&!new RegExp('[(\\[]US: (?:[^)\\]]*, )?'+u.replace(/s$/,'')+'s?\\b','i').test(vis))add('T3',where+': heading "'+h.textContent.trim().slice(0,50)+'" (no bracket by design) and no "US: '+u+'" anywhere on screen in its panel (M1i): "'+vis.trim().slice(0,90)+'"')})});
   // T3 headings: the first mention of a term in a heading carries both
   M.querySelectorAll('h1,h2,h3,h4,h5,h6,summary,th').forEach(h=>{const seen=new Set();h.querySelectorAll('abbr.tm').forEach(a=>{if(a.closest('button,.chip')||seen.has(a.dataset.k))return;seen.add(a.dataset.k);window.__TN.headings++;
     if(!bracketed(a))add('T3',where+': heading names "'+a.textContent+'" with no US bracket: "'+h.textContent.trim().slice(0,70)+'"')})});
@@ -194,7 +210,8 @@ FRAG = """<h3 id="f_h">Level 3 · Forms · 12-bar blues</h3>
 <ul class="c2iss" id="f_l"><li>A dissonant minim must be a passing note.</li><li>A dissonant minim must be a passing note.</li><li>A dissonant crotchet on beat 2.</li><li>A dissonant crotchet on beat 4.</li></ul>
 <div class="fchk" id="f_c"><div class="iss">Bar 7, beat 3: a 5th.</div><div class="iss">Bars 6–7: 5ths on two downbeats.</div><div class="iss">from bar 14 the bass leaps.</div></div>
 <button id="b1">crotchet rest</button><button id="b2">2 quavers</button><button id="b3">4 semiquavers</button><button id="b4">Twelve-bar blues</button>
-<button id="b5">perfect cadence</button><button id="b6" title="own">minim</button><button class="chip" id="b7">Perfect cadence, less final</button>"""
+<p id="f_p6">A dotted crotchet and a quaver. You heard the 7th a tone under the octave.</p>
+<button id="b8" data-tt title="dotted crotchet, quaver"><b>ta</b></button><button id="b5">perfect cadence</button><button id="b6" title="own">minim</button><button class="chip" id="b7">Perfect cadence, less final</button>"""
 
 TARGETS = [
     ('H2 heading "12-bar blues" has no bracket', "()=>$('f_h').textContent", 'Level 3 · Forms · 12-bar blues'),
@@ -217,6 +234,9 @@ TARGETS = [
     ('H2 "Twelve-bar blues" button has no measure hover', "()=>$('b4').getAttribute('title')", None),
     ('L5 IAC chip hover carries the note', "()=>$('b7').title",
      "US: imperfect authentic · US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence."),
+    ('S2/S1 dotted value pairs dotted; "a tone under" pairs', "()=>$('f_p6').textContent",
+     'A dotted crotchet (US: dotted quarter note) and a quaver (US: eighth note). You heard the 7th a tone (US: whole step) under the octave.'),
+    ('M3 a button whose own title names a term (data-tt) gets the US hover', "()=>$('b8').title", 'dotted crotchet, quaver · US: dotted quarter note, eighth note'),
     ('L7 no underline under a bracketed term', "()=>getComputedStyle($('f_p2').querySelector('abbr.tm')).textDecorationLine", 'none'),
 ]
 # buttons whose text changes: the hover is rebuilt, not added to (H1)
@@ -276,6 +296,55 @@ async def targeted(pg):
         fail('T6', f'C1 Ear Lab rung 3 cadence buttons: got {eb}, expected {want_eb}')
     else:
         ok('T6', 'C1 Ear Lab cadence buttons carry the full US term on hover')
+    # IC_TERMS_048 M1: every Ear Lab cadence and blind result panel (rungs 1-3, every given answer, shown, Nearly on and off), as drawn by
+    # the card, with its clean headline: the US term must be on screen in the panel (M1i in __chk)
+    np = await pg.evaluate("""async()=>{await earLoadBlind();const N0=EAR_NEARLY,o=[];
+        try{for(const l of [1,2,3])for(let i=0;i<60;i++){const q=earGen('cad',l);for(const g of [null,...q.opts])for(const nf of [true,false]){EAR_NEARLY=nf;
+            const j=g===null?'shown':earJudge(q,g),kind=g===null?'shown':j==='correct'?'ok':j==='nearly'?'nearly':'miss';o.push(earResultHTML(q,earTeachCad(q,{kind,given:g})))}}
+          for(const x of EAR.blind){const q={d:'blind',...x,a:x.cat,l:3,lvl:3};for(const g of [null,...earBlindCats(3)]){const j=g===null?'shown':earJudge(q,g),
+            kind=g===null?'shown':j==='correct'?'ok':j==='nearly'?'nearly':'miss';o.push(earResultHTML(q,earTeachCad(q,{kind,given:g})))}}}finally{EAR_NEARLY=N0}
+        const d=document.createElement('div');d.id='tmpanels';d.innerHTML=o.map(h=>'<div class="room">'+h.replace(/id="earResult"/,'')+'</div>').join('');
+        document.querySelector('main').appendChild(d);termPass();return o.length}""")
+    COUNT['T6 M1i Ear Lab result panels drawn'] = np
+    await pg.evaluate("__chk('T6 Ear Lab result panels')")
+    miss = await pg.evaluate("""()=>[...document.querySelectorAll('#tmpanels .el-result')].filter(r=>{const h=r.querySelector('.el-answer').textContent;
+        const m=/^(Perfect|Imperfect|Interrupted) cadence/.exec(h);if(!m)return false;const u={Perfect:'authentic',Imperfect:'half',Interrupted:'deceptive'}[m[1]]+' cadence';
+        return !r.querySelector('.el-teach').textContent.includes('US: '+u)}).map(r=>r.querySelector('.el-answer').textContent+' | '+r.querySelector('.el-teach').textContent).slice(0,3)""")
+    if miss:
+        fail('T6', f'M1i Ear Lab panels whose teaching sentence gives no US term: {miss}')
+    else:
+        ok('T6', 'M1i every Ear Lab cadence/blind panel names the cadence with its US term')
+    await pg.evaluate("$('tmpanels').remove()")
+    # IC_TERMS_048 M3: the rhythm tiles (rungs 1-3) carry the US term on hover
+    tiles = await pg.evaluate("""()=>new Promise(res=>{const L0=EAR.lvl.rhy;location.hash='ear';EAR.drill='rhy';EAR.q=null;EAR.done=false;const o={};let l=1;
+        const step=()=>{EAR.lvl.rhy=l;room('ear');EAR.q=earGen('rhy',l);EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();setTimeout(()=>{document.querySelectorAll('#earMain [data-earcell]').forEach(b=>o[b.dataset.earcell]=b.getAttribute('title'));
+          if(++l<=3)step();else{EAR.lvl.rhy=L0;EAR.q=null;EAR.done=false;room('ear');res(o)}},300)};step()})""")
+    want_t = {'q': 'crotchet · US: quarter note', 'e2': '2 quavers · US: eighth notes', 'h': 'minim · US: half note', 's4': '4 semiquavers · US: sixteenth notes',
+              'qr': 'crotchet rest · US: quarter rest', 'dq': 'dotted crotchet, quaver · US: dotted quarter note, eighth note',
+              'es2': 'quaver, 2 semiquavers · US: eighth note, sixteenth notes', 's2e': '2 semiquavers, quaver · US: sixteenth notes, eighth note',
+              'syn': 'quaver, crotchet, quaver · US: eighth note, quarter note'}
+    bad_t = {k: v for k, v in tiles.items() if want_t.get(k) != v}
+    if bad_t or not tiles:
+        fail('T6', f'M3i rhythm tile hovers: {bad_t or tiles}')
+    else:
+        ok('T6', f'M3i rhythm tiles carry the US term on hover ({len(tiles)} cells)')
+    # IC_TERMS_048 M4: the circle of fifths, all 24 keys: a minor key's neighbours read as minor keys, a major key's as major
+    circ = await pg.evaluate("""()=>{location.hash='keys';KS.tab='circle';room('keys');renderKeysRoom();const o=[];
+        for(const mn of [false,true])for(let i=0;i<12;i++){CSEL={i,minor:mn};renderCircle();const dd=[...document.querySelectorAll('#ksKeyInfo dd')][2];o.push([mn,dd?dd.textContent:''])}
+        CSEL={i:0,minor:false};renderCircle();return o}""")
+    cb = []
+    for mn, t in circ:
+        m = re.match(r'(\S+)( major| minor)? \(one step clockwise.*\) · (\S+)( major| minor)? \(one step back', t)
+        if not m:
+            cb.append(t); continue
+        for got, mw in ((m.group(1), m.group(2)), (m.group(3), m.group(4))):
+            read = mw.strip() if mw else ('minor' if got[0].islower() else 'major')
+            if read != ('minor' if mn else 'major'):
+                cb.append(t)
+    if cb:
+        fail('T6', f'M4i circle neighbours read in the wrong mode ({len(cb)}): {cb[:2]}')
+    else:
+        ok('T6', 'M4i circle neighbours read as the right mode (24 keys)')
     # ... and still after an answer, when the card adds its "Your answer" / "Answer" badges to the buttons
     ea = await pg.evaluate("""()=>new Promise(res=>{const L0=EAR.lvl.cad;EAR.drill='cad';EAR.lvl.cad=3;let q;do{q=earGen('cad',3)}while(q.a!=='perfect');
         EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();document.querySelector('#earMain [data-earans="imperfect"]').click();

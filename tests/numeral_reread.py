@@ -71,7 +71,7 @@ DECIDE = {
 # arrival from (when the label before it is a neighbour chord), a cadence text, and the reason.
 CAD_DECIDE = {
     ('ohaupt', 2): {'lines': [59], 'why': 'bar 5 beat 4: E–A–G–C♯ (the tenor A on the second quaver turns vii°6 into V⁴₃), resolving to the tonic bass D with a IV⁶₄ neighbour above, then I: V⁴₃–I, not a plagal cadence'},
-    ('ohaupt', 3): {'t': 'Imperfect (half) cadence in E minor (i⁶–V there; the bass rises G–A–B, so not a Phrygian cadence)',
+    ('ohaupt', 3): {'t': 'Imperfect cadence in E minor (i⁶–V there; the bass rises G–A–B, so not a Phrygian cadence)',
                     'why': 'bar 7 beat 4: G–B–E–G = E minor over G (ii⁶ in D, i⁶ in E minor), bass passing A; bar 8: B–B–D♯–F♯ = B major, V of E minor. Not Phrygian: that needs iv⁶–V with the bass falling a semitone; here the bass rises G–A–B'},
 }
 
