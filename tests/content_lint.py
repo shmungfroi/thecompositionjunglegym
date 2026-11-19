@@ -1,8 +1,9 @@
 """Content lint (charter regression suite 8). No browser needed.
 Run: python3 tests/content_lint.py <repo dir>      Prints a JSON report; exits 1 on any failure.
 
- 1. cadence names: "half cadence" and "authentic" only with the NSW term first and the US term in brackets
-    (index.html and scores/meta.json)
+ 1. US terms (L63): no US term on its own, for every pair in the shared term list (cadences, note and rest values, bar/measure,
+    stave/staff, tone/semitone), in index.html and scores/meta.json; ordinary "half", "whole", "measure" (verb) and "staff"
+    (people) are not flagged. The lint's own positive and negative cases run first.
  2. censor terms: no radio-edit / clean-version / instrumental-excerpt style advice in any song `suitability` string
  3. sources: every song entry has two sources, or one authoritative source (a URL); entries with no recorded
     sources are the known exceptions below (open question OQ6) and are counted, not failed
@@ -20,7 +21,7 @@ META = (REPO / 'scores' / 'meta.json').read_text(encoding='utf-8')
 # Known entries with no recorded sources (OQ6, Justin's open question): (song, artist)
 KNOWN_NO_SOURCES = set()  # OQ6 closed (L69): every song entry now has real source URLs
 
-report = {'cadence_names': {'failures': []}, 'censor_terms': {'failures': []},
+report = {'censor_terms': {'failures': []},
           'sources': {'failures': []}, 'source_links': {'failures': []}, 'credits': {'failures': []}}
 
 
@@ -28,33 +29,77 @@ def line_of(text, pos):
     return text.count('\n', 0, pos) + 1
 
 
-# ---------- 1. cadence names ----------
-CAD = re.compile(r'half[ -]?cadence|authentic', re.I)
+# ---------- 1. US terms (L63, IC_TERMS_048 S5): no US term on its own ----------
+# Every term pair in the shared list (cadences, note and rest values, bar/measure, stave/staff, tone/semitone) is checked, in index.html
+# and scores/meta.json. A US term is allowed only where it is labelled as the US term: inside a "(US: ...)" / "[US: ...]" bracket, in the
+# term list's us:/usp: fields, straight after "US" ("the US half cadence", "= US authentic"), or in a code comment. Ordinary English is
+# not a US term: "half" and "whole" count only with note/rest/step/cadence; "measure" only as a counted noun ("measure 4", "two measures",
+# "the next measure"), never the verb; "staff" only in a music sense ("the treble staff", "staff lines"), never people ("staff room").
+US_ALONE = re.compile(
+    r"\bauthentic\b|\bdeceptive\b|\bhalf[ -]cadences?\b"
+    r"|\b(?:quarter|eighth|sixteenth|half|whole)[ -](?:notes?|rests?)\b"
+    r"|\b(?:whole|half)[ -]steps?\b"
+    r"|\bstaffs\b|\bstaff(?=\s+(?:lines?|notation|position|paper)\b)"
+    r"|\b(?:the|a|treble|bass|grand|alto|tenor|each|one|single|five-line|same|top|bottom|lower|upper)\s+staff\b(?!\s+(?:room|members?|meetings?|development|notes))"
+    r"|\bmeasures?\s+\d|\b\d+\s+measures?\b"
+    r"|\b(?:per|each|every|this|that|next|last|first|final|one|two|three|four|eight|twelve|sixteen|the|a)\s+measures?\b(?!\s+(?:of|the|every|each|how|a|an|it|its|your)\b)",
+    re.I)
+
+
+def us_allowed(text, start):
+    ls = text.rfind('\n', 0, start) + 1
+    before = text[ls:start]
+    for o, c in (('(US', ')'), ('[US', ']')):        # inside a US bracket on the same line
+        i = before.rfind(o)
+        if i != -1 and c not in before[i:]:
+            return True
+    if re.search(r"\bus[p]?:'[^']*$", before):        # the term list's US field
+        return True
+    if re.search(r"\bUS:?\s+'?(?:imperfect\s+|Phrygian\s+)?$", before):   # "the US half cadence", "= US authentic", "US 'imperfect authentic'"
+        return True
+    # a code comment: // on this line (not a URL's ://), or inside /* ... */ or <!-- ... -->
+    if re.search(r"(?:^|[\s;,{}()])//(?!/)", before.replace('://', ':__')):
+        return True
+    for o, c in (('/*', '*/'), ('<!--', '-->')):
+        i = text.rfind(o, 0, start)
+        if i != -1 and text.find(c, i) > start:
+            return True
+    return False
+
+
+def us_alone(text):
+    return [m for m in US_ALONE.finditer(text) if not us_allowed(text, m.start())]
+
+
+# the lint's own cases: each must be found (or not) exactly as listed
+US_CASES = [('Play a quarter note.', 1), ('Count measure 4 again.', 1), ('Two measures later.', 1), ('Write it on the treble staff.', 1),
+            ('A deceptive cadence.', 1), ('An authentic close.', 1), ('A half cadence.', 1), ('Go up a whole step.', 1), ('An eighth rest.', 1),
+            ('Draw the staff lines.', 1), ('Both staffs.', 1),
+            ('Half the class hears it.', 0), ('Measure every interval.', 0), ('Ask the teaching staff.', 0), ('Meet in the staff room.', 0),
+            ('The whole phrase.', 0), ('A whole-tone scale.', 0), ('Half-diminished.', 0), ('Take a measure of the gap.', 0),
+            ('A crotchet (US: quarter note).', 0), ('an imperfect cadence [US: half cadence] in minor', 0), ("{k:'minim',us:'half note'}", 0),
+            ('Imperfect = US half', 0), ("US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence.", 0),
+            ('x=1; // a whole note here', 0), ('/* the staff */', 0), ('see https://example.org//quarter-note', 1)]
+report['us_terms'] = {'failures': [], 'cases_checked': len(US_CASES)}
+for s, n in US_CASES:
+    if len(us_alone(s)) != n:
+        report['us_terms']['failures'].append({'lint case': s, 'expected': n, 'found': [m.group(0) for m in us_alone(s)]})
+# a US bracket gives the whole US term: "(US: half)" or "(US: deceptive)" alone is a shortened term (L8)
+US_SHORT = re.compile(r'[(\[]US: (?:authentic|half|deceptive)\s*[)\];,]|\((?:half|authentic|deceptive)\)')
+for s, n in (('imperfect cadence (US: half).', 1), ('V7/vi → IV (US: deceptive) follows', 1), ('(US: half cadence)', 0), ('(US: half step, H)', 0),
+             ('(US: imperfect authentic)', 0), ('Imperfect (half) cadence (ends on V)', 1), ('(half the class)', 0)):
+    if len(US_SHORT.findall(s)) != n:
+        report['us_terms']['failures'].append({'lint case (short)': s, 'expected': n})
 for name, text in (('index.html', INDEX), ('scores/meta.json', META)):
-    for m in CAD.finditer(text):
+    for m in US_SHORT.finditer(text):
         ls = text.rfind('\n', 0, m.start()) + 1
-        before = text[ls:m.start()]
-        after = text[m.end():text.find('\n', m.end()) if '\n' in text[m.end():] else len(text)]
-        ok = False
-        if m.group(0).lower().startswith('half') and before.endswith('Phrygian '):
-            ok = True                                   # "Phrygian half cadence" is a proper name
-        # 0.48 R6: the one-line note that goes wherever "imperfect authentic" appears (the term list itself is in code: us:'...')
-        elif re.search(r"US 'imperfect $", before) or re.search(r"the Australian imperfect cadence is the US $", before) or \
-                re.search(r"= US (Phrygian )?$", before):
-            ok = True
-        # the US-term field of a cadence record: rendered as "<term> (US)"
-        elif re.search(r"\bus:'[^']*$", before):
-            ok = True
-        else:
-            # inside a bracket that follows an NSW term, e.g. "Perfect (authentic)", "(US: imperfect authentic)"
-            op = before.rfind('(')
-            if op != -1 and ')' not in before[op:]:
-                lead = re.sub(r'<[^>]+>', '', before[max(0, op - 60):op])
-                if re.match(r'\(US\b', before[op:]) or re.search(r'(perfect|imperfect|plagal|interrupted|cadence)\W*$', lead, re.I):
-                    ok = True
-        if not ok:
-            report['cadence_names']['failures'].append(
-                {'file': name, 'line': line_of(text, m.start()), 'text': (before[-50:] + m.group(0) + after[:30]).strip()})
+        report['us_terms']['failures'].append({'file': name, 'line': line_of(text, m.start()), 'why': 'shortened US term in a bracket',
+                                               'text': text[max(ls, m.start() - 50):m.end() + 30].strip()})
+for name, text in (('index.html', INDEX), ('scores/meta.json', META)):
+    for m in us_alone(text):
+        ls = text.rfind('\n', 0, m.start()) + 1
+        report['us_terms']['failures'].append({'file': name, 'line': line_of(text, m.start()),
+                                               'text': text[max(ls, m.start() - 50):m.end() + 30].strip()})
 
 # ---------- song data ----------
 m = re.search(r'^const SONGS=(\{.*\});?\s*$', INDEX, re.M)
@@ -208,6 +253,6 @@ for s in WARN_TEXT:
     if QUOTED.search(s) or LYRICWORD.search(s):
         report['lyric_words']['failures'].append(s)
 
-report['passed'] = not any(report[k]['failures'] for k in ('cadence_names', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words'))
+report['passed'] = not any(report[k]['failures'] for k in ('us_terms', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words'))
 print(json.dumps(report, ensure_ascii=False, indent=1))
 sys.exit(0 if report['passed'] else 1)

@@ -1561,17 +1561,17 @@ const TERMS=[
  {k:'imperfect',au:'imperfect cadence',us:'half cadence',rx:'imperfect cadences?'},
  {k:'plagal',au:'plagal cadence',us:null,rx:'plagal cadences?'},            // the same word in both: nothing to add
  {k:'interrupted',au:'interrupted cadence',us:'deceptive cadence',rx:'interrupted cadences?'},
- {k:'crotchet',au:'crotchet',us:'quarter note',rx:'crotchets?(?: rests?)?'},     // "crotchet rest" = US "quarter rest" (termUSw)
- {k:'quaver',au:'quaver',us:'eighth note',rx:'quavers?(?: rests?)?'},
- {k:'minim',au:'minim',us:'half note',rx:'minims?(?: rests?)?'},
- {k:'semibreve',au:'semibreve',us:'whole note',rx:'semibreves?(?: rests?)?'},
- {k:'semiquaver',au:'semiquaver',us:'sixteenth note',rx:'semiquavers?(?: rests?)?'},
+ {k:'crotchet',au:'crotchet',us:'quarter note',rx:'(?:dotted )?crotchets?(?: rests?)?'},     // "crotchet rest" = US "quarter rest" (termUSw)
+ {k:'quaver',au:'quaver',us:'eighth note',rx:'(?:dotted )?quavers?(?: rests?)?'},
+ {k:'minim',au:'minim',us:'half note',rx:'(?:dotted )?minims?(?: rests?)?'},
+ {k:'semibreve',au:'semibreve',us:'whole note',rx:'(?:dotted )?semibreves?(?: rests?)?'},
+ {k:'semiquaver',au:'semiquaver',us:'sixteenth note',rx:'(?:dotted )?semiquavers?(?: rests?)?'},
  // "12-bar blues", "8-bar phrase", "8- to 16-bar" are the same in US usage (never "12-measure"), so a bar after a hyphen is left alone; so is "bar by bar"
  {k:'bar',au:'bar',us:'measure',scoped:true,rx:'(?<![-\u2011])(?<!\\bbars? by[- ])bars?(?![- ]by[- ]bars?\\b)(?![- ]?(?:lines?|chart|graph))'},
  {k:'stave',au:'stave',us:'staff',usp:'staffs',scoped:true,rx:'staves?'},
  // "whole-tone scale" is the same in both. The bare interval "a tone" is paired only where it is plainly an interval ("down a tone", "a tone below",
  // "(or a tone)"), never "chord tone", "tone colour", "common tone" or a pitched "a tone" in the Ear Lab
- {k:'tone',au:'tone',us:'whole step',rx:'whole tones?(?![- ]scales?)|(?<=\\ba )tone(?=$|\\)| (?:higher|lower|above|below|apart|up|down)\\b)'},
+ {k:'tone',au:'tone',us:'whole step',rx:'whole tones?(?![- ]scales?)|(?<=\\ba )tone(?=$|\\)| (?:higher|lower|above|below|under|apart|up|down)\\b)'},
  {k:'semitone',au:'semitone',us:'half step',rx:'semitones?'}
 ];
 const TERMSBY=Object.fromEntries(TERMS.map(t=>[t.k,t]));
@@ -1581,7 +1581,8 @@ const TERM_NOTE="US 'imperfect authentic' is still a perfect cadence; the Austra
 const TERM_NOTE_HTML=`<span class="tmnote" data-notm>${TERM_NOTE}</span>`;
 function termUS(k,pl){const t=TERMSBY[k];return t&&t.us?(pl?(t.usp||t.us+'s'):t.us):null}
 // the US term for the word as found: plural from the word, and a rest stays a rest ("crotchet rests" = "quarter rests")
-function termUSw(k,w){const pl=/s$/i.test(w),u=termUS(k,pl);return u&&/\brests?$/i.test(w)?TERMSBY[k].us.replace(/ note$/,' rest')+(pl?'s':''):u}
+// IC_TERMS_048 S2: a dotted value stays dotted ("dotted crotchet" = "dotted quarter note")
+function termUSw(k,w){const pl=/s$/i.test(w);let u=termUS(k,pl);if(u&&/\brests?$/i.test(w))u=TERMSBY[k].us.replace(/ note$/,' rest')+(pl?'s':'');return u&&/^dotted /i.test(w)?'dotted '+u:u}
 function termTip(k,pl){const u=termUS(k,pl);return u?'US: '+u:''}
 function termDual(k,pl){const t=TERMSBY[k],u=termUS(k,pl);return u?`${t.au}${pl?'s':''} (US: ${u})`:t.au+(pl?'s':'')}
 const TM_BQ=new Set();   // buttons and chips whose US hover needs rebuilding
@@ -1611,6 +1612,9 @@ function termWrapIn(root){
 function termBtnSync(b){
  if(!b.isConnected||b.closest('svg,[data-notm]'))return;
  const tw=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);let txt='',n,m;while((n=tw.nextNode()))if(!n.parentElement.closest('[data-notm]'))txt+=n.nodeValue+' ';
+ // IC_TERMS_048 M3: a button whose visible face is not the term (a rhythm tile shows "ta") names the term in its own title: data-tt
+ // marks that title as text to read, so "crotchet" gets "crotchet · US: quarter note"
+ if(b.hasAttribute('data-tt')){const c0=b.getAttribute('title')||'';txt+=' '+(b.dataset.tset===undefined||c0!==b.dataset.tset?c0:b.dataset.t0||'')}
  const L=(b.dataset.tk||'').split(',').map(k=>termUS(k.trim())).filter(Boolean);TM_RX.lastIndex=0;while((m=TM_RX.exec(txt))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUSw(k,m[0]);if(u&&!L.includes(u))L.push(u)}
  if(!L.length&&b.dataset.tset===undefined)return;
  const cur=b.getAttribute('title')||'';if(b.dataset.tset===undefined||cur!==b.dataset.tset)b.dataset.t0=cur;   // the app's own title (kept, and refreshed if the app changed it)
@@ -1642,7 +1646,7 @@ function termBrackets(){
   if(want||lit){bs.add(t.k);rs.add(t.k)}})}
 function termPass(roots){const R=(roots&&roots.length?roots:[document.body]).filter(r=>r&&r.isConnected);
  R.forEach(r=>{termWrapIn(r);const e=r.nodeType===1?r:r.parentElement,bt=e&&e.closest(TM_BTN);if(bt)TM_BQ.add(bt);
-  if(r.nodeType===1){if(r.matches('[data-tk]'))TM_BQ.add(r);r.querySelectorAll('[data-tk]').forEach(x=>TM_BQ.add(x))}if(r===document.body)document.querySelectorAll('[data-tset]').forEach(x=>TM_BQ.add(x))});
+  if(r.nodeType===1){if(r.matches('[data-tk],[data-tt]'))TM_BQ.add(r);r.querySelectorAll('[data-tk],[data-tt]').forEach(x=>TM_BQ.add(x))}if(r===document.body)document.querySelectorAll('[data-tset]').forEach(x=>TM_BQ.add(x))});
  TM_BQ.forEach(termBtnSync);TM_BQ.clear();termBrackets()}
 let TM_T=0,TM_OBS=null;const TM_Q=new Set();
 function termInit(){
@@ -3120,7 +3124,7 @@ function renderCircle(){const R1=168,R2=118,R3=74,cx=190,cy=190;let s=`<svg view
  $('ksKeyInfo').innerHTML=`<div class="sym disp" style="font-size:54px">${pretty(tonic)} ${CSEL.minor?'minor':'major'}</div>
   <p class="ctx" style="margin-top:4px">${sigText(sig)}${CENH[i]?` · also written as <b>${pretty(CSEL.minor?CENH[i][1]:CENH[i][0])} ${CSEL.minor?'minor':'major'}</b> (${12-Math.abs(n)} ${n>0?'flats':'sharps'})`:''}</p>
   <div class="staff" id="ksSigStaff"></div>
-  <dl><dt>Relative</dt><dd>${rel} <span class="note">· same key signature, different home</span></dd><dt>Parallel</dt><dd>${par} <span class="note">· same home, different key signature</span>${parFlag}</dd><dt>Neighbours</dt><dd>${pretty(dom)} (one step clockwise: the dominant key) · ${pretty(sub)} (one step back: the subdominant key)</dd></dl>
+  <dl><dt>Relative</dt><dd>${rel} <span class="note">· same key signature, different home</span></dd><dt>Parallel</dt><dd>${par} <span class="note">· same home, different key signature</span>${parFlag}</dd><dt>Neighbours</dt><dd>${pretty(dom)} ${CSEL.minor?'minor':'major'} (one step clockwise: the dominant key) · ${pretty(sub)} ${CSEL.minor?'minor':'major'} (one step back: the subdominant key)</dd></dl>
   <div class="lbl" style="margin-top:14px">Seven modes share this key signature</div>
   <div class="chips">${MT.map((t,j)=>`<button class="chip" data-kmode="${t.name}|${mk[j]}">${pretty(t.name)} ${modes[j]} <span class="note">· on ${solTxt('drmfslt'[j])}</span></button>`).join('')}</div>
   <div class="lbl" style="margin-top:14px">Order of sharps and flats</div><p class="ctx" style="margin:0">Sharps: F C G D A E B &nbsp;(<i>Father Charles Goes Down And Ends Battle</i>)<br>Flats: B E A D G C F &nbsp;(the same, backwards)</p>
@@ -3709,7 +3713,7 @@ function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.f
   <p class="desc" style="margin-top:0">The borrowed leading note rises a semitone (in an outer voice it must), and the 7th of the secondary dominant falls by step. Don't double the borrowed leading note.</p></section>
  <section class="card"><h3>Hear · where you meet it<span class="sp"></span><span class="note">listen for the chord that doesn't belong, then the arrival</span></h3>
   <div class="c6hear">${C7HEAR.map(x=>{const qy=encodeURIComponent(x.q);return`<div class="c6h"><div class="gt">${x.g}</div><b>${x.w}</b> <span class="note">${x.a} · ${x.y}</span><div class="lf">${x.f}</div><div class="sb"><a href="https://www.youtube.com/results?search_query=${qy}" target="_blank" rel="noopener">▶ YouTube</a><a href="https://open.spotify.com/search/${qy}" target="_blank" rel="noopener">Spotify</a></div></div>`}).join('')}</div>
-  <details class="tnote"><summary>Teacher notes</summary><p class="note">Sources. "Yesterday" and "Don't Know Why" are worked examples in Hutchinson, <i>Music Theory for the 21st-Century Classroom</i>, §17.1; the chord readings are confirmed by Alan W. Pollack's "Notes on Yesterday" (V-of-vi, V-of-V) and Ethan Hein's analysis of "Don't Know Why". "Her Majesty": College Music Symposium vol. 49, "Using Beatles songs to demonstrate modulation concepts". "La donna è mobile" is listed in Hutchinson §17.1; the chords are in the figure, not described in the text, so the listening note stays general. No content warnings. The interrupted V7/vi → IV (US: deceptive) follows Hutchinson §17.6.</p></details></section>
+  <details class="tnote"><summary>Teacher notes</summary><p class="note">Sources. "Yesterday" and "Don't Know Why" are worked examples in Hutchinson, <i>Music Theory for the 21st-Century Classroom</i>, §17.1; the chord readings are confirmed by Alan W. Pollack's "Notes on Yesterday" (V-of-vi, V-of-V) and Ethan Hein's analysis of "Don't Know Why". "Her Majesty": College Music Symposium vol. 49, "Using Beatles songs to demonstrate modulation concepts". "La donna è mobile" is listed in Hutchinson §17.1; the chords are in the figure, not described in the text, so the listening note stays general. No content warnings. The interrupted resolution V7/vi → IV (US: deceptive resolution) follows Hutchinson §17.6.</p></details></section>
  <div class="grid clgrid">
   <section class="card"><h3>Try · where is it pointing?<span class="sp"></span><span class="note">${C7.quiz.n?`Score ${C7.quiz.right} / ${C7.quiz.n}`:''}</span></h3>
    <p class="note" style="margin:0 0 10px">A phrase in a major key plays with one secondary dominant. Which chord did it point at? Listen for the chord straight after the outsider.</p>
@@ -5653,7 +5657,7 @@ FB.rondo={mode:'maj',l:5,len:8,keys:[{k:0,mode:'maj'},{k:7,mode:'maj'},{k:5,mode
    <div class="go" style="margin-top:12px"><button class="mini gold" data-rdplay="sec">▶ Play ${RDS[sel].n.replace(' · ',' (')+(RDS[sel].n.includes(' · ')?')':'')}</button><button class="mini" data-rdplay="model">▶ Play the whole ${model==='five'?'five':'seven'}-part rondo</button><button class="mini" data-fplay="stop">■ Stop</button></div>
    <p class="note" style="margin:10px 0 0">Chords only, with a Classical broken-chord accompaniment (an Alberti bass): low, high, middle, high.</p>
    <div class="lbl" style="margin-top:16px">Listen for</div>
-   <ul class="note" style="margin:0 0 10px 18px;padding:0;line-height:1.6"><li>The refrain always comes back in the home key: you feel the return before you name it.</li><li>The key change at each episode: brighter in B (V), darker in C (minor).</li><li>The retransition: the music sits on V7 and waits, and you know the refrain is coming.</li></ul>
+   <ul class="note" style="margin:0 0 10px 18px;padding:0;line-height:1.6"><li>The refrain always comes back in the home key: you feel the return before you name it.</li><li>Inside the refrain, the fourth bar asks with an imperfect cadence (it ends on V) and the eighth answers with a perfect cadence (V–I).</li><li>The key change at each episode: brighter in B (V), darker in C (minor).</li><li>The retransition: the music sits on V7 and waits, and you know the refrain is coming.</li></ul>
    <div class="lbl">Recordings to find</div><ul class="note" style="margin:0 0 0 18px;padding:0;line-height:1.6"><li>Beethoven, "Für Elise" (WoO 59): a five-part rondo, ABACA</li><li>Mozart, Horn Concerto No. 4, K. 495, finale ("Rondo")</li><li>Haydn, Piano Trio in G, Hob. XV:25, finale ("Gypsy Rondo")</li><li>Beethoven, "Pathétique" Sonata, Op. 13, finale: a sonata-rondo (coming next in this room)</li></ul></section>
   <section class="card"><h3>See · a ${model==='five'?'five':'seven'}-part rondo in ${keyName(home)}</h3>
    <div class="go" style="margin-bottom:8px"><button class="chip ${model==='five'?'on':''}" data-rdm="five">ABACA</button><button class="chip ${model==='seven'?'on':''}" data-rdm="seven">ABACABA</button></div>
@@ -7046,7 +7050,7 @@ function earRhySVG(cells,o={}){const u=o.u||18,bars=o.bars||1,sig=o.sig!==false,
 // one entry tile: the cell in the same notation on a faint line, width = duration x 14 px
 function earRhyTile(k,o={}){const u=14,w=RCELL[k].w*u,base=44,stick=!!o.stick,nm=o.named&&o.named[k];
  const marks=elCellMarks(k,[ 'q','qr','h'].includes(k)?(w-ELHW)/2-6:RCELL[k].w===4?-2.5:2,u,12,base,stick);
- return`<button class="el-tile" style="width:${w}px" data-earcell="${k}" aria-label="${ELTITLE[k]}" title="${ELTITLE[k]}" ${o.disabled?'disabled':''}><svg viewBox="0 0 ${w} 56" width="${w}" height="56" aria-hidden="true">${stick?'':`<line x1="0" y1="${base}" x2="${w}" y2="${base}" stroke="#c9b98f" stroke-opacity=".3"/>`}${marks}</svg>${nm?`<small>${nm}</small>`:''}</button>`}
+ return`<button class="el-tile" style="width:${w}px" data-earcell="${k}" aria-label="${ELTITLE[k]}" title="${ELTITLE[k]}" data-tt ${o.disabled?'disabled':''}><svg viewBox="0 0 ${w} 56" width="${w}" height="56" aria-hidden="true">${stick?'':`<line x1="0" y1="${base}" x2="${w}" y2="${base}" stroke="#c9b98f" stroke-opacity=".3"/>`}${marks}</svg>${nm?`<small>${nm}</small>`:''}</button>`}
 /* ---- metre: signatures, beat pictures, the beat lane ---- */
 function elSigSVG(n,d){const s=ELS*1.05,num=(v,y)=>{let x,wd=0,out='';String(v).split('').forEach(c=>wd+=(c==='1'?300:470)*1.44*s);x=(26-wd)/2;
   String(v).split('').forEach(c=>{out+=`<path d="${ELGLY['timeSig'+c]}" transform="translate(${x.toFixed(1)},${y}) scale(${s},${-s})"/>`;x+=(c==='1'?300:470)*1.44*s});return out};
@@ -7324,10 +7328,12 @@ function earCadFacts(q){const f={has:!!(q&&q.ch&&q.rns&&q.key&&q.ch.length===q.r
  const j=q.rns.findIndex((x,i)=>/:2$/.test(x)&&/^V/.test(q.rns[i+1]||''));f.so=EARSOL5(q.key.mode);
  if(j>=0){const mv=ch[j+1][0]-ch[j][0];f.soStay=`stays on ${f.so}`;f.soOct=mv?`${mv<0?'dropping':'rising'} an octave into V`:''}return f}
 function earCadRight(a,q,min){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?'VI':'vi',F=earCadFacts(q);
- const S={perfect:`V to ${T}: the leading note rises to the home note and the bass lands there. A full stop.`,
+ // IC_TERMS_048 M1: the headline stays the name only (Fable FR-1), so a right answer's sentence names the cadence first; the term pass
+ // brackets that first mention with the US term ("An imperfect cadence (US: half cadence): it stops on V…")
+ const S={perfect:`A perfect cadence, V to ${T}: the leading note rises to the home note and the bass lands there. A full stop.`,
   plagal:`${SD} to ${T}. No leading note; the home note ${F.has&&F.doHeld?'is held through both chords':'sounds in both chords'}. The Amen.`,
-  imperfect:'It stops on V and waits there. A comma, not a full stop.',
-  interrupted:`V sets up the close, then the bass steps up to ${S6} instead of going home.`+(F.int64?' '+CAD64INT(q.key.mode):''),
+  imperfect:'An imperfect cadence: it stops on V and waits there. A comma, not a full stop.',
+  interrupted:`An interrupted cadence: V sets up the close, then the bass steps up to ${S6} instead of going home.`+(F.int64?' '+CAD64INT(q.key.mode):''),
   phrygian:'iv⁶ to V in a minor key: the bass falls a semitone, fa to mi, and the phrase stops on V.',
   cad64:`The bass reaches the dominant early and ${F.soStay||'stays there'}${F.soOct?', '+F.soOct:''}: ${T}⁶₄, then V, then home. A perfect cadence with a delay built in.`};
  return S[a]}
@@ -7389,16 +7395,22 @@ const earBlindFig=t=>t.replace(/(64|65|43|42|6)(?=$|[\/\s)])/g,f=>({64:'⁶₄',
 function earBlindTxt(q,g){const ch=String(q.chords||'').split(/\s*–\s*/).map(earBlindFig),n=ch.length,fin=ch[n-1],pen=ch[n-2]||'V',all=ch.join(' – '),
   m=/cadence in ([A-G][♭♯]? (?:major|minor))/.exec(q.label||''),lk=m?m[1]:null,pic=!lk&&/minor/.test(q.key||'')&&fin==='I',a=q.a;
  if(g===null||g===a){
-  if(a==='perfect')return lk?`${all}: for a moment the music is in ${lk} (a tonicisation). ${pen} is the dominant of that key and goes to its tonic, ${fin}; the bass lands on the root of ${fin}. A full stop in ${lk}.`
-   :`${all}: the dominant goes to the home chord${pic?', made major (a Picardy third)':''}, and the bass lands on its root. A full stop.`;
-  if(a==='imperfect')return`${all}: it stops on ${fin}${lk?`, the dominant of ${lk},`:''} and waits there. A comma, not a full stop.`;
+  if(a==='perfect')return lk?`A perfect cadence, ${all}: for a moment the music is in ${lk} (a tonicisation). ${pen} is the dominant of that key and goes to its tonic, ${fin}; the bass lands on the root of ${fin}. A full stop in ${lk}.`
+   :`A perfect cadence, ${all}: the dominant goes to the home chord${pic?', made major (a Picardy third)':''}, and the bass lands on its root. A full stop.`;
+  if(a==='imperfect')return`An imperfect cadence, ${all}: it stops on ${fin}${lk?`, the dominant of ${lk},`:''} and waits there. A comma, not a full stop.`;
   return`Listen to the last chords: ${all}.`}
  if(a==='perfect'&&g==='imperfect')return`You heard a dominant chord, and that is right. But it is not the last chord: ${pen} goes on to ${fin}, ${lk?`the tonic of ${lk}`:'the home chord'}, and the phrase closes.`;
  if(a==='imperfect'&&g==='perfect')return`You heard a dominant chord, and that is right. But it is the last chord of the phrase: the phrase stops on ${fin}${lk?`, the dominant of ${lk}`:''}, and no tonic chord comes after it.`;
  return`Listen to the last chords: ${all}.`}
+/* IC_TERMS_048 M1: the result headline is the Australian name only (data-notm, Fable FR-1), so the teaching sentence must name the
+   answer's cadence where the US name differs: the term pass then gives its first mention both terms. A sentence that does not name it
+   (a wrong answer, an item whose sentence only lists the chords) ends with "This is an imperfect cadence." */
+function earCadNamed(a,t){const u=termUS(a);if(!u||new RegExp(`(?<![A-Za-z])${a} cadence`,'i').test(t))return t;
+ return`${t} This is ${/^[aeiou]/.test(a)?'an':'a'} ${a} cadence.`}
 function earTeachCad(q,res){const a=q.a,g=res.given,min=q.key&&q.key.mode==='min',nm=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':CADL[a]||ELCADL[a]+' cadence';
  const head=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':a==='phrygian'?'Phrygian cadence':CADL[a];
- const t=q.d==='blind'?earBlindTxt(q,g):g===null||g===a?earCadRight(a,q,min):earCadWrong(a,g,q,min,res);
+ let t=q.d==='blind'?earBlindTxt(q,g):g===null||g===a?earCadRight(a,q,min):earCadWrong(a,g,q,min,res);
+ t=earCadNamed(a,t);
  const last=a==='cad64'?'Hear the last three chords, slowly':'Hear the last two chords, slowly',rp=[{v:'last',t:last},{v:'bassonly',t:'Bass only'},{v:'all',t:'The whole phrase'}];
  if(q.d==='blind')return{kind:res.kind,head:CADL[a],teach:t,replays:[{v:'ending',t:'Hear the ending again'},{v:'all',t:'The whole phrase'}],
   after:`<p class="el-note" data-notm>From ${q.t||q.score}, bar ${q.bar}. <button class="el-btn sm" data-earscore="${q.score}">Open this score in Analysis</button></p>`};
