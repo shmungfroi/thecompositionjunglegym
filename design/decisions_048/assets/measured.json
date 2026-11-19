@@ -1,0 +1,44 @@
+{
+ "A": {
+  "row": 44,
+  "w": 328,
+  "lad": 360,
+  "n": 8,
+  "staveBottom": 245,
+  "dockTop": 532,
+  "tabTop": 603,
+  "seen": 6,
+  "editSeen": false,
+  "over": 0,
+  "need": 79,
+  "vh": 664
+ },
+ "B": {
+  "row": 24,
+  "w": 328,
+  "lad": 200,
+  "n": 8,
+  "staveBottom": 245,
+  "dockTop": 532,
+  "tabTop": 603,
+  "seen": 8,
+  "editSeen": true,
+  "over": 0,
+  "need": -81,
+  "vh": 664
+ },
+ "C": {
+  "row": 47,
+  "w": 161,
+  "lad": 216,
+  "n": 8,
+  "staveBottom": 245,
+  "dockTop": 532,
+  "tabTop": 603,
+  "seen": 8,
+  "editSeen": false,
+  "over": 0,
+  "need": -65,
+  "vh": 664
+ }
+}
