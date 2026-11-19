@@ -406,7 +406,7 @@ def sec_S(items, real, ui):
         if len(dist[a]) < 100:
             fail('S', f'{a}: only {len(dist[a])} distinct items')
     # the buttons and the feedback, as rendered
-    if ui['labels'] != ['Perfect cadence', 'Plagal cadence', 'Imperfect cadence', 'Interrupted cadence', 'Phrygian', 'Cadential 6/4']:
+    if ui['labels'] != ['Perfect', 'Plagal', 'Imperfect', 'Interrupted', 'Phrygian', 'Cadential 64']:
         fail('S', f"rung 3 buttons: {ui['labels']}")
     for a, txt in ui['fb'].items():
         if a == 'phrygian' and not (re.search(r'imperfect cadence( [(\[]US: half cadence[)\]])? in a minor key', txt) and 'iv⁶–V' in txt):
@@ -483,9 +483,9 @@ async def main():
             const fbm={};for(const [a,md] of [['phrygian','min'],['cad64','maj'],['cad64','min']]){let q;do{q=earGen('cad',3,R)}while(q.a!==a||q.key.mode!==md);fbm[a+'|'+md]=earAnsTxt(q)}
             for(const a of ['phrygian','cad64']){let q;do{q=earGen('cad',3,R)}while(q.a!==a);fb[a]=earAnsTxt(q);
               EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();labels=[...document.querySelectorAll('#earMain [data-earans]')].map(b=>b.textContent);
-              document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();near[a]=(document.querySelector('#earMain .earres')||{}).textContent||'';
+              document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();near[a]=(document.querySelector('#earMain .el-result')||{}).textContent||'';
               EAR_NEARLY=false;EAR.q=q;EAR.done=false;EAR.res=null;renderEar();document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();
-              nearOff[a]=(document.querySelector('#earMain .earres')||{}).textContent||'';EAR_NEARLY=true}
+              nearOff[a]=(document.querySelector('#earMain .el-result')||{}).textContent||'';EAR_NEARLY=true}
             return{labels,fb,near,nearOff,fbm}}""", RNG)
         ui['fbm'] = {tuple(k.split('|')): v for k, v in ui['fbm'].items()}
         sec_S(k3, k3r, ui)
@@ -529,14 +529,15 @@ async def main():
                 fail('M', f"earStatNext {c['ks']}: {c['got']} != {c['want']}")
         dialogs = []
         pg.on('dialog', lambda d: (dialogs.append(d.message), asyncio.ensure_future(d.dismiss())))
-        flow = await pg.evaluate("""async()=>{const o={};const st=()=>({...earSt()}),strip=()=>(document.querySelector('#earMain .earstat')||{}).textContent||'';
-            const click=sel=>{const b=document.querySelector('#earMain '+sel);if(!b)throw new Error('no '+sel);b.click()};
+        flow = await pg.evaluate("""async()=>{const o={};const st=()=>({...earSt()}),strip=()=>(document.querySelector('#earMain .el-foot')||{}).textContent||'';
+            // 0.48 card: with no question open the Play toggle makes the first one, so [data-earnew] falls back to it
+            const click=sel=>{const b=document.querySelector('#earMain '+sel)||(sel==='[data-earnew]'&&document.querySelector('#earMain #earStage [data-earplay="all"]'));if(!b)throw new Error('no '+sel);b.click()};
             window.earPlay=()=>{};EAR.drill='cad';EAR.lvl.cad=2;EAR.st.cad={...EARST0};EAR.q=null;EAR.done=false;renderEar();
             click('[data-earnew]');o.start=st();
             click('[data-earans="'+EAR.q.a+'"]');o.right1=st();click('[data-earnew]');
             click('[data-earans="'+EAR.q.a+'"]');o.right2=st();click('[data-earnew]');
-            click('[data-earshow]');o.shown=st();o.shownStrip=strip();o.shownRes=document.querySelector('#earMain .earres').textContent;click('[data-earnew]');
-            click('[data-earnew]');o.skipped=st();o.skipStrip=strip();o.toast=document.getElementById('toast').textContent;
+            click('[data-earshow]');o.shown=st();o.shownStrip=strip();o.shownRes=document.querySelector('#earMain .el-result').textContent;click('[data-earnew]');
+            EAR.q.plays=1; /* a question counts as skipped only once it has been played (spec 4) */ click('[data-earnew]');o.skipped=st();o.skipStrip=strip();o.toast=document.getElementById('toast').textContent;
             const wrong=EAR.q.opts.find(x=>x!==EAR.q.a);click('[data-earans="'+wrong+'"]');o.miss=st();
             // melody: undo and redo end once the answer is marked (buttons gone, Ctrl+Z does nothing)
             EAR.drill='mel';EAR.lvl.mel=1;EAR.q=null;renderEar();click('[data-earnew]');const q=EAR.q;
@@ -559,13 +560,13 @@ async def main():
             COUNT['EL-10 flow checks'] += 1
             if got != v:
                 fail('M', f'flow after {k}: (n, ok, streak, best, shown, skipped) = {got}, expected {v}')
-        if 'shown 1' not in flow['shownStrip'] or not flow['shownRes'].startswith('Here it is.'):
+        if '1 shown' not in flow['shownStrip'] or not flow['shownRes'].startswith('Shown'):
             fail('M', f"Show me: stats line '{flow['shownStrip']}', result '{flow['shownRes'][:40]}'")
-        if 'skipped 1' not in flow['skipStrip'] or 'skipped' not in flow['toast'].lower():
+        if '1 skipped' not in flow['skipStrip'] or 'skipped' not in flow['toast'].lower():
             fail('M', f"Next before answering: stats line '{flow['skipStrip']}', toast '{flow['toast']}'")
         if not flow['undoBefore'] or flow['undoAfter'] or flow['histActive'] is not None or flow['histLen'] or not flow['ansKept']:
             fail('M', f"undo/redo after marking: before {flow['undoBefore']}, buttons after {flow['undoAfter']}, histActive {flow['histActive']}, stack {flow['histLen']}, answer kept {flow['ansKept']}")
-        if not (flow['ask'] and 'Reset the cadences score to zero?' in flow['askText'] and flow['kept']):
+        if not (flow['ask'] and 'Reset the Cadences score?' in flow['askText'] and flow['kept']):
             fail('M', f"reset does not ask inline first: {flow['askText']}")
         if tuple(flow['zero'][x] for x in ('n', 'ok', 'streak', 'best', 'shown', 'skipped')) != (0,) * 6 or not flow['undoBtn']:
             fail('M', f"reset: {flow['zero']}, undo offered {flow['undoBtn']}")
@@ -836,8 +837,8 @@ async def main():
             for d in WANT[g]:
                 r = await pg.evaluate("""async(d)=>{EAR.q=null;EAR.done=false;const t=document.querySelector(`#earMain [data-eardr="${d}"]`);if(!t)return null;t.click();
                     const rungs=[...document.querySelectorAll('#earMain [data-earlv]')].map(b=>+b.dataset.earlv),out={rungs,txt:document.querySelector('#earMain').textContent,
-                      tabs:[...document.querySelectorAll('#earMain [data-eardr]')].map(b=>b.dataset.eardr),tagtxt:[...document.querySelectorAll('#earMain .eartabs small')].map(x=>x.textContent)};
-                    for(const n of rungs){document.querySelector(`#earMain [data-earlv="${n}"]`).click();if(d==='blind')await earLoadBlind();document.querySelector('#earMain [data-earnew]').click();
+                      tabs:[...document.querySelectorAll('#earMain [data-eardr]')].map(b=>b.dataset.eardr),tagtxt:[...document.querySelectorAll('#earMain .el-drill small')].map(x=>x.textContent)};
+                    for(const n of rungs){document.querySelector(`#earMain [data-earlv="${n}"]`).click();if(d==='blind')await earLoadBlind();(document.querySelector('#earMain [data-earnew]')||document.querySelector('#earMain #earStage [data-earplay="all"]')).click();
                       await new Promise(r=>setTimeout(r,60));const a=document.querySelector('#earMain [data-earans]');if(a)a.click();else{const s=document.querySelector('#earMain [data-earshow]');if(s)s.click()}stopAll()}
                     return out}""", d)
                 COUNT['EL-11 drill x Stage rendered'] += 1
@@ -849,7 +850,7 @@ async def main():
                     fail('U', f'Stage {g} {d}: rungs offered {r["rungs"]}, expected {WANT[g][d]}')
                 if sorted(r['tabs']) != sorted(WANT[g]):
                     fail('U', f'Stage {g}: drills offered {r["tabs"]}, expected {sorted(WANT[g])}')
-                if 'Level ' in r['txt'] or any(not t.startswith(' · Stage ') for t in r['tagtxt']) or ' S4' in r['txt'] or ' S5' in r['txt']:
+                if 'Level ' in r['txt'] or any(not t.startswith('Stage ') for t in r['tagtxt']) or ' S4' in r['txt'] or ' S5' in r['txt']:
                     fail('U', f'Stage {g} {d}: level wording or a short Stage tag in the UI ({r["tagtxt"]})')
             # show all: every drill and every rung (at Stage 6 nothing is hidden, so the chip is not offered)
             if g == 6:
@@ -876,13 +877,13 @@ async def main():
             fail('U', 'the hand-sign ladder is called a rung in the UI')
         # rung change mid-question: recorded as skipped, and said
         rc = await pg.evaluate("""()=>{S.level=6;EAR.all=false;EAR.drill='cad';EAR.lvl.cad=2;EAR.st.cad={...EARST0};EAR.q=null;EAR.done=false;renderEar();
-            document.querySelector('#earMain [data-earnew]').click();const q1=EAR.q;document.querySelector('#earMain [data-earlv="3"]').click();
-            const o={st:{...earSt()},q:EAR.q,toast:document.getElementById('toast').textContent,lvl:earLvl(),line:document.querySelector('#earMain .earstat').textContent};
-            document.querySelector('#earMain [data-earnew]').click();document.querySelector('#earMain [data-earans="'+EAR.q.a+'"]').click();document.querySelector('#earMain [data-earlv="2"]').click();
+            (document.querySelector('#earMain [data-earnew]')||document.querySelector('#earMain #earStage [data-earplay="all"]')).click();const q1=EAR.q;EAR.q.plays=1;document.querySelector('#earMain [data-earlv="3"]').click();
+            const o={st:{...earSt()},q:EAR.q,toast:document.getElementById('toast').textContent,lvl:earLvl(),line:document.querySelector('#earMain .el-foot').textContent};
+            (document.querySelector('#earMain [data-earnew]')||document.querySelector('#earMain #earStage [data-earplay="all"]')).click();document.querySelector('#earMain [data-earans="'+EAR.q.a+'"]').click();document.querySelector('#earMain [data-earlv="2"]').click();
             o.after={...earSt()};return o}""")
         if rc['st']['skipped'] != 1 or rc['st']['n'] != 0 or rc['q'] is not None or rc['lvl'] != 3:
             fail('U', f"rung change mid-question: {rc['st']}, question {rc['q']}, rung {rc['lvl']}")
-        if 'skipped' not in rc['toast'] or 'skipped 1' not in rc['line']:
+        if 'skipped' not in rc['toast'] or '1 skipped' not in rc['line']:
             fail('U', f"rung change mid-question is not said: toast '{rc['toast']}', stats '{rc['line']}'")
         if rc['after']['skipped'] != 1 or rc['after']['n'] != 1:
             fail('U', f"rung change after answering counted as a skip: {rc['after']}")

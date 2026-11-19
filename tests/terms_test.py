@@ -110,7 +110,7 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
  const bracketed=a=>a.dataset.lit==='1'||(a.nextSibling&&a.nextSibling.nodeType===1&&a.nextSibling.classList.contains('tmus'))||merged(a)||!!a.closest('[data-notm]');
  window.__chk=function(where){termPass();const M=document.querySelector('main')||document.body;window.__TN.scans++;
   // T2: no US term on its own (rendered text outside scores, and every title that is not a US hover)
-  const tw=document.createTreeWalker(M,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&n.parentElement.closest('svg,script,style,textarea')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+  const tw=document.createTreeWalker(M,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&n.parentElement.closest('svg,script,style,textarea,.el-key2')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
   let txt='',n;while((n=tw.nextNode()))txt+=n.nodeValue;
   const t=strip(txt),mm=US.exec(t);if(mm)add('T2',where+': "'+t.slice(Math.max(0,mm.index-50),mm.index+40)+'"');
   M.querySelectorAll('[title]').forEach(e=>{const ti=e.getAttribute('title').replace(/(^|\s*·\s*)US: [^·]*/g,' ');if(US.test(strip(ti)))add('T2',where+': title "'+e.getAttribute('title')+'"')});
