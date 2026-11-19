@@ -331,9 +331,12 @@ async def main():
             for c in {x['cat'] for x in items if x['lvl'] <= l}:
                 if c not in cats:
                     fail('E', f'level {l}: answer {c} occurs but has no button')
-        # E3: the relabelled cadences
-        want = {('k331d', 2): 'vii°7/V – V', ('chopin7', 1): 'V7 – I', ('jesu', 4): 'V7/V – V', ('jesu', 1): 'V65/V – V', ('ohaupt', 1): 'V/vi – vi',
-                ('chorale', 3): 'V7/IV – IV', ('jesu', 3): 'V/III – III'}
+        # E3: the relabelled cadences. 0.48 R8 re-read the chorale cadences from the notes (tests/numeral_reread.py, which
+        # generates them): (7) = a passing minor 7th above the root after the chord's onset. Jesu bar 11: alto F♯–E–D♯
+        # over F♯ (passing 7th); O Haupt bar 4: alto F♯–E–D over F♯ (passing 7th); Jesu bar 8: no C sounds (the soprano G
+        # over D is a 4th anticipating III), so VII – III, as the numeral row names that chord.
+        want = {('k331d', 2): 'vii°7/V – V', ('chopin7', 1): 'V7 – I', ('jesu', 4): 'V(7)/V – V', ('jesu', 1): 'V65/V – V', ('ohaupt', 1): 'V(7)/vi – vi',
+                ('chorale', 3): 'V7/IV – IV', ('jesu', 3): 'VII – III'}
         for (k, i), ch in want.items():
             if meta[k]['cads'][i]['ch'] != ch:
                 fail('E', f'{k} cadence {i+1}: chords "{meta[k]["cads"][i]["ch"]}", expected "{ch}"')
