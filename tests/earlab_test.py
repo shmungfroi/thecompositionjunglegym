@@ -420,8 +420,9 @@ async def main():
         txt = await pg.evaluate("""()=>({tip:earTips('blind'),cadl:CADL,labels:Object.values(AN.meta).flatMap(m=>(m.cads||[]).map(c=>c.t))})""")
         if 'checked independently in music21' in txt['tip'] or 'independent review' not in txt['tip']:
             fail('H', 'the blind-analysis tip still overstates the checking (E7)')
-        if txt['cadl'].get('imperfect') != 'Imperfect (half)' or txt['cadl'].get('perfect') != 'Perfect (authentic)':
-            fail('H', 'cadence buttons are not NSW-first')
+        # 0.48 R6: the answer buttons show the Australian term only; the US term is on hover (title) and in the feedback
+        if txt['cadl'] != {'perfect': 'Perfect cadence', 'plagal': 'Plagal cadence', 'imperfect': 'Imperfect cadence', 'interrupted': 'Interrupted cadence'}:
+            fail('H', f"cadence buttons are not the Australian term only: {txt['cadl']}")
         for t in txt['labels']:
             if t.lower().startswith('half cadence') or 'authentic' in t.lower() and '(authentic)' not in t.lower():
                 fail('H', f'cadence label not NSW-first: "{t}"')
