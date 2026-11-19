@@ -28,8 +28,8 @@ STATE = """()=>{const svg=document.querySelector('#earMel svg');if(!svg)return n
   labels:[...svg.querySelectorAll('text:not(.melsol)')].map(t=>t.textContent),aria:document.querySelector('#earMel').getAttribute('aria-label'),frameR:fr.right,
   cardR:document.querySelector('#earMain .card').getBoundingClientRect().right,docW:document.documentElement.scrollWidth,vw:innerWidth,
   rungs:[...document.querySelectorAll('.earstep')].map(b=>({s:b.dataset.earsol,dis:b.disabled,last:b.classList.contains('last'),home:b.classList.contains('home'),now:b.classList.contains('now'),h:b.getBoundingClientRect().height,al:b.getAttribute('aria-label'),sm:!!b.querySelector('small'),hm:!!b.querySelector('.hm')})),
-  listen:!!document.querySelector('.earlad.listen'),slotsOld:document.querySelectorAll('.earslots').length,strip:(document.querySelector('.melres .earres')||{}).textContent||'',
-  stripCls:(document.querySelector('.melres .earres')||{}).className||'',lbl:document.querySelector('.melscore .lbl').textContent,
+  listen:!!document.querySelector('.earlad.listen'),slotsOld:document.querySelectorAll('.earslots').length,strip:(document.querySelector('.melres .el-result')||{}).textContent||'',
+  stripCls:(document.querySelector('.melres .el-result')||{}).className||'',lbl:document.querySelector('.melscore .lbl').textContent,
   btn:{chk:(document.querySelector('[data-earchk]')||{}).disabled,und:(document.querySelector('[data-hist="ear:u"]')||{}).disabled,red:(document.querySelector('[data-hist="ear:r"]')||{}).disabled}}}"""
 
 def sol(st, row='0'): return [s['t'] for s in sorted(st['rows'][row]['sol'], key=lambda s: s['i'])]
@@ -54,7 +54,7 @@ async def run(p, w):
             check(abs(st['ss'] - want_ss) < .1, f'{tag}: staff-space {st["ss"]:.2f} != {want_ss}')
             check(all(abs(s['fs'] - 12.5) < .1 for s in st['rows']['0']['sol']), f'{tag}: solfa 12.5 px')
             check(st['frameR'] <= st['cardR'] + .5 and st['docW'] <= st['vw'], f'{tag}: no sideways overflow (doc {st["docW"]}, vw {st["vw"]}, frame {st["frameR"]:.0f} card {st["cardR"]:.0f})')
-            check(all(r['h'] >= 46.9 for r in st['rungs']), f'{tag}: rungs >= 47 px tall ({min(r["h"] for r in st["rungs"]):.1f})')
+            check(all(r['h'] >= (43.9 if w < 500 else 46.9) for r in st['rungs']), f'{tag}: ladder rows >= 44 px on phones (47 on desktop), tall ({min(r["h"] for r in st["rungs"]):.1f})')
             exp_n = q['range'][1] - q['range'][0] + 1
             check(len(st['rungs']) == exp_n, f'{tag}: one rung per step')
             homes = [r for r in st['rungs'] if r['hm']]
@@ -103,7 +103,7 @@ async def run(p, w):
             await pg.evaluate("stopAll()")
             # reveal correct
             await pg.click('[data-earchk]'); st = await pg.evaluate(STATE)
-            check(st['staves'] == 1 and st['stripCls'].endswith('ok') and 'Correct.' in st['strip'], f'{tag}: correct -> one stave, green strip')
+            check(st['staves'] == 1 and st['stripCls'].endswith('ok') and 'Correct' in st['strip'] and 'Every note right' in st['strip'], f'{tag}: correct -> one stave, green strip')
             check(st['listen'] and not any(r['dis'] for r in st['rungs']), f'{tag}: reveal ladder lit and listen-only')
             check(f'The melody: {" ".join(a)}.' == st['aria'], f'{tag}: frame aria-label {st["aria"]}')
             check(sol(st) == a, f'{tag}: reveal solfa')
@@ -127,7 +127,7 @@ async def run(p, w):
             await pg.click('[data-earchk]'); st = await pg.evaluate(STATE)
             nd = sum(1 for i, x in enumerate(wrong) if x != a[i + 1])
             check(st['staves'] == 2 and st['labels'][:2] == ['YOU WROTE', 'THE MELODY'] and st['stripCls'].endswith('bad'), f'{tag}: wrong -> two labelled staves, red strip ({st["staves"]}, {st["labels"]})')
-            check(f'{nd} of the {n-1} notes you wrote {"differs" if nd == 1 else "differ"}.' in st['strip'] and st['strip'].startswith('Not this time.'), f'{tag}: wrong strip text: {st["strip"]}')
+            check(st['strip'].startswith('Not this time') and ('After note' in st['strip'] or 'You heard the shape' in st['strip']), f'{tag}: wrong strip text (0.48: the teaching sentence): {st["strip"]}')
             check(sol(st, '0') == [a[0]] + wrong and sol(st, '1') == a, f'{tag}: both rows solfa')
             red = [s['i'] for s in st['rows']['0']['sol'] if s['fill'] == '#c8473b']
             check(red == [i + 1 for i, x in enumerate(wrong) if x != a[i + 1]], f'{tag}: only wrong notes red ({red})')
@@ -137,7 +137,7 @@ async def run(p, w):
             check(abs(st['ss'] - want_ss) < .1 and st['docW'] <= st['vw'] and st['frameR'] <= st['cardR'] + .5, f'{tag}: wrong reveal size and no overflow')
             # show me
             await pg.evaluate(NEWQ, [lvl, seed]); await pg.click('[data-earshow]'); st = await pg.evaluate(STATE)
-            check(st['staves'] == 1 and st['strip'].startswith('Here it is.') and sol(st) == a, f'{tag}: show me -> one stave')
+            check(st['staves'] == 1 and st['strip'].startswith('Shown') and sol(st) == a, f'{tag}: show me -> one stave')
     # playback follow at the reveal (once per width, level 1)
     for rm in (False, True):
         await pg.emulate_media(reduced_motion='reduce' if rm else 'no-preference')
@@ -160,8 +160,8 @@ async def run(p, w):
         cover = await pg.evaluate("""()=>{const t=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top'));const e=document.elementFromPoint(200,t+2);return !!(e&&e.closest('.melscore'))}""")
         check(cover, f'{w}px: no strip of the ladder shows between the top bar and the pinned stave (FR-20)')
         # FR-19: the result strip is outside the pinned block, between it and the ladder
-        await pg.evaluate(NEWQ, [2, 8]); await pg.evaluate("""()=>{const q=EAR.q;EAR.ans=q.a.slice(1).map((x,i)=>i===0?q.a[2]:x);EAR.done=true;EAR.res={ok:false,given:EAR.ans.slice()};renderEar()}""")
-        f19 = await pg.evaluate("""()=>{scrollTo(0,0);const e=document.querySelector('.earres'),s=document.querySelector('.melscore').getBoundingClientRect(),l=document.querySelector('.earlad').getBoundingClientRect(),r=e.getBoundingClientRect();return{inside:!!e.closest('.melscore'),between:r.top>=s.bottom-8&&r.bottom<=l.top+1,r:[r.top,r.bottom],s:[s.top,s.bottom],l:[l.top]}}""")
+        await pg.evaluate(NEWQ, [2, 8]); await pg.evaluate("""()=>{const q=EAR.q;EAR.ans=q.a.slice(1).map((x,i)=>i===0?q.a[2]:x);EAR.done=true;EAR.res={ok:false,kind:'miss',given:EAR.ans.slice()};renderEar()}""")
+        f19 = await pg.evaluate("""()=>{scrollTo(0,0);const e=document.querySelector('.el-result'),s=document.querySelector('.melscore').getBoundingClientRect(),l=document.querySelector('.earlad').getBoundingClientRect(),r=e.getBoundingClientRect();return{inside:!!e.closest('.melscore'),between:r.top>=s.bottom-8&&r.bottom<=l.top+1,r:[r.top,r.bottom],s:[s.top,s.bottom],l:[l.top]}}""")
         check(not f19['inside'] and f19['between'], f'{w}px: result strip outside the pinned block, between stave and ladder (FR-19) {f19}')
         await pg.evaluate(NEWQ, [2, 8]); await pg.evaluate("document.querySelectorAll('.earstep')[3].click()")
         check(r['above'], f'{w}px: stave above the ladder'); check(r['top'] - .5 <= r2 < r['top'] + 12, f'{w}px: stave pinned under the top bar ({r2} vs --top {r["top"]})')

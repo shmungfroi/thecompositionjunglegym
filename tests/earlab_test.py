@@ -439,7 +439,7 @@ async def main():
             fail('G', f"bass reaches MIDI {rng['bl']} (floor E2 = 40)")
 
         # ---------------- H: text ----------------
-        txt = await pg.evaluate("""()=>({tip:earTips('blind'),cadl:CADL,labels:Object.values(AN.meta).flatMap(m=>(m.cads||[]).map(c=>c.t))})""")
+        txt = await pg.evaluate("""()=>({tip:ELTIPS.blind.map(x=>x.join(' ')).join(' ')+' '+ELTIPNOTE.blind,cadl:CADL,labels:Object.values(AN.meta).flatMap(m=>(m.cads||[]).map(c=>c.t))})""")
         if 'checked independently in music21' in txt['tip'] or 'independent review' not in txt['tip']:
             fail('H', 'the blind-analysis tip still overstates the checking (E7)')
         # 0.48 R6: the answer buttons show the Australian term only; the US term is on hover (title) and in the feedback

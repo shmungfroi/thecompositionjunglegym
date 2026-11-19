@@ -112,7 +112,8 @@ async def ear_transport(p,fails):
         await pg.add_init_script(EARHOOK);await pg.route('**/*',route);await pg.goto('http://app/index.html#ear');await pg.wait_for_timeout(1200)
         await pg.evaluate("(async()=>{ac();await loadSamples('piano');await earLoadBlind()})()");await pg.wait_for_timeout(500)
         async def click(sel):
-            await pg.evaluate("(s)=>{const b=document.querySelector(s);if(!b)throw new Error('no '+s);b.click()}",sel)
+            # 0.48 card: with no question open the Play toggle makes the first one (there is no Skip yet), so "[data-earnew]" falls back to it
+            await pg.evaluate("(s)=>{const b=document.querySelector(s)||(s==='[data-earnew]'&&document.querySelector('#earStage [data-earplay=\\'all\\']'));if(!b)throw new Error('no '+s);b.click()}",sel)
         async def check_state(tag):
             i=await pg.evaluate(INFO)
             st['state_checks']+=1
@@ -175,7 +176,7 @@ async def ear_transport(p,fails):
                     if expect=='idle' and s2!='idle': F(tag,f'{name}: state {s2}, expected idle')
                     if expect=='playing' and s2!='playing': F(tag,f'{name}: state {s2}, expected playing')
                 if w==1440 or l==2:
-                    await ev('Ear Lab Stop',lambda:click('[data-earstop]'))
+                    await ev('Ear Lab Stop (the toggle)',lambda:click('#earStage [data-earplay="all"]'))
                     await ev('top-bar Stop',lambda:pg.evaluate("document.getElementById('tStop').click()"))
                     await ev('Esc',lambda:pg.keyboard.press('Escape'))
                     await ev('Next',lambda:click('[data-earnew]'),'playing')

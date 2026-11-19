@@ -590,7 +590,9 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
    --red --green --violet --lush --pink) plus the three below.
    Type scale: 11 / 12.5 / 14 / 15 / 16 px for text; Poiret One display at 28 and 52.
    ===================================================================== */
-:root{--r-s:8px;--r-m:12px;--r-pill:999px;--inset:#0e0c08}
+:root{--r-s:8px;--r-m:12px;--r-pill:999px;--inset:#0e0c08;
+ /* height of one note row in the phone solfa ladder (Justin 19 Nov, 5: 44 px per the spec until he has seen the alternative). Each row spans two grid tracks, so it is twice the track. Change it here only. */
+ --lad-row:44px}
 
 /* ---- layout: drill card + "Listening for it" beside it on wide screens ---- */
 #earMain.el{max-width:1180px}
@@ -657,13 +659,13 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-now b{display:block;font-size:15px;font-weight:400;color:var(--ivory)}
 .el-now span{display:block;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .el-now.playing span{color:var(--goldhi)}
-.el-acts{display:flex;gap:8px;align-items:center}
+.el-acts{display:flex;gap:8px;align-items:center;grid-column:3;grid-row:1}
 .el-btn{height:34px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-pill);background:none;font-size:14px;color:var(--ivory);cursor:pointer;white-space:nowrap}
 .el-btn:hover{border-color:var(--gold);color:var(--goldhi)}
 .el-btn.gold{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:600}
 .el-btn.gold:hover{background:var(--goldhi);color:var(--ink)}
 .el-btn[disabled]{opacity:.4;cursor:default}
-.el-vars{grid-column:2 / -1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:8px;border-top:1px solid var(--line)}
+.el-vars{grid-column:2 / -1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:8px;border-top:1px solid var(--line)}
 .el-vars .cap{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-right:4px}
 .el-var{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-pill);background:none;font-size:12.5px;color:var(--ivory);cursor:pointer}
 .el-var:hover{border-color:var(--gold);color:var(--goldhi)}
@@ -704,7 +706,7 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-cad{display:flex;gap:6px;padding:0 0 6px;border-bottom:1.5px solid var(--gold);position:relative;margin-bottom:14px}
 .el-cad:after{content:attr(data-l);position:absolute;left:0;right:0;bottom:-17px;text-align:center;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);white-space:nowrap}
 .el-key{align-self:center;margin-left:8px;font-size:12.5px;color:var(--muted);padding-bottom:14px}
-.fig{display:inline-flex;flex-direction:column;vertical-align:middle;font-size:.7em;line-height:.88;margin-left:2px;font-style:normal;font-variant-numeric:lining-nums}
+.fig{display:inline-flex;flex-direction:column;vertical-align:middle;font-size:max(11px,.7em);line-height:.88;margin-left:2px;font-style:normal;font-variant-numeric:lining-nums}
 .el-ch sup,.el-teach sup{font-size:.62em;line-height:0}
 .fig i{font-style:normal}
 
@@ -723,6 +725,8 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-badge{display:flex;align-items:center;gap:5px;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
 .el-badge svg{width:13px;height:13px;flex:none}
 .is-ans .el-badge{color:var(--green)}.is-mine .el-badge{color:var(--red)}.is-near .el-badge{color:var(--gold)}
+
+.el-key2{margin:8px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
 
 /* ---- metre grid (EL-3) ---- */
 .el-mgrid{display:grid;grid-template-columns:150px repeat(3,minmax(0,1fr));gap:10px}
@@ -792,9 +796,9 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
  .el-rungs{display:flex;flex:1 1 100%}.el-rungs button{flex:1;height:44px;padding:0 6px}
  .el-stage{grid-template-columns:auto minmax(0,1fr);padding:12px}
  .el-play{--sz:56px}
- .el-acts{grid-column:1 / -1}.el-acts .el-btn{flex:1}
+ .el-acts{grid-column:1 / -1;grid-row:2}.el-acts .el-btn{flex:1}
  .el-btn{height:44px}.el-btn.sm{height:44px}
- .el-vars{grid-column:1 / -1}
+ .el-vars{grid-column:1 / -1;grid-row:auto}
  .el-var,.el-seg button{height:44px;padding:0 14px}
  .el-result{grid-template-columns:auto minmax(0,1fr);padding:14px 12px 14px}
  .el-result>.el-btn{grid-column:1 / -1;order:9;margin-top:14px}
@@ -825,7 +829,7 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
  /* the floating global Stop gives way to the Ear Lab's own toggle */
  body.ear-sounding .tstop{display:none}
  /* melody ladder rows (kept from 0.47) reach the 44 px minimum */
- .meldesk .earlad{grid-auto-rows:44px}
+ .meldesk .earlad{grid-auto-rows:calc(var(--lad-row)/2)}
 }
 
 /* two bars sit on one line from 761 px; on phones each bar takes its own line */
@@ -922,7 +926,7 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
  .meldesk{display:flex;flex-direction:column;align-items:stretch;gap:12px}.melscore{order:-2}.melres{order:-1}.melacts{order:2}
  .melscore{position:sticky;top:var(--top);z-index:3;background:linear-gradient(180deg,#15120d 88%,rgba(21,18,13,0));padding-top:6px;padding-bottom:10px;margin-bottom:-6px}
  .melfr{display:block}
- .meldesk .earlad{grid-auto-rows:22px}.meldesk .earstep{margin:0;box-sizing:border-box}
+ .meldesk .earlad{grid-auto-rows:calc(var(--lad-row)/2)}.meldesk .earstep{margin:0;box-sizing:border-box}
  .meldesk .hsw{width:64px;height:34px}.meldesk .hsi{max-width:64px;max-height:34px}
 }
 .phexp select{background:#0e0c08;color:var(--ivory);border:1px solid var(--line);border-radius:6px;padding:2px 4px}.phexp td,.phexp th{padding:4px 6px}
@@ -1048,6 +1052,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visi
 button:active:not(:disabled){transform:translateY(1px)}
 button:disabled{cursor:default;opacity:.45}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+/* the Ear Lab progress ring is information, not decoration: it keeps running under reduced motion (spec 10); the loading spin, the tally fade and the dock slide stay off */
+@media (prefers-reduced-motion:reduce){.el-play.playing:not(.loading) .arc{animation:elRing var(--dur,8s) linear var(--del,0s) forwards!important}}
 
 /* one Stop for everything */
 .tstop{background:var(--red,#c8473b);color:#fff;border:0;border-radius:22px;padding:7px 16px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 0 0 0 rgba(200,71,59,.5);animation:tstopPulse 1.6s ease-out infinite}
@@ -6899,7 +6905,10 @@ const ELICON={tick:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.6l
  near:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6.2c2-2 3.4-1.6 5 0s3 2 5 0M3 10.6c2-2 3.4-1.6 5 0s3 2 5 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
  eye:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8C3.3 5 5.5 3.6 8 3.6S12.7 5 14.5 8c-1.8 3-4 4.4-6.5 4.4S3.3 11 1.5 8z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>'};
 // time names on the entry tiles: one constant, keyed by rung (spec section 7.4: rung 1 only). Add a rung here to show names there too.
-const EL_TIMENAMES={1:{q:'ta',e2:'ti-ti',h:'ta-a'}};
+/* RHYNAMES: the time name written under each entry tile, at every rung (Justin 19 Nov, 4b). One table keyed by cell: change a name here and nowhere else.
+   Rung 1 names (ta, ti-ti, ta-a) are as built. PENDING JUSTIN: the names for the cells that first appear at rungs 2-3 are the common Kodaly
+   placeholders (tika-tika, ti-tika, tika-ti, tam-ti, syn-co-pa, sa for a rest); swap them here when he sends his set. */
+const RHYNAMES={q:'ta',e2:'ti-ti',h:'ta-a',s4:'tika-tika',qr:'sa',dq:'tam-ti',es2:'ti-tika',s2e:'tika-ti',syn:'syn-co-pa'};
 const ELCN={q:'a crotchet',e2:'two quavers',h:'a minim',s4:'four semiquavers',qr:'a crotchet rest',dq:'a dotted crotchet and a quaver',es2:'a quaver and two semiquavers',s2e:'two semiquavers and a quaver',syn:'a quaver, a crotchet and a quaver'};
 const ELTITLE={q:'crotchet',e2:'2 quavers',h:'minim',s4:'4 semiquavers',qr:'crotchet rest',dq:'dotted crotchet, quaver',es2:'quaver, 2 semiquavers',s2e:'2 semiquavers, quaver',syn:'quaver, crotchet, quaver'};
 const ELW={q:'one sound',e2:'two even sounds',s4:'four even sounds',h:'one sound held for two beats',qr:'a beat of silence',dq:'long-short across two beats',es2:'long-short-short',s2e:'short-short-long',syn:'short-long-short across two beats'};
@@ -6974,7 +6983,7 @@ function elBeatsSVG(m){const M=METRES[m],step=11,irr=m==='7/8',acc=M.acc,groups=
    for(let k=1;k<=subs;k++)s+=`<circle cx="${x+k*step}" cy="12" r="1.7" fill="${ELC.MUTED}"/>`;
    s+=`<text x="${x}" y="34" text-anchor="middle">${b+1}</text></g>`;u0+=irr?groups[b]:M.sub}
   h+=s+'</svg>'}
- return`<div class="el-beats${units>6?' two':''}" id="earLane" role="img" aria-label="Four bars of ${m}, the beats shown">${h}</div>`}
+ return`<div class="el-beats${units>5?' two':''}" id="earLane" role="img" aria-label="Four bars of ${m}, the beats shown">${h}</div>`}
 /* ---- Curwen hand signs (simple line drawings) ---- */
 const EHSIGN={
  d:'<rect x="7" y="9" width="14" height="11" rx="4"/><path d="M10 9v3M14 9v3M18 9v3M7 14h-2"/>',
@@ -7114,7 +7123,13 @@ const ELTIPNOTE={metre:'The speed changes every time (60–120 beats a minute), 
  mel:'The hand signs are the Curwen signs used in Kodály teaching (si uses the so sign, raised). Hand-sign drawings © 2003 Kodály Music Education Institute of Australia (KMEIA).',
  blind:'The phrases come from the scores in the Analysis room. Their cadence labels were re-read in music21 and checked by an independent review on 18 Nov 2026. A "perfect cadence in B minor" is still a perfect cadence: it closes, but in a new key for a moment.'};
 const ELCADL={perfect:'Perfect',plagal:'Plagal',imperfect:'Imperfect',interrupted:'Interrupted',phrygian:'Phrygian',cad64:'Cadential <span class="fig"><i>6</i><i>4</i></span>'};
-const ELCADUS={perfect:'US: authentic',imperfect:'US: half',interrupted:'US: deceptive'};
+// the US words come from the shared term list (R6), without the word "cadence"
+const elUS=k=>{const u=termUS(k);return u?u.replace(/ cadence$/,''):''};
+const ELCADUS=new Proxy({},{get:(o,k)=>({perfect:'perfect',imperfect:'imperfect',interrupted:'interrupted'})[k]?'US: '+elUS(k):''});
+// the key line under the cadence answer buttons (Justin 19 Nov, 7): only for the names on offer; Plagal needs no gloss but is said to be the same
+function elCadKeyHTML(list){const m=['perfect','imperfect','interrupted'].filter(k=>list.includes(k));if(!m.length)return'';
+ const t=m.map(k=>`${ELCADL[k]} = US ${elUS(k)}`);if(list.includes('plagal'))t.push('Plagal is the same in both');
+ return`<p class="el-key2" data-notm>${t.join(' · ')}</p>`}
 const ELFN={T:['tonic','var(--green)'],PD:['pre-dominant','var(--gold)'],D:['dominant','var(--red)'],X:['outside the key','var(--violet)']};
 const ELMETN={'2/4':'Simple duple','3/4':'Simple triple','4/4':'Simple quadruple','6/8':'Compound duple','9/8':'Compound triple','12/8':'Compound quadruple','5/4':'Irregular, 5 4','7/8':'Irregular, 7 8'};
 function earNumFn(rn){const r=rn.replace(/:\d/,'');if(r.includes('/'))return'X';const b=r.replace(/[°7]/g,'').toLowerCase();return b==='ii'||b==='iv'?'PD':b==='v'||b==='vii'?'D':'T'}
@@ -7128,7 +7143,7 @@ function earTallyHTML(s,cls=''){const n=s.n||0,lab=n?`Score ${s.ok} of ${n}, str
  if(!n)return`<div class="el-tally is-new ${cls}" role="status" aria-label="${lab}"><div class="el-score"><b>–</b><span>no answers yet</span></div></div>`;
  return`<div class="el-tally ${cls}" role="status" aria-label="${lab}"><div class="el-score"><b data-ok="${s.ok}">${s.ok}</b><span>of ${n}</span></div><div class="el-side"><div>Streak <b>${s.streak}</b></div><div>Best <b>${s.best}</b></div></div></div>`}
 function earFootHTML(s){const any=s.n||s.shown||s.skipped||s.nearly;
- return`<div class="el-foot"><span class="stats">${any?`<b>${s.n}</b> answered · <b>${s.shown}</b> shown · <b>${s.skipped}</b> skipped${s.nearly?` · <b>${s.nearly}</b> nearly`:''}`:'No answers yet'}</span><span class="sp"></span>${earResetHTML()}<button class="el-btn sm" data-earjournal>Save to journal</button></div>`}
+ return`<div class="el-foot"><span class="stats">${any?`<b>${s.n}</b> answered${s.nearly?` · <b>${s.nearly}</b> nearly`:''} · <b>${s.shown}</b> shown · <b>${s.skipped}</b> skipped`:'No answers yet'}</span><span class="sp"></span>${earResetHTML()}<button class="el-btn sm" data-earjournal>Save to journal</button></div>`}
 function earResetHTML(){const nm=elDrillName(EAR.drill);
  if(EAR.resetAsk)return`<span class="el-confirm" role="group" aria-label="Confirm reset">Reset the ${nm} score?<button class="el-btn sm danger" data-earresetyes>Reset</button><button class="el-btn sm" data-earresetno>Keep it</button></span>`;
  if(EAR.resetUndo&&EAR.resetUndo.drill===EAR.drill)return`<span class="el-confirm" role="status">Score reset.<button class="el-btn sm" data-earresetundo>Undo</button></span>`;
@@ -7147,7 +7162,7 @@ function earVarsHTML(q,l){const d=EAR.drill;
  return v.length?`<div class="el-vars"><span class="cap">Or just</span>${v.map(([k,t])=>`<button class="el-var" data-earplay="${k}" aria-pressed="false"><i></i>${t}</button>`).join('')}</div>`:''}
 function earStageHTML(q,l){const N=earNow(),dis=N.st==='wait';
  return`<div class="el-stage" id="earStage"><button class="el-play${N.st==='loading'||dis?' loading':''}" data-earplay="all" data-v="*" aria-label="${N.b}" aria-pressed="false" ${dis?'disabled aria-busy="true"':''}>${ELRING}</button><div class="el-now ${N.st}"><b>${N.b}</b><span>${N.s}</span></div>
-  <div class="el-acts">${q?`<button class="el-btn" data-earshow>Show me</button><button class="el-btn" data-earnew>Skip →</button>`:''}</div>${earVarsHTML(q,l)}</div>`}
+  ${earVarsHTML(q,l)}<div class="el-acts">${q?`<button class="el-btn" data-earshow>Show me</button><button class="el-btn" data-earnew>Skip →</button>`:''}</div></div>`}
 function earDockHTML(q){if(!q)return'';const N=earNow(),rb=EAR.done?`<button class="el-btn gold" data-eardock="next">Next →</button>`:(EAR.drill==='rhy'||EAR.drill==='bass'||EAR.drill==='mel')?`<button class="el-btn gold" data-eardock="check" ${earFull(q)?'':'disabled'}>Check</button>`:'';
  return`<div class="el-dock" id="earDock" role="region" aria-label="Ear Lab playback"><button class="el-play" data-eardock="toggle" data-v="*" aria-label="${N.b}" aria-pressed="false">${ELRING}</button><div class="el-now ${N.st}"><b>${elDrillName(EAR.drill)}</b><span>${N.s}</span></div>${rb}</div>`}
 function earFull(q){const A=EAR.ans;return q.d==='rhy'?A.reduce((s,k)=>s+RCELL[k].w,0)===16*q.bars:q.d==='bass'?A.length===3:q.d==='mel'?A.length>=q.a.length-1:false}
@@ -7291,13 +7306,13 @@ function earMetreGridHTML(q,l){const wait=!q,rows=[['Simple','each beat splits i
 function earOptsAreaHTML(q,l){const d=EAR.drill;if(d==='metre')return earMetreGridHTML(q,l);
  const list=d==='qual'?earQualOpts(l):d==='cad'?(q&&q.opts||earCadOpts(l)):earBlindCats(l).length?earBlindCats(l):Object.keys(CADL);
  const lab=k=>d==='qual'?QUALS[k]:d==='cad'?ELCADL[k]:ELCADL[k],ttl=k=>d!=='qual'?ELCADUS[k]:'',cls=d==='qual'&&list.length===2?' c2':'';
- return`<div class="el-lbl">Your answer</div><div class="el-opts${cls}${q?'':' wait'}" role="group" aria-label="Answer">${list.map(k=>earOptBtn(k,`<span>${lab(k)}</span>`,q,{title:ttl(k)||''})).join('')}</div>`}
+ return`<div class="el-lbl">Your answer</div><div class="el-opts${cls}${q?'':' wait'}" role="group" aria-label="Answer">${list.map(k=>earOptBtn(k,`<span>${lab(k)}</span>`,q,{title:ttl(k)||''})).join('')}</div>${d==='cad'||d==='blind'?elCadKeyHTML(list):''}`}
 function earBassAreaHTML(q){const lock=EAR.done,A=lock&&EAR.res&&EAR.res.given?EAR.res.given:EAR.ans,col=rn=>ELFN[earNumFn(rn)][1];
  const slots=[0,1,2,3].map(i=>{const rn=i===0?'I':A[i-1],ok=lock&&i>0&&A[i-1]===q.a[i];return`<div class="el-slot${i===A.length+1&&!lock?' cur':''}${lock&&i>0?(ok?' okk':' badk'):''}" style="--fc:${rn?col(rn):'var(--muted)'}"${lock&&i>0?` aria-label="Chord ${i+1}: ${ok?'right':'wrong, it is '+q.a[i]}"`:''}>${rn?earRnHTML(rn):'?'}${lock&&i>0?`<span class="st">${ok?ELICON.tick:ELICON.cross}</span>${ok?'':`<small style="color:${col(q.a[i])}">${earRnHTML(q.a[i])}</small>`}`:''}</div>`}).join('');
  return`<div class="el-lbl">Name chords 2–4 in ${keyName(q.key)}</div><div class="el-slots${lock?' lock':''}">${slots}</div>
   <div class="el-opts c4" role="group" aria-label="Chord numerals">${q.opts.map(o=>{const f=earNumFn(o),[fnm,c]=ELFN[f];return`<button class="el-opt num" style="--fc:${c}" data-earrn="${o}" title="${fnm}" ${lock||A.length>=3?'disabled':''}>${earRnHTML(o)}<span class="fn">${fnm}</span></button>`}).join('')}</div>${lock?'':earEditBtns(A.length===3)}`}
 function earEditBtns(full){return EAR.done?'':`<div class="el-edit"><button class="el-btn sm" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="el-btn sm" data-hist="ear:r" title="Redo">↷ Redo</button><button class="el-btn sm" data-earclr>Clear</button><span class="sp"></span><button class="el-btn gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
-function earRhyAreaHTML(q,l){if(EAR.done)return'';const A=EAR.ans,used=A.reduce((s,k)=>s+RCELL[k].w,0),tot=16*q.bars,stick=l===1,nm=EL_TIMENAMES[l],GA=earRhyBars(A,q.bars);
+function earRhyAreaHTML(q,l){if(EAR.done)return'';const A=EAR.ans,used=A.reduce((s,k)=>s+RCELL[k].w,0),tot=16*q.bars,stick=l===1,nm=RHYNAMES,GA=earRhyBars(A,q.bars);
  const lab=`Your rhythm · ${used/4} of ${tot/4} beats`,alab='Your rhythm so far: '+(A.length?A.map(k=>ELTITLE[k]).join(', '):'nothing yet');
  const wide=`<div class="el-rhy wide">${earRhySVG(A,{u:18,bars:q.bars,stick,cursor:true,countin:0,label:alab,caret:false,first:true})}</div>`;
  let nar='';for(let b=0;b<q.bars;b++){const last=b===q.bars-1,cur=b===Math.min(q.bars-1,Math.floor(used/16))&&used<tot;nar+=earRhySVG(GA[b]||[],{u:17,bars:1,stick,cursor:cur,total:16,label:'Bar '+(b+1),final:last,first:b===0,ruler:true})}
@@ -7317,7 +7332,10 @@ function earTipsHTML(d){return`<section class="card" id="earTips"><h3>Listening 
 function earFocusKey(){const a=document.activeElement;if(!a||!a.closest||!a.closest('#earMain')||!a.dataset)return null;
  for(const k of ['earplay','eardr','earlv','earpulse','earspd','earall','earreset','earresetno','earresetyes','earresetundo','earjournal','eardock']){if(a.dataset[k]!==undefined)return a.dataset[k]===''?`[data-${k}]`:`[data-${k}="${a.dataset[k]}"]`}return null}
 function earLiveSay(t){let n=document.getElementById('earLive');if(!n){n=document.createElement('div');n.id='earLive';n.className='el-sr';n.setAttribute('role','status');n.setAttribute('aria-live','polite');n.setAttribute('aria-atomic','true');document.getElementById('room-ear').appendChild(n)}n.textContent='';setTimeout(()=>{n.textContent=t},30)}
-function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill),d=EAR.drill;
+function renderEar(){const el=$('earMain');if(!el)return;
+ // a question belongs to its own drill: if the drill was changed from outside (a link, a test), drop the stale question
+ if(EAR.q&&EAR.q.d!==EAR.drill){EAR.q=null;EAR.done=false;EAR.res=null;EAR.ans=[]}
+ const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill),d=EAR.drill;
  if(!rdy&&!EAR.preloading){EAR.preloading=elPreload(d).catch(()=>{}).then(()=>{EAR.preloading=null;if(ROOM==='ear'&&$('earMain'))renderEar()})}
  el.classList.add('el');const fk=EAR.focus||earFocusKey();EAR.focus=null;
  const tabs=EDR.filter(([k])=>earDrillShown(k)),hidD=EDR.filter(([k])=>!earDrillShown(k)),rungs=[...new Set([...earRungsShown(d),l])].sort(),hidR=rungs.length<3;

@@ -4,7 +4,7 @@ Run from the repo root:  python3 design/earlab_048_built/shots.py [state ...]
 Each state is set up through the real app (EAR state, then the real renderEar), so these are the live card, not a mock-up."""
 import sys, asyncio, pathlib
 HERE = pathlib.Path(__file__).resolve().parent
-REPO = HERE.parent.parent
+REPO = HERE.parent.parent.parent
 sys.path.insert(0, str(REPO / 'tests' / 'harness'))
 import cjg
 from playwright.async_api import async_playwright
