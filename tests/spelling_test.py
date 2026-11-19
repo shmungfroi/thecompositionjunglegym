@@ -32,6 +32,9 @@ Sections
      in the frame (data-resp) with a visible "Theoretical spelling" note.
   D  Displayed labels in the climbs: every bar/numeral chip rendered shows a chord symbol whose root matches music21.
 
+  G  R10 (0.48): no rendered label (Keys, Chords, climbs, and every room as first opened) spells a double accidental as two
+     characters ("B♭b", "F♯♯", "Cbb", "C##", "♭♭7"): the page-side scanner walks every text node and title/aria-label/alt.
+
   X  page errors and exceptions thrown while rendering any climb state.
 
 Counts on v0.46 (about 90 s): 43,847 checks. Keys room: 18 tonics x 17 scales x 2 directions = 612 scales
@@ -55,13 +58,10 @@ COUNT = collections.Counter()
 
 # id -> (section, regex on the failure message, description). Matching failures are reported, not counted.
 KNOWN = {
-    'SP-2': (('K',), r'chord \d.* shows .*(♭b|♯♯)',
-             'Chords-of-the-key buttons show double accidentals as "B♭b" / "F♯♯" instead of "B𝄫" / "F𝄪" '
-             '(pretty() only converts a trailing double accidental, and a chord symbol has a suffix after the root).'),
     'SP-3': (('C',), r'parallel key .* is theoretical',
              'The circle names the parallel key of D♭ major, G♯ minor and D♯ minor as D♭ minor, G♯ major and D♯ major '
              '(8-9 accidentals) without flagging them as theoretical or giving C♯ minor, A♭ major, E♭ major.'),
-}
+}   # SP-2 (double accidentals in chord buttons) was fixed in 0.48 (R10)
 
 
 def fail(sec, msg):
@@ -271,14 +271,14 @@ NUMSUF = {'dim': '°', 'aug': '+', 'm7b5': 'ø7', 'dim7': '°7', 'maj7': 'maj7',
 KEYS_JS = r"""()=>{S.level=6;ROOM='keys';KS.tab='scales';renderKeysRoom();
  const cap=[];const dl=drawLine;window.drawLine=function(el,notes,clef,ksig,dur){if(el&&el.id==='ksStaff')cap.push({ksig:ksig||null,names:notes.map(n=>n.name)});return dl.apply(this,arguments)};
  const T=PADS.flat().slice(),circle=[];
- for(let i=0;i<12;i++)for(const mn of [false,true]){CSEL={i,minor:mn};renderCircle();const box=$('ksKeyInfo');
+ for(let i=0;i<12;i++)for(const mn of [false,true]){CSEL={i,minor:mn};renderCircle();__scan(document.body,`circle ${i} ${mn}`);const box=$('ksKeyInfo');
   circle.push({i,minor:mn,title:box.querySelector('.sym').textContent,ctx:box.querySelector('p.ctx').textContent,
    dd:[...box.querySelectorAll('dd')].map(e=>e.textContent),modes:[...box.querySelectorAll('.chips [data-kmode]')].map(b=>({v:b.dataset.kmode,t:b.textContent})),
    open:box.querySelector('button.mini[data-kmode]').dataset.kmode});
   box.querySelectorAll('[data-kmode]').forEach(b=>{const t=b.dataset.kmode.split('|')[0];if(!T.includes(t))T.push(t)})}
  KS.tab='scales';renderKeysRoom();
  const out=[];
- for(let ti=0;ti<T.length;ti++){const t=T[ti];for(const sc of SCALES)for(const desc of [false,true]){KS.tonic=t;KS.sc=sc.k;KS.desc=desc;cap.length=0;let err=null;try{renderScales()}catch(e){err=String(e).slice(0,160)}
+ for(let ti=0;ti<T.length;ti++){const t=T[ti];for(const sc of SCALES)for(const desc of [false,true]){KS.tonic=t;KS.sc=sc.k;KS.desc=desc;cap.length=0;let err=null;try{renderScales();__scan(document.body,`scales ${t} ${sc.k} ${desc}`)}catch(e){err=String(e).slice(0,160)}
   const alt=document.querySelector('#ksSig [data-kst]');if(alt&&!T.includes(alt.dataset.kst))T.push(alt.dataset.kst);
   out.push({err,t,sc:sc.k,desc,hasDesc:!!sc.desc,name:$('ksName').textContent,
    tiles:[...document.querySelectorAll('#ksTiles .stile')].map(e=>({n:e.querySelector('b').textContent,so:e.querySelector('.so').textContent,d:e.querySelector('small').textContent,m:+e.dataset.m})),
@@ -289,16 +289,35 @@ KEYS_JS = r"""()=>{S.level=6;ROOM='keys';KS.tab='scales';renderKeysRoom();
    chords:[...document.querySelectorAll('#ksChords .kchords')].map(row=>[...row.querySelectorAll('.kc')].map(b=>({num:b.querySelector('.rn').textContent,sym:b.querySelector('b').textContent})))})}}
  window.drawLine=dl;
  KS.tab='intervals';renderKeysRoom();const iv=[];
- for(const start of PADS.flat())for(const x of IVS)for(const dir of ['up','down']){KS.iv={start,k:x.k,dir};let err=null;try{renderIntervals()}catch(e){err=String(e).slice(0,160)}
+ for(const start of PADS.flat())for(const x of IVS)for(const dir of ['up','down']){KS.iv={start,k:x.k,dir};let err=null;try{renderIntervals();__scan(document.body,`intervals ${start} ${x.k} ${dir}`)}catch(e){err=String(e).slice(0,160)}
   iv.push({err,start,k:x.k,dir,name:$('ivName').textContent,sub:$('ivSub').textContent,dd:[...document.querySelectorAll('#ivFacts dd')].map(e=>e.textContent),
    kb:[...document.querySelectorAll('#ivKb .lit')].map(e=>+e.dataset.m),resp:$('ivStaff').dataset.resp||'',svg:!!$('ivStaff').querySelector('svg')})}
  return{tonics:T,scales:out,circle,iv,levels:SCALES.map(s=>[s.k,s.l]),ivlev:IVS.map(x=>[x.k,x.l])}}"""
 
 CHORDS_JS = r"""()=>{S.level=6;location.hash='seed';room('seed');const out=[];const cap=[];const ds=drawStaff;
  window.drawStaff=function(el,notes){if(el&&el.id==='staff')cap.push(notes.map(n=>({n:n.name,o:n.oct,m:n.midi})));return ds.apply(this,arguments)};
- for(const L of 'CDEFGAB')for(const a of ['bb','b','','#','##'])for(const q of Q){S.root=L+a;S.q=q.k;cap.length=0;let err=null;try{render()}catch(e){err=String(e).slice(0,160)}
+ for(const L of 'CDEFGAB')for(const a of ['bb','b','','#','##'])for(const q of Q){S.root=L+a;S.q=q.k;cap.length=0;let err=null;try{render();__scan(document.body,`chords ${L+a} ${q.k}`)}catch(e){err=String(e).slice(0,160)}
   out.push({root:L+a,q:q.k,err,notes:cap[cap.length-1]||null,resp:$('staff').dataset.resp||'',svg:!!$('staff').querySelector('svg'),note:($('staff').querySelector('.sfnote')||{}).textContent||''})}
  window.drawStaff=ds;return out}"""
+
+
+# R10 (0.48): no rendered label may spell a double accidental as two characters. The page-side scanner walks every text
+# node (and title / aria-label / alt attributes) and records any "♭b", "♭♭", "♯♯", "♯#", "##" or a note letter followed by
+# "bb" used as an accidental (so "Bbb", "Bbbm7", but not words such as "Abbey").
+SCAN_JS = r"""()=>{window.__BAD=new Map();window.__N=0;
+ window.__RX=/♭b|♭♭|♯♯|♯#|##|(^|[^A-Za-z])[A-G]bb(?=$|[^a-z]|m|M|maj|dim|aug|sus|add)/;
+ window.__SEEN=new Set();
+ const chk=(s,w)=>{if(window.__SEEN.has(s))return;if(window.__SEEN.size<200000)window.__SEEN.add(s);window.__N++;const m=window.__RX.exec(s);if(m){const k=s.slice(Math.max(0,m.index-12),m.index+16).replace(/\s+/g,' ');if(!window.__BAD.has(k))window.__BAD.set(k,w)}};
+ window.__scan=function(root,w){root=root||document.body;const tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
+  while(n=tw.nextNode()){const p=n.parentNode;if(p&&/^(SCRIPT|STYLE)$/.test(p.nodeName))continue;chk(n.nodeValue,w||'')}
+  root.querySelectorAll('[title],[aria-label],[alt]').forEach(e=>{for(const a of ['title','aria-label','alt'])if(e.hasAttribute(a))chk(e.getAttribute(a),(w||'')+' @'+a)})}}"""
+
+
+async def collect_scan(pg, where):
+    bad = await pg.evaluate("()=>[[...window.__BAD.entries()],window.__N]")
+    COUNT['G distinct rendered strings scanned for two-character double accidentals'] += bad[1]
+    for k, w in bad[0]:
+        fail('G', f"{where}: label text contains a two-character double accidental: '{k}' ({w})")
 
 
 def accn(name):
@@ -588,7 +607,7 @@ CLIMBS_JS = r"""async()=>{
  W('c9List',(a,r)=>put({t:'jazz',toks:a[0].split(' '),key:{k:a[1].k,mode:a[1].mode},L:r.map(c=>({...nm(c),kind:c.kind}))}));
  W('c9Voice',(a,r)=>put({t:'c9v',vt:a[1],V:r.map(v=>({bass:v.bass.name,bm:v.bass.midi,up:v.up.map(n=>n.name),um:v.up.map(n=>n.midi),root:v.ch.root,kind:v.ch.kind,rn:v.ch.rn,sym:c9Sym(v.ch,a[1])}))}));
  W('c11Ch',(a,r)=>{if(r&&r.root)put({t:'jazz',toks:[a[0]],key:{k:a[1].k,mode:a[1].mode},L:[nm(r)]})});
- const scrape=key=>{const bars=[...document.querySelectorAll('#climbDetail .bar')].map(e=>({b:(e.querySelector('b')||{}).textContent||'',s:(e.querySelector('span')||{}).textContent||''}));
+ const scrape=key=>{__scan(document.querySelector('#climbDetail'),CTX);const bars=[...document.querySelectorAll('#climbDetail .bar')].map(e=>({b:(e.querySelector('b')||{}).textContent||'',s:(e.querySelector('span')||{}).textContent||''}));
   const rn=[...document.querySelectorAll('#climbDetail svg text.rnl')].map(e=>({s:e.dataset.rnraw,b:e.dataset.sym||''}));
   DOM.push({ctx:CTX,key:key?{k:key.k,mode:key.mode}:null,bars,rn})};
  const R=(key)=>{try{renderClimbDetail()}catch(e){ERR.push(CTX+': '+String(e).slice(0,200))}scrape(key)};
@@ -957,19 +976,32 @@ async def main():
         await pg.route('**/*', cjg.make_route(REPO))
         await pg.goto('http://app/index.html#keys')
         await pg.wait_for_timeout(1500)
+        await pg.evaluate(SCAN_JS)
         D = await pg.evaluate(KEYS_JS)
+        await collect_scan(pg, 'Keys room')
         COUNT['tonics offered in the Scales tab'] = len(D['tonics'])
         check_keys(D)
+        await pg.evaluate(SCAN_JS)
         R = await pg.evaluate(CHORDS_JS)
+        await collect_scan(pg, 'Chords room')
         COUNT['Chords room chords drawn (root spellings x qualities)'] = len(R)
         check_chords_room(R)
         await pg.goto('http://app/index.html#climbs/3')
         await pg.wait_for_timeout(1200)
+        await pg.evaluate(SCAN_JS)
         C = await pg.evaluate(CLIMBS_JS)
+        await collect_scan(pg, 'Climbs')
         COUNT['climb progressions captured'] = len([c for c in C['CAP'] if c['t'] in ('real', 'list', 'jazz')])
         COUNT['climb renders'] = len(C['DOM'])
         check_climbs(C)
         await pg.wait_for_timeout(300)
+        # every room as first opened, at every level
+        for lv in (4, 5, 6):
+            await pg.goto('http://app/index.html#seed')
+            await pg.wait_for_timeout(500)
+            await pg.evaluate(SCAN_JS)
+            await pg.evaluate(f"()=>{{S.level={lv};for(const r of ['seed','keys','voice','climbs','forms','analysis','ear','gym','oracle']){{try{{room(r);__scan(document.body,'room '+r)}}catch(e){{}}}}}}")
+            await collect_scan(pg, f'rooms at level {lv}')
         if errs:
             for e in errs[:10]:
                 fail('X', f'page error: {e}')

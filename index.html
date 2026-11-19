@@ -1207,7 +1207,7 @@ const ALIAS={'5':'5','':'', 'M':'', 'maj':'', 'm':'m','min':'m','-':'m','7':'7',
 const mod=(a,n)=>((a%n)+n)%n;
 function pcOf(name){const L=LET.indexOf(name[0]);let a=0;for(const c of name.slice(1)){if(c==='#')a++;if(c==='b')a--}return mod(NAT[L]+a,12)}
 function accStr(a){return a>0?'#'.repeat(a):a<0?'b'.repeat(-a):''}
-function pretty(n){return n.replace(/bb$/,'𝄫').replace(/##$/,'𝄪').replace(/#/g,'♯').replace(/(.)b/g,'$1♭')}
+function pretty(n){return n.replace(/(^|[^A-Za-z])([A-G])(#{2,}|b{2,})(?=$|[^a-z]|m|M|maj|dim|aug|sus|add)/g,(m,a,l,r)=>{const k=r.length,g=r[0]==='#'?['♯','𝄪']:['♭','𝄫'];return a+l+(k%2?g[0]:'')+g[1].repeat(k>>1)}).replace(/bb$/,'𝄫').replace(/##$/,'𝄪').replace(/#/g,'♯').replace(/(.)b/g,'$1♭')}
 // spell a note given letter index and midi
 function spell(li,midi){li=mod(li,7);let a=mod(midi,12)-NAT[li];if(a>6)a-=12;if(a<-6)a+=12;return{li,acc:a,midi,name:LET[li]+accStr(a),oct:Math.floor((midi-a)/12)-1}}
 function degNum(d){return parseInt(d.replace(/[#b]/g,''))}
@@ -1452,14 +1452,14 @@ function boardSVG(c,inst){
  for(let i=0;i<ns;i++){const y=y0+(ns-1-i)*sh;s+=`<line x1="${x0}" x2="${x0+F*fw}" y1="${y}" y2="${y}" stroke="#7d7058" stroke-width="${inst==='bass'?1.6:1}"/><text x="${x0-36}" y="${y+4}" fill="#9c927c" font-size="11" text-anchor="middle">${['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'][mod(tun[i],12)]}</text>`}
  for(let f=0;f<=F;f++){const x=x0+f*fw;s+=`<line x1="${x}" x2="${x}" y1="${y0}" y2="${y0+(ns-1)*sh}" stroke="${f===0?'#ece2c8':'#3a3226'}" stroke-width="${f===0?3:1}"/>`;if([3,5,7,9,12,15].includes(f))s+=`<text x="${x-fw/2}" y="${H+10}" fill="#9c927c" font-size="10" text-anchor="middle">${f}</text>`}
  for(let i=0;i<ns;i++)for(let f=0;f<=F;f++){const m=tun[i]+f,t=c.tones.find(t=>mod(t.midi,12)===mod(m,12));if(!t)continue;const x=f===0?x0-16:x0+(f-.5)*fw,y=y0+(ns-1-i)*sh;
-  s+=`<circle cx="${x}" cy="${y}" r="7.5" fill="${getCol(t.d)}" ${mod(m,12)===mod(c.bass.midi,12)&&inst==='bass'?'stroke="#fff" stroke-width="2"':''}/><text x="${x}" y="${y+3}" font-size="8" font-weight="700" text-anchor="middle" fill="#0b0906">${t.d.replace(/b/g,'♭').replace(/#/g,'♯')}</text>`}
+  s+=`<circle cx="${x}" cy="${y}" r="7.5" fill="${getCol(t.d)}" ${mod(m,12)===mod(c.bass.midi,12)&&inst==='bass'?'stroke="#fff" stroke-width="2"':''}/><text x="${x}" y="${y+3}" font-size="8" font-weight="700" text-anchor="middle" fill="#0b0906">${degPretty(t.d)}</text>`}
  return s+'</svg>';
 }
 
 /* ---------- render ---------- */
 const $=id=>document.getElementById(id);
 function fillSelects(){
- $('selRoot').innerHTML=(ROOTS.includes(S.root)?ROOTS:ROOTS.concat(S.root)).map(r=>`<option ${r===S.root?'selected':''}>${r}</option>`).join('');
+ $('selRoot').innerHTML=(ROOTS.includes(S.root)?ROOTS:ROOTS.concat(S.root)).map(r=>`<option value="${r}" ${r===S.root?'selected':''}>${pretty(r)}</option>`).join('');
  const qs=Q.filter(q=>q.l<=S.level);if(!qs.find(q=>q.k===S.q))S.q='';
  $('selQual').innerHTML=qs.map(q=>`<option value="${q.k}" ${q.k===S.q?'selected':''}>${(q.k||'maj')} · ${q.n}</option>`).join('');
 }
@@ -1469,8 +1469,8 @@ function render(){
  const slash=S.inv?'/'+c.tones[S.inv].name:'';
  $('sym').textContent=pretty(c.sym)+pretty(slash);if($('crumbSym'))$('crumbSym').textContent=pretty(c.sym+slash);
  $('nm').textContent=`${pretty(S.root)} ${c.q.n}${S.inv?', '+ORD[S.inv]+' inversion':''}`;
- $('tiles').innerHTML=c.tones.map(t=>`<div class="tile" data-m="${t.midi}"><b>${pretty(t.name)}</b><small>${t.d.replace(/b/g,'♭').replace(/#/g,'♯')}</small><i style="background:${degColor(t.d)}"></i></div>`).join('');
- $('formula').textContent=c.tones.map(t=>t.d.replace(/b/g,'♭').replace(/#/g,'♯')).join('  ');
+ $('tiles').innerHTML=c.tones.map(t=>`<div class="tile" data-m="${t.midi}"><b>${pretty(t.name)}</b><small>${degPretty(t.d)}</small><i style="background:${degColor(t.d)}"></i></div>`).join('');
+ $('formula').textContent=c.tones.map(t=>degPretty(t.d)).join('  ');
  $('notes').textContent=c.tones.map(t=>pretty(t.name)).join(' · ');
  $('invTxt').textContent=S.inv?`${ORD[S.inv]} inversion: the ${c.bass.d.replace(/b/g,'♭').replace(/#/g,'♯')} is in the bass`:'Root position: the root is in the bass';
  $('bassTxt').textContent=pretty(c.bass.name);
@@ -1513,14 +1513,14 @@ function renderInst(c){
   s+='</div><div style="height:26px"></div>';
   if(beg){s+=`<div class="begnote"><b>Right hand:</b> fingers ${B.rh.join('–')} &nbsp;·&nbsp; <b>Left hand</b> (same notes an octave lower): fingers ${B.lh.join('–')}`+
    (B.inv>2?' &nbsp;·&nbsp; This inversion needs the full chord: switch to Full.':'')+
-   (B.left.length?`<br><span>Left out for now: the ${B.left.map(t=>t.d.replace(/b/g,'♭').replace(/#/g,'♯')+' ('+pretty(t.name)+')').join(', ')}. Add ${B.left.length>1?'them':'it'} later with your little finger or your left hand, or switch to Full.</span>`:'')+'</div>'}
+   (B.left.length?`<br><span>Left out for now: the ${B.left.map(t=>degPretty(t.d)+' ('+pretty(t.name)+')').join(', ')}. Add ${B.left.length>1?'them':'it'} later with your little finger or your left hand, or switch to Full.</span>`:'')+'</div>'}
   el.innerHTML=s;return}
  // fretted
  const vb=frettedVoicings(c,S.inst),kb=new Set(vb.map(v=>v.fr.join())),vs=S.more&&S.inst!=='bass'?vb.concat(frettedVoicings(c,S.inst,true).filter(v=>!kb.has(v.fr.join())).map(v=>({...v,more:true})).slice(0,8)):vb;if(S.vi>=vs.length)S.vi=0;
  let s='';const nm={guitar:'Guitar · standard tuning E A D G B E',uke:'Ukulele · re-entrant tuning G C E A',bass:'Bass · E A D G'}[S.inst];
  if(S.inst==='bass'){s+=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Bass lines outline the chord: start on the <b style="color:var(--ivory)">${pretty(c.bass.name)}</b> (ringed), then walk through the chord tones.</span></div>`;
   const BP=bassPatterns(c);el._bp=BP;
-  if(BP.length)s+=`<div class="ctrl" style="margin-top:6px"><span class="lbl" style="margin:0">Patterns to play · tap one to hear it</span><span class="chips" style="margin-left:auto">${S.inst==='guitar'?`<span class="lbl" style="margin:0 6px 0 0;align-self:center">Sound</span><button class="chip ${S.gtone==='nylon'?'':'on'}" data-gtone="steel">Steel</button><button class="chip ${S.gtone==='nylon'?'on':''}" data-gtone="nylon" style="margin-right:12px">Nylon</button>`:''}<span class="lbl" style="margin:0 6px 0 0;align-self:center">In the dots</span><button class="chip ${(S.dots||'deg')==='deg'?'on':''}" data-dots="deg">Degrees</button><button class="chip ${S.dots==='fing'?'on':''}" data-dots="fing">Fingers</button></span></div><div class="voicings">${BP.map((p,i)=>`<div class="vbox" data-bpat="${i}">${bassBoxSVG(p,c)}<div class="nm">${p.nm}</div><small>${p.sub}<br>${p.notes.map(n=>n.d.replace(/b/g,'♭').replace(/#/g,'♯')).join(' – ')}</small></div>`).join('')}</div><p class="note">One finger per fret (1 index to 4 little; 0 open string). With Degrees the finger is the small number beside each note; with Fingers the degree is beside it. Play from the ringed note upwards; string names are under each diagram.${BP.some(p=>p.shift)?' A dashed violet line marks a position shift.':''}</p>`;
+  if(BP.length)s+=`<div class="ctrl" style="margin-top:6px"><span class="lbl" style="margin:0">Patterns to play · tap one to hear it</span><span class="chips" style="margin-left:auto">${S.inst==='guitar'?`<span class="lbl" style="margin:0 6px 0 0;align-self:center">Sound</span><button class="chip ${S.gtone==='nylon'?'':'on'}" data-gtone="steel">Steel</button><button class="chip ${S.gtone==='nylon'?'on':''}" data-gtone="nylon" style="margin-right:12px">Nylon</button>`:''}<span class="lbl" style="margin:0 6px 0 0;align-self:center">In the dots</span><button class="chip ${(S.dots||'deg')==='deg'?'on':''}" data-dots="deg">Degrees</button><button class="chip ${S.dots==='fing'?'on':''}" data-dots="fing">Fingers</button></span></div><div class="voicings">${BP.map((p,i)=>`<div class="vbox" data-bpat="${i}">${bassBoxSVG(p,c)}<div class="nm">${p.nm}</div><small>${p.sub}<br>${p.notes.map(n=>degPretty(n.d)).join(' – ')}</small></div>`).join('')}</div><p class="note">One finger per fret (1 index to 4 little; 0 open string). With Degrees the finger is the small number beside each note; with Fingers the degree is beside it. Play from the ringed note upwards; string names are under each diagram.${BP.some(p=>p.shift)?' A dashed violet line marks a position shift.':''}</p>`;
   s+=`<div class="lbl" style="margin-top:14px">Chord tones across the neck</div><div class="board">${boardSVG(c,'bass')}</div>`;el.innerHTML=s;return}
  s+=`<div class="ctrl"><span class="note" style="margin-left:0">${nm}. Tap a shape to hear it. Under each diagram: the fretting-hand fingers (1 index, 2 middle, 3 ring, 4 little, T thumb), then the string names. A bar across the strings is a barre; the ringed note is the root; the fret number sits beside the root's fret.${S.inst==='uke'?' Sound: nylon-string guitar samples tuned to the ukulele (no free ukulele recordings yet). The ukulele has no low bass string, so inversions sound the same here.':''}</span><span class="chips" style="margin-left:auto">${S.inst==='guitar'?`<span class="lbl" style="margin:0 6px 0 0;align-self:center">Sound</span><button class="chip ${S.gtone==='nylon'?'':'on'}" data-gtone="steel">Steel</button><button class="chip ${S.gtone==='nylon'?'on':''}" data-gtone="nylon" style="margin-right:12px">Nylon</button>`:''}<span class="lbl" style="margin:0 6px 0 0;align-self:center">In the dots</span><button class="chip ${(S.dots||'deg')==='deg'?'on':''}" data-dots="deg">Degrees</button><button class="chip ${S.dots==='fing'?'on':''}" data-dots="fing" style="margin-right:12px">Fingers</button><button class="chip ${S.more?'':'on'}" data-more="0">Beginner shapes</button><button class="chip ${S.more?'on':''}" data-more="1">More shapes</button></span></div>${S.more?'<div class="note" style="margin:4px 0 8px">More shapes adds three-string grips, one muted inner string and wider stretches. Shapes marked <b>no 5th</b> leave out the 5th, which is normal for 7th chords.</div>':''}`;
  if(!vs.length)s+='<div class="empty">No comfortable shape found in the first 12 frets. Try a simpler chord type or another instrument.</div>';
@@ -2497,7 +2497,7 @@ let SCSONGS={"maj": [{"slot": "Blues/jazz", "song": "What a Wonderful World", "a
 const KS={tab:'scales',tonic:'C',sc:'maj',desc:false,inst:'piano',clef:'treble',ring:'C',
  iv:{start:'C',k:'M3',dir:'up'},gym:{mode:'name',q:null,right:0,n:0,hist:[],voice:'high',dirs:{up:true,down:true,harm:false}},sing:null};
 const degSemi=d=>{const n=parseInt(d.replace(/[#b]/g,''));let a=0;for(const ch of d.replace(/\d/g,''))a+=ch==='#'?1:-1;return NAT[(n-1)%7]+a+12*Math.floor((n-1)/7)};
-const degPretty=d=>d.replace(/bb/g,'𝄫').replace(/b/g,'♭').replace(/#/g,'♯');
+function degPretty(d){return d.replace(/bb/g,'𝄫').replace(/##/g,'𝄪').replace(/b/g,'♭').replace(/#/g,'♯')}
 const SCALES=[
  {k:'maj',n:'Major',a:'Ionian mode',g:'Major & minor',l:4,d:['1','2','3','4','5','6','7'],sol:'d r m f s l t',pk:[0,0],t:'The scale most Western music calls home. Two identical four-note halves (tetrachords) joined by a whole step; the half steps between mi–fa and ti–do give it its pull toward do.'},
  {k:'nmin',n:'Natural minor',a:'Aeolian mode',g:'Major & minor',l:4,d:['1','2','b3','4','5','b6','b7'],sol:'l t d r m f s',pk:[2,3],ch:null,t:'The relative minor: the same notes as the major scale, but home is la. Darker and more inward. With no leading note, it sounds folk-like, modal and unresolved.'},
