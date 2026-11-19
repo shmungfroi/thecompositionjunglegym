@@ -6,6 +6,7 @@ Run: python3 tests/content_lint.py <repo dir>      Prints a JSON report; exits 1
  2. censor terms: no radio-edit / clean-version / instrumental-excerpt style advice in any song `suitability` string
  3. sources: every song entry has two sources, or one authoritative source (a URL); entries with no recorded
     sources are the known exceptions below (open question OQ6) and are counted, not failed
+ 3b. source links: every rendered source href is a bare URL (no spaces); the note text is shown beside it
  4. credits: NOTICE.md names every third-party source; the footer has a Credits link; the Credits panel (details#credits,
     not the footer line) holds the sound credits and
     include the score and hand-sign credits
@@ -20,7 +21,7 @@ META = (REPO / 'scores' / 'meta.json').read_text(encoding='utf-8')
 KNOWN_NO_SOURCES = set()  # OQ6 closed (L69): every song entry now has real source URLs
 
 report = {'cadence_names': {'failures': []}, 'censor_terms': {'failures': []},
-          'sources': {'failures': []}, 'credits': {'failures': []}}
+          'sources': {'failures': []}, 'source_links': {'failures': []}, 'credits': {'failures': []}}
 
 
 def line_of(text, pos):
@@ -94,6 +95,42 @@ for q, x in entries:
 report['sources']['known_exceptions_count'] = len(exceptions_seen)
 report['sources']['known_exceptions_listed'] = len(KNOWN_NO_SOURCES)
 report['sources']['known_exceptions_now_sourced'] = sorted(' / '.join(k) for k in KNOWN_NO_SOURCES - exceptions_seen)
+
+def href_of(h):
+    m = re.search(r'href="([^"]*)"', h)
+    return m.group(1).replace('&amp;', '&') if m else None
+
+
+# ---------- 3b. rendered source links (0.48 SRCFIX): every href is a bare URL, the note is shown as text ----------
+# Runs the page's own srcItem() under node on every source string in SONGS and SCSONGS.
+import subprocess
+fm = re.search(r'^function srcItem\(u\)\{.*$', INDEX, re.M)
+em = re.search(r'^const esc=.*$', INDEX, re.M)
+sm = re.search(r'^let SCSONGS=(\{.*\});?\s*$', INDEX, re.M)
+if not (fm and em and sm):
+    report['source_links']['failures'].append('srcItem / esc / SCSONGS not found')
+else:
+    js = (em.group(0) + '\n' + fm.group(0) + '\nconst S=' + sm.group(1) + ';const T=' + json.dumps(SONGS) + ';\n'
+          'const all=[];for(const D of [T,S])for(const k in D)for(const x of D[k])for(const u of (x.sources||[]))all.push(u);\n'
+          'console.log(JSON.stringify(all.map(u=>[u,srcItem(u)])))')
+    try:
+        out = json.loads(subprocess.run(['node', '-e', js], capture_output=True, text=True, check=True).stdout)
+        report['source_links']['rendered'] = len(out)
+        for u, h in out:
+            for href in re.findall(r'href="([^"]*)"', h):
+                if not re.fullmatch(r'https?://[^\s"]+', href):
+                    report['source_links']['failures'].append({'source': u, 'href': href})
+            mu = re.match(r'(.*?)(https?://\S+)(.*)$', u, re.S)
+            if mu:
+                if href_of(h) != mu.group(2):
+                    report['source_links']['failures'].append({'source': u, 'why': 'href is not the first URL token'})
+                for part in (mu.group(1).strip().rstrip(':'), mu.group(3).strip()):
+                    if len(part) > 30 and part.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;') not in h:
+                        report['source_links']['failures'].append({'source': u, 'why': 'note text not shown'})
+            elif 'href=' in h:
+                report['source_links']['failures'].append({'source': u, 'why': 'link made from a source with no URL'})
+    except Exception as e:
+        report['source_links']['failures'].append(f'node check failed: {e}')
 
 # ---------- 4. credits ----------
 NEED = ['Bach chorales', 'Mozart', 'Joplin', 'Craig Stuart Sapp', 'CC BY-NC-SA 4.0', 'Chopin', 'Op. 28 Nos. 7 and 20',
@@ -171,6 +208,6 @@ for s in WARN_TEXT:
     if QUOTED.search(s) or LYRICWORD.search(s):
         report['lyric_words']['failures'].append(s)
 
-report['passed'] = not any(report[k]['failures'] for k in ('cadence_names', 'censor_terms', 'sources', 'credits', 'lyric_words'))
+report['passed'] = not any(report[k]['failures'] for k in ('cadence_names', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words'))
 print(json.dumps(report, ensure_ascii=False, indent=1))
 sys.exit(0 if report['passed'] else 1)

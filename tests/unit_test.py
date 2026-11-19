@@ -105,6 +105,21 @@ async def main():
         gb = next(r for r in rows if r['t'] == 'Gb' and r['sc'] == 'mmin')
         if 'F#' not in gb['alt']:
             FAIL.append(f"P2-6 G♭ melodic minor does not offer F♯ melodic minor (offers {gb['alt']})")
+        # ---- SRCFIX: a rendered song card links the bare URL and shows the note as text ----
+        card = await pg.evaluate("""()=>{S.q='m';renderSongs();const a=[...document.querySelectorAll('#songs .tn a')];
+            const wwy=(()=>{S.q='7sus4';renderSongs();return [...document.querySelectorAll('#songs .song')].find(d=>/Weather With You/.test(d.textContent))})();
+            return {n:a.length,bad:a.filter(x=>/\\s/.test(x.getAttribute('href'))||!/^https?:\\/\\/\\S+$/.test(x.getAttribute('href'))).length,
+              wwy:wwy?wwy.querySelector('.tn').textContent:'',notes:document.querySelectorAll('#songs .srcnote').length}}""")
+        n += 1
+        if card['bad'] or not card['n']:
+            FAIL.append(f"SRCFIX: song card hrefs not bare URLs: {card}")
+        n += 1
+        if 'a single community transcription' not in card['wwy']:
+            FAIL.append('SRCFIX: Weather With You card does not show its source note')
+        ks = await pg.evaluate("""()=>{renderKsSongs({k:Object.keys(SCSONGS)[0]});const a=[...document.querySelectorAll('#ksSongs .tn a')];return {n:a.length,bad:a.filter(x=>/\\s/.test(x.getAttribute('href'))).length,notes:document.querySelectorAll('#ksSongs .srcnote').length}}""")
+        n += 1
+        if ks['bad'] or not ks['notes']:
+            FAIL.append(f'SRCFIX: scale song card: {ks}')
         if errs:
             FAIL.append(f'page errors: {errs[:3]}')
         await b.close()
