@@ -514,6 +514,12 @@ small.a6{font-size:12.5px;color:var(--violet);font-weight:600}
 .seedlow{grid-template-columns:minmax(320px,420px) minmax(0,1fr)}
 #room-seed .card{scroll-margin-top:calc(var(--top) + 170px)}
 @media(max-width:1020px){.seedtop,.seedlow{grid-template-columns:1fr}}
+/* seed equal heights */
+@media(min-width:1021px){
+ .seedtop>div,.seedlow>div{display:flex;flex-direction:column}
+ .seedtop>div>.card,.seedlow>div>.card{flex:1 1 auto}
+}
+
 @media(max-width:700px){
  #room-seed>.head h1{font-size:28px}
  #picker{padding:8px 12px 2px;margin-left:-4px;margin-right:-4px}
