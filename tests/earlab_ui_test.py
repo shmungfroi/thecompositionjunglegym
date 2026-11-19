@@ -9,6 +9,7 @@ Sections
   D  cadence key line under the answer buttons, built from the shared term list
   E  phone solfa ladder rows 44 px, set by one CSS variable
   F  toggle: aria, Esc and Space stop (also with the toggle focused), focus ring on every control, reduced motion keeps the ring running
+  H  Fable's review fixes FR-1 to FR-21 (0.48): headline gloss, 5/4 picture and wording, melody result order, key line, show-all-rungs, phone header, dock ground, labels
   G  the tally (Ear Lab, Keys: Hear it, Sing it back) is one component with score, streak and best; the Nearly result panel
 """
 import sys, asyncio, json, pathlib
@@ -85,6 +86,10 @@ async def run(p):
             if k:
                 check(k.startswith('Perfect = US authentic') and 'Imperfect = US half' in k and 'Interrupted = US deceptive' in k, f'{w}px {d} r{l}: key line text {k}')
                 check(await pg.evaluate("parseFloat(getComputedStyle(document.querySelector('#earMain .el-key2')).fontSize)") >= 12, f'{w}px key line size')
+                check('Plagal' not in k, f'{w}px {d} r{l}: key line has no Plagal line (FR-9)')
+                kd = await pg.evaluate("()=>{const e=document.querySelector('#earMain .el-key2');return{disp:getComputedStyle(e).display,nw:[...e.querySelectorAll('span')].filter(x=>getComputedStyle(x).whiteSpace==='nowrap').length}}")
+                check(kd['nw'] == (3 if d != 'blind' or True else 0) or kd['nw'] >= 2, f'{w}px {d} r{l}: key line pairs unbroken {kd}')
+                check((kd['disp'] == 'none') == (w >= 1180), f'{w}px {d} r{l}: key line hidden only on the two-column layout {kd}')
         # no key line where it does not apply
         await pg.evaluate(VIEW, ['qual', 1]); check(await pg.evaluate("!document.querySelector('#earMain .el-key2')"), 'no key line on chord quality')
         # ---- E: ladder rows
@@ -118,6 +123,68 @@ async def run(p):
         check(nr['st']['streak'] == 3 and nr['st']['n'] == 14 and nr['st']['ok'] == 11, f'{w}px Nearly keeps streak and is not scored {nr["st"]}')
         check(nr['opt'] == ['≈Your answer'] or 'Your answer' in ''.join(nr['opt']), f'{w}px Nearly option badge {nr["opt"]}')
         check(await pg.evaluate("EAR_NEARLY") is False, 'EAR_NEARLY left as found (false)')
+
+        # ---- H: Fable's review fixes (FR-1 to FR-21)
+        # FR-1 / FR-7: the answer headline and the labels carry no US gloss; the gloss is not pushed into them
+        await pg.evaluate(VIEW, ['cad', 2]); await pg.evaluate("()=>{let q;do{q=earGen('cad',2,R)}while(q.a!=='interrupted');q.plays=1;EAR.q=q;earMark(false,'imperfect');renderEar()}")
+        h = await pg.evaluate("()=>{const a=document.querySelector('#earMain .el-answer');return{nm:a.hasAttribute('data-notm'),tm:a.querySelectorAll('.tmus,abbr.tm').length,txt:a.textContent.trim()}}")
+        check(h['nm'] and h['tm'] == 0 and h['txt'] == 'Interrupted cadence', f'{w}px FR-1 headline has data-notm and no US gloss {h}')
+        tm = await pg.evaluate("()=>{const c=document.querySelector('#earMain .el-teach .tmus');return c?getComputedStyle(c).color:'none'}")
+        check(tm in ('none', 'rgb(156, 146, 124)'), f'{w}px FR-8 US bracket in the sentence is muted {tm}')
+        await pg.evaluate(VIEW, ['metre', 3])
+        h = await pg.evaluate("()=>[...document.querySelectorAll('#earMain .el-mh,#earMain .el-lbl')].every(e=>e.hasAttribute('data-notm')&&!e.querySelector('.tmus,abbr.tm'))")
+        check(h, f'{w}px FR-7 column headers and labels carry data-notm')
+        # FR-4: the 5/4 cell is five beats each split in two, a wider gap after the third; wording
+        pic = await pg.evaluate("""()=>{const out={};['5/4','7/8','12/8'].forEach(m=>{const b=[...document.querySelectorAll('#earMain .el-mcell')].find(x=>x.getAttribute('aria-label').includes(m.replace('/',' ')));
+          const c=[...b.querySelectorAll('.pic circle')].map(x=>[+x.getAttribute('cx'),+x.getAttribute('r')]);out[m]={big:c.filter(x=>x[1]>4).length,small:c.filter(x=>x[1]<4).length,xs:c.filter(x=>x[1]>4).map(x=>x[0])}});
+          out.row=[...document.querySelectorAll('#earMain .el-mr')].map(e=>e.textContent);return out}""")
+        gaps = [b - a for a, b in zip(pic['5/4']['xs'], pic['5/4']['xs'][1:])]
+        check(pic['5/4']['big'] == 5 and pic['5/4']['small'] == 5 and gaps == [28, 28, 34, 28], f'{w}px FR-4 5/4 picture: five beats, each split in two, gap after the third {pic["5/4"]} {gaps}')
+        check(pic['7/8']['big'] == 3 and pic['7/8']['small'] == 4 and pic['12/8']['big'] == 4, f'{w}px FR-4 7/8 and 12/8 pictures unchanged {pic}')
+        check(any('uneven groupings' in r for r in pic['row']) and not any('unequal' in r for r in pic['row']), f'{w}px FR-4 Irregular row sub-label {pic["row"]}')
+        for m, must in (('5/4', ('Five beats', '3+2 or 2+3')), ('7/8', ('Seven quavers', '2+2+3'))):
+            t = await pg.evaluate("(m)=>{EAR.q=earGenMetre(3,R,{m,bpm:84});EAR.q.l=3;EAR.q.lvl=3;EAR.q.plays=1;earMark(false,'4/4');renderEar();return document.querySelector('#earMain .el-teach').textContent}", m)
+            check(all(x in t for x in must) and 'quick notes' not in t, f'{w}px FR-4 {m} teaching sentence: {t}')
+        # FR-2: melody result order and the phone stretch
+        await pg.evaluate(VIEW, ['mel', 2]); await pg.evaluate("()=>{const q=earGen('mel',2,R);q.plays=1;EAR.q=q;const g=q.a.slice(1);g[2]=g[2]==='s'?'m':'s';earMark(false,g);renderEar()}")
+        m = await pg.evaluate("()=>{const r=document.querySelector('.melres .el-result'),b=r.querySelector(':scope>.el-btn').getBoundingClientRect(),t=r.querySelector('.el-teach').getBoundingClientRect(),p=r.querySelector('.el-replays').getBoundingClientRect(),rr=r.getBoundingClientRect();return{bt:b.top,tt:t.top,pb:p.bottom,bw:b.width,rw:rr.width}}")
+        check(m['tt'] < m['pb'] <= m['bt'] + 1, f'{w}px FR-2 melody result order: sentence, replays, Next {m}')
+        if w < 500: check(m['bw'] > m['rw'] - 40, f'{w}px FR-2 Next is full width on phones {m}')
+        h = await pg.evaluate("()=>{const l=document.querySelector('#earLet'),cs=getComputedStyle(l),lb=l.closest('label').getBoundingClientRect();return{w:l.getBoundingClientRect().width,acc:cs.accentColor,h:lb.height}}")
+        check(h['w'] >= 17.5 and h['acc'] == 'rgb(201, 162, 74)' and (w >= 500 or h['h'] >= 43.5), f'{w}px FR-19 letter-names checkbox {h}')
+        # FR-14: bass numerals in the chip face
+        await pg.evaluate(VIEW, ['bass', 3]); await pg.evaluate("()=>{let q;do{q=earGen('bass',3,R)}while(q.a.join()!=='I,ii,V,I');q.plays=1;EAR.q=q;earMark(false,['IV','V','I']);renderEar()}")
+        h = await pg.evaluate("()=>{const e=document.querySelector('#earMain .el-answer .rn');return e?getComputedStyle(e).fontFamily:''}")
+        check('Garamond' in h, f'{w}px FR-14 bass headline numerals in EB Garamond {h}')
+        # FR-13: rhythm listening options group caption with control; FR-12 empty bar placeholders; FR-18 sentence
+        await pg.evaluate(VIEW, ['rhy', 3]); await pg.evaluate("()=>{EAR.q={d:'rhy',bars:2,a:['e2','q','dq','s4','q','h'],l:3,lvl:3,plays:2};EAR.ans=['e2','q'];renderEar()}")
+        h = await pg.evaluate("()=>({g:document.querySelectorAll('#earMain .el-vars .grp').length,holes:[...document.querySelectorAll('#earMain .el-rhy.narrow svg')].map(s=>s.querySelectorAll('rect[stroke-dasharray]').length),note:document.querySelector('#earTips').textContent.includes('The strip under the notes')})")
+        check(h['g'] == 2 and h['note'] and all(x > 0 for x in h['holes']), f'{w}px FR-12/13/7 rhythm options grouped, bar placeholders in every bar, tips wording {h}')
+        await pg.evaluate("()=>{EAR.q={d:'rhy',bars:2,a:['e2','q','dq','s4','q','h'],l:3,lvl:3,plays:2};earMark(false,['e2','q','dq','es2','q','h']);renderEar()}")
+        t = await pg.evaluate("document.querySelector('#earMain .el-teach').textContent")
+        check(t[0].isupper() and bool(__import__('re').match(r'^((Bar \d is exactly right\. )?In bar \d, beat \d, you wrote)', t)), f'{w}px FR-18 rhythm sentence starts in capitals: {t}')
+        # FR-20 / FR-21: option columns, Reset disabled with nothing to reset; FR-17 tips measure
+        await pg.evaluate(VIEW, ['qual', 3]); q4 = await pg.evaluate("()=>{const e=document.querySelector('#earMain .el-opts');return{n:e.children.length,c:getComputedStyle(e).gridTemplateColumns.split(' ').length}}")
+        check(q4['n'] != 4 or q4['c'] == (2 if w < 500 else 4), f'{w}px FR-20 four quality options {q4}')
+        await pg.evaluate("EAR.st={};renderEar()"); check(await pg.evaluate("document.querySelector('[data-earreset]').disabled"), f'{w}px FR-21 Reset score disabled with no count')
+        mw = await pg.evaluate("getComputedStyle(document.querySelector('#earTips li')).maxWidth")
+        check(mw not in ('none', ''), f'{w}px FR-17 tips line length capped {mw}')
+        # FR-10 / FR-11: show all rungs beside the rung control at Stage 4, and its target size
+        await pg.evaluate("S.level=4;EAR.all=false;EAR.st={};renderEar()"); await pg.evaluate(VIEW, ['metre', 1])
+        h = await pg.evaluate("()=>[...document.querySelectorAll('#earMain .el-rungrow .el-all')].map(b=>[b.textContent,b.getBoundingClientRect().height])")
+        check(len(h) == 1 and h[0][0] == 'show all rungs' and (w >= 500 or h[0][1] >= 43.5), f'{w}px FR-10/11 show all rungs at Stage 4 {h}')
+        await pg.evaluate("S.level=6;EAR.all=false;renderEar()")
+        # FR-5: phone header, every title on one line up to two-digit scores (balanced wrap allowed for the longest)
+        if w < 500:
+            res = []
+            for d in ('metre', 'rhy', 'cad', 'mel'):
+                await pg.evaluate(VIEW, [d, 1]); await pg.evaluate("(d)=>{EAR.st[d]={n:58,ok:44,streak:12,best:21,shown:0,skipped:0};renderEar()}", d)
+                res.append(await pg.evaluate("()=>{const t=document.querySelector('#earMain .el-title');return Math.round(t.getBoundingClientRect().height/parseFloat(getComputedStyle(t).lineHeight))}"))
+            check(all(x == 1 for x in res), f'{w}px FR-5 titles on one line at two-digit scores {res}')
+            # FR-6a: dock ground is solid
+            await pg.evaluate(VIEW, ['metre', 1]); await pg.evaluate("()=>{EAR.q=earGen('metre',1,R);EAR.q.plays=1;renderEar()}")
+            bg = await pg.evaluate("()=>{const d=document.getElementById('earDock');d.classList.add('show');return getComputedStyle(d).backgroundColor}")
+            check(bg == 'rgb(22, 19, 13)', f'{w}px FR-6 dock ground is solid {bg}')
         check(not errs, f'{w}px page errors {errs[:3]}')
         await pg.close()
     # ---- F: toggle, keys, focus, motion (desktop)
@@ -153,7 +220,8 @@ async def run(p):
         o = await pg.evaluate("()=>{const e=document.activeElement;if(!e||!e.closest('#earMain'))return null;const cs=getComputedStyle(e);return{c:(e.className||'')+'|'+(e.dataset?Object.keys(e.dataset).join(','):''),w:cs.outlineWidth,s:cs.outlineStyle,col:cs.outlineColor,off:cs.outlineOffset}}")
         if o is None: continue
         seen += 1
-        if not (o['s'] == 'solid' and o['w'] == '2px' and o['col'] == 'rgb(240, 212, 138)'): bad.append(o)
+        want = 'rgb(11, 9, 6)' if o['c'].startswith('on|earlv') else 'rgb(240, 212, 138)'   # FR-15: the selected rung (gold fill) takes an ink ring
+        if not (o['s'] == 'solid' and o['w'] == '2px' and o['col'] == want): bad.append(o)
     check(seen > 15 and not bad, f'focus ring (2px solid goldhi) on every control reached by Tab ({seen} reached): {bad[:3]}')
     # keyboard order: drill tabs, rungs, toggle, variants/segments, Show me, Skip, answer area
     order = await pg.evaluate("""()=>{const q='#earMain .el-drill, #earMain .el-all, #earMain .el-rungs button, #earMain #earStage .el-play, #earMain .el-seg button, #earMain .el-var, #earMain [data-earshow], #earMain #earStage [data-earnew], #earMain .el-tile';
