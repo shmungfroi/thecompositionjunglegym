@@ -65,3 +65,10 @@ No browser crashes needing a retry; one run was slow under load from other agent
 - 7/8 teaching sentence now ends "Count the quavers in each group." (2+2+3 appears twice, not three times).
 - earlab_ui_test: new V-1 section, real click on an answer in cadences, metre, rhythm and melody at 1440x900, 1366x768, 1024x768, 390x844, 390x664: Next on screen or in the visible dock, dock never over the teaching sentence. 45 checks; 9 of them fail on the previous build, all pass now. Suite total 467 checks, 0 failed.
 - layout_test 162 views 0 findings; pageerrors_test 0 errors; transport_test 0 fails (first run timed out under load, rerun clean).
+
+## Addendum: M1 (independent check IC_EAR_048)
+- Problem: at metre rung 3 the Irregular row sat under the Duple / Triple / Quadruple headers, so 5/4 read as "2 beats in a bar" and 7/8 as "3 beats".
+- Fix: the Irregular row now has its own header row, one caption per cell: 5/4 "5 beats, grouped 3 + 2" and 7/8 "3 uneven beats, grouped 2 + 2 + 3" (counts read from METR, not typed twice). The beat-count headers stay above Simple and Compound only; the row label spans both rows on desktop and sits above the captions on 390 px. Picture dots unchanged. Captions are 11 px gold/muted, using the existing `.el-mh` style.
+- Screenshots: `design/earlab_048/built/png_after/m1_after_1440.png`, `m1_after_1024.png`, `m1_after_390.png` (before shots not committed). On 390 px "3 UNEVEN BEATS" wraps to two lines; no overflow.
+- earlab_ui_test: new check in section B at 1440 and 390: the header nearest above each irregular cell, in its own column, has the beat count of that metre. It fails on the previous build (5/4 under Quadruple, 7/8 under Triple) and passes now. 469 checks, 0 failed.
+- layout_test findings {}; pageerrors_test page_errors {}.

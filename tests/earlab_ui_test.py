@@ -69,6 +69,12 @@ async def run(p):
             check(sorted(g['opts']) == sorted(g['cells']), f'{w}px metre r{l}: generator pool {g["opts"]} vs grid {g["cells"]} (no dead cell, no unreachable answer)')
             check(all(a and ', ' in a for a in g['aria']), f'{w}px metre r{l}: aria labels {g["aria"]}')
             if l == 3: check(g['rows'][-1] == 'Irregular', f'{w}px metre r3: third row {g["rows"]}')
+            if l == 3:
+                # M1: the header nearest above each irregular cell, in its own column, must state that metre's own beat count (no 5/4 under Duple, no 7/8 under Triple)
+                m1 = await pg.evaluate("""()=>[...document.querySelectorAll('#earMain .el-mcell')].filter(c=>METR[c.dataset.earans].t.startsWith('Irregular')).map(c=>{const r=c.getBoundingClientRect(),cx=r.left+r.width/2;
+                   const hs=[...document.querySelectorAll('#earMain .el-mh')].filter(h=>{const k=h.getBoundingClientRect();return k.bottom<=r.top+1&&k.left<=cx&&k.right>=cx}).sort((x,y)=>y.getBoundingClientRect().bottom-x.getBoundingClientRect().bottom);
+                   const h=hs[0];return{m:c.dataset.earans,want:METR[c.dataset.earans].g.length,got:h?+h.dataset.beats:null,txt:h?h.textContent:null,wide:h?h.getBoundingClientRect().width:0}})""")
+                check(len(m1) == 2 and all(x['got'] == x['want'] for x in m1), f'{w}px metre r3 M1: irregular cell under a header with another beat count {m1}')
         # ---- C: rhythm tile names at every rung
         for l in (1, 2, 3):
             await pg.evaluate(VIEW, ['rhy', l]); await pg.evaluate("()=>{EAR.q=earGen('rhy',earLvl(),R);EAR.q.plays=1;renderEar()}")
