@@ -15,6 +15,9 @@ Sections
   I  0.48 logic: the two rung 3 phrases that end interrupted after a cadential 6/4 (kept, answer "Interrupted"): strict SATB, one right
            answer, feedback, the CAD64_INT_NEARLY switch (default false = wrong)
   P  reconcile 0.48: every cadence result-panel sentence (card, spec 9.5), for every answer at every rung, is true of its item
+  B  IC_EAR_048 S5: blind analysis sentences against each excerpt (no single-voice claims, its own numerals and mode, the key it
+           cadences in, the bass on the root of the last chord from meta.json events and music21)
+  T2 IC_EAR_048 S6: metre sentences say "you heard ... every bar / each beat" only when every split click sounded
   T  0.48 logic: Pulse and metre: answer grid per rung (2/4 from rung 1, 12/8 from rung 2), every metre against the fixture rows
            (tests/fixtures/metre_items.json) and music21, balance, and the tempo / playing-time tells
 """
@@ -89,10 +92,12 @@ def sec_Q(qual):
             regs[0 if lo <= 60 else 1] += 1
             txt = q['txt']
             if q['a'] in ('aug', 'dim7'):
-                if 'symmetrical' not in txt or any(w in txt for w in ('1st inversion', '2nd inversion', '3rd inversion', 'root position,')):
-                    fail('Q', f'{where}: answer text "{txt}" names an inversion or does not say the chord is symmetrical')
+                # the result panel names no inversion or root position for the symmetrical chords (the panel does not say "symmetrical":
+                # that sentence lived only in the removed, never-called earAnsTxt; IC_EAR_048 C4, open for Justin)
+                if any(w in txt for w in ('1st inversion', '2nd inversion', '3rd inversion', 'root position')):
+                    fail('Q', f'{where}: result panel "{txt}" names an inversion or root position for a symmetrical chord')
             elif 'root position' not in txt:
-                fail('Q', f'{where}: answer text "{txt}" does not say root position')
+                fail('Q', f'{where}: result panel "{txt}" does not say root position')
         if min(regs.values()) < len(rows) * .4:
             fail('Q', f'rung {l}: registers unbalanced {dict(regs)}')
         tell('Q', rows, 'lowest note (6-semitone bands)', lambda r: r['notes'][0] // 6, lambda r: r['a'], f'chord quality rung {l}')
@@ -410,9 +415,10 @@ def sec_S(items, real, ui):
     if ui['labels'] != ['Perfect', 'Plagal', 'Imperfect', 'Interrupted', 'Phrygian', 'Cadential 64']:
         fail('S', f"rung 3 buttons: {ui['labels']}")
     for a, txt in ui['fb'].items():
-        if a == 'phrygian' and not (re.search(r'imperfect cadence( [(\[]US: half cadence[)\]])? in a minor key', txt) and 'iv⁶–V' in txt):
+        # the result panel, answered with the family (Nearly off); earAnsTxt, which held the old family text, was never called (IC_EAR_048 C4)
+        if a == 'phrygian' and not ('a Phrygian cadence is a kind of imperfect cadence' in txt and 'iv⁶ to V' in txt):
             fail('S', f'Phrygian feedback does not name its family: {txt}')
-        if a == 'cad64' and not ('decorated approach to V in a perfect or imperfect cadence' in txt and 'decorates a perfect cadence' in txt):
+        if a == 'cad64' and not ('decorates a perfect cadence' in txt and '⁶₄' in txt):
             fail('S', f'cadential 6/4 feedback does not name its family: {txt}')
     # 0.48 logic + card: a family answer is Nearly (EAR_NEARLY on: gold panel, "Nearly", the spec 9.5 sentence, the button marked is-near);
     # with the switch off it is a wrong answer whose text names the family without calling the answer right (reconcile 0.48)
@@ -439,11 +445,15 @@ def sec_S(items, real, ui):
     if d3:
         fail('S', f'{d3} rung 3 items end on a major tonic with a doubled 3rd')
     # solfa in the feedback is la-based minor (movable do): Phrygian bass fa–mi; the 6/4 over mi in minor, so in major
-    for (a, md), txt in ui['fbm'].items():
-        if a == 'phrygian' and ('fa–mi' not in txt or 'le–so' in txt):
+    for (a, md), r in ui['fbm'].items():
+        txt = r['teach']
+        if a == 'phrygian' and ('fa to mi' not in txt or 'le to so' in txt or 'le–so' in txt):
             fail('S', f'Phrygian feedback solfa ({md}): {txt}')
-        if a == 'cad64' and f"over the bass {'mi' if md == 'min' else 'so'}," not in txt:
-            fail('S', f'cadential 6/4 feedback solfa ({md}): {txt}')
+        # the cadential 6/4 chip in the cadence bracket reads "cadential 6/4" (IC_EAR_048 S4); its bass solfa is in its title
+        if a == 'cad64':
+            c64 = [c for c in r['chips'] if '⁶₄' in c['t']]
+            if len(c64) != 1 or c64[0]['s'] != 'cadential 6/4' or f"(bass {'mi' if md == 'min' else 'so'})" not in c64[0]['t']:
+                fail('S', f'cadential 6/4 chip solfa ({md}): {r["chips"]}')
     COUNT['R4 feedback solfa checks'] = len(ui['fbm'])
 
 
@@ -459,7 +469,7 @@ async def main():
 
         # ---------------- Q: EL-6 chord quality ----------------
         qual = await pg.evaluate("""(mk)=>{const R=eval(mk)(29),o=[];for(const l of [1,2,3])for(let i=0;i<1500;i++){const q=earGen('qual',l,R);
-            o.push({l,a:q.a,root:q.root,inv:q.inv,notes:q.notes,txt:earAnsTxt(q)})}return o}""", RNG)
+            const T=earTeachQual(q,{kind:'shown',given:null});o.push({l,a:q.a,root:q.root,inv:q.inv,notes:q.notes,txt:T.head+' ('+T.small+') '+T.teach})}return o}""", RNG)
         sec_Q(qual)
 
         # ---------------- K: EL-7 cadences rung 1 ----------------
@@ -484,8 +494,10 @@ async def main():
             for(const reg of [{b:41,s:64},{b:53,s:76},{b:41,s:76},{b:53,s:64},{b:47,s:70}]){const key={k,mode:md},rns=t.split(' '),P=earCadProg(3,rns,key,reg);
             o.push({a:c,md,k,rns,reg,ch:P.ch,app:P.ch?withKey(key,()=>checkSATB(P.ch,P.L)).filter(e=>e.sev==='error').map(e=>e.rule):['no realisation']})}return o}""")
         ui = await pg.evaluate("""async(mk)=>{const R=eval(mk)(47);EAR.drill='cad';EAR.lvl.cad=3;const fb={},near={},nearOff={};let labels=null;const RP=()=>{const e=document.querySelector('#earMain .el-result');return e?{cls:e.className,verdict:(e.querySelector('.el-verdict')||{}).textContent||'',teach:(e.querySelector('.el-teach')||{}).textContent||'',chips:[...e.querySelectorAll('.el-ch')].map(c=>({t:c.title,s:(c.querySelector('small')||{}).textContent||''})),opt:(document.querySelector('#earMain .el-opt.is-near')||{}).dataset}:null};
-            const fbm={};for(const [a,md] of [['phrygian','min'],['cad64','maj'],['cad64','min']]){let q;do{q=earGen('cad',3,R)}while(q.a!==a||q.key.mode!==md);fbm[a+'|'+md]=earAnsTxt(q)}
-            for(const a of ['phrygian','cad64']){let q;do{q=earGen('cad',3,R)}while(q.a!==a);fb[a]=earAnsTxt(q);
+            const strip=h=>{const d=document.createElement('div');d.innerHTML=h;return d};
+            const fbm={};for(const [a,md] of [['phrygian','min'],['cad64','maj'],['cad64','min']]){let q;do{q=earGen('cad',3,R)}while(q.a!==a||q.key.mode!==md);
+              const T=earTeachCad(q,{kind:'shown',given:null}),P=strip(T.pic||'');fbm[a+'|'+md]={teach:T.teach,chips:[...P.querySelectorAll('.el-cad .el-ch')].map(c=>({t:c.title,s:(c.querySelector('small')||{}).textContent||''}))}}
+            for(const a of ['phrygian','cad64']){let q;do{q=earGen('cad',3,R)}while(q.a!==a);const n0=EAR_NEARLY;EAR_NEARLY=false;fb[a]=earTeachCad(q,{kind:'miss',given:CADPARENT[a]}).teach;EAR_NEARLY=n0;
               EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();labels=[...document.querySelectorAll('#earMain [data-earans]')].map(b=>b.textContent);
               document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();near[a]=RP();
               EAR_NEARLY=false;EAR.q=q;EAR.done=false;EAR.res=null;renderEar();document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();
@@ -649,7 +661,7 @@ async def main():
         ii = await pg.evaluate("""(mk)=>{const R=eval(mk)(61),o={held:CAD3_HELD.slice(),inPool:CAD3_HELD.filter(x=>Object.values(CADT[3]).some(m=>(m.interrupted||[]).includes(x))),items:[],fb:{},judge:{},near:{}};
             for(let i=0;i<12000;i++){const q=earGen('cad',3,R);o.items.push({a:q.a,md:q.key.mode,k:q.key.k,rns:q.rns,ch:q.ch,i64:earCad64Int(q)})}
             window.earPlay=()=>{};S.level=6;EAR.drill='cad';EAR.lvl.cad=3;
-            for(const md of ['maj','min']){let q;do{q=earGen('cad',3,R)}while(!earCad64Int(q)||q.key.mode!==md);o.fb[md]=earAnsTxt(q);
+            for(const md of ['maj','min']){let q;do{q=earGen('cad',3,R)}while(!earCad64Int(q)||q.key.mode!==md);o.fb[md]=earTeachCad(q,{kind:'shown',given:null}).teach;
               o.judge[md]={interrupted:earJudge(q,'interrupted'),cad64:earJudge(q,'cad64'),perfect:earJudge(q,'perfect'),imperfect:earJudge(q,'imperfect')};
               for(const flag of [false,true]){CAD64_INT_NEARLY=flag;EAR.st.cad={...EARST0,n:5,ok:4,streak:3,best:3};EAR.q=q;EAR.done=false;EAR.res=null;renderEar();
                 document.querySelector('#earMain [data-earans="cad64"]').click();const e=document.querySelector('#earMain .el-result');o.near[md+'|'+flag]={res:e.querySelector('.el-verdict').textContent+' | '+e.querySelector('.el-teach').textContent,
@@ -658,7 +670,7 @@ async def main():
                   o.panelRight[md]=document.querySelector('#earMain .el-result .el-teach').textContent}}
               CAD64_INT_NEARLY=false}
             // a plain interrupted cadence (no 6/4) gets no 6/4 sentence; a cadential 6/4 item answered Interrupted is plain wrong
-            let q;do{q=earGen('cad',3,R)}while(q.a!=='interrupted'||earCad64Int(q));o.plain=earAnsTxt(q);
+            let q;do{q=earGen('cad',3,R)}while(q.a!=='interrupted'||earCad64Int(q));o.plain=earTeachCad(q,{kind:'shown',given:null}).teach;
             do{q=earGen('cad',3,R)}while(q.a!=='cad64');o.c64int=earJudge(q,'interrupted');
             return o}""", RNG)
         if sorted(ii['inPool']) != sorted(ii['held']):
@@ -701,7 +713,7 @@ async def main():
         for md, txt in ii['fb'].items():
             vi = 'vi' if md == 'maj' else 'VI'
             COUNT['I feedback checks'] += 1
-            if not txt.startswith('Interrupted cadence') or 'comes on the way, but the cadence itself is interrupted' not in txt or f'(V–{vi})' not in txt:
+            if not txt.startswith(f'V sets up the close, then the bass steps up to {vi}') or 'comes on the way, but the cadence itself is interrupted' not in txt or f'(V–{vi})' not in txt:
                 fail('I', f'{md} feedback: {txt}')
         # the card's result panel, answered Interrupted: the spec sentence plus the 6/4 sentence (one source, CAD64INT)
         for md, txt in ii['panelRight'].items():
@@ -851,7 +863,9 @@ async def main():
               for(const g of [null,...q.opts])for(const nf of (l===3?[true,false]:[true]))for(const cf of (l===3&&earCad64Int(q)&&g==='cad64'?[false,true]:[false])){
                 EAR_NEARLY=nf;CAD64_INT_NEARLY=cf;const j=g===null?'shown':earJudge(q,g),kind=g===null?'shown':j==='correct'?'ok':j==='nearly'?'nearly':'miss';
                 T[`${g}|${nf}|${cf}`]={kind,t:earTeachCad(q,{kind,given:g}).teach}}
-              o.push({l,a:q.a,md:q.key.mode,k:q.key.k,rns:q.rns,ch:q.ch,i64:earCad64Int(q),T})}}finally{EAR_NEARLY=N0;CAD64_INT_NEARLY=C0}return o}""", RNG)
+              const P=document.createElement('div');P.innerHTML=earChordRowHTML(q);
+              const chips=[...P.querySelectorAll('.el-ch')].map(c=>({t:c.title,s:(c.querySelector('small')||{}).textContent||'',cad:!!c.closest('.el-cad')}));
+              o.push({l,a:q.a,md:q.key.mode,k:q.key.k,rns:q.rns,ch:q.ch,i64:earCad64Int(q),T,chips})}}finally{EAR_NEARLY=N0;CAD64_INT_NEARLY=C0}return o}""", RNG)
         bad = collections.Counter(); ex = {}
         def flag(rule, q, key, t):
             bad[rule] += 1
@@ -877,9 +891,15 @@ async def main():
                 if 'You heard IV near the end, and that is right' in t or 'You heard iv near the end, and that is right' in t:
                     if not re.match(r'^(IV|iv)(:|$)', rns[-2]) and q['a'] == 'imperfect': flag('says IV is near the end, it is not', q, key, t)
                 if 'does not fall a semitone into V' in t and mv == -1: flag('says no semitone into V, there is one', q, key, t)
-                if 'stays on it' in t and q['a'] == 'cad64':
+                # IC_EAR_048 C1: "stays on so" (mi in minor) only on the same pitch; an octave move is said ("dropping an octave into V")
+                if 'stays on it' in t: flag('"stays on it" (the 0.48 wording that ignored an octave drop)', q, key, t)
+                if re.search(r'stays on (so|mi)\b', t) and q['a'] == 'cad64':
                     j = max(i for i, x in enumerate(rns) if x.endswith(':2'))
-                    if ch[j][0] % 12 != ch[j + 1][0] % 12: flag('says the bass stays on the dominant, it moves', q, key, t)
+                    mv64 = ch[j + 1][0] - ch[j][0]
+                    said = 'dropping an octave into V' in t and -12 or 'rising an octave into V' in t and 12 or 0
+                    if mv64 != said: flag(f'says the 6/4 bass moves {said} into V, it moves {mv64}', q, key, t)
+                    COUNT['P 6/4-into-V bass sentences checked (of them, an octave move)'] += 1
+                    if mv64: COUNT['P 6/4-into-V bass sentences: octave move said'] += 1
                 if 'does stay on' in t and not so_held: flag('says the bass stays on so (V–V7), it does not', q, key, t)
                 if ('comes on the way' in t or 'You heard the cadential 6/4' in t) != q['i64']: flag('6/4-on-the-way sentence on the wrong items', q, key, t)
                 if md == 'min':
@@ -891,9 +911,83 @@ async def main():
                 if kind == 'miss' and g in ('imperfect', 'perfect', 'cad64') and re.search(r'and that is right: this is|that is right\. Listen just before V|cadential 6/4, and that is right', t):
                     flag('marked wrong but the text calls the answer right', q, key, t)
                 if kind == 'nearly' and 'and that is right' not in t: flag('Nearly without "that is right"', q, key, t)
+        # IC_EAR_048 S4: wherever a 6/4 is followed by V (a cadential 6/4), its chip reads "cadential 6/4", inside the cadence bracket too,
+        # and its title gives both readings (tonic in second inversion, Ic, as Analysis labels it; part of the dominant) and the bass solfa
+        for q in pt:
+            for i, rn in enumerate(q['rns']):
+                if not (rn.endswith(':2') and i + 1 < len(q['rns']) and q['rns'][i + 1].startswith('V')):
+                    continue
+                c = q['chips'][i]
+                COUNT['P cadential 6/4 chips checked'] += 1
+                if c['s'] != 'cadential 6/4' or 'second inversion' not in c['t'] or 'c),' not in c['t'] or 'part of the dominant' not in c['t'] \
+                        or f"(bass {'mi' if q['md'] == 'min' else 'so'})" not in c['t']:
+                    bad[f"cadential 6/4 chip {'in' if c['cad'] else 'before'} the cadence bracket reads \"{c['s']}\""] += 1
+                    ex.setdefault(f"cadential 6/4 chip {'in' if c['cad'] else 'before'} the cadence bracket reads \"{c['s']}\"", f"rung {q['l']} {q['md']} {q['a']} [{' '.join(q['rns'])}]: {c}")
         COUNT['P panel items'] = len(pt)
         for rule, n in bad.items():
             fail('P', f'{rule}: {n} sentences, e.g. {ex[rule]}')
+
+        # ---------------- B: blind analysis sentences are true of each excerpt (IC_EAR_048 S5) ----------------
+        bl = await pg.evaluate("""async()=>{await earLoadBlind();const o=[];const N0=EAR_NEARLY;
+            for(const x of EAR.blind){const q={d:'blind',...x,a:x.cat,l:3,lvl:3},T={};
+              for(const g of [null,...earBlindCats(3)]){const j=g===null?'shown':earJudge(q,g),kind=g===null?'shown':j==='correct'?'ok':j==='nearly'?'nearly':'miss';
+                const d=document.createElement('div');d.innerHTML=earTeachCad(q,{kind,given:g}).teach;T[String(g)]={kind,t:d.textContent}}
+              o.push({score:x.score,bar:x.bar,key:x.key,chords:x.chords,label:x.label,cat:x.cat,s:x.s,e:x.e,T})}return o}""")
+        meta = json.loads((REPO / 'scores' / 'meta.json').read_text())
+        fig = lambda t: re.sub(r'(64|65|43|42|6)(?=$|[/\s)])', lambda m: {'64': '⁶₄', '65': '⁶₅', '43': '⁴₃', '42': '⁴₂', '6': '⁶'}[m.group(1)], t)
+        COUNT['B blind excerpts'] = len(bl)
+        for x in bl:
+            where = f"{x['score']} bar {x['bar']} ({x['chords']})"
+            toks = [fig(t) for t in re.split(r'\s*–\s*', x['chords'])]
+            fin, pen = toks[-1], toks[-2]
+            minor = 'minor' in x['key']
+            lk = re.search(r'cadence in ([A-G][♭♯]? (?:major|minor))', x['label'])
+            for g, r in x['T'].items():
+                t = r['t']
+                COUNT['B blind sentences checked'] += 1
+                # no claim about a single voice: the excerpts have no voicing, and the leading note falls in two of them
+                if 'leading note' in t:
+                    fail('B', f'{where} given {g}: names the leading note: {t}')
+                # the numerals said are the excerpt's own (a minor V–i says "to i", never "V to I")
+                if (re.search(r'\bV to I\b', t) and fin != 'I') or (minor and fin == 'i' and re.search(r'\bI\b', t)):
+                    fail('B', f'{where} given {g}: major numerals for a V–i excerpt: {t}')
+                if x['cat'] == 'perfect' and ' – '.join(toks) not in t and f'to {fin},' not in t:
+                    fail('B', f'{where} given {g}: does not name the last chord {fin}: {t}')
+                if x['cat'] == 'imperfect' and f'stops on {fin}' not in t:
+                    fail('B', f'{where} given {g}: does not say it stops on {fin}: {t}')
+                if bool(lk) != ('tonicisation' in t or 'the dominant of' in t or 'the tonic of' in t) or (lk and lk.group(1) not in t):
+                    fail('B', f'{where} given {g}: the key it cadences in ({lk and lk.group(1)}) is not said, or said wrongly: {t}')
+                if 'Picardy' in t and not (minor and fin == 'I'):
+                    fail('B', f'{where} given {g}: Picardy third on a {fin} ending in {x["key"]}: {t}')
+            # "the bass lands on the root" of the last chord: the lowest note sounding at the arrival (meta.json events), against music21
+            if x['cat'] == 'perfect' and any('bass lands on' in r['t'] for r in x['T'].values()):
+                M = meta[x['score']]
+                cad = next(c for c in M['cads'] if c['ch'] == x['chords'] and c.get('e') == x['e'])
+                at = [e for e in M['events'] if e[0] <= cad['a'] + 5 < e[0] + e[2]]
+                tonic, mode = x['key'].split()
+                K = m21key.Key(tonic.replace('♭', '-').replace('♯', '#'), mode)
+                root = roman.RomanNumeral(re.sub(r'\(.*?\)|[⁶₄₅⁴₂]', '', fin), K).root().pitchClass
+                COUNT['B blind bass-on-root checks'] += 1
+                if not at or min(e[1] for e in at) % 12 != root:
+                    fail('B', f'{where}: says the bass lands on the root of {fin}, the lowest note at the arrival is {at and NM[min(e[1] for e in at) % 12]}')
+
+        # ---------------- T2: metre sentences claim only what every item plays (IC_EAR_048 S6) ----------------
+        # each split click sounds three times in four, so "you heard ... in every bar / each beat" is true only if every split sounded
+        ms = await pg.evaluate("""(mk)=>{const R=eval(mk)(73),o=[];for(const l of [1,2,3])for(let i=0;i<600;i++){const q=earGen('metre',l,R),M=METRES[q.a];
+              const full=q.a==='7/8'||q.ev.filter(e=>e.a===-1).length===4*M.b*(M.sub-1),T={};
+              for(const g of [null,...earMetreOpts(l)]){const j=g===null?'shown':earJudge(q,g),kind=g===null?'shown':j==='correct'?'ok':'miss';T[String(g)]=earTeachMetre(q,{kind,given:g}).teach}
+              o.push({l,a:q.a,full,T})}return o}""", RNG)
+        t2 = collections.Counter(); t2x = {}
+        for q in ms:
+            for g, t in q['T'].items():
+                COUNT['T2 metre sentences checked'] += 1
+                m = re.search(r'You heard[^.]*?\b(every|each) (bar|beat|one)\b', t)
+                if m and not q['full']:
+                    t2[m.group(0)] += 1; t2x.setdefault(m.group(0), f"{q['a']} given {g}: {t}")
+                if re.search(r'inside one beat: it splits', t) and not q['full']:
+                    t2['inside one beat: it splits'] += 1; t2x.setdefault('inside one beat: it splits', f"{q['a']} given {g}: {t}")
+        for rule, n in t2.items():
+            fail('T2', f'"{rule}" where some split clicks did not sound: {n} sentences, e.g. {t2x[rule]}')
 
         # sections N and I leave the cadence drill on rung 3; put it back where section M left it (rung 2, no open question), because section U
         # expects the saved rung to be inside the Stage
