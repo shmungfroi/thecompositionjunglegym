@@ -6134,9 +6134,21 @@ function sylLine(c){const m=SYLM[c];return m?`Syllabus: ${m.n} · ${[...m.e].map
    EAR LAB (Level 3)
    ===================================================================== */
 const EARSAVE=LS.get('cjg_ear')||{};
-const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,q:null,ans:[],done:false,res:null,meta:null,blind:null};
-function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters})}
+const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,all:!!EARSAVE.all,q:null,ans:[],done:false,res:null,meta:null,blind:null};
+function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all})}
 const EDR=[['metre','Pulse and metre','4'],['rhy','Rhythm dictation','4–5'],['qual','Chord quality','4–6'],['cad','Cadences','5–6'],['bass','Bass and numerals','5–6'],['mel','Melodic dictation','4–6'],['blind','Blind analysis','5–6']];
+/* EL-11: each drill's levels are rungs (Rung 1, 2, 3). ERUNG gives the Stage at which each rung starts; a rung is offered from that Stage
+   to the top of the drill's range in EDR. The Stage switch (4/5/6) offers the drills whose range includes it and the rungs that have
+   started; everything else sits behind "Show all". */
+const ERUNG={metre:[4,4,4],rhy:[4,4,5],qual:[4,5,6],cad:[5,5,6],bass:[5,5,6],mel:[4,5,6],blind:[5,5,6]};
+function earStage(){return typeof S!=='undefined'&&[4,5,6].includes(S.level)?S.level:6}
+function earDrillStages(d){const st=EDR.find(x=>x[0]===d)[2].split('–').map(Number);return[st[0],st[st.length-1]]}
+function earStageTxt(a,b){return a===b?`Stage ${a}`:`Stage ${a}–${b}`}
+function earDrillOn(d,g=earStage()){const[a,b]=earDrillStages(d);return a<=g&&g<=b}
+function earRungOn(d,r,g=earStage()){return earDrillOn(d,g)&&ERUNG[d][r-1]<=g}
+function earRungStages(d,r){return earStageTxt(ERUNG[d][r-1],earDrillStages(d)[1])}
+// a drill outside the Stage (open because it was chosen, or through Show all) offers all its rungs
+function earRungsShown(d){if(EAR.all||!earDrillOn(d))return[1,2,3];return[1,2,3].filter(r=>earRungOn(d,r))}
 const epick=(a,r)=>a[Math.floor(r()*a.length)];
 /* ---- question generators: pure, given a random function ---- */
 const METRES={'2/4':{b:2,sub:2,acc:[2,0]},'3/4':{b:3,sub:2,acc:[2,0,0]},'4/4':{b:4,sub:2,acc:[2,0,1,0]},'6/8':{b:2,sub:3,acc:[2,0]},'9/8':{b:3,sub:3,acc:[2,0,0]},'12/8':{b:4,sub:3,acc:[2,0,1,0]},'5/4':{b:5,sub:2,acc:[2,0,0,1,0]},'7/8':{b:3,sub:0,grp:[2,2,3],acc:[2,1,1]}};
@@ -6269,7 +6281,8 @@ const EARSC=[['chorale',1],['ohaupt',1],['jesu',2],['k331a',2],['k331d',3],['cho
 function cadCat(t){return/Interrupted/i.test(t)?'interrupted':/Plagal/i.test(t)?'plagal':/Imperfect|Half/i.test(t)?'imperfect':'perfect'}
 function earBlindPool(l){if(!EAR.blind)return[];return EAR.blind.filter(x=>x.lvl<=l)}
 function earGenBlind(l,r){const P=earBlindPool(l);if(!P.length)return null;const x=epick(P,r);return{d:'blind',...x,a:x.cat}}
-function earGen(d,l,r=Math.random){return d==='metre'?earGenMetre(l,r):d==='rhy'?earGenRhy(l,r):d==='qual'?earGenQual(l,r):d==='cad'?earGenCad(l,r):d==='bass'?earGenBass(l,r):d==='mel'?earGenMel(l,r):earGenBlind(l,r)}
+function earGen(d,l,r=Math.random){const q=earGen1(d,l,r);if(q&&!q.l)q.l=l;return q}
+function earGen1(d,l,r){return d==='metre'?earGenMetre(l,r):d==='rhy'?earGenRhy(l,r):d==='qual'?earGenQual(l,r):d==='cad'?earGenCad(l,r):d==='bass'?earGenBass(l,r):d==='mel'?earGenMel(l,r):earGenBlind(l,r)}
 window.earGen=earGen;
 /* ---- blind analysis: find each cadence's bar from the engraved score ---- */
 function earLoadBlind(){if(EAR.blind)return Promise.resolve(EAR.blind);return anLoadMeta().then(meta=>Promise.all(EARSC.map(([k])=>anLoadSvg(k))).then(svgs=>{const out=[];
@@ -6328,7 +6341,8 @@ function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===n
  logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${kind==='ok'?'correct':kind==='shown'?'shown':'missed'}`)}
 // a question left before it was answered is recorded as skipped; returns true if one was
 function earSkip(){if(!EAR.q||EAR.done)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: skipped`);return true}
-function earLvl(){return EAR.lvl[EAR.drill]||1}
+// the rung in use: an open question's own rung, else the rung chosen for this drill if it is shown, else the first rung shown
+function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill],R=earRungsShown(EAR.drill);return l&&R.includes(l)?l:R[0]}
 function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a]}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
 // R4: an answer that names the family of a Stage 6 answer (imperfect for a Phrygian cadence, perfect for a cadential 6/4) is still marked wrong, and the feedback says why
 function earNearTxt(q,res){return q.d==='cad'&&res&&!res.ok&&res.given&&CADPARENT[q.a]===res.given?` ${CADL[res.given]} is its family, so you heard the right kind of ending; the answer here is the more exact name.`:''}
@@ -6410,9 +6424,9 @@ function earMelFollow(q,first,count,t0){const A=ac();earMelNowClear();for(let i=
 const EARHOW={metre:'Count along. Where does the strongest click fall, and how many beats come before it returns? Then listen inside each beat: does it split in two (simple) or in three (compound)? The speed changes each time (60–120 bpm), so do not use tempo as a clue.',
  rhy:'You hear a count-in of four clicks, then the rhythm on one note. Tap it back on your knee before you answer, then build it beat by beat.',
  qual:'Each chord is played together, then up as an arpeggio, then together again. Every chord is in root position, played high or low. Listen to the 3rd first (major or minor), then the 5th (perfect, diminished or augmented), then the 7th.',
- cad:'The tonic chord plays first, to set the key. At level 1 you then hear just two chords, the cadence itself; at levels 2 and 3, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Level 3 adds two answers: the Phrygian cadence (an imperfect cadence in minor, iv⁶–V) and the cadential 6/4 (the decorated approach to V).',
+ cad:'The tonic chord plays first, to set the key. At rung 1 you then hear just two chords, the cadence itself; at rungs 2 and 3, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Rung 3 (Stage 6) adds two answers: the Phrygian cadence (an imperfect cadence in minor, iv⁶–V) and the cadential 6/4 (the decorated approach to V).',
  bass:'The tonic chord plays first. The first chord of the progression is always I. Sing the bass line back, then name chords 2–4. "Bass only" plays just the bottom notes.',
- mel:'The key chord plays first, and the first note is always given (at level 1 it may be do, mi or so). Sing it back in solfa before you answer. Movable do: in a minor key (level 3) the home note is la.',
+ mel:'The key chord plays first, and the first note is always given (at rung 1 it may be do, mi or so). Sing it back in solfa before you answer. Movable do: in a minor key (rung 3) the home note is la.',
  blind:'A phrase from a real score in the Analysis room, with the score hidden. The tonic chord plays first. Name the cadence at the end of the phrase, then check it against the score in Analysis.'};
 function earOptsHTML(q){const res=EAR.res,lock=EAR.done;const btn=(v,l)=>{const cls=lock?(v===q.a?'ok':res&&res.given===v?'bad':''):'';return`<button class="earopt ${cls}" data-earans="${v}" ${lock?'disabled':''}>${l}</button>`};
  if(q.d==='metre')return earMetreOpts(earLvl()).map(m=>btn(m,METL[m])).join('');
@@ -6431,8 +6445,9 @@ function earBuildHTML(q){const lock=EAR.done,A=EAR.ans;
  return''}
 function earEditBtns(full){return EAR.done?'':`<div class="go" style="margin-top:8px"><button class="mini" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="mini" data-hist="ear:r" title="Redo">↷ Redo</button><button class="mini" data-earclr>Clear</button><span class="sp"></span><button class="mini gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
 function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(),s=earSt();
- el.innerHTML=`<div class="chips eartabs">${EDR.map(([k,n,st])=>`<button class="chip ${EAR.drill===k?'on':''}" data-eardr="${k}">${n}<small> · S${st}</small></button>`).join('')}</div>
- <section class="card"><h3>${EDR.find(x=>x[0]===EAR.drill)[1]}<span class="sp"></span>${[1,2,3].map(n=>`<button class="chip ${l===n?'on':''}" data-earlv="${n}">Level ${n}</button>`).join('')}</h3>
+ const tabs=EDR.filter(([k])=>EAR.all||earDrillOn(k)||k===EAR.drill),rungs=[...new Set([...earRungsShown(EAR.drill),l])].sort(),hid=EDR.some(([k])=>!earDrillOn(k)||[1,2,3].some(r=>!earRungOn(k,r)));
+ el.innerHTML=`<div class="chips eartabs">${tabs.map(([k,n,st])=>`<button class="chip ${EAR.drill===k?'on':''}" data-eardr="${k}">${n}<small> · Stage ${st}</small></button>`).join('')}${hid||EAR.all?`<button class="chip earall${EAR.all?' on':''}" data-earall aria-pressed="${EAR.all}" title="${EAR.all?`Offer only the drills and rungs for Stage ${earStage()}`:`Also offer the drills and rungs outside Stage ${earStage()}`}">${EAR.all?'Show Stage '+earStage()+' only':'Show all'}</button>`:''}</div>
+ <section class="card"><h3>${EDR.find(x=>x[0]===EAR.drill)[1]}<span class="sp"></span>${rungs.map(n=>`<button class="chip ${l===n?'on':''}" data-earlv="${n}" title="${earRungStages(EAR.drill,n)}">Rung ${n}</button>`).join('')}</h3>
   <p class="note">${EARHOW[EAR.drill]}</p>
   <div class="go"><button class="mini gold" data-earplay="all" ${q?'':'disabled'}>▶ Play${q?' again':''}</button>
    ${q&&(q.d==='cad'||q.d==='bass'||q.d==='mel')?`<button class="mini" data-earplay="nokey">Without the key chord</button>`:''}
@@ -6459,9 +6474,11 @@ function earTips(d){const T={
  bass:'<p>In root position the bass is the chord\'s root, so the bass line spells the numerals. I, IV and V are the pillars; ii and vi are the minor relatives of IV and I. A secondary dominant (V7/V, V7/vi) brings in a note from outside the key that leans into the next chord.</p>',
  mel:'<p>Movable do: do is the home of a major key; in a minor key the home is la, and si is the raised 7th that leads up to la. A comma marks the octave below (s, l, t,), an apostrophe the octave above (d\'). The hand signs are the Curwen signs used in Kodály teaching (si uses the so sign, raised). Hand-sign drawings © 2003 Kodály Music Education Institute of Australia (KMEIA).</p>',
  blind:'<p>The phrases come from the scores in the Analysis room. Their cadence labels were re-read in music21 and checked by an independent review on 18 Nov 2026. A "perfect cadence in B minor" is still a perfect cadence: it closes, but in a new key for a moment.</p>'};return T[d]}
-document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earplay],[data-earstop],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore]');if(!t)return;const d=t.dataset;
- if(d.eardr){stopAll();EAR.drill=d.eardr;EAR.q=null;EAR.done=false;EAR.ans=[];earSave();renderEar();return}
- if(d.earlv){EAR.lvl[EAR.drill]=+d.earlv;earSave();EAR.q=null;EAR.done=false;EAR.ans=[];renderEar();return}
+document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earall],[data-earplay],[data-earstop],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore]');if(!t)return;const d=t.dataset;
+ // EL-11: leaving a question unanswered (a change of drill or rung) records it as skipped, and says so
+ if(d.eardr){if(d.eardr===EAR.drill)return;stopAll();const sk=earSkip();EAR.drill=d.eardr;EAR.q=null;EAR.done=false;EAR.ans=[];EAR.resetAsk=false;earSave();renderEar();if(sk)toast('The unanswered question was recorded as skipped (not a miss).');return}
+ if(d.earlv){if(+d.earlv===earLvl())return;stopAll();const sk=earSkip();EAR.lvl[EAR.drill]=+d.earlv;earSave();EAR.q=null;EAR.done=false;EAR.ans=[];renderEar();if(sk)toast('Rung changed: the unanswered question was recorded as skipped (not a miss).');return}
+ if(d.earall!==undefined){EAR.all=!EAR.all;earSave();renderEar();return}
  if(d.earplay){earPlay(d.earplay);return}if(d.earstop!==undefined){stopAll();earMelNowClear();return}
  if(d.earnew!==undefined){earNew();return}
  if(d.earans!==undefined&&EAR.q&&!EAR.done){earMark(d.earans===EAR.q.a,d.earans);renderEar();return}

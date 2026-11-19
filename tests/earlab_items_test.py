@@ -452,6 +452,64 @@ async def main():
         if dialogs:
             fail('M', f'browser dialogs opened: {dialogs}')
 
+        # ---------------- U: EL-11 rungs, Stage switch, show all, rung change, page errors at Stages 4, 5, 6 ----------------
+        WANT = {4: {'metre': [1, 2, 3], 'rhy': [1, 2], 'qual': [1], 'mel': [1]},
+                5: {'rhy': [1, 2, 3], 'qual': [1, 2], 'cad': [1, 2], 'bass': [1, 2], 'mel': [1, 2], 'blind': [1, 2]},
+                6: {'qual': [1, 2, 3], 'cad': [1, 2, 3], 'bass': [1, 2, 3], 'mel': [1, 2, 3], 'blind': [1, 2, 3]}}
+        await pg.evaluate("()=>{EAR.all=false;EAR.q=null;EAR.done=false}")
+        for g in (4, 5, 6):
+            await pg.click(f'#lvl button[data-l="{g}"]')
+            await pg.evaluate("()=>{location.hash='ear';room('ear')}")
+            await pg.wait_for_timeout(200)
+            n0 = len(errs)
+            seen = {}
+            for d in WANT[g]:
+                r = await pg.evaluate("""async(d)=>{EAR.q=null;EAR.done=false;const t=document.querySelector(`#earMain [data-eardr="${d}"]`);if(!t)return null;t.click();
+                    const rungs=[...document.querySelectorAll('#earMain [data-earlv]')].map(b=>+b.dataset.earlv),out={rungs,txt:document.querySelector('#earMain').textContent,
+                      tabs:[...document.querySelectorAll('#earMain [data-eardr]')].map(b=>b.dataset.eardr),tagtxt:[...document.querySelectorAll('#earMain .eartabs small')].map(x=>x.textContent)};
+                    for(const n of rungs){document.querySelector(`#earMain [data-earlv="${n}"]`).click();if(d==='blind')await earLoadBlind();document.querySelector('#earMain [data-earnew]').click();
+                      await new Promise(r=>setTimeout(r,60));const a=document.querySelector('#earMain [data-earans]');if(a)a.click();else{const s=document.querySelector('#earMain [data-earshow]');if(s)s.click()}stopAll()}
+                    return out}""", d)
+                COUNT['EL-11 drill x Stage rendered'] += 1
+                if r is None:
+                    fail('U', f'Stage {g}: drill {d} is not offered')
+                    continue
+                seen[d] = r
+                if r['rungs'] != WANT[g][d]:
+                    fail('U', f'Stage {g} {d}: rungs offered {r["rungs"]}, expected {WANT[g][d]}')
+                if sorted(r['tabs']) != sorted(WANT[g]):
+                    fail('U', f'Stage {g}: drills offered {r["tabs"]}, expected {sorted(WANT[g])}')
+                if 'Level ' in r['txt'] or any(not t.startswith(' · Stage ') for t in r['tagtxt']) or ' S4' in r['txt'] or ' S5' in r['txt']:
+                    fail('U', f'Stage {g} {d}: level wording or a short Stage tag in the UI ({r["tagtxt"]})')
+            # show all: every drill and every rung
+            al = await pg.evaluate("""()=>{document.querySelector('#earMain [data-earall]').click();const tabs=[...document.querySelectorAll('#earMain [data-eardr]')].map(b=>b.dataset.eardr);
+                const t=document.querySelector('#earMain [data-eardr="qual"]');t.click();const r=[...document.querySelectorAll('#earMain [data-earlv]')].map(b=>+b.dataset.earlv);
+                document.querySelector('#earMain [data-earall]').click();return{tabs,r,off:[...document.querySelectorAll('#earMain [data-eardr]')].length}}""")
+            if len(al['tabs']) != 7 or al['r'] != [1, 2, 3] or al['off'] != len(WANT[g]):
+                fail('U', f'Stage {g}: show all gives {al}')
+            if len(errs) > n0:
+                fail('U', f'Stage {g}: page errors {errs[n0:][:3]}')
+            COUNT['EL-11 Stages checked'] += 1
+        # the hand-sign rows are never called rungs in the UI
+        txt = await pg.evaluate("""()=>{EAR.drill='mel';EAR.lvl.mel=1;EAR.q=earGen('mel',1);EAR.done=false;EAR.ans=[];renderEar();const el=document.querySelector('#earMain');
+            return el.textContent+' '+[...el.querySelectorAll('[aria-label],[title]')].map(e=>(e.getAttribute('aria-label')||'')+' '+(e.getAttribute('title')||'')).join(' ')}""")
+        ladder = await pg.evaluate("()=>[...document.querySelectorAll('#earMain .earlad, #earMain .earstep')].map(e=>(e.getAttribute('aria-label')||'')+e.textContent).join(' ')")
+        if 'rung' in ladder.lower():
+            fail('U', 'the hand-sign ladder is called a rung in the UI')
+        # rung change mid-question: recorded as skipped, and said
+        rc = await pg.evaluate("""()=>{S.level=6;EAR.all=false;EAR.drill='cad';EAR.lvl.cad=2;EAR.st.cad={...EARST0};EAR.q=null;EAR.done=false;renderEar();
+            document.querySelector('#earMain [data-earnew]').click();const q1=EAR.q;document.querySelector('#earMain [data-earlv="3"]').click();
+            const o={st:{...earSt()},q:EAR.q,toast:document.getElementById('toast').textContent,lvl:earLvl(),line:document.querySelector('#earMain .earstat').textContent};
+            document.querySelector('#earMain [data-earnew]').click();document.querySelector('#earMain [data-earans="'+EAR.q.a+'"]').click();document.querySelector('#earMain [data-earlv="2"]').click();
+            o.after={...earSt()};return o}""")
+        if rc['st']['skipped'] != 1 or rc['st']['n'] != 0 or rc['q'] is not None or rc['lvl'] != 3:
+            fail('U', f"rung change mid-question: {rc['st']}, question {rc['q']}, rung {rc['lvl']}")
+        if 'skipped' not in rc['toast'] or 'skipped 1' not in rc['line']:
+            fail('U', f"rung change mid-question is not said: toast '{rc['toast']}', stats '{rc['line']}'")
+        if rc['after']['skipped'] != 1 or rc['after']['n'] != 1:
+            fail('U', f"rung change after answering counted as a skip: {rc['after']}")
+        COUNT['EL-11 rung-change checks'] = 3
+
         if errs:
             fail('page', f'page errors: {errs[:5]}')
         await b.close()
