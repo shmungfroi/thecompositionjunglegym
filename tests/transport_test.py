@@ -123,21 +123,36 @@ async def ear_transport(p,fails):
             if d>.1: F(tag,f"state end {i['end']:.3f} vs last node stop {i['last']:.3f}")
             if abs(i['end']-i['t0']-i['dur'])>1e-6 or i['t0']>i['now']: F(tag,'dur does not match end')
             return i
+        # EL-1 UI: the visible toggle follows the transport (checked within 100 ms of every press, and at the natural end)
+        async def check_toggle(tag,want):
+            await pg.wait_for_timeout(100)
+            t=await pg.evaluate("""()=>{const b=document.querySelector('#earMain .el-stage [data-earplay="all"]');if(!b)return null;const i=elInfo(),n=document.querySelector('#earMain .el-stage .el-now');
+              return{pl:b.classList.contains('playing'),ap:b.getAttribute('aria-pressed'),lab:b.getAttribute('aria-label'),dur:parseFloat(b.style.getPropertyValue('--dur')),idur:i.dur,state:i.state,txt:n.textContent,ring:getComputedStyle(b.querySelector('.ring')).opacity}}""")
+            st['toggle_checks']=st.get('toggle_checks',0)+1
+            if t is None: F(tag,'no toggle in the stage');return
+            if want=='playing':
+                if not (t['pl'] and t['ap']=='true' and t['lab']=='Stop' and t['ring']=='1'): F(tag,'toggle does not show Stop while playing',t)
+                if abs(t['dur']-t['idur'])>.05: F(tag,'ring duration differs from elInfo().dur',t['dur'],t['idur'])
+                if not (t['txt'].startswith('StopPlaying')or t['txt'].startswith('StopCount-in')): F(tag,'toggle text while playing',t['txt'])
+            else:
+                if t['pl'] or t['ap']!='false' or t['lab']!='Play again' or 'Ready' not in t['txt']: F(tag,'toggle did not return to Ready by itself',t)
         for d in ['metre','rhy','qual','cad','bass','mel','blind']:
             for l in (1,2,3):
                 tag=f'{w}px {d} rung {l}'
                 await pg.evaluate("stopAll()");await pg.wait_for_timeout(80)
                 await click(f'[data-eardr="{d}"]');await pg.wait_for_timeout(60);await click(f'[data-earlv="{l}"]');await pg.wait_for_timeout(60)
-                await pg.evaluate("__N.length=0");await click('[data-earnew]');await pg.wait_for_timeout(250)
+                await pg.evaluate("__N.length=0");await click('[data-earplay="all"]');await pg.wait_for_timeout(250)
                 st['items']+=1
                 i=await check_state(tag)
                 if i['state']!='playing': continue
+                await check_toggle(tag,'playing')
                 # natural end (1440 only, to keep the run short)
                 if w==1440:
                     a,z=await pg.evaluate("""async()=>{const end=ELT.end,until=t=>new Promise(r=>{const f=()=>AC.currentTime>=t?r():setTimeout(f,5);f()});
                       await until(end-.15);const a=elInfo().state;await until(end+.15);return[a,[elInfo().state]]}""")
                     st['natural_end']+=1
                     if a!='playing' or z[0]!='idle': F(tag,f'natural end: {a} 150 ms before the end, {z[0]} 150 ms after')
+                    await check_toggle(tag+' natural end','ready')
                     if await pg.evaluate(LIVE): F(tag,'nodes still sounding after the natural end')
                 # double tap on Play (60 ms apart)
                 await pg.evaluate("stopAll()");await pg.wait_for_timeout(80)
@@ -169,13 +184,14 @@ async def ear_transport(p,fails):
                     since=await pg.evaluate("performance.now()")
                     await fn();await pg.wait_for_timeout(200)
                     st['stop_events']+=1
+                    if expect=='idle' and await pg.evaluate("document.querySelectorAll('#earMain .el-play.playing').length"): F(tag,f'{name}: a toggle still shows Stop')
                     left=await pg.evaluate(OLD,[since,.0])
                     s2=await pg.evaluate("elInfo().state")
                     if left: F(tag,f'{name}: {left} nodes of the question still sounding')
                     if expect=='idle' and s2!='idle': F(tag,f'{name}: state {s2}, expected idle')
                     if expect=='playing' and s2!='playing': F(tag,f'{name}: state {s2}, expected playing')
                 if w==1440 or l==2:
-                    await ev('Ear Lab Stop',lambda:click('[data-earstop]'))
+                    await ev('Ear Lab toggle (Stop)',lambda:click('[data-earplay="all"]'))
                     await ev('top-bar Stop',lambda:pg.evaluate("document.getElementById('tStop').click()"))
                     await ev('Esc',lambda:pg.keyboard.press('Escape'))
                     await ev('Next',lambda:click('[data-earnew]'),'playing')
@@ -196,9 +212,9 @@ async def ear_transport(p,fails):
                     await click('[data-earnew]');await pg.wait_for_timeout(250)
                     other=3 if l!=3 else 1
                     await ev('rung change',lambda:click(f'[data-earlv="{other}"]'))
-                    await click(f'[data-earlv="{l}"]');await click('[data-earnew]');await pg.wait_for_timeout(250)
+                    await click(f'[data-earlv="{l}"]');await click('[data-earplay="all"]');await pg.wait_for_timeout(250)
                     await ev('drill change',lambda:click(f'[data-eardr="{"qual" if d!="qual" else "cad"}"]'))
-                    await click(f'[data-eardr="{d}"]');await click(f'[data-earlv="{l}"]');await click('[data-earnew]');await pg.wait_for_timeout(250)
+                    await click(f'[data-eardr="{d}"]');await click(f'[data-earlv="{l}"]');await click('[data-earplay="all"]');await pg.wait_for_timeout(250)
                     await ev('room change',lambda:pg.evaluate("location.hash='keys'"))
                     await pg.evaluate("location.hash='ear'");await pg.wait_for_timeout(300)
         # beats reported live (metre 'beats' variant)
@@ -212,7 +228,7 @@ async def ear_transport(p,fails):
             if len(r['got'])<3: F('beats variant',f'only {len(r["got"])} beat events in the first three beats')
         # the global toggle: a second tap on the playing ▶ button within 300 ms is ignored; after 300 ms it stops
         if w==1440:
-            await pg.evaluate("stopAll()");await click('[data-eardr="cad"]');await click('[data-earlv="1"]');await click('[data-earnew]');await pg.wait_for_timeout(500)
+            await pg.evaluate("stopAll()");await click('[data-eardr="cad"]');await click('[data-earlv="1"]');await click('[data-earplay="all"]');await pg.wait_for_timeout(500)
             await pg.evaluate("stopAll()");await pg.wait_for_timeout(100)
             await click('[data-earplay="all"]');await pg.wait_for_timeout(120);await click('[data-earplay="all"]');await pg.wait_for_timeout(200)
             if await pg.evaluate("elInfo().state")!='playing': F('toggle','a second tap 120 ms after Play stopped it')
