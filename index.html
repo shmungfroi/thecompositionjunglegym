@@ -6138,8 +6138,8 @@ function sylLine(c){const m=SYLM[c];return m?`Syllabus: ${m.n} · ${[...m.e].map
    EAR LAB (Level 3)
    ===================================================================== */
 const EARSAVE=LS.get('cjg_ear')||{};
-const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,q:null,ans:[],done:false,res:null,meta:null,blind:null};
-function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters})}
+const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,rhy:{pulse:!EARSAVE.rhy||EARSAVE.rhy.pulse!==false,bpm:EARSAVE.rhy&&EARSAVE.rhy.bpm===72?72:100},q:null,ans:[],done:false,res:null,meta:null,blind:null};
+function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,rhy:EAR.rhy})}
 const EDR=[['metre','Pulse and metre','4'],['rhy','Rhythm dictation','4–5'],['qual','Chord quality','4–6'],['cad','Cadences','5–6'],['bass','Bass and numerals','5–6'],['mel','Melodic dictation','4–6'],['blind','Blind analysis','5–6']];
 const epick=(a,r)=>a[Math.floor(r()*a.length)];
 /* ---- question generators: pure, given a random function ---- */
@@ -6248,7 +6248,7 @@ function earLoadBlind(){if(EAR.blind)return Promise.resolve(EAR.blind);return an
    // the excerpt starts three bars back and ends where the cadence chord is released (c.e in meta.json), not at the next barline
    const s=ms[Math.max(0,mi-3)],e=c.e||(mi+1<ms.length?ms[mi+1]:Math.max(...m.events.map(v=>v[0]+v[2])));out.push({score:k,lvl,key:m.key,t:m.t||k,short:m.short||k,bar:m.measures[mi][0]||String(mi),s,e,a:c.a,cat:cadCat(c.t),label:c.t,chords:c.ch})})});
  EAR.blind=out;return out}))}
-/* ---- audio: the Ear Lab transport and sounds (register 0.48: EL-1, EL-3) ----
+/* ---- audio: the Ear Lab transport and sounds (register 0.48: EL-1, EL-3, EL-4) ----
    Transport API (for the Play/Stop toggle and its progress ring):
      elPlay(item=EAR.q, variant='all', opts) -> info   play an item; anything sounding stops first. variant: 'all' | 'nokey' | 'bassonly' | 'first'
                                                        | 'beats' (metre: the same playback, with beat events reported) | 'tap' (one ladder note, opts.midi)
@@ -6285,10 +6285,23 @@ function elRender(item,variant='all',o={}){const sr=o.sr||44100,sv=[AC,MAST,COMP
  const dry=run(new OfflineAudioContext(1,1,sr)),A=new OfflineAudioContext(1,Math.ceil(sr*(dry.end+(o.tail||.3))),sr),r=run(A);
  return A.startRendering().then(buf=>({buf,info:{dur:r.end,lead:r.lead||0,beats:r.beats||null,events:r.events||null,start:r.start}}))}
 /* the sounds */
-const ELPRE=.05; // seconds from the press to the first scheduled time (times in the API are from the press)
+let ELCLAP=4;const ELPRE=.05; // seconds from the press to the first scheduled time (times in the API are from the press)
 // metre clicks. a: 2 downbeat, 1 secondary accent, 0 beat, -1 subdivision; each step 5 dB quieter than the one above (EL-3)
 function earClick(t,a){const A=ac(),o=A.createOscillator(),g=A.createGain();a=Math.max(-1,Math.min(2,a));o.type='square';o.frequency.value=a>=2?1568:a===1?1175:a===0?988:784;const pk=.2*Math.pow(10,-5*(2-a)/20);
  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(pk,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(g);g.connect(MAST);o.start(t);o.stop(t+.09);schEnd(t+.09);ACT.push(o)}
+// rhythm tone (EL-4): a clear attack (3 ms), then a steady tone, released hard at the written end (a 10 ms fall ending 6 ms before it, so a following note re-attacks)
+function elRhyNote(t,d,m=72){const A=ac(),o=A.createOscillator(),o2=A.createOscillator(),f=A.createBiquadFilter(),g=A.createGain(),g2=A.createGain(),e=t+d,pk=.32;
+ o.type='triangle';o.frequency.value=hz(m);o2.type='sine';o2.frequency.value=hz(m)*2;g2.gain.value=.22;f.type='lowpass';f.frequency.setValueAtTime(6000,t);f.frequency.exponentialRampToValueAtTime(2200,t+.08);
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(pk,t+.003);g.gain.exponentialRampToValueAtTime(pk*.6,t+Math.min(.07,d*.4));g.gain.setValueAtTime(pk*.6,e-.016);g.gain.linearRampToValueAtTime(0,e-.006);
+ o.connect(f);o2.connect(g2);g2.connect(f);f.connect(g);g.connect(MAST);o.start(t);o2.start(t);o.stop(e);o2.stop(e);schEnd(e);ACT.push(o,o2)}
+// pulse and count-in: a low woodblock, well below the rhythm tone so neither hides the other
+function elBlock(t,acc){const A=ac(),o=A.createOscillator(),o2=A.createOscillator(),g=A.createGain(),g2=A.createGain(),pk=acc?.42:.32;o.type='sine';o2.type='sine';
+ o.frequency.setValueAtTime(acc?230:200,t);o.frequency.exponentialRampToValueAtTime(acc?190:165,t+.06);o2.frequency.value=(acc?230:200)*1.48;g2.gain.value=.12;
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(pk,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+.075);o.connect(g);o2.connect(g2);g2.connect(g);g.connect(MAST);o.start(t);o2.start(t);o.stop(t+.08);o2.stop(t+.08);schEnd(t+.08);ACT.push(o,o2)}
+// a hand clap (rung 1 of rhythm dictation): three quick noise bursts
+function elClap(t){const A=ac(),s=A.createBufferSource(),f=A.createBiquadFilter(),h=A.createBiquadFilter(),g=A.createGain(),k=ELCLAP;s.buffer=noiseBuf();f.type='bandpass';f.frequency.value=1300;f.Q.value=.9;h.type='highpass';h.frequency.value=800;h.Q.value=.7;
+ g.gain.setValueAtTime(0,t);[0,.011,.022].forEach((d,i)=>{g.gain.setValueAtTime(.0001,t+d);g.gain.linearRampToValueAtTime(k*(i===2?1:.65),t+d+.002);g.gain.exponentialRampToValueAtTime(k*(i===2?.3:.1),t+d+.009)});
+ g.gain.exponentialRampToValueAtTime(k*.08,t+.09);g.gain.exponentialRampToValueAtTime(.0001,t+.2);s.connect(f);f.connect(h);h.connect(g);g.connect(MAST);s.start(t);s.stop(t+.21);schEnd(t+.21);ACT.push(s)}
 function earKeyCue(key,t){const D=earDo(key),tn=key.mode==='maj'?D.m:D.m-3,ch=key.mode==='maj'?[tn-12,tn,tn+4,tn+7]:[tn-12,tn,tn+3,tn+7];ch.forEach(m=>c2Tone(m,t,1.3,1));return t+1.6}
 const pn=(m,t,d)=>c2Tone(m,t,d,1);
 /* metre (EL-3): 0.6 s of silence, then whole bars until at least 10 s have sounded, then one closing downbeat. No count-in.
@@ -6298,8 +6311,13 @@ function earSchedMetre(q,t0){const barLen=q.len/4,nb=Math.max(4,Math.ceil(10/bar
  ev.push({t:nb*barLen,a:2,bar:nb+1});
  ev.forEach(e=>{earClick(t+e.t,e.a);if(e.a>=2)c2Tone(43,t+e.t,.25,0);e.t+=lead;e.kind=['sub','beat','accent','down'][e.a+1];if(e.a>=0){n[e.bar]=(n[e.bar]||0)+1;beats.push({t:e.t,a:e.a,bar:e.bar,beat:n[e.bar],kind:e.kind})}});
  return{end:t+nb*barLen+.25,lead,beats,events:ev}}
-// rhythm: a count-in of four clicks, then the rhythm on one note, then quiet clicks on the beat
-function earSchedRhy(q,t0){let t=t0;for(let i=0;i<4;i++)earClick(t+i*.6,i?0:2);t+=2.4;let p=0;q.a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest)c2Tone(67,t+p*.15,Math.max(.12,d*.15*.9),1);p+=d}));for(let i=0;i<p/4;i++)earClick(t+i*.6,-1);return{end:t+p*.15,lead:ELPRE}}
+/* rhythm (EL-4): one bar of count-in on the woodblock, then the rhythm; the pulse goes on (switchable off); 72 or 100 crotchets a minute.
+   Rung 1 is clapped; from rung 2 a tone, because a clap can't show a held note against a note and a rest. */
+function earSchedRhy(q,t0,o={}){const bpm=o.bpm||EAR.rhy.bpm,pulse=o.pulse!==undefined?o.pulse:EAR.rhy.pulse,clap=o.clap!==undefined?o.clap:(q.lvl||earLvl())===1,beat=60/bpm,sq=beat/4,lead=.15,ev=[];
+ let t=t0+lead;for(let i=0;i<4;i++)elBlock(t+i*beat,!i);t+=4*beat;let p=0;
+ q.a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest){if(clap)elClap(t+p*sq);else elRhyNote(t+p*sq,d*sq);ev.push({t:t+p*sq-t0+ELPRE,d:d*sq,u:p,du:d})}p+=d}));
+ if(pulse)for(let i=0;i<p/4;i++)elBlock(t+i*beat,false);
+ return{end:t,lead:lead+ELPRE,events:ev,start:t-t0+ELPRE,beat}}
 function earSched(q,variant,t0,o={}){let t=t0,end=t0;
  if(variant==='tap'){c2Tone(o.midi,t,.5,1);return{end:t+.55,lead:ELPRE}}
  if(q.d==='metre')return earSchedMetre(q,t0);
@@ -6413,7 +6431,7 @@ function earMelFollow(q,first,count,t0){const A=ac();earMelNowClear();for(let i=
  PLAY.timers.push(setTimeout(()=>earMelNow(q,k),ms));PLAY.timers.push(setTimeout(earMelNowClear,ms+600))}}
 /* ---- the room ---- */
 const EARHOW={metre:'Count along. Where does the strongest click fall, and how many beats come before it returns? Then listen inside each beat: does it split in two (simple) or in three (compound)? The speed changes each time (60–120 bpm), so do not use tempo as a clue.',
- rhy:'You hear a count-in of four clicks, then the rhythm on one note. Tap it back on your knee before you answer, then build it beat by beat.',
+ rhy:'You hear a count-in of four woodblock beats, then the rhythm (clapped at level 1, on one note from level 2, so you can hear how long each note lasts). Tap it back on your knee before you answer, then build it beat by beat.',
  qual:'Each chord is played together, then up as an arpeggio, then together again. The chord may be inverted and played high or low, so the lowest note is not always the root. Listen to the 3rd first (major or minor), then the 5th (perfect, diminished or augmented), then the 7th.',
  cad:'The tonic chord plays first, to set the key. Then a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? At level 3 a perfect cadence may be decorated by a cadential 6/4, and an imperfect (half) cadence may be a Phrygian cadence.',
  bass:'The tonic chord plays first. The first chord of the progression is always I. Sing the bass line back, then name chords 2–4. "Bass only" plays just the bottom notes.',
@@ -6443,6 +6461,7 @@ function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(
    ${q&&(q.d==='cad'||q.d==='bass'||q.d==='mel')?`<button class="mini" data-earplay="nokey">Without the key chord</button>`:''}
    ${q&&q.d==='bass'?`<button class="mini" data-earplay="bassonly">Bass only</button>`:''}${q&&q.d==='mel'?`<button class="mini" data-earplay="first">First note</button>`:''}
    <button class="mini" data-earstop>■ Stop</button><span class="sp"></span>${q&&!EAR.done?`<button class="mini" data-earshow>Show me</button>`:''}<button class="mini ${EAR.done||!q?'gold':''}" data-earnew>${q?'Next question →':'Start →'}</button></div>
+  ${EAR.drill==='rhy'?`<div class="go earopts"><label class="note"><input type="checkbox" id="earPulse" ${EAR.rhy.pulse?'checked':''}> Pulse</label><label class="note">Speed <select id="earSpd"><option value="72" ${EAR.rhy.bpm===72?'selected':''}>steady (72)</option><option value="100" ${EAR.rhy.bpm===100?'selected':''}>normal (100)</option></select></label></div>`:''}
   <div class="earq">${q?earOptsHTML(q)+earBuildHTML(q):`<p class="note">${EAR.drill==='blind'&&!EAR.blind?'Press Start to load the scores.':'Press Start to hear the first question.'}</p>`}</div>
   ${EAR.done&&q&&q.d!=='mel'?`<div class="earres ${EAR.res.ok?'ok':'bad'}"><b>${EAR.res.ok?'Correct.':EAR.res.given===null?'Here it is.':'Not this time.'}</b> ${earAnsTxt(q)}</div><div id="earNote"></div>`:''}
   <div class="earstat">Score ${s.ok} / ${s.n} · streak ${s.streak} · best ${s.best}<span class="sp"></span><button class="mini" data-earreset>Reset score</button><button class="mini" data-earjournal>Save to journal</button></div>
@@ -6476,7 +6495,8 @@ document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.cl
  if(d.earreset!==undefined){EAR.st[EAR.drill]={n:0,ok:0,streak:0,best:0};earSave();renderEar();return}
  if(d.earjournal!==undefined){const s=earSt();logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} level ${earLvl()}: ${s.ok}/${s.n} correct, best streak ${s.best}`);toast('Saved to the process log in your journal');return}
  if(d.earscore){AN.score=d.earscore;AN.tab='score';location.hash='analysis';room('analysis');return}});
-document.addEventListener('change',e=>{if(e.target.id==='earLet'){EAR.letters=e.target.checked;earSave();renderEar()}});
+document.addEventListener('change',e=>{if(e.target.id==='earLet'){EAR.letters=e.target.checked;earSave();renderEar()}
+ if(e.target.id==='earPulse'){EAR.rhy.pulse=e.target.checked;earSave()}if(e.target.id==='earSpd'){EAR.rhy.bpm=+e.target.value===72?72:100;earSave()}});
 
 setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
 /* phones: bottom tab bar built from the rail; More opens a sheet with the other rooms, the stage and the journal */
