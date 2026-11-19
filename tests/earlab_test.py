@@ -123,13 +123,18 @@ def cad_category_ok(cat, toks, k, mode):
     sd = [x['scale_degree'] for x in f]
     root_pos = toks[-1].find(':') < 0
     if cat == 'perfect':
-        return sd == [5, 1] and root_pos
+        return sd == [5, 1] and root_pos and not (len(toks) >= 3 and toks[-3] in ('I:2', 'i:2'))
     if cat == 'plagal':
         return sd == [4, 1] and root_pos
     if cat == 'imperfect':
-        return sd[1] == 5 and not f[1]['secondary']
+        return sd[1] == 5 and not f[1]['secondary'] and not (mode == 'min' and toks[-2] == 'iv:1')
     if cat == 'interrupted':
         return sd == [5, 6]
+    # R4 (0.48): rung 3 answers of their own
+    if cat == 'phrygian':
+        return mode == 'min' and toks[-2] == 'iv:1' and sd[1] == 5 and root_pos
+    if cat == 'cad64':
+        return len(toks) >= 3 and toks[-3] in ('I:2', 'i:2') and sd == [5, 1] and root_pos
     return False
 
 
@@ -175,7 +180,7 @@ async def main():
 
         # ---------------- A: every cadence model x key x level ----------------
         cad = await pg.evaluate("""()=>{const out=[];for(const l of [1,2,3])for(const md of ['maj','min']){const ts=CADT[l][md];if(!ts)continue;
-          for(const c in ts)for(const t of ts[c])for(const k of CKEYS2[md])for(const reg of [{b:42,s:66},{b:52,s:74},{b:42,s:74},{b:52,s:66},undefined]){const key={k,mode:md},rns=t.split(' '),P=earProg(rns,key,reg);
+          for(const c in ts)for(const t of ts[c])for(const k of earCadKeys(l,md))for(const reg of [{b:42,s:66},{b:52,s:74},{b:42,s:74},{b:52,s:66},undefined]){const key={k,mode:md},rns=t.split(' '),P=earCadProg(l,rns,key,reg);
             const app=P.ch?withKey(key,()=>checkSATB(P.ch,P.L)).filter(e=>e.sev==='error').map(e=>e.rule):['no realisation'];
             out.push({l,md,cat:c,t,k,ch:P.ch,app,sub:cadSub(rns)})}}return out}""")
         seen = set()
@@ -203,9 +208,11 @@ async def main():
                 sets = {c: set(v) for kk, v in lens.items() for c in [kk.split('|')[2]] if kk.startswith(f'{l}|{md}|')}
                 if sets and len({frozenset(s) for s in sets.values()}) != 1:
                     fail('C', f'L{l} {md}: model lengths differ by category {sets}')
-        for kk, v in lens.items():
-            if kk.startswith('1|') and len(v) < 3:
-                fail('C', f'{kk}: only {len(v)} models at level 1')
+        # EL-7 (0.48): rung 1 is exactly the four basic cadences, two chords each (checked in full in earlab_items_test section K)
+        want1 = {'1|maj|perfect': 1, '1|maj|plagal': 1, '1|maj|imperfect': 2, '1|maj|interrupted': 1}
+        got1 = {kk: len(v) for kk, v in lens.items() if kk.startswith('1|')}
+        if got1 != want1 or any(n != 2 for kk, v in lens.items() if kk.startswith('1|') for n in v):
+            fail('C', f'rung 1 models are not the four basic two-chord cadences: {got1}')
         if await pg.evaluate("JSON.stringify(CADT[2])===JSON.stringify(CADT[3])"):
             fail('C', 'levels 2 and 3 have the same cadence models')
         l3 = await pg.evaluate("Object.values(CADT[3]).flatMap(o=>Object.values(o).flat()).join('|')")
@@ -253,8 +260,8 @@ async def main():
               const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
               const q=earGen('qual',l,R);o.qual.push({l,a:q.a,lo:q.notes[0],hi:q.notes[q.notes.length-1]})}return o}""")
         MARGIN = 0.05
-        def tell(sec, rows, name, feat, ans):
-            for l in (1, 2, 3):
+        def tell(sec, rows, name, feat, ans, levels=(1, 2, 3)):
+            for l in levels:
                 rr = [r for r in rows if r['l'] == l]
                 acc, ch = predict_acc(rr, feat, ans)
                 COUNT['tell checks'] += 1
@@ -263,8 +270,10 @@ async def main():
         tell('cadences', tells['cad'], 'number of chords', lambda r: r['n'], lambda r: r['a'])
         tell('cadences', tells['cad'], 'lowest note (6-semitone bands)', lambda r: r['lo'] // 6, lambda r: r['a'])
         tell('cadences', tells['cad'], 'highest note (6-semitone bands)', lambda r: r['hi'] // 6, lambda r: r['a'])
-        tell('cadences', tells['cad'], 'second chord', lambda r: r['s2'], lambda r: r['a'])
-        tell('cadences', tells['cad'], 'opening voicing', lambda r: r['open'], lambda r: r['a'])
+        # at rung 1 the two chords are the cadence itself, so the second and opening chords are the answer, not a tell;
+        # rung 1's register, top-note, bass-note and key tells are in earlab_items_test section K
+        tell('cadences', tells['cad'], 'second chord', lambda r: r['s2'], lambda r: r['a'], (2, 3))
+        tell('cadences', tells['cad'], 'opening voicing', lambda r: r['open'], lambda r: r['a'], (2, 3))
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['comp'])
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['a'])
         tell('chord quality', tells['qual'], 'lowest note (6-semitone bands)', lambda r: r['lo'] // 6, lambda r: r['a'])
@@ -273,7 +282,7 @@ async def main():
             if min(bp) < 60 or max(bp) > 120 or max(bp) - min(bp) < 50:
                 fail('C', f'metre L{l}: tempo range {min(bp)}-{max(bp)} is not 60-120')
         # the second chord must not give the category away (the old level-1 plagal tell)
-        for l in (1, 2, 3):
+        for l in (2, 3):
             rr = [r for r in tells['cad'] if r['l'] == l]
             by = collections.defaultdict(set)
             for r in rr:
@@ -288,8 +297,11 @@ async def main():
             return{'melodic dictation (solfa sequences)':d('mel',q=>q.a.join(' ')),'chord quality (distinct voicings)':d('qual',q=>q.notes.join(',')),'bass (progression x key)':d('bass',q=>q.a.join(' ')+'|'+q.key.k)}}""")
         for k, v in pools.items():
             COUNT[f'L1 pool: {k}'] = v
-            if v < 100:
-                fail('D', f'level 1 {k}: {v} distinct items (floor 100)')
+            # EL-6 (0.48): chord quality is root position only, close spacing, two registers, so rung 1 (major, minor) has
+            # 2 x 12 roots x 2 registers = 48 voicings; the floor there is all 48, not 100
+            floor = 48 if k.startswith('chord quality') else 100
+            if v < floor:
+                fail('D', f'level 1 {k}: {v} distinct items (floor {floor})')
 
         # ---------------- E: blind analysis ----------------
         blind = await pg.evaluate("""async()=>{await earLoadBlind();return{items:EAR.blind.map(x=>({...x})),cats:[1,2,3].map(l=>earBlindCats(l)),meta:AN.meta}}""")
@@ -444,7 +456,8 @@ async def main():
                 COUNT['fixture rows (chords)'] += 1
                 got = next((q for q in cad if q['t'] == row['t'] and q['k'] == row['k'] and q['md'] == row['md']), None)
                 if got is None:
-                    COUNT['fixture rows (chords) for models since retired'] += 1
+                    # R16 (0.48): rows for retired models were removed (tests/fixtures/make_cadence_pcs.py), so an unmatched row is a failure
+                    fail('J', f"fixture {row['t']} key {row['k']} {row['md']}: the app no longer has this model")
                     continue
                 if not got['ch']:
                     fail('J', f"fixture {row['t']} key {row['k']}: not generated")
@@ -452,8 +465,14 @@ async def main():
                 for i, pcs in enumerate(row['pcs']):
                     if not {m % 12 for m in got['ch'][i]} <= set(pcs):
                         fail('J', f"fixture {row['t']} key {row['k']} chord {i+1}: {sorted({m%12 for m in got['ch'][i]})} vs {pcs}")
+            # every model x key the app uses has a fixture row
+            rows = {(r['t'], r['k'], r['md']) for r in F.get('cadence_pcs', [])}
+            miss = sorted({(q['t'], q['k'], q['md']) for q in cad} - rows)
+            COUNT['fixture coverage (model x key)'] = f"{len(rows & {(q['t'], q['k'], q['md']) for q in cad})} of {len({(q['t'], q['k'], q['md']) for q in cad})}"
+            if miss:
+                fail('J', f'{len(miss)} model x key combinations have no fixture row, e.g. {miss[:3]}')
         else:
-            COUNT['fixture rows (none present)'] = 0
+            fail('J', 'tests/fixtures/earlab_ic.json is missing')
         await b.close()
 
     report = {'counts': dict(COUNT), 'failures': {k: v[:25] for k, v in FAIL.items()}, 'n_failures': sum(len(v) for v in FAIL.values())}
