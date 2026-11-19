@@ -6241,8 +6241,11 @@ CADT[3]={maj:{perfect:['I IV V V7 I'],plagal:['I IV I:1 IV I','I IV vi IV I'],im
   interrupted:['i iv V V7 VI','i iv ii°:1 V VI'],phrygian:['i iv VI iv:1 V','i iv i:1 iv:1 V'],cad64:['i iv i:2 V i','i iv i:2 V7 i']}};
 const CADL3={...CADL,phrygian:'Phrygian',cad64:'Cadential 6/4'};
 // the family each Stage 6 answer belongs to, named in the feedback
-const CADFAM={phrygian:'an imperfect (half) cadence in a minor key: iv⁶–V, with the bass falling a semitone (le–so)',
- cad64:'the decorated approach to V in a perfect or imperfect cadence: over the bass so, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect (authentic) cadence'};
+// solfa follows the app's rule, movable do with la-based minor: the dominant is so in major and mi in minor; the Phrygian bass le–so of
+// do-based minor is fa–mi (independent theory check 0.48)
+const EARSOL5=md=>md==='min'?'mi':'so';
+const CADFAM={phrygian:md=>`an imperfect (half) cadence in a minor key: iv⁶–V, with the bass falling a semitone (${md==='min'?'fa–mi':'le–so'})`,
+ cad64:md=>`the decorated approach to V in a perfect or imperfect cadence: over the bass ${EARSOL5(md)}, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect (authentic) cadence`};
 const CADPARENT={phrygian:'imperfect',cad64:'perfect'};
 function earCadOpts(l){return l===3?['perfect','plagal','imperfect','interrupted','phrygian','cad64']:Object.keys(CADL)}
 /* Held out of rung 3 pending Justin's ruling (0.48 design spec, open question 2): interrupted after a cadential 6/4, where both "Interrupted"
@@ -6257,22 +6260,51 @@ const CKEYS1=[0,1,2,3,4,5,6,7,8,9,10,11];
 const CKEYS3={maj:CKEYS1,min:CKEYS1};
 function earCadKeys(l,mode){return l===1?CKEYS1:l===3?CKEYS3[mode]:CKEYS2[mode]}
 function cadSub(rns){const s=rns.join(' ');return/(^| )(iv|IV):1 V$/.test(s)?'Phrygian cadence (iv⁶–V)':/:2 V7? (I|i|vi|VI)?$/.test(s)?'with a cadential 6/4':''}
+/* Strict rules for cadences rung 3 (independent theory check 0.48, /home/claude/checks/IC_EarLab_items.md): rung 3 rejects, beyond the
+   checker's errors, the faults that check found. Per chord: a 6/4 doubles its bass; no doubled leading note in V/V7 or in V7/V; no doubled 7th;
+   voices within B E2–D4, T C3–G4, A G3–D5, S C4–G5; S–A and A–T within an octave. Per move: no leap of a 7th or of more than an octave in any
+   voice; no augmented 2nd (le–si); no overlap; no parallel or contrary 5ths/8ves; no hidden 5th/8ve in the outer voices with a soprano leap;
+   the leading note rises (in an inner voice it may fall to the 5th of I), and always into vi/VI; every 7th falls by step; the raised 4th (fi)
+   of V7/V rises a semitone. */
+const EARRN={maj:{I:[0,'maj'],ii:[2,'min'],iii:[4,'min'],IV:[5,'maj'],V:[7,'maj'],V7:[7,'dom7'],vi:[9,'min'],'V7/V':[2,'dom7']},
+ min:{i:[0,'min'],'ii°':[2,'dim'],III:[3,'maj'],iv:[5,'min'],V:[7,'maj'],V7:[7,'dom7'],VI:[8,'maj']}};
+const EARQ={maj:[0,4,7],min:[0,3,7],dim:[0,3,6],dom7:[0,4,7,10]};
+function earRnInfo(x,key){const[rn,iv]=x.split(':'),e=EARRN[key.mode][rn];if(!e)return null;const root=mod(key.k+e[0],12),T=EARQ[e[1]].map(i=>mod(root+i,12)),inv=+(iv||0);
+ return{rn,r:e[0],q:e[1],inv,root,T,bass:T[inv],third:T[1],fifth:T[2],sev:T.length>3?T[3]:null}}
+function earStrictChord(v,c,key){if(!c)return true;const pcs=v.map(m=>mod(m,12)),cnt=p=>pcs.filter(x=>x===p).length,LN=mod(key.k+11,12),RG=[[40,62],[48,67],[55,74],[60,79]];
+ if(v.some((m,k)=>m<RG[k][0]||m>RG[k][1]))return false;if(v[3]-v[2]>12||v[2]-v[1]>12)return false;
+ if(c.inv===2&&cnt(c.bass)<2)return false;if((c.rn==='V'||c.rn==='V7')&&cnt(LN)>1)return false;
+ if(c.rn==='V7/V'&&cnt(mod(c.root+4,12))>1)return false;if(c.sev!==null&&cnt(c.sev)>1)return false;return true}
+function earStrictPair(P,N,cp,cn,key){if(!cp||!cn)return true;const LN=mod(key.k+11,12),t=key.k;
+ for(let k=0;k<4;k++){const mv=Math.abs(N[k]-P[k]);if(mv>12||mv===10||mv===11)return false;
+  if(key.mode==='min'&&mv===3){const a=mod(P[k],12),b=mod(N[k],12),le=mod(t+8,12);if((a===le&&b===LN)||(a===LN&&b===le))return false}}
+ for(let k=0;k<3;k++)if(N[k]>P[k+1]||N[k+1]<P[k])return false;
+ for(let a=0;a<4;a++)for(let b=a+1;b<4;b++){if(P[a]===N[a]&&P[b]===N[b])continue;const i1=mod(P[b]-P[a],12),i2=mod(N[b]-N[a],12);if(i1===i2&&(i1===0||i1===7)&&P[a]!==N[a]&&P[b]!==N[b])return false}
+ const io=mod(N[3]-N[0],12);if((io===0||io===7)&&(N[0]-P[0])*(N[3]-P[3])>0&&Math.abs(N[3]-P[3])>2)return false;
+ if((cp.rn==='V'||cp.rn==='V7')&&['I','i','vi','VI'].includes(cn.rn))for(let k=0;k<4;k++)if(mod(P[k],12)===LN&&N[k]-P[k]!==1){
+  if(k===0||k===3||cn.rn==='vi'||cn.rn==='VI')return false;if(!(cn.inv===0&&mod(N[k],12)===cn.fifth&&[3,4].includes(P[k]-N[k])))return false}
+ if(cp.sev!==null&&cn.rn!==cp.rn)for(let k=0;k<4;k++)if(mod(P[k],12)===cp.sev&&![1,2].includes(P[k]-N[k]))return false;
+ if(cp.rn==='V7/V'){const fi=mod(cp.root+4,12);for(let k=0;k<4;k++)if(mod(P[k],12)===fi&&N[k]-P[k]!==1)return false}
+ return true}
 /* strict SATB voicing for Ear Lab: the app's SATB candidates, searched with hard rules.
    Rejected outright: any part-writing error from the checker (parallel or consecutive 5ths and 8ves, a 7th that doesn't fall,
    a leading note that doesn't rise in an outer voice, an augmented 2nd, ranges, spacing), consecutive 5ths/8ves by contrary motion, and overlaps.
    After V, vi/VI doubles its 3rd.
    reg {b,s}: where the bass and soprano like to sit (MIDI). Drawn at random per question, so register never hints at the answer. */
 // opt.open: open spacing only (soprano more than an octave above the tenor), for cadences rung 1
-function earSATB(L,key,reg={b:47,s:70},opt={}){return withKey(key,()=>{const I=L.map(ch=>chordInfo(ch,key));
- const C=I.map((x,i)=>{let c=satbCandidates(x).filter(n=>!chordIssues(n.v,x).some(e=>e.sev==='error')&&(!opt.open||n.v[3]-n.v[1]>12)).map(n=>({v:n.v,cost:n.cost+Math.abs(n.v[0]-reg.b)*.15+Math.abs(n.v[3]-reg.s)*.08}));
+function earSATB(L,key,reg={b:47,s:70},opt={}){return withKey(key,()=>{const I=L.map(ch=>chordInfo(ch,key)),SR=opt.strict&&opt.rns?opt.rns.map(x=>earRnInfo(x,key)):null;
+ const C=I.map((x,i)=>{let c=satbCandidates(x).filter(n=>!chordIssues(n.v,x).some(e=>e.sev==='error')&&(!opt.open||n.v[3]-n.v[1]>12)&&(!SR||earStrictChord(n.v,SR[i],key))).map(n=>({v:n.v,cost:n.cost+Math.abs(n.v[0]-reg.b)*.15+Math.abs(n.v[3]-reg.s)*.08}));
   if(i>0&&I[i-1].dom&&x.a.dia&&x.a.d===5&&x.third){const t3=mod(x.third.midi,12);c=c.filter(n=>n.v.filter(m=>mod(m,12)===t3).length===2)}
+  // strict (rung 3): a final major tonic in root position does not double its 3rd, when another voicing exists
+  if(SR&&i===I.length-1&&SR[i]&&SR[i].q==='maj'&&SR[i].r===0&&!SR[i].inv){const t3=mod(key.k+4,12),c2=c.filter(n=>n.v.filter(m=>mod(m,12)===t3).length<2);if(c2.length)c=c2}
   return c});
  if(C.some(c=>!c.length))return null;
- const bad=(P,N,a,b)=>pairIssues(P,N,a,b).some(e=>e.sev==='error'||e.rule==='contrary'||e.rule==='overlap');
+ const bad=(P,N,a,b)=>pairIssues(P,N,a,b).some(e=>e.sev==='error'||e.rule==='contrary'||e.rule==='overlap')||(SR&&!earStrictPair(P,N,SR[I.indexOf(a)],SR[I.indexOf(b)],key));
  // the opening chord's voicing is chosen on its own (the best single voicing for this key and register), so it never depends on the cadence
  const c0=C[0].slice().sort((a,b)=>a.cost-b.cost),go=start=>{let best=start.map(x=>({cost:x.cost,path:[x.v]}));
  for(let i=1;i<C.length;i++){best=C[i].map(n=>{let bb=null;for(const p of best){const P=p.path[p.path.length-1];if(bad(P,n.v,I[i-1],I[i]))continue;const cc=p.cost+n.cost+moveCost(P,n.v,I[i-1],I[i]);if(!bb||cc<bb.cost)bb={cost:cc,path:p.path.concat([n.v])}}return bb}).filter(Boolean).sort((a,b)=>a.cost-b.cost).slice(0,80);if(!best.length)return null}
  return best[0].path};
+ if(opt.startIdx!==undefined)return c0[opt.startIdx]?go([c0[opt.startIdx]]):null;
  return go(c0.slice(0,1))||go(c0)})}
 /* EL-7: rung 1 (two chords). Every strict, open-spaced pair of voicings is weighed, and the one nearest a register drawn at random wins
    (lowest note reg.b, highest note reg.s, first bass reg.fb, last soprano reg.ls), with smooth voice leading counted too. So the register of
@@ -6287,7 +6319,13 @@ function earSATBPair(L,key,reg){reg={b:46,s:72,fb:48,ls:72,...(reg||{})};return 
  return best&&best.path})}
 function earProg(rns,key,reg,opt){if(opt&&opt.pair){const L=cadList(rns.join(' '),key),V=earSATBPair(L,key,reg);return{L,V,ch:V?V.map(v=>v.slice()):null}}const L=cadList(rns.join(' '),key),V=earSATB(L,key,reg,opt);return{L,V,ch:V?V.map(v=>v.slice()):null}}
 // the realisation a cadence question at rung l uses
-function earCadProg(l,rns,key,reg){return earProg(rns,key,reg,l===1?{pair:true}:undefined)}
+function earCadProg(l,rns,key,reg){return earProg(rns,key,reg,l===1?{pair:true}:l===3?{strict:true,rns,startIdx:earCad3Open(key,reg)}:undefined)}
+/* rung 3 (strict): the opening tonic's voicing is the best one (for this key and register) from which every rung 3 model of the mode can be
+   realised under the strict rules, so the opening voicing never depends on the cadence. Memoised per key and register. */
+const EARC3O=new Map();
+function earCad3Open(key,reg={b:47,s:70}){const mk=key.k+key.mode+'|'+reg.b+','+reg.s;if(EARC3O.has(mk))return EARC3O.get(mk);const M=Object.values(CADT[3][key.mode]).flat();let idx;
+ for(let i=0;i<40&&idx===undefined;i++)if(M.every(m=>{const rns=m.split(' ');return earSATB(cadList(m,key),key,reg,{strict:true,rns,startIdx:i})}))idx=i;
+ EARC3O.set(mk,idx);return idx}
 function earGenCad(l,r){const mode=l===1?'maj':l===3?epick(['maj','min'],r):epick(['maj','maj','min'],r),key={k:epick(earCadKeys(l,mode),r),mode},ts=CADT[l][mode];
  // the mode is drawn first, then the answer from those the mode has (at rung 3 minor has all six, major all but the Phrygian)
  const a=epick(Object.keys(ts),r),lens=[...new Set(Object.values(ts).flat().map(x=>x.split(' ').length))],n=epick(lens,r);
@@ -6492,7 +6530,7 @@ function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===n
 function earSkip(){if(!EAR.q||EAR.done)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: skipped`);return true}
 // the rung in use: an open question's own rung, else the rung chosen for this drill (shown even when it is above the Stage), else the first rung shown
 function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill];return l||earRungsShown(EAR.drill)[0]}
-function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a]}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
+function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a](q.key.mode)}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
 // R4: an answer that names the family of a Stage 6 answer (imperfect for a Phrygian cadence, perfect for a cadential 6/4) is marked wrong
 // (or Nearly, when EAR_NEARLY is on), and the feedback says why
 function earNearTxt(q,res){return q.d==='cad'&&res&&!res.ok&&res.given&&CADPARENT[q.a]===res.given?` ${CADL[res.given]} is its family, so you heard the right kind of ending; the answer here is the more exact name.`:''}
@@ -6601,7 +6639,7 @@ function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(
  <section class="card"><h3>${EDR.find(x=>x[0]===EAR.drill)[1]}<span class="sp"></span>${rungs.map(n=>`<button class="chip ${l===n?'on':''}" data-earlv="${n}" title="${earRungStages(EAR.drill,n)}">Rung ${n}</button>`).join('')}</h3>
   <p class="note">${EARHOW[EAR.drill]}</p>
   <div class="go"><button class="mini gold" data-earplay="all" ${q?'':'disabled'}>▶ Play${q?' again':''}</button>
-   ${q&&(q.d==='cad'||q.d==='bass'||q.d==='mel')?`<button class="mini" data-earplay="nokey">Without the key chord</button>`:''}
+   ${q&&(q.d==='cad'||q.d==='bass'||q.d==='mel')&&!(q.d==='cad'&&q.l===1)?`<button class="mini" data-earplay="nokey">Without the key chord</button>`:''}
    ${q&&q.d==='bass'?`<button class="mini" data-earplay="bassonly">Bass only</button>`:''}${q&&q.d==='mel'?`<button class="mini" data-earplay="first">First note</button>`:''}
    <button class="mini" data-earstop>■ Stop</button><span class="sp"></span>${q&&!EAR.done?`<button class="mini" data-earshow>Show me</button>`:''}<button class="mini ${EAR.done||!q?'gold':''}" data-earnew ${!q&&!rdy?'disabled aria-busy="true"':''}>${q?'Next question →':rdy?'Start →':'Loading…'}</button></div>
   ${EAR.drill==='rhy'?`<div class="go earopts"><label class="note"><input type="checkbox" id="earPulse" ${EAR.rhy.pulse?'checked':''}> Pulse</label><label class="note">Speed <select id="earSpd"><option value="72" ${EAR.rhy.bpm===72?'selected':''}>steady (72)</option><option value="100" ${EAR.rhy.bpm===100?'selected':''}>normal (100)</option></select></label></div>`:''}

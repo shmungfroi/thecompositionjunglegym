@@ -93,3 +93,56 @@ the piano (and scores) are ready; rhythm Pulse and Speed controls kept.
 | pageerrors_test | pass | 153 views, 4,222 clicks, 881 random clicks, 0 errors |
 
 Note: rung-3 distinct items per button fell from 150–298 (items branch) to 113–227 with the `earCadReg` grid; all are above the 100 floor.
+
+---
+
+## Follow-up commit: fixes from the independent theory check (`/home/claude/checks/IC_EarLab_items.md`)
+
+### 1. Cadences rung 3 voice leading
+
+Rung 3 now realises through `earSATB` in a strict mode (`earCadProg(3,…)` passes `{strict:true, rns, startIdx}`):
+* New `earRnInfo`, `earStrictChord`, `earStrictPair`: rung 3 rejects, beyond the checker's errors, everything the independent checker
+  counts as an error: leaps of a 7th or of more than an octave in any voice (the iv → i⁶ bass 7th), a 6/4 that does not double its bass,
+  fi (raised 4th) in V7/V that does not rise a semitone, doubled leading notes and 7ths, ranges, upper-voice gaps, augmented 2nds, overlaps,
+  parallel/contrary 5ths and 8ves, hidden outer 5ths/8ves with a soprano leap, leading-note and 7th resolution.
+* A final major tonic in root position does not double its 3rd when another voicing exists (now 0 items).
+* The stricter search changed which opening voicing was possible for some models, and earlab_test's opening-voicing tell failed at rung 3
+  (25% vs 19%). New `earCad3Open(key, reg)`: the opening tonic voicing is the best one (for that key and register) from which every rung-3
+  model of the mode can be realised, memoised, so the opening never depends on the cadence. The tell passes again.
+
+Verification with the checker's own `vl.py` (`/home/claude/checks/ic/vl.py`), 20,000 rung-3 items exported with the checker's seeds
+(99991 + i·7919): **0 items with errors** (was 453), 0 without a realisation, 0 final major tonics with a doubled 3rd (was ~2.7%).
+Distinct items per button: perfect 116, plagal 244, imperfect 228, interrupted 216, Phrygian 131, cadential 6/4 223 (all ≥ 100).
+Tells: earlab_test (31 tell checks) and earlab_items_test (27) pass; rung-3 refined answers: mode 18% vs 19% chance, length 19% vs 19%.
+
+Regression test: `tests/earlab_items_test.py` section S has `ic_errors(q)`, a port of `vl.py`'s error rules, run over the 12,000 rung-3
+items and the 1,200 model × key × register realisations (13,200 checked, 0 errors), plus the doubled-3rd final check.
+(The file already had a `vl_errors` for its own strict rules; the new function is named `ic_errors` so both run.)
+
+### 2. Solfa in cadence feedback (la-based minor)
+
+`CADFAM` entries are now functions of the mode: Phrygian "(fa–mi)" in minor (le–so only in major, which never occurs); cadential 6/4
+"over the bass mi" in minor, "over the bass so" in major. No other solfa appears in Ear Lab cadence feedback (EARHOW, tips, family strip
+checked). Tested in section S (3 renders: Phrygian minor, 6/4 major and minor).
+
+### 3. "Without the key chord" at cadences rung 1
+
+Hidden at rung 1. At rungs 2–3 every phrase opens on the tonic; measured over 6,000 items per rung, no voicing (exact, or transposed to the
+same first bass) is heard under two answers, so the replay stays there. Rung 1 measured 78 exact / 12 transposed shared voicings over
+3,000 items. Tested in section S (button hidden at rung 1, shown at 2–3; zero shared voicings at 2–3).
+
+Family answers (Imperfect for Phrygian, Perfect for 6/4) are still marked as before, pending the teacher's decision.
+
+### Suite results (follow-up commit)
+
+| Suite | Result | Counts |
+|---|---|---|
+| earlab_test | 3 failures, only the known Analysis relabelling ones (`jesu cadence 5`, `ohaupt cadence 2`, `jesu cadence 4`) | 31 tell checks, 2,940 realisations, fixtures 573 / 573 |
+| earlab_r2_test | pass | 1,666 checks |
+| earlab_items_test | pass | 0 failures; 27 tell checks; 13,200 rung-3 strict checks; 3 solfa checks; nokey checks |
+| unit_test | pass | 637 checks |
+| content_lint | pass | |
+| pageerrors_test | pass | 153 views, 4,222 clicks, 881 random clicks, 0 errors |
+
+transport and sound were not re-run for this commit (not requested). The only transport-visible change is one fewer variant button at
+cadences rung 1, which the transport test discovers from the page.
