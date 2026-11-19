@@ -6,7 +6,8 @@ Run: python3 tests/content_lint.py <repo dir>      Prints a JSON report; exits 1
  2. censor terms: no radio-edit / clean-version / instrumental-excerpt style advice in any song `suitability` string
  3. sources: every song entry has two sources, or one authoritative source (a URL); entries with no recorded
     sources are the known exceptions below (open question OQ6) and are counted, not failed
- 4. credits: NOTICE.md names every third-party source; the footer has a Credits link; the on-screen credits
+ 4. credits: NOTICE.md names every third-party source; the footer has a Credits link; the Credits panel (details#credits,
+    not the footer line) holds the sound credits and
     include the score and hand-sign credits
 """
 import sys, re, json, pathlib
@@ -108,13 +109,24 @@ else:
     for t in NEED:
         if t.lower() not in notice.lower() and not (t == 'OFL' and 'open font licence' in notice.lower()):
             report['credits']['failures'].append(f'NOTICE.md does not mention "{t}"')
-fm = re.search(r'<footer>(.*?)</footer>', INDEX, re.S)
-if not fm:
+ftm = re.search(r'<footer>(.*?)</footer>', INDEX, re.S)
+# R7 (0.48): the footer line no longer carries the sample-library credits; the Credits panel (details#credits) holds them all.
+fm = re.search(r'<details[^>]*id="credits"[^>]*>(.*?)</details>', INDEX, re.S)
+if not ftm:
     report['credits']['failures'].append('footer not found')
+elif not fm:
+    report['credits']['failures'].append('Credits panel (details#credits) not found')
 else:
     foot = fm.group(1)
-    if not re.search(r'<summary[^>]*>\s*Credits\s*</summary>|<a [^>]*>\s*Credits\s*</a>|<button[^>]*>\s*Credits\s*</button>', foot):
+    line = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', ftm.group(1).replace(fm.group(0), '')))
+    for t in ['FluidR3', 'Frank Wen', 'CC BY 3.0', 'VCSL', 'Steinway']:
+        if t in line:
+            report['credits']['failures'].append(f'footer line still carries the sample credit "{t}" (it belongs in the Credits panel)')
+    if not re.search(r'<summary[^>]*>\s*Credits\s*</summary>|<a [^>]*>\s*Credits\s*</a>|<button[^>]*>\s*Credits\s*</button>', ftm.group(1)):
         report['credits']['failures'].append('footer has no Credits link')
+    for t in ['VCSL', 'Steinway B', 'CC0', 'FluidR3_GM', 'Frank Wen', 'CC BY 3.0', 'midi-js-soundfonts']:
+        if t not in foot:
+            report['credits']['failures'].append(f'Credits panel does not mention "{t}"')
     text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', foot.replace('<br>', ' '))).replace('&amp;', '&')
     for t in ['Sapp', 'Chopin Institute', 'NIFC', 'Curwen', 'Kodály Music Education Institute of Australia', 'KMEIA', 'used with permission',
               'CC BY-NC-SA 4.0', 'CC BY 4.0', 'Verovio',
