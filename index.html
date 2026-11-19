@@ -6276,7 +6276,8 @@ const EDR=[['metre','Pulse and metre','4–5'],['rhy','Rhythm dictation','4–5'
 /* EL-11: each drill's levels are rungs (Rung 1, 2, 3). One Stage table, EARSTAGE (0.48 design spec, section 3): the Stage at which each
    rung starts. A drill or rung is offered when its Stage is at or below the top-bar Stage switch (4/5/6); everything else sits behind
    "Show all" (EAR.all, saved; changing the Stage clears it). The drill and rung in use always show, and a drill outside the Stage offers
-   all its rungs, so a student is never stranded. */
+   all its rungs, so a student is never stranded. Stage per rung approved by Justin (19 Nov 2026): metre rung 3 (5/4, 7/8) is Stage 5, so
+   Pulse and metre reads "Stage 4–5" (EDR agrees). */
 const EARSTAGE={metre:[4,4,5],rhy:[4,4,5],qual:[4,5,6],cad:[5,5,6],bass:[5,5,6],mel:[4,5,6],blind:[5,5,6]};
 function earStage(){return typeof S!=='undefined'&&[4,5,6].includes(S.level)?S.level:6}
 function earStageTxt(a,b){return a===b?`Stage ${a}`:`Stage ${a}–${b}`}
@@ -6294,7 +6295,10 @@ const epick=(a,r)=>a[Math.floor(r()*a.length)];
 /* ---- question generators: pure, given a random function ---- */
 const METRES={'2/4':{b:2,sub:2,acc:[2,0]},'3/4':{b:3,sub:2,acc:[2,0,0]},'4/4':{b:4,sub:2,acc:[2,0,1,0]},'6/8':{b:2,sub:3,acc:[2,0]},'9/8':{b:3,sub:3,acc:[2,0,0]},'12/8':{b:4,sub:3,acc:[2,0,1,0]},'5/4':{b:5,sub:2,acc:[2,0,0,1,0]},'7/8':{b:3,sub:0,grp:[2,2,3],acc:[2,1,1]}};
 const METL={'2/4':'Simple duple (2/4)','3/4':'Simple triple (3/4)','4/4':'Simple quadruple (4/4)','6/8':'Compound duple (6/8)','9/8':'Compound triple (9/8)','12/8':'Compound quadruple (12/8)','5/4':'Irregular: 5/4 (3+2)','7/8':'Irregular: 7/8 (2+2+3)'};
-// rung 3 has all eight metres (0.48 design spec: no dead cell in the answer grid)
+/* The answer grid per rung (0.48 design spec, section 6; approved 19 Nov 2026): rung 1 is the Simple row (2/4 simple duple, 3/4, 4/4);
+   rung 2 adds the Compound row (6/8, 9/8, 12/8 compound quadruple); rung 3 adds the Irregular row (5/4, 7/8). 2/4 enters at rung 1 and
+   12/8 at rung 2 because each completes its row (duple / quadruple) the first time that row is asked, so no row has a dead cell and
+   2/4 vs 4/4 and 6/8 vs 12/8 (the beat count, heavy click to heavy click) are drilled from the row's first rung. */
 function earMetreOpts(l){return l===1?['2/4','3/4','4/4']:l===2?['2/4','3/4','4/4','6/8','9/8','12/8']:['2/4','3/4','4/4','6/8','9/8','12/8','5/4','7/8']}
 function earGenMetre(l,r){const m=epick(earMetreOpts(l),r),M=METRES[m],ev=[];let t=0;
  // tempo is drawn at random for every metre (60–120 beats a minute), so speed never gives away simple or compound
@@ -6302,7 +6306,8 @@ function earGenMetre(l,r){const m=epick(earMetreOpts(l),r),M=METRES[m],ev=[];let
  // a pattern of accented beats and lighter subdivisions; t in seconds
  for(let bar=0;bar<4;bar++){if(m==='7/8'){M.grp.forEach((g,gi)=>{for(let s=0;s<g;s++){ev.push({t,a:s===0?(gi===0?2:1):-1});t+=q8}});continue}
   for(let b=0;b<M.b;b++){ev.push({t,a:M.acc[b]});for(let s=1;s<M.sub;s++)if(r()<.75)ev.push({t:t+bd*s/M.sub,a:-1});t+=bd}}
- return{d:'metre',a:m,ev,len:t,bpm}}
+ // dur: how long the question sounds (s), drawn on its own (11–17 s) so the playing time never hints at the metre (earSchedMetre)
+ return{d:'metre',a:m,ev,len:t,bpm,dur:11+r()*6}}
 const RCELL={q:{l:'crotchet',u:[[4,0]],v:[['q',0]],w:4},e2:{l:'2 quavers',u:[[2,0],[2,0]],v:[['8',0],['8',0]],w:4},h:{l:'minim',u:[[8,0]],v:[['h',0]],w:8},
  s4:{l:'4 semiquavers',u:[[1,0],[1,0],[1,0],[1,0]],v:[['16',0],['16',0],['16',0],['16',0]],w:4},qr:{l:'crotchet rest',u:[[4,1]],v:[['q',1]],w:4},
  dq:{l:'dotted crotchet + quaver',u:[[6,0],[2,0]],v:[['q',0,1],['8',0]],w:8},es2:{l:'quaver + 2 semiquavers',u:[[2,0],[1,0],[1,0]],v:[['8',0],['16',0],['16',0]],w:4},
@@ -6340,7 +6345,10 @@ const CADT={1:{maj:{perfect:['V I'],plagal:['IV I'],imperfect:['I V','IV V'],int
    second chord hints at the answer. The Phrygian cadence (iv⁶–V) is minor only; every other answer occurs in both modes, and the mode is drawn
    before the answer, so the mode never raises the best guess above chance. The cadential 6/4 here decorates a perfect cadence (I⁶₄–V–I);
    its bass line (do fa so so do) is the same as the perfect cadence's I–IV–V–V7–I (the only perfect model here, so the whole bass line is
-   shared), and the interrupted V–V7–vi holds the bass on so too, so the bass alone never gives the 6/4 away. Perfect and imperfect models never contain a 6/4, so every question has one right answer. */
+   shared), and the interrupted V–V7–vi holds the bass on so too, so the bass alone never gives the 6/4 away. Perfect and imperfect models never contain a 6/4.
+   One right answer: the button names the cadence, which is where the phrase ends (the last two chords). "Cadential 6/4" is the answer only when
+   the 6/4 decorates a perfect cadence (I⁶₄–V(7)–I). The two interrupted models below pass through a cadential 6/4 on the way (I⁶₄–V–vi): the
+   cadence itself is interrupted, so "Interrupted" is their one right answer (Justin, 19 Nov 2026), and the feedback says why (CAD64INT). */
 CADT[3]={maj:{perfect:['I IV V V7 I'],plagal:['I IV I:1 IV I','I IV vi IV I'],imperfect:['I IV I:1 ii:1 V','I IV ii:1 V7/V V'],
   interrupted:['I IV V V7 vi','I IV ii:1 V vi'],cad64:['I IV I:2 V I','I IV I:2 V7 I']},
  min:{perfect:['i iv V V7 i'],plagal:['i iv i:1 iv i','i iv VI iv i'],imperfect:['i iv i:1 ii°:1 V','i iv VI ii°:1 V'],
@@ -6353,11 +6361,14 @@ const EARSOL5=md=>md==='min'?'mi':'so';
 const CADFAM={phrygian:md=>`an imperfect cadence in a minor key: iv⁶–V, with the bass falling a semitone (${md==='min'?'fa–mi':'le–so'})`,
  cad64:md=>`the decorated approach to V in a perfect or imperfect cadence: over the bass ${EARSOL5(md)}, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect cadence`};
 const CADPARENT={phrygian:'imperfect',cad64:'perfect'};
+// an interrupted cadence reached through a cadential 6/4 (rung 3, CAD3_HELD): the 6/4 is on the way, the cadence itself is V–vi (V–VI)
+function earCad64Int(q){return!!q&&q.d==='cad'&&q.l===3&&q.a==='interrupted'&&q.rns.some(x=>/:2$/.test(x))}
+const CAD64INT=md=>{const I=md==='min'?'i':'I',vi=md==='min'?'VI':'vi';return`A cadential 6/4 (${I}⁶₄ over the dominant bass) comes on the way, but the cadence itself is interrupted: V does not go home to ${I}, it moves up to ${vi} (V–${vi}).`};
 function earCadOpts(l){return l===3?['perfect','plagal','imperfect','interrupted','phrygian','cad64']:Object.keys(CADL)}
-/* Held out of rung 3 pending Justin's ruling (0.48 design spec, open question 2): interrupted after a cadential 6/4, where both "Interrupted"
-   and "Cadential 6/4" would be defensible answers. They are written in R4's rung 3 shape (five chords, opening I–IV / i–iv). One switch:
-   set CAD3_HOLD to false to restore them as interrupted models (they would then also need fixture rows and the one-right-answer rule relaxed). */
-const CAD3_HOLD=true,CAD3_HELD=['I IV I:2 V vi','i iv i:2 V VI'];
+/* Interrupted after a cadential 6/4 (0.48 design spec, open question 2). Justin's ruling (19 Nov 2026): keep them, with "Interrupted" as the
+   answer. They are written in R4's rung 3 shape (five chords, opening I–IV / i–iv), have fixture rows (tests/fixtures/earlab_ic.json) and pass
+   the strict rung 3 rules. CAD3_HOLD true would take them out again. */
+const CAD3_HOLD=false,CAD3_HELD=['I IV I:2 V vi','i iv i:2 V VI'];
 if(!CAD3_HOLD){CADT[3].maj.interrupted.push(CAD3_HELD[0]);CADT[3].min.interrupted.push(CAD3_HELD[1])}
 const CKEYS2={maj:[0,2,5,7,10,3,9],min:[9,4,2,7,0]};
 // rung 1 draws from all twelve major keys: with only two chords, a small set of keys would let the absolute pitch of the last chord hint at the answer
@@ -6565,7 +6576,9 @@ function earKeyCue(key,t){const D=earDo(key),tn=key.mode==='maj'?D.m:D.m-3,ch=ke
 const pn=(m,t,d,v=.55)=>tone(m,t,'piano',v,d);
 /* metre (EL-3): 0.6 s of silence, then whole bars until at least 10 s have sounded, then one closing downbeat. No count-in.
    The generated four-bar pattern repeats. Returns the beats with their times (from the press) for "hear it again with beats shown". */
-function earSchedMetre(q,t0){const barLen=q.len/4,nb=Math.max(4,Math.ceil(10/barLen-1e-9)),lead=.6,t=t0-ELPRE+lead,ev=[],beats=[],n={};
+/* Whole bars, as near the question's own drawn length (q.dur, 11–17 s) as whole bars allow, never fewer than four bars or under 10 s.
+   (0.48 logic: "whole bars until at least 10 s" made the playing time a tell: slow quadruple and 5/4 always ran 16–20 s, 2/4 about 10 s.) */
+function earSchedMetre(q,t0){const barLen=q.len/4,nb=Math.max(4,Math.round((q.dur||10)/barLen),Math.ceil(10/barLen-1e-9)),lead=.6,t=t0-ELPRE+lead,ev=[],beats=[],n={};
  for(let b=0;b<nb;b++){const k=b%4;q.ev.forEach(e=>{if(e.t>=k*barLen-1e-6&&e.t<(k+1)*barLen-1e-6)ev.push({t:b*barLen+e.t-k*barLen,a:e.a,bar:b+1})})}
  ev.push({t:nb*barLen,a:2,bar:nb+1});
  ev.forEach(e=>{earClick(t+e.t,e.a);if(e.a>=2)c2Tone(43,t+e.t,.25,0);e.t+=lead;e.kind=['sub','beat','accent','down'][e.a+1];if(e.a>=0){n[e.bar]=(n[e.bar]||0)+1;beats.push({t:e.t,a:e.a,bar:e.bar,beat:n[e.bar],kind:e.kind})}});
@@ -6615,18 +6628,23 @@ function ehsign(s){const k=s==='si'?'s':s;if(EHSIMG[k])return`<span class="hsw">
 /* EL-10: the stats model. One record per drill: n answered (right or wrong), ok right, streak and best (right answers in a row),
    shown ("Show me" before answering: not a miss, the streak is kept), skipped (Next, or a change of rung or drill, before answering:
    not a miss, the streak is kept). The score reads ok / n.
-   "Nearly" (0.48 design spec, open question 1; OFF by default, EAR_NEARLY): at cadences rung 3, Imperfect for a Phrygian cadence or Perfect
-   for a cadential 6/4 is true but not precise. When on, it keeps the streak, is not added to n, and is counted in the field nearly
-   (added to a record only once it occurs, so the six-field model is unchanged while it is off). */
-const EARST0={n:0,ok:0,streak:0,best:0,shown:0,skipped:0};
-let EAR_NEARLY=false;
+   "Nearly" (0.48 design spec, open question 1; ON, Justin's ruling 19 Nov 2026, option a): at cadences rung 3, Imperfect for a Phrygian
+   cadence or Perfect for a cadential 6/4 is true but not precise. It keeps the streak and is not scored: not added to n or ok (so neither
+   right nor wrong in "Score ok / n"), and is counted in the field nearly (shown in the stats line, the journal and the log).
+   CAD64_INT_NEARLY (OPEN, still with Justin; default false = wrong): "Cadential 6/4" for an interrupted cadence reached through a cadential
+   6/4 (earCad64Int). One line to flip; the feedback (earNearTxt) explains either way. */
+const EARST0={n:0,ok:0,streak:0,best:0,shown:0,skipped:0,nearly:0};
+let EAR_NEARLY=true,CAD64_INT_NEARLY=false;
 // pure: the record after one more question. kind: 'ok' | 'miss' | 'shown' | 'skipped' | 'nearly'
 function earStatNext(s,kind){const t={...EARST0,...(s||{})};if(kind==='ok'){t.n++;t.ok++;t.streak++;t.best=Math.max(t.best,t.streak)}
  else if(kind==='miss'){t.n++;t.streak=0}else if(kind==='shown')t.shown++;else if(kind==='skipped')t.skipped++;else if(kind==='nearly')t.nearly=(t.nearly||0)+1;return t}
 function earSt(){const s=EAR.st[EAR.drill]=Object.assign({...EARST0},EAR.st[EAR.drill]||{});return s}
 function earRecord(kind){EAR.st[EAR.drill]=earStatNext(earSt(),kind);EAR.resetUndo=null;earSave()}
-// 'correct' | 'nearly' | 'wrong'. Nearly only when EAR_NEARLY is on, at cadences, when the answer given is the family (CADPARENT) of a Phrygian or cadential 6/4 answer
-function earJudge(q,given){if(q&&given===q.a)return'correct';if(EAR_NEARLY&&q&&q.d==='cad'&&CADPARENT[q.a]&&CADPARENT[q.a]===given)return'nearly';return'wrong'}
+// 'correct' | 'nearly' | 'wrong'. Nearly only at cadences rung 3: with EAR_NEARLY, the answer given is the family (CADPARENT) of a Phrygian
+// or cadential 6/4 answer; with CAD64_INT_NEARLY, "Cadential 6/4" for an interrupted cadence reached through a cadential 6/4.
+// The reverse (Phrygian for a plain imperfect cadence, Cadential 6/4 for a plain perfect one) names something that is not there: wrong.
+function earJudge(q,given){if(q&&given===q.a)return'correct';if(!q||q.d!=='cad'||q.l!==3)return'wrong';
+ if(EAR_NEARLY&&CADPARENT[q.a]&&CADPARENT[q.a]===given)return'nearly';if(CAD64_INT_NEARLY&&given==='cad64'&&earCad64Int(q))return'nearly';return'wrong'}
 // ok: true, false, or 'nearly'; given null = "Show me"
 function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===null?'shown':ok==='nearly'?'nearly':ok?'ok':'miss';earRecord(kind);EAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};
  // undo and redo end once the answer is marked
@@ -6636,10 +6654,16 @@ function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===n
 function earSkip(){if(!EAR.q||EAR.done)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: skipped`);return true}
 // the rung in use: an open question's own rung, else the rung chosen for this drill (shown even when it is above the Stage), else the first rung shown
 function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill];return l||earRungsShown(EAR.drill)[0]}
-function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a](q.key.mode)}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
-// R4: an answer that names the family of a Stage 6 answer (imperfect for a Phrygian cadence, perfect for a cadential 6/4) is marked wrong
-// (or Nearly, when EAR_NEARLY is on), and the feedback says why
-function earNearTxt(q,res){return q.d==='cad'&&res&&!res.ok&&res.given&&CADPARENT[q.a]===res.given?` ${CADL[res.given]} is its family, so you heard the right kind of ending; the answer here is the more exact name.`:''}
+function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a](q.key.mode)}`:'')+(earCad64Int(q)?`. ${CAD64INT(q.key.mode)}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
+// R4: an answer that names the family of a Stage 6 answer (imperfect for a Phrygian cadence, perfect for a cadential 6/4) is Nearly
+// (EAR_NEARLY; marked wrong if it is turned off), and the feedback says why (0.48 design spec, section 9.5, Nearly)
+const EARNEAR={phrygian:md=>' You heard it stop on V, and that is right: this is an imperfect cadence. It is the special kind. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.',
+ cad64:md=>{const I=md==='min'?'i':'I';return` You heard V to ${I} close the phrase, and that is right. Listen just before V: the bass is already on the dominant, with the tonic chord sitting on top of it (${I}⁶₄). That delay is the cadential 6/4.`}};
+// "Cadential 6/4" for an interrupted cadence reached through one (Nearly only with CAD64_INT_NEARLY)
+const EAR64INT=md=>` You heard the cadential 6/4, and it is there. But the button names the cadence, and Cadential 6/4 is the answer only when the 6/4 leads into a perfect cadence (V–${md==='min'?'i':'I'}).`;
+function earNearTxt(q,res){if(q.d!=='cad'||!res||res.ok||!res.given)return'';const md=q.key&&q.key.mode;
+ if(CADPARENT[q.a]===res.given)return res.nearly?EARNEAR[q.a](md):` ${CADL[res.given]} is its family, so you heard the right kind of ending; the answer here is the more exact name.`;
+ if(res.given==='cad64'&&earCad64Int(q))return EAR64INT(md);return''}
 function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){earMark(rhyOnsets(EAR.ans)===rhyOnsets(q.a),EAR.ans.slice())}
  else if(q.d==='bass'){earMark(EAR.ans.length===3&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
  else if(q.d==='mel'){earMark(EAR.ans.length===q.a.length-1&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
