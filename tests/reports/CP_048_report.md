@@ -44,7 +44,7 @@ Section C re-checks all 24 rule-card examples on every run: each "follows" examp
 | counterpoint_test against unchanged 0.48 (`075e6c1`) | fails as intended: 335 failures (final-bar S3d disagreements, card tag/text, abbreviations, helper missing) |
 | unit_test | pass, 637 checks, 0 failures |
 | content_lint | pass |
-| terms_test | see the end of this report |
+| terms_test | pass, 0 failures, 153 views, 2,499 page scans. The first attempt, with a 590 s limit set by me, produced no output while other agents' browsers were running (it was too short, not a crash); it passed on the next run with a 45 min limit. It ran against the code before the report-only commit; index.html is identical. |
 
 ## Gaps and open points
 
