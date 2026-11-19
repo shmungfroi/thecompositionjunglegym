@@ -57,11 +57,7 @@ KNOWNHIT = collections.defaultdict(list)
 COUNT = collections.Counter()
 
 # id -> (section, regex on the failure message, description). Matching failures are reported, not counted.
-KNOWN = {
-    'SP-3': (('C',), r'parallel key .* is theoretical',
-             'The circle names the parallel key of D♭ major, G♯ minor and D♯ minor as D♭ minor, G♯ major and D♯ major '
-             '(8-9 accidentals) without flagging them as theoretical or giving C♯ minor, A♭ major, E♭ major.'),
-}   # SP-2 (double accidentals in chord buttons) was fixed in 0.48 (R10)
+KNOWN = {}   # SP-2 (double accidentals in chord buttons) and SP-3 (circle parallel keys) were fixed in 0.48 (R10, R11)
 
 
 def fail(sec, msg):
@@ -524,7 +520,16 @@ def check_keys(D):
         if not par.startswith(f"{pretty(Pk.tonic.name)} {'major' if mn else 'minor'}"):
             fail('C', f"{where}: parallel '{par}' vs {pretty(Pk.tonic.name)}")
         elif abs(Pk.sharps) > 7:
-            fail('C', f"{where}: parallel key {pretty(Pk.tonic.name)} {Pk.mode} is theoretical ({abs(Pk.sharps)} accidentals) and is not flagged or given as its enharmonic")
+            # R11 (0.48): flagged as a theoretical key, with the usual enharmonic equivalent
+            eq = Pk.tonic.getEnharmonic()
+            eqn = pretty(eq.name)
+            word = 'sharps' if Pk.sharps > 0 else 'flats'
+            if 'theoretical' not in par.lower() or f"{abs(Pk.sharps)} {word}" not in par or f"{eqn} {'major' if mn else 'minor'}" not in par:
+                fail('C', f"{where}: parallel key {pretty(Pk.tonic.name)} {Pk.mode} is theoretical ({abs(Pk.sharps)} {word}) and is not flagged as such with {eqn} {'major' if mn else 'minor'}: '{par}'")
+            elif m21key.Key(eq.name if mn else eq.name.lower()).sharps is not None and abs(m21key.Key(eq.name if mn else eq.name.lower()).sharps) > 7:
+                fail('C', f"{where}: equivalent {eqn} is itself theoretical")
+            else:
+                ok('C', 'theoretical parallel keys flagged with the usual equivalent')
         else:
             ok('C', 'parallel keys')
         dom = k.tonic.transpose('P5')

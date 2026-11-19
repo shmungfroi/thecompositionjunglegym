@@ -2638,14 +2638,15 @@ function renderCircle(){const R1=168,R2=118,R3=74,cx=190,cy=190;let s=`<svg view
  s+=`<text x="${cx}" y="${cy-6}" text-anchor="middle" class="ctr">sharps →</text><text x="${cx}" y="${cy+12}" text-anchor="middle" class="ctr">← flats</text></svg>`;
  $('ksCircle').innerHTML=s;
  const i=CSEL.i,maj=CMAJ[i],mn=CMIN[i],n=i<=6?i:i-12,tonic=CSEL.minor?mn:maj,sig={par:maj,n,theo:false};
- const rel=CSEL.minor?`${pretty(maj)} major`:`${pretty(mn)} minor`,par=CSEL.minor?`${pretty(mn)} major`:`${pretty(maj)} minor`;
+ const rel=CSEL.minor?`${pretty(maj)} major`:`${pretty(mn)} minor`,parN=CSEL.minor?n+3:n-3,parT=CSEL.minor?mn:maj,parM=CSEL.minor?'major':'minor',parA=Math.abs(parN)>7?altTonic(parT):null,
+  par=`${pretty(parT)} ${parM}`,parFlag=Math.abs(parN)>7?` <span style="color:var(--red)">· a theoretical key (${Math.abs(parN)} ${parN>0?'sharps':'flats'}); musicians write ${parA?pretty(parA)+' '+parM:'its enharmonic twin'}</span>`:'';
  const dom=CSEL.minor?CMIN[(i+1)%12]:CMAJ[(i+1)%12],sub=CSEL.minor?CMIN[(i+11)%12]:CMAJ[(i+11)%12];
  const li=LET.indexOf(maj[0]),modes=['Ionian','Dorian','Phrygian','Lydian','Mixolydian','Aeolian','Locrian'],mk=['ion','dor','phr','lyd','mix','nmin','loc'];
  const MT=scaleTones(maj,'maj',false).slice(0,7);
  $('ksKeyInfo').innerHTML=`<div class="sym disp" style="font-size:54px">${pretty(tonic)} ${CSEL.minor?'minor':'major'}</div>
   <p class="ctx" style="margin-top:4px">${sigText(sig)}${CENH[i]?` · also written as <b>${pretty(CSEL.minor?CENH[i][1]:CENH[i][0])} ${CSEL.minor?'minor':'major'}</b> (${12-Math.abs(n)} ${n>0?'flats':'sharps'})`:''}</p>
   <div class="staff" id="ksSigStaff"></div>
-  <dl><dt>Relative</dt><dd>${rel} <span class="note">· same key signature, different home</span></dd><dt>Parallel</dt><dd>${par} <span class="note">· same home, different key signature</span></dd><dt>Neighbours</dt><dd>${pretty(dom)} (one step clockwise: the dominant key) · ${pretty(sub)} (one step back: the subdominant key)</dd></dl>
+  <dl><dt>Relative</dt><dd>${rel} <span class="note">· same key signature, different home</span></dd><dt>Parallel</dt><dd>${par} <span class="note">· same home, different key signature</span>${parFlag}</dd><dt>Neighbours</dt><dd>${pretty(dom)} (one step clockwise: the dominant key) · ${pretty(sub)} (one step back: the subdominant key)</dd></dl>
   <div class="lbl" style="margin-top:14px">Seven modes share this key signature</div>
   <div class="chips">${MT.map((t,j)=>`<button class="chip" data-kmode="${t.name}|${mk[j]}">${pretty(t.name)} ${modes[j]} <span class="note">· on ${solTxt('drmfslt'[j])}</span></button>`).join('')}</div>
   <div class="lbl" style="margin-top:14px">Order of sharps and flats</div><p class="ctx" style="margin:0">Sharps: F C G D A E B &nbsp;(<i>Father Charles Goes Down And Ends Battle</i>)<br>Flats: B E A D G C F &nbsp;(the same, backwards)</p>
