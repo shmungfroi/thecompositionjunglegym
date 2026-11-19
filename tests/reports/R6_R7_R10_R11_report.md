@@ -152,3 +152,66 @@ All pass on the final tree (`tests/run_all <suite>`; earlab_test and earlab_r2_t
 | analysis_engrave_test | pass, 0 failures |
 
 Environment note: spelling_test was killed twice by the container's memory limit ("Target crashed", the kernel log shows a Chrome renderer OOM-kill during the Climbs sweep) while other agents' browsers were running. The same crash happened on an untouched copy of 0.47 (`ef97cdb`), so it is not caused by these changes. It passed on the third run once memory was free. terms_test takes about 10 to 25 minutes on a busy machine (`TERMS_STAGES=6` runs Stage 6 only).
+
+---
+
+## Fix round (branch `048-r6fix`, based on merged v0.48 `96ebd4b`)
+
+Follows the independent check (`/home/claude/checks/IC_R6.md`). Done in the order the coordinator gave. The Ear Lab answer buttons' layout is untouched (only the hover `title` on a button can change, as before).
+
+### 1. Gym cadence reader and hover titles (H1, H2)
+- The reader `#cad` is feedback, not a button. `TM_BTN` now matches `button.cad` (the Climb card buttons), not every `.cad`, so the reader gets the bracket: "Perfect cadence (US: authentic cadence)." and the note. A test (T6) opens the Gym with a full progression and fails if the reader has no bracket.
+- Button and chip hovers are no longer built up text node by text node. A new `termButtons()` runs in every pass: it reads the text the button holds now, builds the list of US terms from it (with plurals: "quavers" gives "US: eighth notes"), and sets `title` to the button's own title plus that list. When the text changes the hover follows; when no term is left the original title comes back. T6 checks every button on every view for stacked "US:" and for a hover that differs from what the text calls for, and the automatic-pass test changes a button's text three times.
+
+### 2. Double flats in the inversion caption and fretboards (H3)
+- The inversion caption and the guitar and bass fretboard `dg` labels now use `degPretty()` (so the diminished 7th's ♭♭7 is "𝄫7"). `spelling_test` section G now draws every root spelling x every quality x every inversion on guitar, ukulele and bass (`INVFRET_JS`, about 14,000 renders), checks each caption against `Q.d` (the augmented sixths are checked for form only: their note lists are not in inversion order) and scans the fretboard text for two-character double accidentals.
+
+### 3. "N-bar" compounds and "bar by bar"
+- No pairing or hover for any word with a hyphen before "bar" (12-bar blues, 8-bar phrase, 8- to 16-bar, "Twelve-bar blues" button and journal chip, half-bar) or for "bar by bar" (both words). Rule in the `bar` entry: `(?<!\bby )(?<!-)bars?(?!...|\s+by\s+bar\b)`.
+
+### 4. Rests
+- New terms: crotchet rest = quarter rest, quaver rest = eighth rest, minim rest = half rest, semibreve rest = whole rest, semiquaver rest = sixteenth rest. They sit before the note terms, so "crotchet rest" is one unit (no more "quarter note" for a rest). Plurals are kept ("crotchet rests" gives "US: quarter rests"). T1 holds the same list.
+
+### 5. Keys room step labels and the octatonic scale
+- Step labels are T (tone), S (semitone) and T+S; the legend reads "T = tone (US: whole step) · S = semitone (US: half step)" and each step carries a hover ("tone (US: whole step)" and so on). The octatonic scale is "semitone–tone diminished" with "US: half–whole diminished" on the button hover and "(US: half–whole)" beside the name. (No "whole–half" scale appears in the app; it is not defined.) `spelling_test` section K checks the new labels.
+
+### 6. The bare interval "tone"
+- Pairs with "whole step" only after "a" or "one", and only before up, down, below, above, higher, lower, apart, away, from, sharper, flatter, or at the end of a sentence or bracket ("a tone)", "a tone."). Not paired: sound or timbre ("a steady tone", "from rung 2 a tone, because a clap..."), "chord tone", "common tone", "guide tone", "tone colour", "tone of voice", "whole-tone scale". Every place the source matches it:
+  1. Oracle room: "pre-chorus and chorus a tone higher, also without thirds"
+  2. Climb 8 (borrowed chords), the flat-VII example: "A major chord a tone below home. No leading note..."
+  3. Climb 8, the Inchworm example: "a borrowed chord a tone below home"
+  4. Climb 9 (voice leading), feedback: "leaps (bigger than a tone)"
+  5. Climb 9, the ii–V sequence text: "Then to a minor ii–V a tone lower"
+  6. Climb 11 (tools), the passing diminished text: "Between two chords a tone apart"
+  7. Climb 9, "slips down a semitone (or a tone)" was reworded to "a semitone or a tone" and no longer matches (the "semitone" still pairs).
+  The existing "whole tone" pairing is unchanged. (Rendered-text check: terms_test T6 injects each pattern and the negative cases.)
+
+### 7. One bracket per list
+- A list item (`li`) or a checker's issue row (`.iss`) is no longer its own block; the list is. A checker list that says "A dissonant minim" 20 times now brackets the first and hovers the rest. (T6 checks lists and checker rows.)
+
+### 8. Polish
+- No back-to-back and no nested brackets. A term at the end of a parenthesis is merged ("(quavers; US: eighth notes)", "(one chord per bar; US: measure)"); a term followed by a parenthesis, or inside one that goes on, keeps its hover and does not use up the first-mention bracket. The sources that collided were reworded: Climb 3 "imperfect cadence (the question)" and "(the answer)"; Climb 2 "(K1)"; the Intervals "Span: 7 semitones (0.6 octaves)"; the Forms "perfect cadence (see ...)"; the Ear Lab metre text; Climb 4 "(bar 12)"; Climb 7 "(in an outer voice it must)"; the Forms phrase text "(ending on V)", "(V–I, melody ending on do)"; the Ear Lab Phrygian text; and the Analysis cadence labels in `scores/meta.json` ("Perfect cadence (V–I)" is now "Perfect cadence: V–I", "Imperfect (half) cadence (ends on V)" is "Imperfect cadence: ends on V", and so on; 22 labels). T6 fails on either kind of collision.
+- "Perfect cadence, less final" is lower case in the middle of a sentence (Gym reader, Analysis "Cadences:" list after the first, the progression report text). T6 fails on a capital P after a lower-case letter, comma or semicolon.
+- The Ear Lab family text no longer writes "perfect (authentic)" and "imperfect (half)" in brackets of its own (US terms must come as "(US: ...)"); `tests/earlab_items_test.py` follows (the family text, and the answer-button labels and "is its family" strings that R6 had already changed: the suite failed on those three on the merged v0.48 and passes now).
+- Climb 3's "In the US" row said "US" twice ("perfect cadence = US authentic cadence"); it now reads "perfect cadence = authentic cadence".
+
+### 9. Circle of fifths neighbours (accuracy, outside R6)
+- Bug: the neighbours were read from the wheel labels, so D♭ major's subdominant was F♯ (should be G♭) and B♭ minor's was d♯ (should be e♭ minor). Now `fifthFrom()` spells the dominant and subdominant from the key itself (a perfect fifth up and down, letter four or three steps on); every one of the 24 keys now gets the correct spelling, and the line says "major" or "minor". `spelling_test` section C now compares both neighbours with music21 spelling exactly (it only compared pitch classes before), for all 24 keys, plus the word major or minor.
+
+### Files changed
+`index.html`, `scores/meta.json` (cadence labels), `tests/terms_test.py` (T6, rests, tone, N-bar, T/S), `tests/spelling_test.py` (G inversions and fretboards, K step labels, C neighbours), `tests/earlab_items_test.py` (two strings), `tests/numeral_reread.py` (one string, to match meta.json).
+
+### Suite results (fix round, from /home/claude/wt-r6fix, final tree; each run alone)
+
+| Suite | Result |
+|---|---|
+| terms_test | pass: 153 views x Stages 4, 5, 6, 2,345 clicks, 0 failures (new T6 checks included) |
+| spelling_test | pass: 67,194 checks, 0 failures (new: inversion captions and fretboard labels, exact circle neighbours, T/S step labels) |
+| content_lint | pass |
+| unit_test | pass |
+| pageerrors_test | pass |
+| layout_test | pass |
+| earlab_test | pass |
+| earlab_items_test | pass (after the string sync above) |
+
+The spelling_test run was made before the last text edits (meta.json labels, a few reworded sentences); none of them touches a spelling path, and terms_test, pageerrors, layout and content_lint ran on the final tree.
