@@ -12,7 +12,7 @@ Sections
   M  EL-10 stats model (unit) and a scoring flow in the page
   U  EL-11 rung wording, Stage switch, show all, Stage tags, rung change mid-question, page errors at Stages 4, 5, 6
 """
-import sys, asyncio, json, pathlib, collections
+import sys, asyncio, json, pathlib, collections, re
 
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / 'harness'))
@@ -404,7 +404,7 @@ def sec_S(items, real, ui):
     if ui['labels'] != ['Perfect cadence', 'Plagal cadence', 'Imperfect cadence', 'Interrupted cadence', 'Phrygian', 'Cadential 6/4']:
         fail('S', f"rung 3 buttons: {ui['labels']}")
     for a, txt in ui['fb'].items():
-        if a == 'phrygian' and not (re.search(r'imperfect cadence( \(US: half cadence\))? in a minor key', txt) and 'iv⁶–V' in txt):
+        if a == 'phrygian' and not (re.search(r'imperfect cadence( [(\[]US: half cadence[)\]])? in a minor key', txt) and 'iv⁶–V' in txt):
             fail('S', f'Phrygian feedback does not name its family: {txt}')
         if a == 'cad64' and not ('decorated approach to V in a perfect or imperfect cadence' in txt and 'decorates a perfect cadence' in txt):
             fail('S', f'cadential 6/4 feedback does not name its family: {txt}')

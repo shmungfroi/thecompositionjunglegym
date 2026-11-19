@@ -16,6 +16,21 @@ appears), and after every click the page is scanned:
   T4  "imperfect authentic" always comes with the note "US 'imperfect authentic' is still a perfect cadence; the Australian
       imperfect cadence is the US half cadence."; "Weaker perfect cadence" is gone.
   T5  the pass is idempotent and every added bracket or hover is at least 11 px.
+  T6  (0.48 R6 fix round, the independent check IC_R6) on every scan:
+      H1  every term in prose and feedback (outside buttons, chips, options and scores) is marked, so the Gym cadence reader
+          (#cad) carries its brackets; no hover names a US term that the element's CURRENT text does not contain (stale or
+          piled-up hovers), and every term on a button has its hover in the right form (plural, rest);
+      H2  no bracket or hover on "bar" in an N-bar compound (12-bar blues, 8-bar phrase, 8- to 16-bar) or in "bar by bar";
+      M1  the bare interval "a tone" (down a tone, a tone below, (or a tone)) is paired; M2  the Keys step letters are T / S,
+          not W / H, and "half-whole" never stands alone; M3  a rest is paired with a US rest ("crotchet rest" = quarter rest);
+      M4  one bracket per term per checker list (.c2iss, .checker, .fchk); answer 6 (19 Nov): bar and stave carry the
+          bracket only in headings and at the first mention in each room;
+      L1  no back-to-back brackets "(US: ...) (" and no bracket nested inside a bracket; L3 no "Perfect cadence, less final"
+          with a capital mid-sentence; L4 no "= US"; L5 a hover naming "imperfect authentic" carries the note; L7 no dotted
+          underline under a term whose bracket is showing.
+      Targeted cases run first: the Gym reader fed I-IV-V-I, I-IV-I, I-V, V6-I and an empty progression; a page fragment
+      with the exact strings the independent check quoted; buttons whose text changes.
+  TERMS_FAST=1 runs T1, the targeted T6 cases and every view at Stage 6 without the click sweep (about 2 minutes).
 """
 import sys, os, asyncio, json, pathlib, re, collections
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
@@ -73,9 +88,26 @@ SKIP = "[data-clback],[data-earreset],[data-export],[data-import],[download],[da
 CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:0,headings:0,scopes:0,svg:0};
  const US=/\b(authentic|half[- ]cadence|deceptive|(?:quarter|eighth|sixteenth|half|whole) notes?|quarters|eighths|sixteenths|whole steps?|half steps?|staffs?|measures?)\b/i;
  const add=(k,m)=>{const key=k+'|'+m;if(!window.__TV.has(key)&&window.__TV.size<200)window.__TV.set(key,1)};
- const strip=t=>t.replace(/\(US: [^)]*\)/g,' ').replace(/US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence\./g,' ')
-   .replace(/ = US [A-Za-z ]*cadence/g,' ').replace(/measure every interval/g,' ').replace(/\s+/g,' ');
- const bracketed=a=>a.dataset.lit==='1'||(a.nextElementSibling&&a.nextElementSibling.classList.contains('tmus'))||!!a.closest('[data-notm]');
+ const strip=t=>t.replace(/\(US: [^)]*\)/g,' ').replace(/\[US: [^\]]*\]/g,' ').replace(/US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence\./g,' ')
+   .replace(/ = (?:US )?[A-Za-z ]*cadence/g,' ').replace(/measure every interval/g,' ').replace(/\s+/g,' ');
+ // this file's own finder for the Australian terms (independent of the page's TERMS rx)
+ const FIND={iac:/(?<![A-Za-z])perfect cadences?, less final(?![A-Za-z])/gi,perfect:/(?<![A-Za-z])perfect cadences?(?!, less final)(?![A-Za-z])/gi,
+  imperfect:/(?<![A-Za-z])imperfect cadences?(?![A-Za-z])/gi,interrupted:/(?<![A-Za-z])interrupted cadences?(?![A-Za-z])/gi,
+  crotchet:/(?<![A-Za-z])crotchets?(?: rests?)?(?![A-Za-z])/gi,quaver:/(?<![A-Za-z])quavers?(?: rests?)?(?![A-Za-z])/gi,minim:/(?<![A-Za-z])minims?(?: rests?)?(?![A-Za-z])/gi,
+  semibreve:/(?<![A-Za-z])semibreves?(?: rests?)?(?![A-Za-z])/gi,semiquaver:/(?<![A-Za-z])semiquavers?(?: rests?)?(?![A-Za-z])/gi,
+  bar:/(?<![-\u2011A-Za-z])(?<!bars? by[- ])bars?(?![- ]by[- ]bars?\b)(?![- ]?(?:lines?|chart|graph))(?![A-Za-z])/gi,stave:/(?<![A-Za-z])staves?(?![A-Za-z])/gi,
+  tone:/(?<![A-Za-z])(?:whole tones?(?![- ]scales?)|(?<=\ba )tone(?=$|\)| (?:higher|lower|above|below|apart|up|down)\b))(?![A-Za-z])/gi,
+  semitone:/(?<![A-Za-z])semitones?(?![A-Za-z])/gi};
+ const usOf=(k,w)=>{const u=RULE[k][1];if(!u)return null;const pl=/s$/i.test(w);if(/rests?$/i.test(w))return u.replace(/ note$/,' rest')+(pl?'s':'');return pl?(k==='stave'?'staffs':u+'s'):u};
+ const termsIn=t=>{const o=[];for(const k in FIND){if(!RULE[k][1])continue;FIND[k].lastIndex=0;let m;while((m=FIND[k].exec(t)))o.push([k,m[0],m.index])}return o};
+ const BTN='button,[role="button"],.chip,option,.pill,.fbar>small';
+ const usList=ti=>{const seg=(ti||'').split(' · ').filter(x=>/^US: /.test(x));return seg.length?seg[seg.length-1].slice(4).split(', '):[]};
+ const ownText=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT);let t='',n;while((n=w.nextNode()))if(!n.parentElement.closest('[data-notm]')&&n.parentElement.closest(BTN)===e)t+=n.nodeValue+' ';return t};
+ // a bracket follows the term, or (0.48 R6 fix) sits inside the term's own following bracket: "Perfect cadence (US: authentic cadence; V–I)"
+ const merged=a=>{let h=a,m=a.nextSibling;const sk=()=>{while(m&&m.nodeType===3&&m.nodeValue==='')m=m.nextSibling};sk();
+  while(!m&&h.parentElement&&/^(B|I|EM|STRONG)$/.test(h.parentElement.nodeName)){h=h.parentElement;m=h.nextSibling;sk()}
+  return !!m&&m.nodeType===3&&(/^\s*\(US[:\s]/.test(m.nodeValue)||/^\s*\($/.test(m.nodeValue)&&!!m.nextSibling&&m.nextSibling.nodeType===1&&m.nextSibling.classList.contains('tmus'))};
+ const bracketed=a=>a.dataset.lit==='1'||(a.nextSibling&&a.nextSibling.nodeType===1&&a.nextSibling.classList.contains('tmus'))||merged(a)||!!a.closest('[data-notm]');
  window.__chk=function(where){termPass();const M=document.querySelector('main')||document.body;window.__TN.scans++;
   // T2: no US term on its own (rendered text outside scores, and every title that is not a US hover)
   const tw=document.createTreeWalker(M,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&n.parentElement.closest('svg,script,style,textarea')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
@@ -85,12 +117,40 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
   // T3 scores: the Australian term only inside svg
   M.querySelectorAll('svg').forEach(sv=>{const s=sv.textContent;window.__TN.svg++;if(/\(US/.test(s)||US.test(s.replace(/staff-space/g,'')))add('T3',where+': score text has a US term: "'+s.slice(0,80)+'"')});
   // T3 buttons, chips, options: the Australian term only; the US term in a title
-  M.querySelectorAll('button,.chip,option,.cad,.pill,.fbar>small').forEach(b=>{const s=b.textContent;window.__TN.buttons++;
-   if(/\(US/.test(s)&&!b.closest('[data-notm]'))add('T3',where+': button/chip shows a bracket: "'+s.trim().slice(0,70)+'"');
-   for(const k in RULE){const [au,us]=RULE[k];if(!us)continue;const sx=k==='perfect'?s.replace(/perfect cadences?, less final/ig,''):s;
-    if(!new RegExp('(?<![A-Za-z])'+(k==='tone'?'whole tone':au)+'s?(?![A-Za-z])'+(k==='bar'?'(?![- ]?(?:lines?|chart|graph))':k==='tone'?'(?![- ]scales?)':''),'i').test(sx))continue;
-    const el=b.closest('button,.chip,option,.cad,.pill,.fbar>small')||b,tl=el.getAttribute('title')||'';
-    if(!tl.includes(us))add('T3',where+': "'+s.trim().slice(0,60)+'" has no US hover for '+au)}});
+  M.querySelectorAll(BTN).forEach(b=>{const s=b.textContent;window.__TN.buttons++;if(b.closest('svg,[data-notm]'))return;
+   if(/\(US/.test(s))add('T3',where+': button/chip shows a bracket: "'+s.trim().slice(0,70)+'"');
+   const el=b,tl=el.getAttribute('title')||'',got=usList(tl),want=new Set(termsIn(ownText(el)).map(([k,w])=>usOf(k,w)));
+   // T3 / T6 M3: every term on the button has its hover, in the right form (plural, rest)
+   want.forEach(u=>{if(!got.includes(u))add('T3',where+': "'+s.trim().slice(0,60)+'" has no hover "US: '+u+'" (title "'+tl+'")')});
+   // T6 H1/H2: no hover names a US term the current text does not contain (stale, piled up, or a wrong N-bar pairing)
+   got.forEach(u=>{if(!want.has(u))add('T6',where+': stale or wrong hover "US: '+u+'" on "'+s.trim().slice(0,60)+'" (title "'+tl+'")')});
+   if(got.includes('imperfect authentic')&&!/is still a perfect cadence/.test(tl))add('T6',where+': hover "imperfect authentic" without the note (L5): "'+s.trim().slice(0,60)+'"')});
+  // T6 H1: every term in prose and feedback is marked (so it carries a bracket or a tap hover); buttons, chips and scores excepted
+  {const tw=document.createTreeWalker(M,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&n.parentElement.closest('svg,script,style,textarea,input,abbr.tm,.tmus,[data-notm],'+BTN)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});let n;
+   while((n=tw.nextNode())){const f=termsIn(n.nodeValue);if(f.length){const [k,w]=f[0];add('T6',where+': "'+w+'" is not marked (no bracket, no tap hover): "'+(n.parentElement.closest('div,p,li,td')||n.parentElement).textContent.trim().slice(0,90)+'"')}}}
+  // T6 M3 / plurals: the hover on a marked term is in the right form
+  M.querySelectorAll('abbr.tm').forEach(a=>{const k=a.dataset.k;if(!RULE[k]||!RULE[k][1])return;const u=usOf(k,a.textContent);if(a.title!=='US: '+u)add('T6',where+': "'+a.textContent+'" has the hover "'+a.title+'", expected "US: '+u+'"')});
+  // T6 H2: no bracket after an N-bar compound or inside "bar by bar"
+  {const mm=/(?:\d|[A-Za-z])[-\u2011] ?bars? (?:\(US|\[US)|bars? \(US: measures?\) by bar|by bar \(US/i.exec(txt);if(mm)add('T6',where+': N-bar compound or "bar by bar" carries a bracket: "'+txt.slice(Math.max(0,mm.index-40),mm.index+40)+'"')}
+  M.querySelectorAll('abbr.tm[data-k="bar"]').forEach(a=>{const p=a.previousSibling;if(p&&p.nodeType===3&&/[-\u2011]$/.test(p.nodeValue))add('T6',where+': "bar" after a hyphen is marked as a term: "'+(a.parentElement.textContent||'').trim().slice(0,70)+'"')});
+  // T6 L1: no back-to-back and no nested brackets
+  {const mm=/\(US: [^)]*\)\s*\(/.exec(txt);if(mm)add('T6',where+': back-to-back brackets: "'+txt.slice(Math.max(0,mm.index-50),mm.index+60)+'"')}
+  // nested: a round "(US: ...)" bracket inside an open bracket of its own text block (paragraph, list item, cell, feedback box)
+  M.querySelectorAll('.tmus').forEach(sp=>{if(!/^ \(US/.test(sp.textContent))return;const blk=sp.parentElement.closest('p,li,td,th,dd,dt,h1,h2,h3,h4,h5,h6,summary,label,figcaption,caption,div')||M;
+   const r=document.createRange();r.setStart(blk,0);r.setEndBefore(sp);const q=r.toString();if((q.match(/\(/g)||[]).length>(q.match(/\)/g)||[]).length)add('T6',where+': nested brackets: "'+q.slice(-60)+sp.textContent+'"')});
+  // T6 M4: one bracket per term per checker list; answer 6: bar and stave bracketed only in headings and at the first mention in each room
+  M.querySelectorAll('.c2iss,.checker,.fchk').forEach(L=>{const c={};L.querySelectorAll('abbr.tm').forEach(a=>{if(bracketed(a)&&a.dataset.lit!=='1'){c[a.dataset.k]=(c[a.dataset.k]||0)+1}});
+   for(const k in c)if(c[k]>1)add('T6',where+': "'+k+'" is bracketed '+c[k]+' times in one checker list: "'+L.textContent.trim().slice(0,80)+'"')});
+  {const rc=new Map();M.querySelectorAll('abbr.tm[data-k="bar"],abbr.tm[data-k="stave"]').forEach(a=>{if(!bracketed(a)||a.dataset.lit==='1'||a.closest('h1,h2,h3,h4,h5,h6,summary,th,caption,.disp,.kicker,.lbl'))return;
+   const r=a.closest('#climbDetail,.room')||M,key=a.dataset.k;let m=rc.get(r);if(!m)rc.set(r,m={});m[key]=(m[key]||0)+1;if(m[key]===2)add('T6',where+': "'+a.textContent+'" bracketed again after the first mention in the room: "'+(a.parentElement.textContent||'').trim().slice(0,70)+'"')})}
+  // T6 M2: Australian step letters; L3: no capital mid-sentence; L4: "US" once in the climb 3 row
+  M.querySelectorAll('.stp').forEach(e=>{if(/^(W|H|W\+H)$/.test(e.textContent.trim()))add('T6',where+': step letter "'+e.textContent+'" is a US abbreviation (use T / S)')});
+  if(/(?:^|[^A-Za-z(])[WH] = (?:whole|semi|half|tone)/.test(t))add('T6',where+': step legend uses W / H');
+  if(/half[–-]whole/i.test(t))add('T6',where+': "half–whole" stands on its own');
+  {const mm=/[a-z,;:] Perfect cadence, less final/.exec(txt);if(mm)add('T6',where+': capital mid-sentence (L3): "'+txt.slice(Math.max(0,mm.index-40),mm.index+40)+'"')}
+  if(/= US /.test(txt))add('T6',where+': "= US" (US twice in the climb 3 row)');
+  // T6 L7: no dotted underline where the bracket shows
+  M.querySelectorAll('abbr.tm').forEach(a=>{if(a.offsetParent&&bracketed(a)&&!a.closest('[data-notm]')&&getComputedStyle(a).textDecorationLine!=='none')add('T6',where+': "'+a.textContent+'" is underlined although its bracket shows (L7)')});
   // T3 headings: the first mention of a term in a heading carries both
   M.querySelectorAll('h1,h2,h3,h4,h5,h6,summary,th').forEach(h=>{const seen=new Set();h.querySelectorAll('abbr.tm').forEach(a=>{if(a.closest('button,.chip')||seen.has(a.dataset.k))return;seen.add(a.dataset.k);window.__TN.headings++;
     if(!bracketed(a))add('T3',where+': heading names "'+a.textContent+'" with no US bracket: "'+h.textContent.trim().slice(0,70)+'"')})});
@@ -104,6 +164,89 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
   // T5: size
   document.querySelectorAll('abbr.tm,.tmus').forEach(e=>{if(!e.offsetParent)return;const px=parseFloat(getComputedStyle(e).fontSize);if(px<11)add('T5',where+': '+e.className+' is '+px+' px: "'+e.textContent+'"')});
   window.__TN.abbr+=document.querySelectorAll('abbr.tm').length}}"""
+
+
+# ---- T6 targeted cases. Each: (label, js returning a value, expected value)
+FRAG = """<h3 id="f_h">Level 3 · Forms · 12-bar blues</h3>
+<p id="f_p1">Compose an 8- to 16-bar melody, and choose, bar by bar, when to use it. Compose an 8-bar phrase.</p>
+<p id="f_p2">Twelve bars make the form.</p>
+<p id="f_p3">Perfect cadence (V–I) at the end, and a semitone (K1) in the bass.</p>
+<p id="f_p4">Listen for the Phrygian cadence (an imperfect cadence in minor, iv⁶–V).</p>
+<h4 id="f_h4">ii–Vs down a tone</h4>
+<p id="f_p5">A major chord a tone below home. Then a minor ii–V a tone lower (bigger than a tone). Chord tone, tone colour, the common tone; from rung 2 a tone, because a clap can't.</p>
+<ul class="c2iss" id="f_l"><li>A dissonant minim must be a passing note.</li><li>A dissonant minim must be a passing note.</li><li>A dissonant crotchet on beat 2.</li><li>A dissonant crotchet on beat 4.</li></ul>
+<div class="fchk" id="f_c"><div class="iss">Bar 7, beat 3: a 5th.</div><div class="iss">Bars 6–7: 5ths on two downbeats.</div><div class="iss">from bar 14 the bass leaps.</div></div>
+<button id="b1">crotchet rest</button><button id="b2">2 quavers</button><button id="b3">4 semiquavers</button><button id="b4">Twelve-bar blues</button>
+<button id="b5">perfect cadence</button><button id="b6" title="own">minim</button><button class="chip" id="b7">Perfect cadence, less final</button>"""
+
+TARGETS = [
+    ('H2 heading "12-bar blues" has no bracket', "()=>$('f_h').textContent", 'Level 3 · Forms · 12-bar blues'),
+    ('H2/L2 "8- to 16-bar", "bar by bar", "8-bar" have no bracket', "()=>$('f_p1').textContent",
+     'Compose an 8- to 16-bar melody, and choose, bar by bar, when to use it. Compose an 8-bar phrase.'),
+    ('H2 plain "Twelve bars" keeps its bracket', "()=>$('f_p2').textContent", 'Twelve bars (US: measures) make the form.'),
+    ('L1 back-to-back brackets merge', "()=>$('f_p3').textContent", 'Perfect cadence (US: authentic cadence; V–I) at the end, and a semitone (US: half step; K1) in the bass.'),
+    ('L1 a bracket inside a bracket is square', "()=>$('f_p4').textContent",
+     'Listen for the Phrygian cadence (an imperfect cadence [US: half cadence] in minor, iv⁶–V).'),
+    ('M1 heading "down a tone" pairs', "()=>$('f_h4').textContent", 'ii–Vs down a tone (US: whole step)'),
+    ('M1 bare interval "a tone" pairs once per block; chord tone, tone colour, common tone and a pitched tone do not', "()=>$('f_p5').textContent",
+     "A major chord a tone (US: whole step) below home. Then a minor ii–V a tone lower (bigger than a tone). Chord tone, tone colour, the common tone; from rung 2 a tone, because a clap can't."),
+    ('M1 every interval "a tone" is marked', "()=>[...$('f_p5').querySelectorAll('abbr.tm')].map(a=>a.textContent+'|'+a.title).join(', ')",
+     'tone|US: whole step, tone|US: whole step, tone|US: whole step'),
+    ('M4 one bracket per checker list', "()=>$('f_l').querySelectorAll('.tmus').length", 2),
+    ('answer 6: bar locators in feedback after the first mention in the room carry no bracket', "()=>$('f_c').querySelectorAll('.tmus').length", 0),
+    ('answer 6: bar locators are still marked (tap hover)', "()=>$('f_c').querySelectorAll('abbr.tm[data-k=bar]').length", 3),
+    ('M3 rest button hover', "()=>$('b1').title", 'US: quarter rest'),
+    ('M3 plural button hover', "()=>[$('b2').title,$('b3').title]", ['US: eighth notes', 'US: sixteenth notes']),
+    ('H2 "Twelve-bar blues" button has no measure hover', "()=>$('b4').getAttribute('title')", None),
+    ('L5 IAC chip hover carries the note', "()=>$('b7').title",
+     "US: imperfect authentic · US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence."),
+    ('L7 no underline under a bracketed term', "()=>getComputedStyle($('f_p2').querySelector('abbr.tm')).textDecorationLine", 'none'),
+]
+# buttons whose text changes: the hover is rebuilt, not added to (H1)
+CHANGE = [
+    ('H1 hover rebuilt when the text loses its term', "async()=>{$('b5').textContent='Add two or more chords';await new Promise(r=>setTimeout(r,300));return $('b5').getAttribute('title')}", None),
+    ('H1 hover rebuilt when the text changes term, keeping the app title', "async()=>{$('b6').textContent='semibreve';await new Promise(r=>setTimeout(r,300));return $('b6').title}", 'own · US: whole note'),
+    ('H1 hover follows a title the app changes', "async()=>{$('b6').title='new';$('b6').textContent='minims';await new Promise(r=>setTimeout(r,300));return $('b6').title}", 'new · US: half notes'),
+]
+GYM = [  # (progression [(numeral, inversion)], text the reader must show)
+    ([('I', 0), ('IV', 0), ('V', 0), ('I', 0)], 'Perfect cadence (US: authentic cadence).'),
+    ([('I', 0), ('IV', 0), ('I', 0)], 'gentler than a perfect cadence (US: authentic cadence)'),
+    ([('I', 0), ('V', 0)], 'Imperfect cadence (US: half cadence).'),
+    ([('I', 0), ('IV', 0), ('V', 0), ('vi', 0)], 'Interrupted cadence (US: deceptive cadence).'),
+    ([('V', 1), ('I', 0)], "This one is a perfect cadence, less final (US: imperfect authentic). US 'imperfect authentic' is still a perfect cadence"),
+    ([], "Add two or more chords"),
+]
+
+
+async def targeted(pg):
+    await pg.evaluate("""(h)=>{const d=document.createElement('div');d.className='room';d.id='tmfrag';d.innerHTML=h;document.querySelector('main').appendChild(d);termPass()}""", FRAG)
+    for lab, js, want in TARGETS:
+        got = await pg.evaluate(js)
+        if got != want:
+            fail('T6', f'{lab}: got {got!r}, expected {want!r}')
+        else:
+            ok('T6', lab)
+    for lab, js, want in CHANGE:
+        got = await pg.evaluate(js)
+        if got != want:
+            fail('T6', f'{lab}: got {got!r}, expected {want!r}')
+        else:
+            ok('T6', lab)
+    await pg.evaluate("__chk('T6 fragment')")
+    await pg.evaluate("$('tmfrag').remove()")
+    # the Gym cadence reader (#cad) is answer feedback: brackets, and no hover that piles up
+    await pg.evaluate("location.hash='gym'")
+    await pg.wait_for_timeout(500)
+    for prog, want in GYM:
+        r = await pg.evaluate("""(q)=>new Promise(res=>{P.length=0;for(const [n,i] of q)P.push({...parseRoman(n,K),inv:i,beats:gBar()});renderGym();
+            setTimeout(()=>{const c=document.getElementById('cad');res({t:c.textContent,ti:c.getAttribute('title')})},300)})""", prog)
+        lab = 'Gym reader ' + ('–'.join(n + ('6' if i else '') for n, i in prog) or 'empty')
+        if want not in r['t'] or (r['ti'] and 'US:' in r['ti']):
+            fail('T6', f"H1 {lab}: shows '{r['t'][:160]}' with title {r['ti']!r}; expected '{want}' and no US hover")
+        else:
+            ok('T6', 'H1 Gym cadence reader brackets its feedback (no stale hover)')
+        await pg.evaluate(f"__chk({json.dumps('T6 ' + lab)})")
+    await pg.evaluate("P.length=0;saveP();renderGym()")
 
 
 async def main():
@@ -141,9 +284,13 @@ async def main():
         else:
             ok('T1', 'termDual / termTip')
 
-        # ---- T2-T5: every view, every button
+        # ---- T2-T6: install the page checker
         await pg.evaluate(CHK_JS, RULE)
-        for stage in [int(x) for x in os.environ.get('TERMS_STAGES', '4,5,6').split(',')]:
+        # ---- T6 targeted cases (0.48 R6 fix round): the strings the independent check IC_R6 quoted
+        await targeted(pg)
+        # ---- T2-T6: every view, every button
+        fast = os.environ.get('TERMS_FAST') == '1'
+        for stage in ([6] if fast else [int(x) for x in os.environ.get('TERMS_STAGES', '4,5,6').split(',')]):
             await pg.evaluate(f"document.querySelector('#lvl button[data-l=\"{stage}\"]').click()")
             await pg.wait_for_timeout(200)
             for name, js in views():
@@ -153,7 +300,7 @@ async def main():
                 await pg.wait_for_timeout(900 if name.startswith('analysis') else 350)
                 await pg.evaluate(f"__chk({json.dumps(where)})")
                 COUNT['views scanned'] += 1
-                nb = await pg.evaluate(f"""(skip)=>[...document.querySelectorAll('main button')].filter(b=>b.offsetParent&&!b.disabled&&!b.matches(skip)).length""", SKIP)
+                nb = 0 if fast else await pg.evaluate(f"""(skip)=>[...document.querySelectorAll('main button')].filter(b=>b.offsetParent&&!b.disabled&&!b.matches(skip)).length""", SKIP)
                 for i in range(min(nb, 40 if stage == 6 else 10)):
                     clicked = await pg.evaluate("""([i,skip])=>{const bs=[...document.querySelectorAll('main button')].filter(b=>b.offsetParent&&!b.disabled&&!b.matches(skip));const b=bs[i];if(!b)return false;b.click();return true}""", [i, SKIP])
                     if not clicked:
