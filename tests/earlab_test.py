@@ -287,15 +287,16 @@ async def main():
                 COUNT[f'info: rung 3 refined answers, {name}: accuracy vs chance'] = f'{acc:.0%} vs {ch:.0%}'
                 if rr and any(r['a'] in ('phrygian', 'cad64') for r in rr) and acc > ch + MARGIN:
                     fail('C', f'cadences L3 (refined answers): {name} predicts the answer {acc:.0%} of the time (chance {ch:.0%})')
-        # the two rung 3 models held out pending a ruling (interrupted after a cadential 6/4) stay out of the pool
-        held = await pg.evaluate("typeof CAD3_HELD!=='undefined'?CAD3_HELD.filter(x=>Object.values(CADT[3]).some(o=>Object.values(o).flat().includes(x))):[]")
-        if held:
-            fail('C', f'held-out rung 3 models are in the pool: {held}')
-        # merge 0.48: one register path for cadence items (earCadReg), and "Nearly" off by default
-        mg = await pg.evaluate("({reg:/earCadReg\\(rns,key,r/.test(earGenCad.toString()),nearly:EAR_NEARLY,hold:CAD3_HOLD})")
-        COUNT['merge checks (earCadReg path, Nearly off, held-out switch on)'] = 3
-        if not mg['reg'] or mg['nearly'] is not False or mg['hold'] is not True:
-            fail('C', f'merge: earGenCad register path / Nearly default / hold switch: {mg}')
+        # the two rung 3 models that end interrupted after a cadential 6/4: kept as interrupted models (Justin, 19 Nov 2026; full checks in
+        # earlab_items_test section I)
+        held = await pg.evaluate("CAD3_HELD.filter(x=>Object.values(CADT[3]).some(o=>(o.interrupted||[]).includes(x)))")
+        if len(held) != 2:
+            fail('C', f'interrupted-after-6/4 models in the rung 3 interrupted pool: {held}')
+        # merge 0.48: one register path for cadence items (earCadReg); 0.48 logic: "Nearly" on, CAD64_INT_NEARLY off (open), held models in
+        mg = await pg.evaluate("({reg:/earCadReg\\(rns,key,r/.test(earGenCad.toString()),nearly:EAR_NEARLY,hold:CAD3_HOLD,int:CAD64_INT_NEARLY})")
+        COUNT['merge checks (earCadReg path, Nearly on, CAD64_INT_NEARLY off, held models in)'] = 4
+        if not mg['reg'] or mg['nearly'] is not True or mg['hold'] is not False or mg['int'] is not False:
+            fail('C', f'merge: earGenCad register path / Nearly / hold switch / CAD64_INT_NEARLY: {mg}')
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['comp'])
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['a'])
         tell('chord quality', tells['qual'], 'lowest note (6-semitone bands)', lambda r: r['lo'] // 6, lambda r: r['a'])

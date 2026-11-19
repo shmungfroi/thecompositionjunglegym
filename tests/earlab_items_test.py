@@ -11,8 +11,13 @@ Sections
   S  R4    cadences rung 3: six answers, family feedback, SATB checker, mode tell, the 6/4 bass motion, >= 100 distinct items per answer
   M  EL-10 stats model (unit) and a scoring flow in the page
   U  EL-11 rung wording, Stage switch, show all, Stage tags, rung change mid-question, page errors at Stages 4, 5, 6
+  N  0.48 logic: "Nearly" at cadences rung 3 (Justin 19 Nov 2026, option a): judge, stats model, tally, streak, log, journal, feedback
+  I  0.48 logic: the two rung 3 phrases that end interrupted after a cadential 6/4 (kept, answer "Interrupted"): strict SATB, one right
+           answer, feedback, the CAD64_INT_NEARLY switch (default false = wrong)
+  T  0.48 logic: Pulse and metre: answer grid per rung (2/4 from rung 1, 12/8 from rung 2), every metre against the fixture rows
+           (tests/fixtures/metre_items.json) and music21, balance, and the tempo / playing-time tells
 """
-import sys, asyncio, json, pathlib, collections
+import sys, asyncio, json, pathlib, collections, re
 
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / 'harness'))
@@ -408,10 +413,15 @@ def sec_S(items, real, ui):
             fail('S', f'Phrygian feedback does not name its family: {txt}')
         if a == 'cad64' and not ('decorated approach to V in a perfect or imperfect cadence' in txt and 'decorates a perfect cadence' in txt):
             fail('S', f'cadential 6/4 feedback does not name its family: {txt}')
+    # 0.48 logic: a family answer is Nearly (EAR_NEARLY on); with the switch off it is still marked wrong with the family sentence
     for a, txt in ui['near'].items():
+        say = {'phrygian': 'that is called a Phrygian cadence', 'cad64': 'That delay is the cadential 6/4'}[a]
+        if say not in txt or not txt.startswith('Nearly.'):
+            fail('S', f'{a} answered with its family: strip "{txt}"')
+    for a, txt in ui['nearOff'].items():
         fam = {'phrygian': 'Imperfect cadence is its family', 'cad64': 'Perfect cadence is its family'}[a]
         if fam not in txt or not txt.startswith('Not this time.'):
-            fail('S', f'{a} answered with its family: strip "{txt}"')
+            fail('S', f'{a} answered with its family, EAR_NEARLY off: strip "{txt}"')
     # strict rules (independent theory check 0.48): every rung 3 item and every model x key x register realisation
     errs = collections.Counter()
     for q in items + [dict(r, md=r['md']) for r in real if r['ch']]:
@@ -469,12 +479,14 @@ async def main():
         k3r = await pg.evaluate("""()=>{const o=[];for(const md of ['maj','min'])for(const c in CADT[3][md])for(const t of CADT[3][md][c])for(const k of earCadKeys(3,md))
             for(const reg of [{b:41,s:64},{b:53,s:76},{b:41,s:76},{b:53,s:64},{b:47,s:70}]){const key={k,mode:md},rns=t.split(' '),P=earCadProg(3,rns,key,reg);
             o.push({a:c,md,k,rns,reg,ch:P.ch,app:P.ch?withKey(key,()=>checkSATB(P.ch,P.L)).filter(e=>e.sev==='error').map(e=>e.rule):['no realisation']})}return o}""")
-        ui = await pg.evaluate("""async(mk)=>{const R=eval(mk)(47);EAR.drill='cad';EAR.lvl.cad=3;const fb={},near={};let labels=null;
+        ui = await pg.evaluate("""async(mk)=>{const R=eval(mk)(47);EAR.drill='cad';EAR.lvl.cad=3;const fb={},near={},nearOff={};let labels=null;
             const fbm={};for(const [a,md] of [['phrygian','min'],['cad64','maj'],['cad64','min']]){let q;do{q=earGen('cad',3,R)}while(q.a!==a||q.key.mode!==md);fbm[a+'|'+md]=earAnsTxt(q)}
             for(const a of ['phrygian','cad64']){let q;do{q=earGen('cad',3,R)}while(q.a!==a);fb[a]=earAnsTxt(q);
               EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();labels=[...document.querySelectorAll('#earMain [data-earans]')].map(b=>b.textContent);
-              document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();near[a]=(document.querySelector('#earMain .earres')||{}).textContent||''}
-            return{labels,fb,near,fbm}}""", RNG)
+              document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();near[a]=(document.querySelector('#earMain .earres')||{}).textContent||'';
+              EAR_NEARLY=false;EAR.q=q;EAR.done=false;EAR.res=null;renderEar();document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();
+              nearOff[a]=(document.querySelector('#earMain .earres')||{}).textContent||'';EAR_NEARLY=true}
+            return{labels,fb,near,nearOff,fbm}}""", RNG)
         ui['fbm'] = {tuple(k.split('|')): v for k, v in ui['fbm'].items()}
         sec_S(k3, k3r, ui)
 
@@ -498,13 +510,18 @@ async def main():
 
         # ---------------- M: EL-10 stats model and scoring flow ----------------
         unit = await pg.evaluate("""()=>{const Z=EARST0,o=[];const run=ks=>ks.reduce((s,k)=>earStatNext(s,k),Z);
-            const cases=[[[],{n:0,ok:0,streak:0,best:0,shown:0,skipped:0}],[['ok'],{n:1,ok:1,streak:1,best:1,shown:0,skipped:0}],
-             [['ok','ok','shown'],{n:2,ok:2,streak:2,best:2,shown:1,skipped:0}],[['ok','skipped','ok'],{n:2,ok:2,streak:2,best:2,shown:0,skipped:1}],
-             [['ok','ok','miss','ok'],{n:4,ok:3,streak:1,best:2,shown:0,skipped:0}],[['shown','shown','skipped'],{n:0,ok:0,streak:0,best:0,shown:2,skipped:1}],
-             [['miss','shown','ok','skipped','ok','ok'],{n:4,ok:3,streak:3,best:3,shown:1,skipped:1}]];
+            const Y=(n,ok,streak,best,shown,skipped,nearly=0)=>({n,ok,streak,best,shown,skipped,nearly});
+            const cases=[[[],Y(0,0,0,0,0,0)],[['ok'],Y(1,1,1,1,0,0)],
+             [['ok','ok','shown'],Y(2,2,2,2,1,0)],[['ok','skipped','ok'],Y(2,2,2,2,0,1)],
+             [['ok','ok','miss','ok'],Y(4,3,1,2,0,0)],[['shown','shown','skipped'],Y(0,0,0,0,2,1)],
+             [['miss','shown','ok','skipped','ok','ok'],Y(4,3,3,3,1,1)],
+             // 0.48 logic, Nearly: streak kept, not scored (n and ok unchanged), counted in nearly
+             [['ok','ok','nearly'],Y(2,2,2,2,0,0,1)],[['ok','nearly','ok'],Y(2,2,2,2,0,0,1)],[['ok','miss','nearly','nearly'],Y(2,1,0,1,0,0,2)],
+             [['nearly'],Y(0,0,0,0,0,0,1)],[['ok','nearly','miss'],Y(2,1,0,1,0,0,1)]];
             for(const [ks,want] of cases)o.push({ks,got:run(ks),want});
-            // old saved records (no shown/skipped) are read with zeros, and the input is never changed
-            const old={n:3,ok:2,streak:1,best:2},nx=earStatNext(old,'skipped');o.push({ks:['legacy+skipped'],got:nx,want:{n:3,ok:2,streak:1,best:2,shown:0,skipped:1}});
+            // old saved records (no shown/skipped/nearly) are read with zeros, and the input is never changed
+            const old={n:3,ok:2,streak:1,best:2},nx=earStatNext(old,'skipped');o.push({ks:['legacy+skipped'],got:nx,want:Y(3,2,1,2,0,1)});
+            o.push({ks:['legacy+nearly'],got:earStatNext(old,'nearly'),want:Y(3,2,1,2,0,0,1)});
             o.push({ks:['input unchanged'],got:old,want:{n:3,ok:2,streak:1,best:2}});return o}""")
         for c in unit:
             COUNT['EL-10 stats model unit cases'] += 1
@@ -558,6 +575,252 @@ async def main():
         if dialogs:
             fail('M', f'browser dialogs opened: {dialogs}')
 
+        # ---------------- N: "Nearly" at cadences rung 3 (Justin 19 Nov 2026, option a) ----------------
+        nf = await pg.evaluate("""(mk)=>{const R=eval(mk)(59),o={flags:{nearly:EAR_NEARLY,int:CAD64_INT_NEARLY,hold:CAD3_HOLD,zero:{...EARST0}}};
+            const st=()=>({...earSt()}),line=()=>(document.querySelector('#earMain .earstat')||{}).textContent||'',res=()=>(document.querySelector('#earMain .earres')||{}).textContent||'',
+              cls=()=>(document.querySelector('#earMain .earres')||{}).className||'',lastLog=()=>(LOG[LOG.length-1]||{}).s||'';
+            window.earPlay=()=>{};S.level=6;EAR.drill='cad';EAR.lvl.cad=3;EAR.st.cad={...EARST0};
+            const ask=(l,pred)=>{let q;do{q=earGen('cad',l,R)}while(!pred(q));EAR.lvl.cad=l;EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();return q};
+            const click=v=>document.querySelector(`#earMain [data-earans="${v}"]`).click();
+            const step=(name,l,pred,given)=>{const q=ask(l,pred);const g=typeof given==='function'?given(q):given;click(g);o[name]={st:st(),res:res(),cls:cls(),line:line(),log:lastLog(),judge:earJudge(q,g)}};
+            step('right1',3,q=>q.a==='perfect','perfect');step('right2',3,q=>q.a==='plagal','plagal');
+            step('nearPhr',3,q=>q.a==='phrygian','imperfect');step('near64',3,q=>q.a==='cad64','perfect');
+            step('right3',3,q=>q.a==='imperfect','imperfect');
+            // the reverse is wrong: Phrygian for a plain imperfect cadence, Cadential 6/4 for a plain perfect one
+            o.rev1=earJudge((()=>{let q;do{q=earGen('cad',3,R)}while(q.a!=='imperfect');return q})(),'phrygian');
+            o.rev2=earJudge((()=>{let q;do{q=earGen('cad',3,R)}while(q.a!=='perfect');return q})(),'cad64');
+            // Nearly is rung 3 only (rung 2 has no Phrygian or 6/4 answer) and cadences only
+            o.r2=earJudge((()=>{let q;do{q=earGen('cad',2,R)}while(q.a!=='imperfect');return q})(),'perfect');
+            step('miss',3,q=>q.a==='plagal','perfect');step('nearAfterMiss',3,q=>q.a==='phrygian','imperfect');
+            document.querySelector('#earMain [data-earjournal]').click();o.journal=lastLog();
+            // reset clears nearly; undo restores it
+            const before=st();document.querySelector('#earMain [data-earreset]').click();document.querySelector('#earMain [data-earresetyes]').click();o.zero=st();
+            document.querySelector('#earMain [data-earresetundo]').click();o.restored=JSON.stringify(st())===JSON.stringify(before);
+            return o}""", RNG)
+        COUNT['N flags (EAR_NEARLY on, CAD64_INT_NEARLY off, held models in)'] = 3
+        if nf['flags']['nearly'] is not True or nf['flags']['int'] is not False or nf['flags']['hold'] is not False:
+            fail('N', f"flags: {nf['flags']}")
+        if nf['flags']['zero'] != {'n': 0, 'ok': 0, 'streak': 0, 'best': 0, 'shown': 0, 'skipped': 0, 'nearly': 0}:
+            fail('N', f"EARST0 is {nf['flags']['zero']}")
+        F7 = ('n', 'ok', 'streak', 'best', 'shown', 'skipped', 'nearly')
+        expN = {'right1': (1, 1, 1, 1, 0, 0, 0), 'right2': (2, 2, 2, 2, 0, 0, 0), 'nearPhr': (2, 2, 2, 2, 0, 0, 1), 'near64': (2, 2, 2, 2, 0, 0, 2),
+                'right3': (3, 3, 3, 3, 0, 0, 2), 'miss': (4, 3, 0, 3, 0, 0, 2), 'nearAfterMiss': (4, 3, 0, 3, 0, 0, 3)}
+        for k, v in expN.items():
+            got = tuple(nf[k]['st'][x] for x in F7)
+            COUNT['N flow checks'] += 1
+            if got != v:
+                fail('N', f'after {k}: {dict(zip(F7, got))}, expected {dict(zip(F7, v))}')
+        for k in ('nearPhr', 'near64', 'nearAfterMiss'):
+            r = nf[k]
+            COUNT['N Nearly result checks'] += 1
+            if r['judge'] != 'nearly' or not r['res'].startswith('Nearly.') or 'near' not in r['cls'].split() or not r['log'].endswith('nearly'):
+                fail('N', f"{k}: judge {r['judge']}, result '{r['res'][:60]}', class '{r['cls']}', log '{r['log']}'")
+            if f"nearly {r['st']['nearly']}" not in r['line'] or f"Score {r['st']['ok']} / {r['st']['n']}" not in r['line']:
+                fail('N', f"{k}: stats line '{r['line']}'")
+        if nf['nearPhr']['res'].count('fa to mi') != 1 or 'le' in re.findall(r'\b(le)\b', nf['nearPhr']['res']):
+            fail('N', f"Phrygian Nearly text solfa: {nf['nearPhr']['res']}")
+        for k in ('rev1', 'rev2', 'r2'):
+            COUNT['N reverse / rung 2 checks'] += 1
+            if nf[k] != 'wrong':
+                fail('N', f'{k}: judged {nf[k]}, expected wrong')
+        nt = await pg.evaluate("()=>({maj:EARNEAR.cad64('maj'),min:EARNEAR.cad64('min')})")
+        if 'V to I close' not in nt['maj'] or '(I⁶₄)' not in nt['maj'] or 'V to i close' not in nt['min'] or '(i⁶₄)' not in nt['min']:
+            fail('N', f'cadential 6/4 Nearly text is not mode-aware: {nt}')
+        COUNT['N flow checks'] += 1
+        if not nf['journal'].endswith(', 3 nearly'):
+            fail('N', f"journal line: {nf['journal']}")
+        if nf['zero'].get('nearly') != 0 or not nf['restored']:
+            fail('N', f"reset: {nf['zero']}, undo restored {nf['restored']}")
+        COUNT['N flow checks'] += 2
+
+        # ---------------- I: interrupted after a cadential 6/4 (kept; answer "Interrupted") ----------------
+        ii = await pg.evaluate("""(mk)=>{const R=eval(mk)(61),o={held:CAD3_HELD.slice(),inPool:CAD3_HELD.filter(x=>Object.values(CADT[3]).some(m=>(m.interrupted||[]).includes(x))),items:[],fb:{},judge:{},near:{}};
+            for(let i=0;i<12000;i++){const q=earGen('cad',3,R);o.items.push({a:q.a,md:q.key.mode,k:q.key.k,rns:q.rns,ch:q.ch,i64:earCad64Int(q)})}
+            window.earPlay=()=>{};S.level=6;EAR.drill='cad';EAR.lvl.cad=3;
+            for(const md of ['maj','min']){let q;do{q=earGen('cad',3,R)}while(!earCad64Int(q)||q.key.mode!==md);o.fb[md]=earAnsTxt(q);
+              o.judge[md]={interrupted:earJudge(q,'interrupted'),cad64:earJudge(q,'cad64'),perfect:earJudge(q,'perfect'),imperfect:earJudge(q,'imperfect')};
+              for(const flag of [false,true]){CAD64_INT_NEARLY=flag;EAR.st.cad={...EARST0,n:5,ok:4,streak:3,best:3};EAR.q=q;EAR.done=false;EAR.res=null;renderEar();
+                document.querySelector('#earMain [data-earans="cad64"]').click();o.near[md+'|'+flag]={res:(document.querySelector('#earMain .earres')||{}).textContent||'',st:{...earSt()},judge:earJudge(q,'cad64')}}
+              CAD64_INT_NEARLY=false}
+            // a plain interrupted cadence (no 6/4) gets no 6/4 sentence; a cadential 6/4 item answered Interrupted is plain wrong
+            let q;do{q=earGen('cad',3,R)}while(q.a!=='interrupted'||earCad64Int(q));o.plain=earAnsTxt(q);
+            do{q=earGen('cad',3,R)}while(q.a!=='cad64');o.c64int=earJudge(q,'interrupted');
+            return o}""", RNG)
+        if sorted(ii['inPool']) != sorted(ii['held']):
+            fail('I', f"interrupted-after-6/4 models in the rung 3 pool: {ii['inPool']} of {ii['held']}")
+        i64 = [q for q in ii['items'] if q['i64']]
+        COUNT['I interrupted-after-6/4 items (of 12,000)'] = len(i64)
+        for q in i64:
+            if q['a'] != 'interrupted' or 'I:2' not in q['rns'] and 'i:2' not in q['rns']:
+                fail('I', f"item flagged as interrupted after a 6/4 is {q['a']} {q['rns']}")
+                break
+            if not cad_ok('interrupted', q['rns'], q['k'], q['md']) or cad_ok('cad64', q['rns'], q['k'], q['md']):
+                fail('I', f"{q['rns']}: interrupted {cad_ok('interrupted', q['rns'], q['k'], q['md'])}, cadential 6/4 {cad_ok('cad64', q['rns'], q['k'], q['md'])}")
+                break
+            e = ic_errors(q) + vl_errors(q['ch'], q['rns'], q['k'], q['md'])
+            if e:
+                fail('I', f"{q['md']} {NM[q['k']]} {q['rns']}: strict SATB {e[:3]}")
+                break
+        # the 6/4 is the tonic in second inversion over so, preceded by IV (iv), followed by V on the same bass (or its octave), then vi (VI) a step up
+        for q in i64:
+            j = q['rns'].index('I:2' if q['md'] == 'maj' else 'i:2')
+            b64, bV, bvi = q['ch'][j][0], q['ch'][j + 1][0], q['ch'][j + 2][0]
+            if (b64 - q['k']) % 12 != 7 or (b64 - bV) % 12 != 0 or (bvi - bV) not in (1, 2, -10, -11) or (bvi - q['k']) % 12 != (9 if q['md'] == 'maj' else 8):
+                fail('I', f"{q['md']} {NM[q['k']]} {q['rns']}: bass {b64}-{bV}-{bvi} is not so-so-(la or le)")
+                break
+            COUNT['I bass-line checks'] += 1
+        dist = collections.defaultdict(set)
+        for q in i64:
+            dist[q['md']].add((q['k'], json.dumps(q['ch'])))
+        for md in ('maj', 'min'):
+            COUNT[f'I distinct interrupted-after-6/4 items, {md}'] = len(dist[md])
+            if len(dist[md]) < 40:
+                fail('I', f'{md}: only {len(dist[md])} distinct interrupted-after-6/4 items')
+        intr = [q for q in ii['items'] if q['a'] == 'interrupted']
+        COUNT['I share of interrupted items that pass through a 6/4'] = f'{len(i64)}/{len(intr)}'
+        # the 6/4 alone does not give the answer: among items with a cadential 6/4 in them, both answers occur (reported)
+        with64 = collections.Counter(q['a'] for q in ii['items'] if any(t.endswith(':2') for t in q['rns']))
+        COUNT['I answers of items containing a 6/4'] = json.dumps(dict(with64))
+        if set(with64) != {'cad64', 'interrupted'}:
+            fail('I', f'items containing a 6/4 are {dict(with64)}')
+        for md, txt in ii['fb'].items():
+            vi = 'vi' if md == 'maj' else 'VI'
+            COUNT['I feedback checks'] += 1
+            if not txt.startswith('Interrupted cadence') or 'comes on the way, but the cadence itself is interrupted' not in txt or f'(V–{vi})' not in txt:
+                fail('I', f'{md} feedback: {txt}')
+        if 'cadential 6/4' in ii['plain'].lower():
+            fail('I', f"a plain interrupted cadence mentions the 6/4: {ii['plain']}")
+        for md, j in ii['judge'].items():
+            if j != {'interrupted': 'correct', 'cad64': 'wrong', 'perfect': 'wrong', 'imperfect': 'wrong'}:
+                fail('I', f'{md} judging: {j}')
+        F7 = ('n', 'ok', 'streak', 'best', 'shown', 'skipped', 'nearly')
+        for k, r in ii['near'].items():
+            md, flag = k.split('|')
+            got = tuple(r['st'][x] for x in F7)
+            COUNT['I CAD64_INT_NEARLY checks'] += 1
+            if flag == 'false':
+                if r['judge'] != 'wrong' or not r['res'].startswith('Not this time.') or got != (6, 4, 0, 3, 0, 0, 0):
+                    fail('I', f'"Cadential 6/4" on an interrupted-after-6/4 item ({md}, switch off): {r["judge"]}, {dict(zip(F7, got))}, "{r["res"][:50]}"')
+            else:
+                if r['judge'] != 'nearly' or not r['res'].startswith('Nearly.') or got != (5, 4, 3, 3, 0, 0, 1):
+                    fail('I', f'"Cadential 6/4" on an interrupted-after-6/4 item ({md}, switch on): {r["judge"]}, {dict(zip(F7, got))}, "{r["res"][:50]}"')
+            if 'You heard the cadential 6/4, and it is there' not in r['res'] or 'comes on the way, but the cadence itself is interrupted' not in r['res']:
+                fail('I', f'"Cadential 6/4" on an interrupted-after-6/4 item ({k}): feedback "{r["res"]}"')
+        if ii['c64int'] != 'wrong':
+            fail('I', f"Interrupted for a cadential 6/4 item is judged {ii['c64int']}")
+
+        # ---------------- T: Pulse and metre ----------------
+        MF = json.loads((pathlib.Path(__file__).resolve().parent / 'fixtures' / 'metre_items.json').read_text())
+        mt = await pg.evaluate("""(mk)=>{const R=eval(mk)(67),o={opts:{1:earMetreOpts(1),2:earMetreOpts(2),3:earMetreOpts(3)},label:METL,stage:EARSTAGE.metre,tag:earStageTag('metre'),
+              edr:EDR.find(x=>x[0]==='metre')[2],items:[]};
+            for(const l of [1,2,3])for(let i=0;i<6000;i++){const q=earGen('metre',l,R),barLen=q.len/4,nb=Math.max(4,Math.round((q.dur||10)/barLen),Math.ceil(10/barLen-1e-9));
+              const bars=[0,1,2,3].map(b=>q.ev.filter(e=>e.t>=b*barLen-1e-6&&e.t<(b+1)*barLen-1e-6).map(e=>({t:+(e.t-b*barLen).toFixed(5),a:e.a})));
+              o.items.push({l,a:q.a,bpm:q.bpm,len:q.len,dur:q.dur,nb,play:nb*barLen,n:q.ev.length,bars,lvl:q.lvl})}
+            // the scheduler's own bar count (the same rule, from the app): a few items through earSchedMetre with a silent click
+            const oc=window.earClick,ot=window.c2Tone;window.earClick=()=>{};window.c2Tone=()=>{};o.sched=[];
+            try{for(let i=0;i<300;i++){const q=earGen('metre',1+i%3,R),S=earSchedMetre(q,ELPRE),d=S.events[S.events.length-1].t-S.lead;o.sched.push({span:d,barLen:q.len/4,dur:q.dur})}}finally{window.earClick=oc;window.c2Tone=ot}
+            return o}""", RNG)
+        from music21 import meter
+        rows = {r['sig']: r for r in MF['metres']}
+        for l in (1, 2, 3):
+            want = [r['sig'] for r in MF['metres'] if r['rung'] <= l]
+            COUNT['T answer grid per rung'] += 1
+            if mt['opts'][str(l)] != want:
+                fail('T', f"rung {l}: earMetreOpts {mt['opts'][str(l)]}, fixture {want}")
+        if mt['stage'] != MF['stage'] or mt['tag'] != 'Stage 4–5' or mt['edr'] != '4–5':
+            fail('T', f"metre Stages: EARSTAGE {mt['stage']}, tag {mt['tag']}, EDR {mt['edr']}")
+        for sig, r in rows.items():
+            COUNT['T fixture rows'] += 1
+            if mt['label'].get(sig) != r['label']:
+                fail('T', f"{sig}: label {mt['label'].get(sig)}, fixture {r['label']}")
+            ts = meter.TimeSignature(sig)
+            if r['kind'] != 'irregular':
+                # music21: beat count and the split of one beat (simple 2, compound 3)
+                if ts.beatCount != r['beats'] or ts.beatDivisionCount != r['split'] or ts.classification.split()[0].lower() != r['kind'] \
+                        or ts.classification.split()[1].lower() != r['label'].split()[1].lower():
+                    fail('T', f"{sig}: music21 {ts.beatCount} beats, split {ts.beatDivisionCount}, '{ts.classification}' vs fixture {r}")
+            else:
+                # unequal beats: the grouping adds up to the bar, and the accented clicks fall at the start of each group
+                if sum(r['group']) != ts.numerator:
+                    fail('T', f"{sig}: grouping {r['group']} does not add up to {ts.numerator}")
+                starts = [sum(r['group'][:i]) for i in range(len(r['group']))]
+                at = [i for i, a in enumerate(r['accents']) if a >= 1] if r['unit'] == 'crotchet' else [starts[i] for i, a in enumerate(r['accents']) if a >= 1]
+                if at != starts:
+                    fail('T', f"{sig}: accents {r['accents']} are not at the group starts {starts}")
+        by = collections.defaultdict(list)
+        for q in mt['items']:
+            by[q['l']].append(q)
+        for l, qs in by.items():
+            cnt = collections.Counter(q['a'] for q in qs)
+            COUNT[f'T rung {l} answers'] = json.dumps(dict(sorted(cnt.items())))
+            if set(cnt) != set(mt['opts'][str(l)]):
+                fail('T', f'rung {l}: answers drawn {sorted(cnt)}')
+            if max(cnt.values()) / len(qs) > 1 / len(cnt) + 0.03:
+                fail('T', f'rung {l}: unbalanced {dict(cnt)}')
+        # every item: its bars match the fixture (beats, accents, split) - read from the events, not from METRES
+        bad = 0
+        for q in mt['items']:
+            r = rows[q['a']]
+            bd = 60 / q['bpm']
+            for bar in q['bars']:
+                beats = [e for e in bar if e['a'] >= 0]
+                acc = [e['a'] for e in beats]
+                if acc != r['accents']:
+                    bad += 1; fail('T', f"{q['a']} rung {q['l']}: accents {acc}, fixture {r['accents']}") if bad < 4 else None
+                    break
+                if r.get('unit') == 'quaver':
+                    q8 = bd / 2
+                    starts = [round(e['t'] / q8) for e in bar]
+                    grp = [b - a for a, b in zip(starts, starts[1:] + [sum(r['group'])])]
+                    if starts != list(range(sum(r['group']))) or [round(e['t'] / q8) for e in beats] != [sum(r['group'][:i]) for i in range(len(r['group']))]:
+                        bad += 1; fail('T', f"{q['a']}: quaver grouping {starts}") if bad < 4 else None
+                        break
+                else:
+                    pos = [round(e['t'] / bd * r['split'], 4) for e in bar]
+                    if any(abs(p - round(p)) > 1e-3 for p in pos) or [round(e['t'] / bd, 4) for e in beats] != list(range(r['beats'])):
+                        bad += 1; fail('T', f"{q['a']}: onsets {pos} are not on the beat or its {r['split']}-way split") if bad < 4 else None
+                        break
+            if abs(q['len'] - 4 * r['bar_beats'] * bd) > 1e-6:
+                bad += 1; fail('T', f"{q['a']}: four bars last {q['len']:.3f} s, expected {4 * r['bar_beats'] * bd:.3f}") if bad < 4 else None
+            if q['lvl'] != q['l'] or not 60 <= q['bpm'] <= 120 or not 11 <= q['dur'] <= 17:
+                bad += 1; fail('T', f"{q['a']}: rung {q['lvl']}, bpm {q['bpm']}, drawn length {q['dur']}") if bad < 4 else None
+            if q['nb'] < 4 or q['play'] < 10 - 1e-6:
+                bad += 1; fail('T', f"{q['a']} at {q['bpm']}: {q['nb']} bars, {q['play']:.2f} s") if bad < 4 else None
+        COUNT['T metre items checked (bars against the fixture)'] = len(mt['items'])
+        for x in mt['sched']:
+            bars = x['span'] / x['barLen']
+            if abs(bars - round(bars)) > 1e-6 or round(bars) < 4 or x['span'] < 10 - 1e-6:
+                fail('T', f"earSchedMetre plays {bars:.2f} bars, {x['span']:.2f} s")
+                break
+            if abs(round(bars) - max(4, round(x['dur'] / x['barLen'] + 1e-9), -(-10 // x['barLen']))) > 1:
+                fail('T', f"earSchedMetre plays {round(bars)} bars for a drawn length of {x['dur']:.2f} s")
+                break
+        COUNT['T scheduler checks'] = len(mt['sched'])
+        # tells: no metre from tempo or from how long it plays (the playing time is on screen); the simple/compound split too
+        A = lambda r: r['a']
+        SC = lambda r: rows[r['a']]['kind']
+        for l, qs in by.items():
+            W = f'metre rung {l}'
+            for name, f in (('tempo (bpm)', lambda r: r['bpm']), ('tempo (10-bpm bands)', lambda r: r['bpm'] // 10),
+                            ('playing time (whole seconds)', lambda r: int(r['play'] + .6)), ('playing time (0.5 s)', lambda r: round(r['play'] * 2))):
+                tell('T', qs, name, f, A, W)
+                if l > 1:
+                    tell('T', qs, name + ', simple or compound', f, SC, W)
+            # reported, not failed: tempo and playing time together. Whole bars at a known tempo make the total number of beats a multiple
+            # of the beats in a bar, so the pair carries the metre itself (counting every beat of 14 s and dividing is hearing the metre).
+            acc, ch = predict_acc(qs, lambda r: (r['bpm'] // 10, int(r['play'] + .6)), A)
+            COUNT[f'info: {W}, tempo and playing time together (10 bpm, whole seconds): accuracy vs chance'] = f'{acc:.0%} vs {ch:.0%}'
+            # reported, not failed: the speed of the fastest clicks and the number of clicks. Compound beats split in three, so at the
+            # same beat tempo the clicks come 1.5 times as fast; making that speed even would make the beat tempo a tell instead.
+            for name, f in (('fastest click (25 ms bands)', lambda r: round(min(b2['t'] - b1['t'] for bar in r['bars'] for b1, b2 in zip(bar, bar[1:])) / .025)),
+                            ('number of clicks (5s)', lambda r: (r['n'] * r['nb'] // 4) // 5)):
+                acc, ch = predict_acc(qs, f, A)
+                acc2, ch2 = predict_acc(qs, f, SC) if l > 1 else (0, 0)
+                COUNT[f'info: {W}, {name}: metre / simple-compound accuracy vs chance'] = f'{acc:.0%} vs {ch:.0%}' + (f' / {acc2:.0%} vs {ch2:.0%}' if l > 1 else '')
+
+        # sections N and I leave the cadence drill on rung 3; put it back where section M left it (rung 2, no open question), because section U
+        # expects the saved rung to be inside the Stage
+        await pg.evaluate("()=>{EAR.lvl.cad=2;EAR.q=null;EAR.done=false;EAR.res=null;EAR.st.cad={...EARST0};CAD64_INT_NEARLY=false;EAR_NEARLY=true;renderEar()}")
         # ---------------- U: EL-11 rungs, Stage switch, show all, rung change, page errors at Stages 4, 5, 6 ----------------
         # merge 0.48: one Stage table, EARSTAGE (Fable's design spec, section 3): a drill or rung shows when its Stage <= the selected Stage
         WANT = {4: {'metre': [1, 2], 'rhy': [1, 2], 'qual': [1], 'mel': [1]},

@@ -1,0 +1,15 @@
+{
+ "src": "Written by hand for 0.48 (EL logic), from the 0.48 design spec section 6 and the approved Stage table; earlab_items_test section T also checks the regular metres against music21's TimeSignature (beat count, split of one beat, classification).",
+ "stage": [4, 4, 5],
+ "fields": "sig; rung where the cell first appears; label on the answer; kind simple|compound|irregular; beats = beat clicks per bar; split = clicks per beat (0: counted in quavers); bar_beats = bar length in beats at the drawn tempo; accents per beat click (2 downbeat, 1 secondary accent, 0 beat); group = unequal beats (in crotchets for 5/4, quavers for 7/8)",
+ "metres": [
+  {"sig": "2/4",  "rung": 1, "label": "Simple duple (2/4)",        "kind": "simple",    "beats": 2, "split": 2, "bar_beats": 2,   "accents": [2, 0]},
+  {"sig": "3/4",  "rung": 1, "label": "Simple triple (3/4)",       "kind": "simple",    "beats": 3, "split": 2, "bar_beats": 3,   "accents": [2, 0, 0]},
+  {"sig": "4/4",  "rung": 1, "label": "Simple quadruple (4/4)",    "kind": "simple",    "beats": 4, "split": 2, "bar_beats": 4,   "accents": [2, 0, 1, 0]},
+  {"sig": "6/8",  "rung": 2, "label": "Compound duple (6/8)",      "kind": "compound",  "beats": 2, "split": 3, "bar_beats": 2,   "accents": [2, 0]},
+  {"sig": "9/8",  "rung": 2, "label": "Compound triple (9/8)",     "kind": "compound",  "beats": 3, "split": 3, "bar_beats": 3,   "accents": [2, 0, 0]},
+  {"sig": "12/8", "rung": 2, "label": "Compound quadruple (12/8)", "kind": "compound",  "beats": 4, "split": 3, "bar_beats": 4,   "accents": [2, 0, 1, 0]},
+  {"sig": "5/4",  "rung": 3, "label": "Irregular: 5/4 (3+2)",      "kind": "irregular", "beats": 5, "split": 2, "bar_beats": 5,   "accents": [2, 0, 0, 1, 0], "group": [3, 2], "unit": "crotchet"},
+  {"sig": "7/8",  "rung": 3, "label": "Irregular: 7/8 (2+2+3)",    "kind": "irregular", "beats": 3, "split": 0, "bar_beats": 3.5, "accents": [2, 1, 1],       "group": [2, 2, 3], "unit": "quaver"}
+ ]
+}
