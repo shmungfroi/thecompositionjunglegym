@@ -168,7 +168,7 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
 
 # ---- T6 targeted cases. Each: (label, js returning a value, expected value)
 FRAG = """<h3 id="f_h">Level 3 · Forms · 12-bar blues</h3>
-<p id="f_p1">Compose an 8- to 16-bar melody, and choose, bar by bar, when to use it. Compose an 8-bar phrase.</p>
+<div class="room"><p id="f_p1">Compose an 8- to 16-bar melody, and choose, bar by bar, when to use it. Compose an 8-bar phrase.</p></div>
 <p id="f_p2">Twelve bars make the form.</p>
 <p id="f_p3">Perfect cadence (V–I) at the end, and a semitone (K1) in the bass.</p>
 <p id="f_p4">Listen for the Phrygian cadence (an imperfect cadence in minor, iv⁶–V).</p>
