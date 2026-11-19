@@ -255,7 +255,7 @@ async def main():
 
         # ---------------- C: tells ----------------
         tells = await pg.evaluate("""()=>{let s=17;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o={cad:[],metre:[],qual:[]};
-            for(const l of [1,2,3])for(let i=0;i<5000;i++){const c=earGen('cad',l,R);o.cad.push({l,a:c.a,n:c.ch.length,lo:Math.min(...c.ch.flat()),hi:Math.max(...c.ch.flat()),
+            for(const l of [1,2,3])for(let i=0;i<5000;i++){const c=earGen('cad',l,R);o.cad.push({l,a:c.a,sub:c.sub||'',md:c.key.mode,n:c.ch.length,lo:Math.min(...c.ch.flat()),hi:Math.max(...c.ch.flat()),
                 s2:c.rns[1],open:c.ch[0].join(','),fin:c.ch[c.ch.length-1][3]});
               const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
               const q=earGen('qual',l,R);o.qual.push({l,a:q.a,lo:q.notes[0],hi:q.notes[q.notes.length-1]})}return o}""")
@@ -274,6 +274,28 @@ async def main():
         # rung 1's register, top-note, bass-note and key tells are in earlab_items_test section K
         tell('cadences', tells['cad'], 'second chord', lambda r: r['s2'], lambda r: r['a'], (2, 3))
         tell('cadences', tells['cad'], 'opening voicing', lambda r: r['open'], lambda r: r['a'], (2, 3))
+        # register 0.48 (design spec section 11): mode and phrase length, alone and together, must not give the answer away
+        tell('cadences', tells['cad'], 'mode', lambda r: r['md'], lambda r: r['a'])
+        tell('cadences', tells['cad'], 'mode and number of chords', lambda r: (r['md'], r['n']), lambda r: r['a'])
+        tell('cadences', tells['cad'], 'lowest and highest note (6-semitone bands)', lambda r: (r['lo'] // 6, r['hi'] // 6), lambda r: r['a'])
+        # if rung 3 is marked with the refined answers (Phrygian, cadential 6/4), mode and length are reported against those as well
+        for l in (3,):
+            rr = [r for r in tells['cad'] if r['l'] == l]
+            ref = lambda r: r['a'] + ('|' + r['sub'] if r['sub'] else '')
+            for name, feat in (('mode', lambda r: r['md']), ('number of chords', lambda r: r['n']), ('mode and number of chords', lambda r: (r['md'], r['n']))):
+                acc, ch = predict_acc(rr, feat, ref)
+                COUNT[f'info: rung 3 refined answers, {name}: accuracy vs chance'] = f'{acc:.0%} vs {ch:.0%}'
+                if rr and any(r['a'] in ('phrygian', 'cad64') for r in rr) and acc > ch + MARGIN:
+                    fail('C', f'cadences L3 (refined answers): {name} predicts the answer {acc:.0%} of the time (chance {ch:.0%})')
+        # the two rung 3 models held out pending a ruling (interrupted after a cadential 6/4) stay out of the pool
+        held = await pg.evaluate("typeof CAD3_HELD!=='undefined'?CAD3_HELD.filter(x=>Object.values(CADT[3]).some(o=>Object.values(o).flat().includes(x))):[]")
+        if held:
+            fail('C', f'held-out rung 3 models are in the pool: {held}')
+        # merge 0.48: one register path for cadence items (earCadReg), and "Nearly" off by default
+        mg = await pg.evaluate("({reg:/earCadReg\\(rns,key,r/.test(earGenCad.toString()),nearly:EAR_NEARLY,hold:CAD3_HOLD})")
+        COUNT['merge checks (earCadReg path, Nearly off, held-out switch on)'] = 3
+        if not mg['reg'] or mg['nearly'] is not False or mg['hold'] is not True:
+            fail('C', f'merge: earGenCad register path / Nearly default / hold switch: {mg}')
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['comp'])
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['a'])
         tell('chord quality', tells['qual'], 'lowest note (6-semitone bands)', lambda r: r['lo'] // 6, lambda r: r['a'])

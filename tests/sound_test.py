@@ -6,6 +6,20 @@ Run: python3 tests/sound_test.py <repo dir>
 2. Pitch: each decoded sample's fundamental (autocorrelation over 0.15-0.65 s of the note, in the browser) is within
    35 cents of the MIDI note its file name claims, octave errors included as failures.
 3. Synth fallback: with the sample files blocked, tone() still sounds (oscillator nodes start) and nothing throws.
+
+4. EL-3 metre: every metre at 60, 90 and 120 bpm, rendered offline through the app's own scheduler (elRender): 0.6 s of silence before
+   the first click and no count-in; whole bars sounding at least 10 s; the last event is a downbeat; the click levels (measured above
+   600 Hz, so the downbeat's bass note is left out) step down at least 4 dB from downbeat to secondary accent to beat to subdivision,
+   and every event of a class is louder than every event of the class below.
+5. EL-4 rhythm: every one-bar answer each rung can produce (rung 1 clapped, rungs 2-3 on the tone), at 72 and 100 bpm, pulse on: onsets
+   detected in the tone band recover the written rhythm exactly (notes, held lengths and rests); every tone note ends within 20 ms of its
+   written end; every count-in and pulse beat is detected in the woodblock band. Masking, each sound rendered alone: at every woodblock
+   beat the tone's (or clap's) level in the woodblock band is at least 20 dB below the woodblock's, and at every note the woodblock's
+   level in the tone band is at least 20 dB below the note's.
+6. EL-12 loudness: K-weighted, gated loudness (ITU-R BS.1770) of every drill, 6 items per rung; each drill's mean within 2 dB of -26 LUFS.
+7. R13: every note of every Analysis score at 0.75, 1 and 1.25 speed is played by a piano sample (no synth fallback; the scores go down
+   to MIDI 24) and lasts its written length + 0 to 150 ms. Long notes are held: a 6 s note at MIDI 24, 36, 48, 60, 72, 84 and 92 (the scores' range) is at most 12 dB
+   quieter at 5.5 s than where the hold begins, and the level steps by no more than 3 dB across any loop seam.
 """
 import sys, asyncio, json, pathlib, math
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
@@ -27,6 +41,195 @@ PITCH = """async()=>{const out={};const A=new OfflineAudioContext(1,44100,44100)
     // parabolic refinement
     const ac=L=>{let a=0;for(let i=0;i<N-L;i+=2)a+=d[s0+i]*d[s0+i+L];return a};const y0=ac(bl-1),y1=ac(bl),y2=ac(bl+1),dl=(y0-y2)/(2*(y0-2*y1+y2)||1);
     const f=sr/(bl+(isFinite(dl)?dl:0));r={n,ok:true,f,cents:1200*Math.log2(f/f0),dur:buf.duration,corr:best}}catch(e){r.err=String(e)}out[k].push(r)}}return out}"""
+
+
+# ---------------------------------------------------------------- register 0.48: offline renders of the Ear Lab and Analysis playback
+DSP = r"""
+const BQ=(x,b,a)=>{const y=new Float32Array(x.length);let x1=0,x2=0,y1=0,y2=0;for(let i=0;i<x.length;i++){const v=b[0]*x[i]+b[1]*x1+b[2]*x2-a[1]*y1-a[2]*y2;x2=x1;x1=x[i];y2=y1;y1=v;y[i]=v}return y};
+const BIQ=(type,f,sr,Q=Math.SQRT1_2)=>{const w=2*Math.PI*f/sr,c=Math.cos(w),al=Math.sin(w)/(2*Q),a0=1+al;
+ return type==='hp'?[[(1+c)/2/a0,-(1+c)/a0,(1+c)/2/a0],[1,-2*c/a0,(1-al)/a0]]:[[(1-c)/2/a0,(1-c)/a0,(1-c)/2/a0],[1,-2*c/a0,(1-al)/a0]]};
+const FILT=(x,type,f,sr,n=2)=>{let y=x;for(let i=0;i<n;i++){const[b,a]=BIQ(type,f,sr);y=BQ(y,b,a)}return y};
+const ENV=(x,sr,win=.002,hop=.001)=>{const W=Math.round(win*sr),H=Math.round(hop*sr),o=[];for(let s=0;s+W<=x.length;s+=H){let e=0;for(let i=s;i<s+W;i++)e+=x[i]*x[i];o.push(Math.sqrt(e/W))}return o};
+const LUFS=(x,sr)=>{let y=BQ(x,[1.53512485958697,-2.69169618940638,1.19839281085285],[1,-1.69065929318241,.73248077421585]);y=BQ(y,[1,-2,1],[1,-1.99004745483398,.99007225036621]);
+ const B=Math.round(.4*sr),H=Math.round(.1*sr),z=[];for(let s=0;s+B<=y.length;s+=H){let e=0;for(let i=s;i<s+B;i++)e+=y[i]*y[i];z.push(e/B)}
+ const L=v=>-.691+10*Math.log10(v);let g=z.filter(v=>L(v)>-70);if(!g.length)return -99;const m=g.reduce((a,b)=>a+b,0)/g.length,rel=L(m)-10;g=g.filter(v=>L(v)>rel);return L(g.reduce((a,b)=>a+b,0)/g.length)};
+const DB=v=>20*Math.log10(v+1e-12);
+"""
+METRE_JS = DSP + r"""async()=>{const out=[];const sr=24000;
+ for(const m of Object.keys(METRES))for(const bpm of [60,90,120]){let s=3;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};
+  // a question as the generator makes it, at a fixed tempo
+  let q;for(let k=0;k<400;k++){q=earGenMetre(3,R);if(q.a===m)break}const sc=q.bpm/bpm;q={...q,bpm,len:q.len*sc,ev:q.ev.map(e=>({...e,t:e.t*sc}))};
+  const r=await elRender(q,'all',{sr}),x=r.buf.getChannelData(0),ev=r.info.events;
+  let first=-1;for(let i=0;i<x.length;i++)if(Math.abs(x[i])>1e-4){first=i/sr;break}
+  const hp=FILT(x,'hp',600,sr,3),lv=ev.map(e=>{const a=Math.round(e.t*sr),b=Math.min(x.length,a+Math.round(.06*sr));let p=0;for(let i=a;i<b;i++)p=Math.max(p,Math.abs(hp[i]));return{a:e.a,db:DB(p)}});
+  const barLen=q.len/4,last=ev[ev.length-1],span=last.t-ev[0].t;
+  out.push({m,bpm,first,lead:r.info.lead,span,bars:span/barLen,lastA:last.a,lastBar:last.bar,nb:ev.filter(e=>e.a===2).length,lv,beats:(r.info.beats||[]).length,nbeats:ev.filter(e=>e.a>=0).length})}
+ return out}"""
+RHY_JS = DSP + r"""async([lvl,from,to,sepOn])=>{const sr=16000,out={n:0,fails:[],worstOff:0,worstOn:0,sep:[]};
+ // every one-bar answer this rung can produce (earFill's rules: two-beat cells on beats 1 or 3, no rest first, a final rest becomes a crotchet)
+ const cells=earCells(lvl),ans=[];const go=(pos,seq)=>{if(pos===16){if(seq[seq.length-1]!=='qr')ans.push(seq);return}
+  for(const k of cells){const w=RCELL[k].w;if(pos+w<=16&&(w<8||pos%8===0)&&!(k==='qr'&&pos===0))go(pos+w,seq.concat([k]))}};go(0,[]);
+ out.total=ans.length;
+ for(const a of ans.slice(from,to))for(const bpm of [72,100]){const q={d:'rhy',bars:1,a,lvl};const r=await elRender(q,'all',{sr,bpm,pulse:true}),x=r.buf.getChannelData(0);out.n++;
+  const sq=60/bpm/4,t0=r.info.start,clap=lvl===1,tag=`rung ${lvl} ${bpm} bpm [${a.join(' ')}]`;
+  // tone band (above 450 Hz) and woodblock band (below 300 Hz)
+  const hi=ENV(FILT(x,'hp',450,sr,2),sr),lo=ENV(FILT(x,'lp',300,sr,2),sr);
+  const ref=hi.slice().sort((p,q)=>p-q)[Math.floor(hi.length*.97)];const on=[],off=[];let act=false;
+  for(let i=Math.floor((t0-.02)*1000);i<hi.length;i++){const t=i*.001;if(!act&&hi[i]>.35*ref){act=true;on.push(t)}else if(act&&hi[i]<(clap?.02:.12)*ref){act=false;off.push(t)}}
+  if(act)off.push(hi.length*.001);
+  // written units
+  const W=[];let p=0;a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(rest&&W.length&&W[W.length-1][1])W[W.length-1][0]+=d;else W.push([d,rest]);p+=d}));
+  const won=[];p=0;W.forEach(([d,rest])=>{if(!rest)won.push([p,d]);p+=d});
+  if(on.length!==won.length){out.fails.push(`${tag}: ${on.length} onsets detected, ${won.length} written`);continue}
+  let bad=false;const G=[];
+  on.forEach((t,i)=>{const e=t0+won[i][0]*sq;out.worstOn=Math.max(out.worstOn,Math.abs(t-e));if(Math.abs(t-e)>.02){bad=true}});
+  if(bad){out.fails.push(`${tag}: onsets off the written times`);continue}
+  // rebuild the rhythm from what was heard: onsets on the semiquaver grid; with a tone, held lengths from the note-offs, rests from the gaps
+  const ou=on.map(t=>Math.round((t-t0)/sq));
+  if(!clap){off.forEach((t,i)=>{const e=t0+(won[i][0]+won[i][1])*sq;out.worstOff=Math.max(out.worstOff,Math.abs(t-e));if(Math.abs(t-e)>.02){bad=true;out.fails.push(`${tag}: note ${i+1} ends ${((t-e)*1000).toFixed(0)} ms from its written end`)}});
+   ou.forEach((u,i)=>{const du=Math.round((off[i]-on[i]+.008)/sq);G.push([du,0]);const nx=i+1<ou.length?ou[i+1]:16;if(nx-u-du>0)G.push([nx-u-du,1])})}
+  else ou.forEach((u,i)=>G.push([(i+1<ou.length?ou[i+1]:16)-u,0]));
+  const Wc=clap?won.map(([u],i)=>[(i+1<won.length?won[i+1][0]:16)-u,0]):W;
+  if(JSON.stringify(G)!==JSON.stringify(Wc))out.fails.push(`${tag}: heard ${JSON.stringify(G)}, written ${JSON.stringify(Wc)}`);
+  // woodblock: count-in and pulse all detected
+  const lref=Math.max(...lo),lon=[];let la=false;for(let i=0;i<lo.length;i++){if(!la&&lo[i]>.3*lref){la=true;lon.push(i*.001)}else if(la&&lo[i]<.1*lref)la=false}
+  const pulses=[];for(let i=0;i<4;i++)pulses.push(t0-4*4*sq+i*4*sq);for(let i=0;i<4;i++)pulses.push(t0+i*4*sq);
+  if(lon.length!==pulses.length||lon.some((t,i)=>Math.abs(t-pulses[i])>.015))out.fails.push(`${tag}: woodblock beats detected ${lon.length} of ${pulses.length} (or off time)`)}
+ // masking: each sound rendered alone. At every woodblock beat, the tone's (or clap's) level in the woodblock band over that beat's 50 ms is
+ // compared with the woodblock's; at every note, the woodblock's level in the tone band over the note's first 50 ms with the note's.
+ const one=async(o,cl,a)=>{const save=[elBlock,elRhyNote,elClap];if(cl!=='block')elBlock=()=>{};if(cl!=='tone')elRhyNote=()=>{};if(cl!=='clap')elClap=()=>{};
+  try{const r=await elRender({d:'rhy',bars:1,a,lvl:2},'all',{sr,bpm:o.bpm,pulse:true,clap:o.clap,tail:4});return{x:r.buf.getChannelData(0),t0:r.info.start}}finally{[elBlock,elRhyNote,elClap]=save}};
+ const win=(x,t)=>{const a=Math.round(t*sr),b=a+Math.round(.05*sr);let e=0;for(let i=a;i<b;i++)e+=x[i]*x[i];return Math.sqrt(e/(b-a))+1e-9};
+ out.sep={};if(sepOn)for(const clap of [false,true])for(const bpm of [72,100])for(const a of [['h','h'],['s4','s4','s4','s4'],['e2','e2','e2','e2']]){
+  const src=clap?'clap':'tone',S=await one({bpm,clap},src,a),B=await one({bpm,clap},'block',a),sq=60/bpm/4;
+  const sLo=FILT(S.x,'lp',300,sr,3),bLo=FILT(B.x,'lp',300,sr,3),sHi=FILT(S.x,'hp',450,sr,3),bHi=FILT(B.x,'hp',450,sr,3);
+  let m1=-99,m2=-99;for(let i=0;i<4;i++){const t=S.t0+i*4*sq;m1=Math.max(m1,DB(win(sLo,t))-DB(win(bLo,t)))}
+  let p=0;a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest){const t=S.t0+p*sq;m2=Math.max(m2,DB(win(bHi,t))-DB(win(sHi,t)))}p+=d}));
+  const k1=src+'_in_woodblock_band_dB',k2='woodblock_in_'+src+'_band_dB';out.sep[k1]=Math.max(out.sep[k1]??-99,m1);out.sep[k2]=Math.max(out.sep[k2]??-99,m2)}
+ return out}"""
+LOUD_JS = DSP + r"""async()=>{ac();await loadSamples('piano');await earLoadBlind();const out={};let s=29;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};
+ for(const d of ['metre','rhy','qual','cad','bass','mel','blind']){const v=[];for(const l of [1,2,3])for(let i=0;i<6;i++){const q=earGen(d,l,R);if(!q)continue;const r=await elRender(q,'all',{sr:48000});v.push(LUFS(r.buf.getChannelData(0),48000))}
+  out[d]={mean:v.reduce((a,b)=>a+b)/v.length,min:Math.min(...v),max:Math.max(...v),n:v.length}}
+ const r=await elRender(earGen('mel',1),'tap',{sr:48000,midi:67});out.tap={mean:LUFS(r.buf.getChannelData(0),48000),n:1};return out}"""
+HOLD_JS = DSP + r"""async()=>{ac();await loadSamples('piano');const out=[],sr=44100;
+ for(const m of [24,36,48,60,72,84,92]){const A=new OfflineAudioContext(1,sr*7,sr),sv=[AC,MAST];AC=A;MAST=A.createGain();MAST.connect(A.destination);let osc=0;
+  const O=OscillatorNode.prototype.start;OscillatorNode.prototype.start=function(...a){osc++;return O.apply(this,a)};try{tone(m,.05,'piano',.5,6)}finally{OscillatorNode.prototype.start=O;AC=sv[0];MAST=sv[1]}
+  const x=(await A.startRendering()).getChannelData(0);
+  // the sample used and its loop (as smpTone chooses them)
+  const ks=Object.keys(SBUF.piano).map(Number);let best=ks.reduce((b,n)=>Math.abs(n-m)<Math.abs(b-m)?n:b);const rate=Math.pow(2,(m-best)/12),L=smpLoop(SBUF.piano[best]);
+  const lv=(t,w)=>{const a=Math.round(t*sr),b=a+Math.round(w*sr);let e=0;for(let i=a;i<b;i++)e+=x[i]*x[i];return DB(Math.sqrt(e/(b-a)))};
+  const per=Math.max(.02,1/(440*Math.pow(2,(m-69)/12))*2),tp=.05+L.P/rate,lp=(L.Q-L.P)/rate;let seam=0;
+  for(let t=tp+lp;t<5.9-per;t+=lp)seam=Math.max(seam,Math.abs(lv(t-per,per)-lv(t,per)));
+  out.push({m,osc,drop:lv(tp,.1)-lv(5.5,.1),seam})}
+ return out}"""
+ANAL_JS = r"""async(sp)=>{ac();await loadSamples('piano');const meta=await anLoadMeta();const out=[];
+ for(const k of Object.keys(meta)){const m=meta[k];AN.score=k;AN.speed=sp;__N.length=0;anPlay();const nodes=__N.map(n=>({...n}));stopAll();
+  const ev=m.events.filter(e=>e[0]/sp<=600000);let osc=nodes.filter(n=>n.k==='osc').length;const smp=nodes.filter(n=>n.k==='smp');
+  let bad=[],worst=0;ev.forEach((e,i)=>{const n=smp[i];if(!n){bad.push(`event ${i} not sampled`);return}const w=e[2]/1000/sp,h=n.e-n.s;worst=Math.max(worst,Math.abs(h-w-.075));if(h<w-1e-6||h>w+.15+1e-6)bad.push(`MIDI ${e[1]} at ${e[0]} ms: sounds ${h.toFixed(3)} s, written ${w.toFixed(3)} s`)});
+  out.push({k,sp,n:ev.length,smp:smp.length,osc,lo:Math.min(...ev.map(e=>e[1])),long:ev.filter(e=>e[2]/1000/sp>2.6).length,bad:bad.slice(0,4),nbad:bad.length})}
+ return out}"""
+
+
+async def render_tests(p, fails, counts):
+    b = await cjg.launch(p)
+    errs = []
+    pages = []
+
+    async def fresh():
+        # a fresh page per section: thousands of offline contexts in one page can exhaust the renderer
+        if pages:
+            await pages.pop().close()
+        pg = await b.new_page()
+        pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
+        await pg.add_init_script("""(()=>{window.__N=[];for(const P of [AudioScheduledSourceNode.prototype,AudioBufferSourceNode.prototype]){const st=P.start,sp=P.stop;
+          P.start=function(t=0,...a){if(!(this.context instanceof OfflineAudioContext)){this.__r={s:t||0,e:Infinity,k:this instanceof AudioBufferSourceNode?'smp':'osc'};__N.push(this.__r)}return st.call(this,t,...a)};
+          P.stop=function(t=0){if(this.__r)this.__r.e=Math.min(this.__r.e,t);return sp.call(this,t)}}})()""")
+        await pg.route('**/*', cjg.make_route(REPO))
+        await pg.goto('http://app/index.html#ear')
+        await pg.wait_for_timeout(1200)
+        pages.append(pg)
+        return pg
+    pg = await fresh()
+    # EL-3
+    rows = await pg.evaluate(METRE_JS)
+    steps = {}
+    for r in rows:
+        tag = f"metre {r['m']} at {r['bpm']} bpm"
+        counts['metre renders'] = counts.get('metre renders', 0) + 1
+        if not (.595 <= r['first'] <= .62) or abs(r['lead'] - .6) > 1e-6:
+            fails.append(f"{tag}: first sound at {r['first']:.3f} s (lead-in should be 0.6 s of silence)")
+        if r['span'] < 10 - 1e-6 or abs(r['bars'] - round(r['bars'])) > 1e-6:
+            fails.append(f"{tag}: sounds {r['span']:.2f} s = {r['bars']:.2f} bars (whole bars, at least 10 s)")
+        if r['lastA'] != 2:
+            fails.append(f'{tag}: the last event is not a downbeat')
+        if r['beats'] != r['nbeats']:
+            fails.append(f"{tag}: the beats hook reports {r['beats']} beats, {r['nbeats']} were played")
+        cls = {}
+        for e in r['lv']:
+            cls.setdefault(e['a'], []).append(e['db'])
+        order = [a for a in (2, 1, 0, -1) if a in cls]
+        for hi, lo in zip(order, order[1:]):
+            mh, ml = sum(cls[hi]) / len(cls[hi]), sum(cls[lo]) / len(cls[lo])
+            k = f'{hi}>{lo}'
+            steps[k] = min(steps.get(k, 99), round(mh - ml, 1))
+            if mh - ml < 4 or min(cls[hi]) <= max(cls[lo]):
+                fails.append(f'{tag}: accent step {k} is {mh-ml:.1f} dB (min {min(cls[hi]):.1f} vs max {max(cls[lo]):.1f})')
+    counts['metre smallest accent step (dB)'] = steps
+    # EL-4
+    for lvl in (1, 2, 3):
+        r = {'n': 0, 'fails': [], 'worstOn': 0, 'worstOff': 0, 'sep': {}, 'total': None}
+        k = 0
+        while r['total'] is None or k < r['total']:
+            pg = await fresh()
+            x = await pg.evaluate(RHY_JS, [lvl, k, k + 250, lvl == 3 and k == 0])
+            r['total'] = x['total']; r['n'] += x['n']; r['fails'] += x['fails']; r['sep'].update(x['sep'])
+            r['worstOn'] = max(r['worstOn'], x['worstOn']); r['worstOff'] = max(r['worstOff'], x['worstOff'])
+            k += 250
+        counts[f'rhythm rung {lvl}: one-bar answers'] = r['total']
+        counts[f'rhythm rung {lvl}: renders (72 and 100 bpm, pulse on)'] = r['n']
+        counts[f'rhythm rung {lvl}: worst onset / note-off error (ms)'] = [round(r['worstOn'] * 1000, 1), round(r['worstOff'] * 1000, 1)]
+        fails.extend(r['fails'][:10])
+        if len(r['fails']) > 10:
+            fails.append(f"rhythm rung {lvl}: {len(r['fails'])-10} more")
+        sep = {k: round(v, 1) for k, v in r['sep'].items()}
+        if sep:
+            counts['rhythm masking: worst level of the other sound, per event (dB)'] = sep
+        for k, v in sep.items():
+            if v > -20:
+                fails.append(f'rhythm: {k} is {v} dB (must be 20 dB down)')
+    # EL-12
+    pg = await fresh()
+    L = await pg.evaluate(LOUD_JS)
+    counts['loudness per drill (LUFS: mean, min, max)'] = {k: [round(v['mean'], 1)] + ([round(v['min'], 1), round(v['max'], 1)] if 'min' in v else []) for k, v in L.items()}
+    for k, v in L.items():
+        if abs(v['mean'] + 26) > 2:
+            fails.append(f"loudness: {k} averages {v['mean']:.1f} LUFS (target -26 ± 2)")
+    # R13
+    H = await pg.evaluate(HOLD_JS)
+    counts['held 6 s notes (dB down at 5.5 s from the loop start, largest level step across a loop seam)'] = {r['m']: [round(r['drop'], 1), round(r['seam'], 1)] for r in H}
+    for r in H:
+        if r['osc']:
+            fails.append(f"held note MIDI {r['m']}: synth fallback")
+        if r['drop'] > 12:
+            fails.append(f"held note MIDI {r['m']}: {r['drop']:.1f} dB down at 5.5 s from where the hold begins")
+        if r['seam'] > 3:
+            fails.append(f"held note MIDI {r['m']}: a {r['seam']:.1f} dB level step at a loop seam")
+    nn = 0
+    for sp in (.75, 1, 1.25):
+        pg = await fresh()
+        A = await pg.evaluate(ANAL_JS, sp)
+        for r in A:
+            nn += r['n']
+            if r['osc']:
+                fails.append(f"Analysis {r['k']} at {sp}: {r['osc']} synth oscillators (lowest note MIDI {r['lo']})")
+            if r['smp'] != r['n'] or r['nbad']:
+                fails.append(f"Analysis {r['k']} at {sp}: {r['nbad']} notes not held to their written length, e.g. {r['bad'][:2]}")
+            if sp == .75:
+                counts[f"Analysis {r['k']}: notes over 2.6 s at 0.75"] = r['long']
+    counts['Analysis notes timed (3 speeds)'] = nn
+    if errs:
+        fails.append(f'render page errors: {errs[:3]}')
+    await b.close()
 
 
 async def main():
@@ -78,7 +281,8 @@ async def main():
         if errs or errs2:
             fails.append(f'page errors: {(errs + errs2)[:3]}')
         await b.close()
-    print(json.dumps({'samples': counts, 'failures': fails[:25], 'n_failures': len(fails)}, indent=1))
+        await render_tests(p, fails, counts)
+    print(json.dumps({'samples': counts, 'failures': fails[:40], 'n_failures': len(fails)}, indent=1))
     sys.exit(1 if fails else 0)
 
 asyncio.run(main())

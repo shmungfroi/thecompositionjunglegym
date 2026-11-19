@@ -371,9 +371,10 @@ async def main():
             const key={k,mode:'maj'},rns=t.split(' '),P=earCadProg(1,rns,key,{b,s,fb,ls});
             o.push({a:c,rns,k,md:'maj',reg:{b,s,fb,ls},ch:P.ch,app:P.ch?withKey(key,()=>checkSATB(P.ch,P.L)).filter(e=>e.sev==='error').map(e=>e.rule):['no realisation']})}return o}""")
         COUNT['EL-7 rung 1 model x key x register realisations'] = len(k1r)
-        # the key chord plays before the two chords (audio is another item's; this only reads the order of the notes)
-        cue = await pg.evaluate("""(mk)=>{const R=eval(mk)(37);const T=[];const o=window.c2Tone;window.c2Tone=(m,t)=>T.push([m,t]);EAR.drill='cad';EAR.lvl.cad=1;
-            const res=[];for(let i=0;i<40;i++){EAR.q=earGen('cad',1,R);T.length=0;earPlay();stopAll();const times=[...new Set(T.map(x=>x[1].toFixed(3)))];res.push(times.length)}window.c2Tone=o;return res}""", RNG)
+        # the key chord plays before the two chords. Playback goes through the Ear Lab transport (elPlay, merge 0.48), which sounds
+        # chords on the sampled piano via tone(); this reads the order of the notes it schedules
+        cue = await pg.evaluate("""async(mk)=>{const R=eval(mk)(37);await elPreload('cad');const T=[];const o=window.tone;window.tone=(m,t)=>{T.push([m,t])};EAR.drill='cad';EAR.lvl.cad=1;
+            const res=[];try{for(let i=0;i<40;i++){EAR.q=earGen('cad',1,R);T.length=0;const inf=elPlay(EAR.q,'all');stopAll();const times=[...new Set(T.map(x=>x[1].toFixed(3)))];res.push(inf&&inf.state==='playing'?times.length:-1)}}finally{window.tone=o}return res}""", RNG)
         if any(n != 3 for n in cue):
             fail('K', f'rung 1 playback is not key chord + two chords: onsets {collections.Counter(cue)}')
         sec_K(k1, k1r)
@@ -453,9 +454,10 @@ async def main():
             fail('M', f'browser dialogs opened: {dialogs}')
 
         # ---------------- U: EL-11 rungs, Stage switch, show all, rung change, page errors at Stages 4, 5, 6 ----------------
-        WANT = {4: {'metre': [1, 2, 3], 'rhy': [1, 2], 'qual': [1], 'mel': [1]},
-                5: {'rhy': [1, 2, 3], 'qual': [1, 2], 'cad': [1, 2], 'bass': [1, 2], 'mel': [1, 2], 'blind': [1, 2]},
-                6: {'qual': [1, 2, 3], 'cad': [1, 2, 3], 'bass': [1, 2, 3], 'mel': [1, 2, 3], 'blind': [1, 2, 3]}}
+        # merge 0.48: one Stage table, EARSTAGE (Fable's design spec, section 3): a drill or rung shows when its Stage <= the selected Stage
+        WANT = {4: {'metre': [1, 2], 'rhy': [1, 2], 'qual': [1], 'mel': [1]},
+                5: {'metre': [1, 2, 3], 'rhy': [1, 2, 3], 'qual': [1, 2], 'cad': [1, 2], 'bass': [1, 2], 'mel': [1, 2], 'blind': [1, 2]},
+                6: {d: [1, 2, 3] for d in ('metre', 'rhy', 'qual', 'cad', 'bass', 'mel', 'blind')}}
         await pg.evaluate("()=>{EAR.all=false;EAR.q=null;EAR.done=false}")
         for g in (4, 5, 6):
             await pg.click(f'#lvl button[data-l="{g}"]')
@@ -481,7 +483,15 @@ async def main():
                     fail('U', f'Stage {g}: drills offered {r["tabs"]}, expected {sorted(WANT[g])}')
                 if 'Level ' in r['txt'] or any(not t.startswith(' · Stage ') for t in r['tagtxt']) or ' S4' in r['txt'] or ' S5' in r['txt']:
                     fail('U', f'Stage {g} {d}: level wording or a short Stage tag in the UI ({r["tagtxt"]})')
-            # show all: every drill and every rung
+            # show all: every drill and every rung (at Stage 6 nothing is hidden, so the chip is not offered)
+            if g == 6:
+                n6 = await pg.evaluate("()=>document.querySelectorAll('#earMain [data-earall]').length")
+                if n6:
+                    fail('U', 'Stage 6: a Show all chip is offered with nothing hidden')
+                COUNT['EL-11 Stages checked'] += 1
+                if len(errs) > n0:
+                    fail('U', f'Stage {g}: page errors {errs[n0:][:3]}')
+                continue
             al = await pg.evaluate("""()=>{document.querySelector('#earMain [data-earall]').click();const tabs=[...document.querySelectorAll('#earMain [data-eardr]')].map(b=>b.dataset.eardr);
                 const t=document.querySelector('#earMain [data-eardr="qual"]');t.click();const r=[...document.querySelectorAll('#earMain [data-earlv]')].map(b=>+b.dataset.earlv);
                 document.querySelector('#earMain [data-earall]').click();return{tabs,r,off:[...document.querySelectorAll('#earMain [data-eardr]')].length}}""")
