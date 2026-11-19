@@ -87,9 +87,27 @@ def note_table(tk):
     return out
 
 
+# satb2gs puts soprano and alto on the upper staff (layers 1, 2) and tenor and bass on the lower (layers 1, 2); the
+# canonical ids name the Humdrum field: F1 bass, F2 tenor, F3 alto, F4 soprano
+GS_FIELD = {('1', '1'): '4', ('1', '2'): '3', ('2', '1'): '2', ('2', '2'): '1'}
+
+
+def gs_voices(tk):
+    """grand-staff note id -> canonical field number, from the staff and layer the note sits in"""
+    out = {}
+    for st in re.finditer(r'<staff [^>]*n="(\d)"[^>]*>(.*?)</staff>', tk.getMEI(), re.S):
+        for ly in re.finditer(r'<layer [^>]*n="(\d)"[^>]*>(.*?)</layer>', st.group(2), re.S):
+            for nid in re.findall(r'<note [^>]*xml:id="([^"]+)"', ly.group(2)):
+                out[nid] = GS_FIELD.get((st.group(1), ly.group(1)))
+    return out
+
+
 def id_map(canon_tk, gs_tk, canon_svg, gs_svg):
-    """map grand-staff ids -> canonical ids (notes by onset/pitch/duration, bars by order)."""
+    """map grand-staff ids -> canonical ids (notes by onset/pitch/duration, bars by order).
+    Where two voices sound the same note together (a tenor-bass unison), onset, pitch and duration cannot tell them
+    apart: the voice decides (0.48 fix R17: six unisons had the tenor's id on the bass note and the reverse)."""
     a, b = note_table(canon_tk), note_table(gs_tk)
+    voice = gs_voices(gs_tk)
     pool = collections.defaultdict(list)
     for i, k in sorted(a.items()):
         pool[k].append(i)
@@ -97,7 +115,12 @@ def id_map(canon_tk, gs_tk, canon_svg, gs_svg):
     for i, k in sorted(b.items()):
         if not pool.get(k):
             raise SystemExit(f'no canonical note for {i} {k}')
-        m[i] = pool[k].pop(0)
+        same = [c for c in pool[k] if re.search(r'F(\d)', c).group(1) == voice.get(i)]
+        if len(pool[k]) > 1 and not same:
+            raise SystemExit(f'{i} {k}: no canonical note in voice {voice.get(i)} among {pool[k]}')
+        pick = same[0] if same else pool[k][0]
+        pool[k].remove(pick)
+        m[i] = pick
     if any(pool.values()):
         raise SystemExit('canonical notes left unmatched: ' + str([v for v in pool.values() if v][:5]))
     ma = re.findall(r'data-id="(measure-[^"]+)"', canon_svg)

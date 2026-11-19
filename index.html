@@ -1481,19 +1481,19 @@ function render(){
 const MAJ=[0,2,4,5,7,9,11],MIN=[0,2,3,5,7,8,10];
 const MAJN=['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'],MINN=['C','C♯','D','E♭','E','F','F♯','G','G♯','A','B♭','B'];
 const ROM=['I','II','III','IV','V','VI','VII'];
-const FN={T:'var(--green)',PD:'var(--gold)',D:'var(--red)',S:'#7fb3c8'};
+const FN={T:'var(--green)',PD:'var(--gold)',D:'var(--red)',S:'#7fb3c8',W:'#7fb3c8'};
 function homes(c){const pcs=c.tones.map(t=>mod(t.midi,12)),out=[];
  for(let k=0;k<12;k++){
   [['maj',MAJ],['min',MIN]].forEach(([mode,sc])=>{let deg=sc.indexOf(mod(c.rpc-k,12));if(deg<0&&mode==='min'&&mod(c.rpc-k,12)===11)deg=6;if(deg<0)return;
    if(mode==='min'&&deg===6&&mod(c.rpc-k,12)===10&&pcs.includes(mod(k+11,12)))return;
    let set=sc.map(x=>mod(x+k,12));if(mode==='min'&&(deg===4||deg===6))set=set.concat(mod(k+11,12));
    if(!pcs.every(p=>set.includes(p)))return;
-   const f=mode==='maj'?[ 'T','PD','T','PD','D','T','D'][deg]:(deg===6&&mod(c.rpc-k,12)===10?'S':['T','PD','T','PD','D','T','D'][deg]);
+   const f=mode==='maj'?[ 'T','PD','T','PD','D','T','D'][deg]:(deg===6&&mod(c.rpc-k,12)===10?'S':deg===4&&!pcs.includes(mod(k+11,12))?'W':['T','PD','T','PD','D','T','D'][deg]);
    out.push({k,mode,deg,f,name:(mode==='maj'?MAJN[k]+' major':MINN[k]+' minor'),num:numeral(c,deg)})})}
  return out}
 function numeral(c,deg){if(/\+6$/.test(c.q.k))return c.q.k.replace('+6','')+'⁺⁶';const q=c.q.k,lower=/^(m|dim|m7|m6|m9|m7b5|dim7|madd9)$/.test(q);let r=ROM[deg];if(lower)r=r.toLowerCase();
  const suf={'5':'5','':'','m':'','7':'7','sus2':'sus2','sus4':'sus4','dim':'°','aug':'+','maj7':'maj7','m7':'7','6':'6','add9':'add9','madd9':'add9','m6':'6','m7b5':'ø7','dim7':'°7','9':'9','maj9':'maj9','m9':'9','7sus4':'7sus4'}[q];return r+suf}
-const FTXT={T:'a tonic-function chord: it feels like home, or a close relative of home, and can open or close a phrase',PD:'a predominant-function chord: it moves the music away from home and sets up the dominant',D:'a dominant-function chord: it builds tension that wants to resolve to the tonic',S:'the subtonic: built on the unraised 7th, it has no leading note, so it does not pull to the tonic. It often leads to III (acting as the dominant of the relative major) or gives a modal, rock sound (♭VII)'};
+const FTXT={T:'a tonic-function chord: it feels like home, or a close relative of home, and can open or close a phrase',PD:'a predominant-function chord: it moves the music away from home and sets up the dominant',D:'a dominant-function chord: it builds tension that wants to resolve to the tonic',W:'the minor v: built on the 5th of the natural minor, it has no leading note, so it has only a weak pull to the tonic (the major V, with the raised 7th, is the true dominant)',S:'the subtonic: built on the unraised 7th, it has no leading note, so it does not pull to the tonic. It often leads to III (acting as the dominant of the relative major) or gives a modal, rock sound (♭VII)'};
 function renderKeys(c){const h=homes(c);
  if(!h.length){$('keys').innerHTML='<span class="empty">This chord is not built from a single major or minor scale. It is a colour chord, borrowed or chromatic: the Guide will show where composers use it.</span>';$('ctx').textContent='';S.key=null;return}
  if(!S.key||!h.find(x=>x.k===S.key.k&&x.mode===S.key.mode))S.key=h[0];
@@ -1808,7 +1808,7 @@ const GROOVES={pulse:['Pulse','every beat, bass on the strong beats'],block:['Bl
 function gBar(){return METR[G.metre].g.length}
 function gQ(){return(METR[G.metre].c?20:30)/G.tempo}
 const RN=['I','II','III','IV','V','VI','VII'];
-const FNAME={T:'home · tonic',PD:'away · predominant',D:'pull · dominant',C:'colour',S:'modal · subtonic'};
+const FNAME={T:'home · tonic',PD:'away · predominant',D:'pull · dominant',C:'colour',S:'modal · subtonic',W:'minor v · weak pull (no leading note)'};
 FN.C='var(--violet)';
 function keyName(k){return pretty(KEYN[k.mode][k.k])+(k.mode==='maj'?' major':' minor')}
 function tonicLetter(k){return LET.indexOf(KEYN[k.mode][k.k][0])}
@@ -1844,11 +1844,12 @@ function analyse(ch,k){
  let acc=mod(c.rpc-(k.k+sc[d])+6,12)-6;
  if(k.mode==='min'&&d===6&&acc===1)acc=0;
  const dia=acc===0&&pcs.every(p=>set.includes(p));
- if(dia)return{num:numeral(c,d),f:k.mode==='min'&&d===6&&mod(c.rpc-k.k,12)===10?'S':['T','PD','T','PD','D','T','D'][d],d,dia:true};
+ const LT=mod(k.k+11,12);
+ if(dia)return{num:numeral(c,d),f:k.mode==='min'&&d===6&&mod(c.rpc-k.k,12)===10?'S':k.mode==='min'&&d===4&&!pcs.includes(LT)?'W':['T','PD','T','PD','D','T','D'][d],d,dia:true};
  // borrowed from the parallel major or minor
  const par=(k.mode==='maj'?MIN:MAJ).map(x=>mod(x+k.k,12));if(k.mode==='maj')par.push(mod(k.k+11,12));
  if(pcs.every(p=>par.includes(p))){const pd=(k.mode==='maj'?MIN:MAJ)[d],pacc=mod(c.rpc-(k.k+pd)+6,12)-6;
-  if(pacc===0||(k.mode==='maj'&&d===6&&pacc===1))return{num:(acc<0?'♭':acc>0?'♯':'')+numeral(c,d),f:'C',d,dia:false,borrowed:true}}
+  if(pacc===0||(k.mode==='maj'&&d===6&&pacc===1))return{num:(acc<0?'♭':acc>0?'♯':'')+numeral(c,d),f:k.mode==='maj'&&d===6&&acc===0&&pcs.includes(LT)&&/^dim/.test(c.q.k)?'D':'C',d,dia:false,borrowed:true}}
  // secondary dominant: a major or dominant chord a 5th above a diatonic chord
  if(['','7','9'].includes(c.q.k)){const t=mod(d+3,7),tr=mod(k.k+sc[t],12);
   if(t!==0&&mod(c.rpc-tr,12)===7){const th=mod(sc[(t+2)%7]-sc[t],12),fi=mod(sc[(t+4)%7]-sc[t],12);
@@ -2320,7 +2321,7 @@ const RANGE={S:[60,79],A:[55,74],T:[48,67],B:[40,60]};
 function chordInfo(ch,k){const c=chordOf(ch.root,ch.q,ch.inv||0),a=analyse(ch,k),pcs=c.tones.map(t=>mod(t.midi,12));
  const deg={};c.tones.forEach(t=>deg[mod(t.midi,12)]=t.d);
  // dominant function needs the leading note: V and vii° (and their 7ths), not the minor v or the subtonic VII of a minor key
- const LT=mod(k.k+11,12),dom=a.dia&&(a.d===4||a.d===6)&&pcs.includes(LT);
+ const LT=mod(k.k+11,12),dom=(a.dia||a.f==='D')&&(a.d===4||a.d===6)&&pcs.includes(LT);
  const aug6=/\+6$/.test(c.q.k);
  return{c,a,pcs,deg,bassPc:mod(c.bass.midi,12),rootPc:c.rpc,LT,dom,aug6,
   third:c.tones.find(t=>/3|^2$|^4$/.test(t.d)),seventh:c.tones.find(t=>/7/.test(t.d)),fifth:aug6?null:c.tones.find(t=>/^5$/.test(t.d))}}
@@ -2544,7 +2545,7 @@ function scaleChords(t,sk,sev){const sc=SCALES.find(s=>s.k===sk);if(sc.d.length!
   if(!minorish){const dd=sc.d[i].replace(/\d/g,'');num=dd.replace(/b/g,'♭').replace(/#/g,'♯')+num}
   num+=({dim:'°',aug:'+',m7b5:'ø7',dim7:'°7',maj7:'maj7','7':'7',m7:'7',mMaj7:'(maj7)',augMaj7:'+maj7'})[q]||'';
   const has=c=>(sc.ch||[]).some(d=>[0,2,4,sev?6:-1].some(j=>j>=0&&sc.d[(i+j)%7]===d));
-  let f=null;if(sk==='maj'||sk==='ion')f=['T','PD','T','PD','D','T','D'][i];if(minorish)f=['T','PD','T','PD','D','T','D'][i];
+  let f=null;if(sk==='maj'||sk==='ion')f=['T','PD','T','PD','D','T','D'][i];if(minorish){f=['T','PD','T','PD','D','T','D'][i];if(i===4&&/^m(?!aj)/.test(q))f='W';else if(i===6&&/^(|7|maj7)$/.test(q))f='S'}
   const sym=r.name+({'':'',m:'m',dim:'dim',aug:'aug',maj7:'maj7','7':'7',m7:'m7',m7b5:'m7♭5',dim7:'dim7',mMaj7:'m(maj7)',augMaj7:'aug(maj7)'})[q];
   return{root:r.name,q,num,f,sym,ch:has(),inQ:!!Q.find(x=>x.k===q)}})}
 /* piano strip */
@@ -5766,14 +5767,17 @@ function anDecorate(){const k=AN.score,m=AN.meta&&AN.meta[k],box=$('anScore');if
  svg.querySelectorAll('g.system').forEach(s=>{const B=SB.get(s);rowY.set(s,Math.max(B.bot,B.low+P(14))+P(4))});
  if(harmOn){let prevT=null;const ends=new Map();
   m.labels.forEach(l=>{if(l.t===prevT)return;prevT=l.t;const g=svg.querySelector(`[data-id="${l.id}"]`);if(!g)return;const s=g.closest('g.system'),hb=(g.querySelector('.notehead')||g).getBBox(),cx=hb.x+hb.width/2,y0=rowY.get(s)+P(12);
-   const x=/^(.*?)(\d{1,2})$/.exec(l.t),num=x?x[1]:l.t,fig=x?x[2]:'';const t=mk('text',{x:cx,y:y0,'font-size':P(12.5),'font-weight':400,fill:'#ece2c8'},s,'anharm');t.textContent=num;
-   const wn=t.getComputedTextLength();let wf=0;const ts=[];
+   /* R8: figures stack before an applied chord's target (V⁶₅/V); the numeral takes its function colour (T, PD, D, C; W minor v, S subtonic) */
+   const x=/^(.*?)(\d{1,2})(\/.+)?$/.exec(l.t),num=x?x[1]:l.t,fig=x?x[2]:'',tail=x&&x[3]||'';const t=mk('text',{x:cx,y:y0,'font-size':P(12.5),'font-weight':400,fill:'#ece2c8'},s,'anharm');t.textContent=num;
+   if(l.f&&FN[l.f])t.style.fill=FN[l.f];
+   const wn=t.getComputedTextLength();let wf=0,wt=0,tt=null;const ts=[];
    if(fig){const f=fig.length===2?[fig[0],fig[1]]:[fig];f.forEach((d,i)=>{const sp=document.createElementNS(NS,'tspan');sp.setAttribute('font-size',P(9));sp.textContent=d;t.appendChild(sp);ts.push(sp)});wf=Math.max(...ts.map(sp=>sp.getComputedTextLength()))+P(1)}
-   (ends.get(s)||ends.set(s,[]).get(s)).push({t,ts,wn,w:wn+wf,x0:cx-(wn+wf)/2,y0})});
+   if(tail){tt=document.createElementNS(NS,'tspan');tt.textContent=tail;t.appendChild(tt);wt=tt.getComputedTextLength()}
+   (ends.get(s)||ends.set(s,[]).get(s)).push({t,ts,tt,wn,wf,w:wn+wf+wt,x0:cx-(wn+wf+wt)/2,y0})});
   /* numerals sit centred under their chord; where two would touch, they are spread just enough (forward, then back from the right edge) */
   ends.forEach((L,s)=>{const gap=P(4);for(let i=0;i<L.length;i++){if(i)L[i].x0=Math.max(L[i].x0,L[i-1].x0+L[i-1].w+gap);L[i].x0=Math.max(L[i].x0,xmin)}
    for(let i=L.length-1;i>=0;i--){const lim=i<L.length-1?L[i+1].x0-gap:xmax;if(L[i].x0+L[i].w>lim)L[i].x0=lim-L[i].w}
-   L.forEach(q=>{const{t,ts,wn,x0,y0}=q;t.setAttribute('x',x0);ts.forEach((sp,i)=>{sp.setAttribute('x',x0+wn+P(1));sp.setAttribute('y',ts.length===2?(i?y0+P(4.5):y0-P(5.5)):y0-P(4.5))});
+   L.forEach(q=>{const{t,ts,tt,wn,wf,x0,y0}=q;t.setAttribute('x',x0);ts.forEach((sp,i)=>{sp.setAttribute('x',x0+wn+P(1));sp.setAttribute('y',ts.length===2?(i?y0+P(4.5):y0-P(5.5)):y0-P(4.5))});if(tt){tt.setAttribute('x',x0+wn+wf);tt.setAttribute('y',y0)}
     harmBox.push({s,x0,x1:x0+q.w,y1:y0+P(ts.length===2?7:3)})})})}
  /* A9: short NSW cadence tag at the cadence chord, below the harmony row, with a hairline leader */
  if(AN.layers.cad&&m.cads.length)m.cads.forEach(c=>{const tag=anCadTag(c.t);if(!tag)return;const g=svg.querySelector(`[data-id="${c.id}"]`);if(!g)return;const s=g.closest('g.system'),hb=(g.querySelector('.notehead')||g).getBBox(),cx=hb.x+hb.width/2;
@@ -5845,6 +5849,7 @@ function renderAnalysis(){const el=$('anMain');if(!el)return;const t=AN.tab;
   anShowScore().catch(()=>{$('anScore').innerHTML='<div class="empty">The score files could not be loaded. They load from the published app; open it online to see them.</div>'});
   $('anInfo').innerHTML=`${m.sections.length?`<table class="cadtab"><tr><th>Section</th><th>Bars</th><th>Key and notes</th></tr>${m.sections.map(s=>`<tr><td><b style="color:${ANLINE[s[3]]}">${s[0]}</b></td><td>${s[1]}–${s[2]}</td><td>${s[4]}</td></tr>`).join('')}</table>`:''}
    ${m.cads.length?`<table class="cadtab"><tr><th>Phrase</th><th>Last chords</th><th>Cadence</th></tr>${m.cads.map((c,i)=>`<tr><td>${c.bar?'ends bar '+c.bar:(i+1)+' (fermata)'}</td><td>${c.ch}</td><td>${c.t}</td></tr>`).join('')}</table><p class="note">${m.cads[0].bar?`Cadences at bars ${m.cads.map(c=>c.bar).join(', ')}.`:'Each fermata marks the end of a line of the hymn.'} The cadence labels are computed by the app from the notes${m.labels.length?'; the "chord on every beat" layer is computed too and can be confused by passing notes':''}: check them against your own ears and eyes.</p>`:''}
+   ${m.labels.length?`<p class="note anfn">Numeral colours: <b style="color:${FN.T}">tonic</b> · <b style="color:${FN.PD}">predominant</b> · <b style="color:${FN.D}">dominant</b> (V and vii°, with the leading note) · <b style="color:${FN.C}">colour</b> (applied and chromatic chords, such as V/V) · <b style="color:${FN.W}">no leading note</b> (the minor v and the subtonic VII of a minor key). (7) marks a passing 7th; (4–3) a suspension.</p>`:''}
    <p class="note" style="margin-top:10px">${m.src}</p>`}).catch(()=>{$('anScore').innerHTML='<div class="empty">The score files could not be loaded. They load from the published app; open it online to see them.</div>'})}
 document.addEventListener('click',e=>{if(ROOM!=='analysis')return;const t=e.target.closest('[data-antab],[data-ansc],[data-anplay],[data-anrep],[data-anmadd],[data-anmx],[data-anmsave],[data-anjump]');if(!t)return;const d=t.dataset;
  if(d.anjump!==undefined){anJump(+d.anjump);return}
