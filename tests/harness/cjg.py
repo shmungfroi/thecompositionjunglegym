@@ -34,7 +34,9 @@ def make_route(repo):
         if '/__f/' in u:
             return await r.fulfill(path=str(NM / '@fontsource' / u.split('/__f/')[1]), content_type='font/woff2')
         if 'vexflow' in u:
-            return await r.fulfill(path=str(NM / 'vexflow/build/cjs/vexflow.js'), content_type='application/javascript')
+            # serve the build the page asks for (index.html loads the Bravura-only build, vexflow-bravura.js)
+            f = u.split('?')[0].rsplit('/', 1)[-1]
+            return await r.fulfill(path=str(NM / 'vexflow/build/cjs' / (f if f.startswith('vexflow') and f.endswith('.js') else 'vexflow.js')), content_type='application/javascript')
         if 'fonts.googleapis' in u:
             return await r.fulfill(body=FONTS_CSS, content_type='text/css')
         if u.startswith('http://app/'):

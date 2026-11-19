@@ -60,7 +60,9 @@ Each score in `scores/` is an SVG engraved from a Humdrum encoding, with timing,
 | Outfit and Poiret One (fonts) | Google Fonts | SIL Open Font Licence 1.1 |
 | Verovio (engraving tool) | https://www.verovio.org | LGPL |
 
-The VexFlow 4.2.3 build also bundles the Petaluma, Gonville and Leland music fonts. The app does not select them; their individual licences were not checked here and are not relied on.
+The app loads the Bravura-only build of VexFlow 4.2.3 (`vexflow-bravura.js`), so the Petaluma, Gonville and Leland music fonts that the full build bundles (their individual licences were not checked) are not shipped or used.
+
+Each engraved score in `scores/*.svg` carries its own credit (source edition, encoding and licence) in its `<desc>` and `<metadata>` elements.
 
 ## Where credits appear
 
