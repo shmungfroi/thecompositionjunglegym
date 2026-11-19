@@ -1,4 +1,4 @@
-tests/harness/node_modules/
+tests/harness/node_modules
 tests/harness/package-lock.json
 __pycache__/
 tests/last_run.json
