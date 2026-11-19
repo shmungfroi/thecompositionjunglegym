@@ -96,7 +96,8 @@ def unpretty(s):
 
 
 def dlab(d):
-    return d.replace('b', '♭').replace('#', '♯')
+    # 0.48 (R6 H3, approved): doubly altered degrees are shown with the single glyphs 𝄫 and 𝄪
+    return d.replace('bb', '𝄫').replace('##', '𝄪').replace('b', '♭').replace('#', '♯')
 
 
 def expected_chord(root, qk):
