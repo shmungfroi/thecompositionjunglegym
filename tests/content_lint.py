@@ -37,6 +37,10 @@ for name, text in (('index.html', INDEX), ('scores/meta.json', META)):
         ok = False
         if m.group(0).lower().startswith('half') and before.endswith('Phrygian '):
             ok = True                                   # "Phrygian half cadence" is a proper name
+        # 0.48 R6: the one-line note that goes wherever "imperfect authentic" appears (the term list itself is in code: us:'...')
+        elif re.search(r"US 'imperfect $", before) or re.search(r"the Australian imperfect cadence is the US $", before) or \
+                re.search(r"= US (Phrygian )?$", before):
+            ok = True
         # the US-term field of a cadence record: rendered as "<term> (US)"
         elif re.search(r"\bus:'[^']*$", before):
             ok = True
