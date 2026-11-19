@@ -71,7 +71,7 @@ SKIP = "[data-clback],[data-earreset],[data-export],[data-import],[download],[da
 
 # page side: install the checker, run it after every click; violations are collected in window.__TV
 CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:0,headings:0,scopes:0,svg:0};
- const US=/\b(authentic|half[- ]cadence|deceptive|(?:quarter|eighth|sixteenth|half|whole) notes?|whole steps?|half steps?|staffs?|measures?)\b/i;
+ const US=/\b(authentic|half[- ]cadence|deceptive|(?:quarter|eighth|sixteenth|half|whole) notes?|quarters|eighths|sixteenths|whole steps?|half steps?|staffs?|measures?)\b/i;
  const add=(k,m)=>{const key=k+'|'+m;if(!window.__TV.has(key)&&window.__TV.size<200)window.__TV.set(key,1)};
  const strip=t=>t.replace(/\(US: [^)]*\)/g,' ').replace(/US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence\./g,' ')
    .replace(/ = US [A-Za-z ]*cadence/g,' ').replace(/measure every interval/g,' ').replace(/\s+/g,' ');
