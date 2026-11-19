@@ -17,6 +17,9 @@ Run: python3 tests/sound_test.py <repo dir>
    beat the tone's (or clap's) level in the woodblock band is at least 20 dB below the woodblock's, and at every note the woodblock's
    level in the tone band is at least 20 dB below the note's.
 6. EL-12 loudness: K-weighted, gated loudness (ITU-R BS.1770) of every drill, 6 items per rung; each drill's mean within 2 dB of -26 LUFS.
+7. R13: every note of every Analysis score at 0.75, 1 and 1.25 speed is played by a piano sample (no synth fallback; the scores go down
+   to MIDI 24) and lasts its written length + 0 to 150 ms. Long notes are held: a 6 s note at MIDI 24, 36, 48, 60, 72, 84 and 92 (the scores' range) is at most 12 dB
+   quieter at 5.5 s than where the hold begins, and the level steps by no more than 3 dB across any loop seam.
 """
 import sys, asyncio, json, pathlib, math
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
@@ -108,6 +111,25 @@ LOUD_JS = DSP + r"""async()=>{ac();await loadSamples('piano');await earLoadBlind
  for(const d of ['metre','rhy','qual','cad','bass','mel','blind']){const v=[];for(const l of [1,2,3])for(let i=0;i<6;i++){const q=earGen(d,l,R);if(!q)continue;const r=await elRender(q,'all',{sr:48000});v.push(LUFS(r.buf.getChannelData(0),48000))}
   out[d]={mean:v.reduce((a,b)=>a+b)/v.length,min:Math.min(...v),max:Math.max(...v),n:v.length}}
  const r=await elRender(earGen('mel',1),'tap',{sr:48000,midi:67});out.tap={mean:LUFS(r.buf.getChannelData(0),48000),n:1};return out}"""
+HOLD_JS = DSP + r"""async()=>{ac();await loadSamples('piano');const out=[],sr=44100;
+ for(const m of [24,36,48,60,72,84,92]){const A=new OfflineAudioContext(1,sr*7,sr),sv=[AC,MAST];AC=A;MAST=A.createGain();MAST.connect(A.destination);let osc=0;
+  const O=OscillatorNode.prototype.start;OscillatorNode.prototype.start=function(...a){osc++;return O.apply(this,a)};try{tone(m,.05,'piano',.5,6)}finally{OscillatorNode.prototype.start=O;AC=sv[0];MAST=sv[1]}
+  const x=(await A.startRendering()).getChannelData(0);
+  // the sample used and its loop (as smpTone chooses them)
+  const ks=Object.keys(SBUF.piano).map(Number);let best=ks.reduce((b,n)=>Math.abs(n-m)<Math.abs(b-m)?n:b);const rate=Math.pow(2,(m-best)/12),L=smpLoop(SBUF.piano[best]);
+  const lv=(t,w)=>{const a=Math.round(t*sr),b=a+Math.round(w*sr);let e=0;for(let i=a;i<b;i++)e+=x[i]*x[i];return DB(Math.sqrt(e/(b-a)))};
+  const per=Math.max(.02,1/(440*Math.pow(2,(m-69)/12))*2),tp=.05+L.P/rate,lp=(L.Q-L.P)/rate;let seam=0;
+  for(let t=tp+lp;t<5.9-per;t+=lp)seam=Math.max(seam,Math.abs(lv(t-per,per)-lv(t,per)));
+  out.push({m,osc,drop:lv(tp,.1)-lv(5.5,.1),seam})}
+ return out}"""
+ANAL_JS = r"""async(sp)=>{ac();await loadSamples('piano');const meta=await anLoadMeta();const out=[];
+ for(const k of Object.keys(meta)){const m=meta[k];AN.score=k;AN.speed=sp;__N.length=0;anPlay();const nodes=__N.map(n=>({...n}));stopAll();
+  const ev=m.events.filter(e=>e[0]/sp<=600000);let osc=nodes.filter(n=>n.k==='osc').length;const smp=nodes.filter(n=>n.k==='smp');
+  let bad=[],worst=0;ev.forEach((e,i)=>{const n=smp[i];if(!n){bad.push(`event ${i} not sampled`);return}const w=e[2]/1000/sp,h=n.e-n.s;worst=Math.max(worst,Math.abs(h-w-.075));if(h<w-1e-6||h>w+.15+1e-6)bad.push(`MIDI ${e[1]} at ${e[0]} ms: sounds ${h.toFixed(3)} s, written ${w.toFixed(3)} s`)});
+  out.push({k,sp,n:ev.length,smp:smp.length,osc,lo:Math.min(...ev.map(e=>e[1])),long:ev.filter(e=>e[2]/1000/sp>2.6).length,bad:bad.slice(0,4),nbad:bad.length})}
+ return out}"""
+
+
 async def render_tests(p, fails, counts):
     b = await cjg.launch(p)
     errs = []
@@ -182,6 +204,29 @@ async def render_tests(p, fails, counts):
     for k, v in L.items():
         if abs(v['mean'] + 26) > 2:
             fails.append(f"loudness: {k} averages {v['mean']:.1f} LUFS (target -26 ± 2)")
+    # R13
+    H = await pg.evaluate(HOLD_JS)
+    counts['held 6 s notes (dB down at 5.5 s from the loop start, largest level step across a loop seam)'] = {r['m']: [round(r['drop'], 1), round(r['seam'], 1)] for r in H}
+    for r in H:
+        if r['osc']:
+            fails.append(f"held note MIDI {r['m']}: synth fallback")
+        if r['drop'] > 12:
+            fails.append(f"held note MIDI {r['m']}: {r['drop']:.1f} dB down at 5.5 s from where the hold begins")
+        if r['seam'] > 3:
+            fails.append(f"held note MIDI {r['m']}: a {r['seam']:.1f} dB level step at a loop seam")
+    nn = 0
+    for sp in (.75, 1, 1.25):
+        pg = await fresh()
+        A = await pg.evaluate(ANAL_JS, sp)
+        for r in A:
+            nn += r['n']
+            if r['osc']:
+                fails.append(f"Analysis {r['k']} at {sp}: {r['osc']} synth oscillators (lowest note MIDI {r['lo']})")
+            if r['smp'] != r['n'] or r['nbad']:
+                fails.append(f"Analysis {r['k']} at {sp}: {r['nbad']} notes not held to their written length, e.g. {r['bad'][:2]}")
+            if sp == .75:
+                counts[f"Analysis {r['k']}: notes over 2.6 s at 0.75"] = r['long']
+    counts['Analysis notes timed (3 speeds)'] = nn
     if errs:
         fails.append(f'render page errors: {errs[:3]}')
     await b.close()

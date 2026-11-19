@@ -264,6 +264,7 @@ async def main():
         tell('cadences', tells['cad'], 'lowest note (6-semitone bands)', lambda r: r['lo'] // 6, lambda r: r['a'])
         tell('cadences', tells['cad'], 'highest note (6-semitone bands)', lambda r: r['hi'] // 6, lambda r: r['a'])
         tell('cadences', tells['cad'], 'second chord', lambda r: r['s2'], lambda r: r['a'])
+        tell('cadences', tells['cad'], 'lowest and highest note (6-semitone bands)', lambda r: (r['lo'] // 6, r['hi'] // 6), lambda r: r['a'])
         tell('cadences', tells['cad'], 'opening voicing', lambda r: r['open'], lambda r: r['a'])
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['comp'])
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['a'])

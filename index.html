@@ -1242,13 +1242,34 @@ function loadSamples(k){if(SLOAD[k]||!SMP[k]||location.protocol==='file:')return
  SLOAD[k]=Promise.all(smpNotes(k).map(m=>fetch(SMP[k].dir+m+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((ok,no)=>a.decodeAudioData(b,ok,no))).then(buf=>{SBUF[k][m]=buf}).catch(()=>{}))).then(()=>{SLOADED[k]=true});return SLOAD[k]}
 function smpKind(kind){if(kind==='piano')return'piano';if(kind==='bass')return'bass';if(kind==='guitar')return S.gtone==='nylon'?'guitar-nylon':'guitar-steel';if(kind==='uke')return'guitar-nylon';
  if(kind==='pluck')return S.inst==='bass'?'bass':S.inst==='guitar'?(S.gtone==='nylon'?'guitar-nylon':'guitar-steel'):S.inst==='uke'?'guitar-nylon':'guitar-steel';return null}
-function smpTone(m,t0,k,vel,dur){const B=SBUF[k];if(!B)return false;let best=null;for(const n in B){const d=Math.abs(n-m);if(d<=3&&(best===null||d<Math.abs(best-m)))best=+n}if(best===null)return false;
- const a=ac(),src=a.createBufferSource(),g=a.createGain(),len=SMP[k].len;src.buffer=B[best];src.playbackRate.value=Math.pow(2,(m-best)/12);
+function smpTone(m,t0,k,vel,dur){const B=SBUF[k];if(!B)return false;let best=null,lo=Infinity;for(const n in B){lo=Math.min(lo,+n);const d=Math.abs(n-m);if(d<=3&&(best===null||d<Math.abs(best-m)))best=+n}
+ // R13+: below the lowest piano sample (C2), the lowest sample is pitched down, as far as A0 (MIDI 21), instead of falling back to the synth
+ if(best===null&&k==='piano'&&isFinite(lo)&&m<lo&&m>=21)best=lo;if(best===null)return false;
+ const a=ac(),src=a.createBufferSource(),g=a.createGain(),len=SMP[k].len,rate=Math.pow(2,(m-best)/12),L=dur>0&&k==='piano'?smpLoop(B[best]):null,lp=L&&dur>L.F/rate-.02;src.buffer=lp?L.buf:B[best];src.playbackRate.value=rate;
  const pk=1.5*vel;g.gain.setValueAtTime(pk,t0);
  // dur (seconds, optional): the written length. The note is released at its end with a short fade, instead of ringing for the whole sample.
- if(dur>0){const e=t0+Math.min(dur,len);g.gain.setValueAtTime(pk,e);g.gain.exponentialRampToValueAtTime(.0001,e+.1);src.connect(g);g.connect(MAST);src.start(t0);src.stop(e+.12);schEnd(e+.12)}
+ // R13: a piano note longer than the steady part of its sample is held on a crossfaded loop of that sample (smpLoop), decaying gently, to its written end.
+ if(dur>0){let e;
+  if(lp){e=t0+dur;src.loop=true;src.loopStart=L.P;src.loopEnd=L.Q;const tp=t0+L.P/rate,tau=3.5,fl=pk*.4;
+   if(e>tp){g.gain.setValueAtTime(pk,tp);g.gain.setTargetAtTime(fl,tp,tau);g.gain.setValueAtTime(fl+(pk-fl)*Math.exp(-(e-tp)/tau),e)}else g.gain.setValueAtTime(pk,e)}
+  else{e=t0+Math.min(dur,L?L.F/rate:len);g.gain.setValueAtTime(pk,e)}
+  g.gain.exponentialRampToValueAtTime(.0001,e+.1);src.connect(g);g.connect(MAST);src.start(t0);src.stop(e+.12);schEnd(e+.12)}
  else{g.gain.setValueAtTime(pk,t0+len);g.gain.exponentialRampToValueAtTime(.0001,t0+len+.45);
  src.connect(g);g.connect(MAST);src.start(t0);src.stop(t0+len+.5);schEnd(t0+len+.5)}ACT.push(src);if(ACT.length>600)ACT.splice(0,300);return true}
+/* R13: make a piano sample loopable once. The samples are trimmed with a 1 s fade at the end; the loop sits in the steady part before it.
+   Inside the loop the level is evened out (so it doesn't pulse each time round) and the last 0.25 s crossfades into the audio just before
+   the loop start, so the jump back is seamless. The loop ends before the sample's fade and while the note is still within 20 dB of its peak
+   (high notes die away fast). Returns {buf, P, Q (loop start/end, s), F (where the original sample is used up to, s)}. */
+function smpLoop(B){if(B.__loop!==undefined)return B.__loop;try{const sr=B.sampleRate,D=B.duration,F=D>2.2?D-1.05:D*.55,x0=B.getChannelData(0),w0=Math.round(.05*sr);
+ let pk=0,q20=0;for(let s=0;s+w0<=x0.length;s+=w0){let e=0;for(let i=s;i<s+w0;i++)e+=x0[i]*x0[i];e=Math.sqrt(e/w0);if(e>pk)pk=e;if(e>=pk*.1)q20=(s+w0)/sr}
+ const Q=Math.min(F-.02,Math.max(.6,q20)),Lg=Math.min(.8,Q-.3);if(Lg<.25)return B.__loop=null;
+ const P=Q-Lg,X=Math.min(.25,Lg/2),iP=Math.round(P*sr),iQ=Math.round(Q*sr),iX=Math.round(X*sr),n=iQ+16,A=new AudioBuffer({length:n,numberOfChannels:B.numberOfChannels,sampleRate:sr});
+ for(let c=0;c<B.numberOfChannels;c++){const x=B.getChannelData(c),y=A.getChannelData(c);y.set(x.subarray(0,n));
+  const rms=(i0,i1)=>{let s=0;for(let i=i0;i<i1;i++)s+=x[i]*x[i];return Math.sqrt(s/Math.max(1,i1-i0))+1e-9},w=Math.round(.1*sr),r1=rms(iP,iP+w),r2=rms(iQ-w,iQ),k=Math.log(r1/r2)/(iQ-iP);
+  for(let i=iP;i<iQ;i++)y[i]=x[i]*Math.exp(k*(i-iP));
+  for(let j=0;j<iX;j++){const i=iQ-iX+j,u=j/iX;y[i]=y[i]*Math.cos(u*Math.PI/2)+x[iP-iX+j]*Math.sin(u*Math.PI/2)}
+  for(let i=iQ;i<n;i++)y[i]=x[iP+(i-iQ)]}
+ return B.__loop={buf:A,P,Q,F:Q}}catch(e){return B.__loop=null}}
 let AC,MAST,COMP;
 /* EL-1: the latest stop time of any node scheduled since it was reset (the Ear Lab transport reads it to know when its sound really ends) */
 const SEND={v:0};function schEnd(e){if(e>SEND.v)SEND.v=e}
@@ -1258,7 +1279,7 @@ function ac(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();
 const hz=m=>440*Math.pow(2,(m-69)/12);
 function tone(m,t0,kind,vel=1,len){const sk=smpKind(kind);if(sk){if(smpTone(m,t0,sk,vel,len))return;loadSamples(sk);if(kind!=='piano')kind='pluck'}
  const a=ac(),o=a.createOscillator(),o2=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
- const dur=len>0?Math.min(len,2.6)+.1:kind==='pluck'?1.8:kind==='horn'?1.1:2.6;
+ const dur=len>0?len+.1:kind==='pluck'?1.8:kind==='horn'?1.1:2.6;
  o.type=kind==='pluck'?'sawtooth':kind==='horn'?'sawtooth':'triangle';o2.type='sine';o.frequency.value=hz(m);o2.frequency.value=hz(m)*2;
  f.type='lowpass';f.frequency.setValueAtTime(kind==='pluck'?3200:kind==='horn'?900:2400,t0);f.frequency.exponentialRampToValueAtTime(kind==='horn'?1800:500,t0+(kind==='horn'?.15:dur));
  const pk=(kind==='horn'?.16:.22)*vel;g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(pk,t0+(kind==='horn'?.06:.006));
@@ -6209,7 +6230,16 @@ function earProg(rns,key,reg){const L=cadList(rns.join(' '),key),V=earSATB(L,key
 function earGenCad(l,r){const mode=l===1?'maj':epick(['maj','maj','min'],r),key={k:epick(CKEYS2[mode],r),mode},ts=CADT[l][mode];
  const a=epick(Object.keys(CADL),r),lens=[...new Set(Object.values(ts).flat().map(x=>x.split(' ').length))],n=epick(lens,r);
  const rns=epick(ts[a].filter(x=>x.split(' ').length===n),r).split(' ');
- const reg={b:42+Math.floor(r()*11),s:66+Math.floor(r()*9)},P=earProg(rns,key,reg);return{d:'cad',a,key,rns,sub:cadSub(rns),reg,ch:P.ch}}
+ const{reg,P}=earCadReg(rns,key,r);return{d:'cad',a,key,rns,sub:cadSub(rns),reg,ch:P.ch}}
+/* R13+: outer-voice registers for cadence items, drawn independently of the category. A target lowest and highest note are drawn first
+   (the same for every category); of nine realisations (bass and soprano preferences on a 3 x 3 grid) the one whose lowest and highest notes
+   come nearest the targets is used, so where the bass bottoms out or the soprano peaks no longer hints at the cadence. Realisations are memoised. */
+const EARCADM=new Map();
+function earCadReg(rns,key,r){const tl=41+Math.floor(r()*11),th=65+Math.floor(r()*11),j=r(),C=[];
+ for(const b of [42,47,52])for(const s of [66,70,74]){const k=rns.join(' ')+'|'+key.k+key.mode+'|'+b+','+s;let P=EARCADM.get(k);if(!P){P=earProg(rns,key,{b,s});EARCADM.set(k,P)}
+  if(P.ch){const f=P.ch.flat();C.push({reg:{b,s},P,d:Math.abs(Math.min(...f)-tl)+Math.abs(Math.max(...f)-th)})}}
+ if(!C.length){const reg={b:47,s:70};return{reg,P:earProg(rns,key,reg)}}
+ const m=Math.min(...C.map(c=>c.d)),B=C.filter(c=>c.d===m),c=B[Math.floor(j*B.length)];return{reg:c.reg,P:{L:c.P.L,V:c.P.V,ch:c.P.ch.map(v=>v.slice())}}}
 function earBassPool(l){return l===1?['I','IV','V','vi']:l===2?['I','ii','IV','V','vi']:['I','ii','IV','V','vi','V7/V','V7/vi']}
 // common-practice successions only (tradition: Tonal/common practice). V–IV and ii–I belong to the later popular-music track.
 const EBALLOW={I:['ii','IV','V','vi','V7/V','V7/vi'],ii:['V','V7/V'],IV:['I','ii','V','V7/V'],V:['I','vi'],vi:['ii','IV','V','V7/V'],'V7/V':['V'],'V7/vi':['vi']};
