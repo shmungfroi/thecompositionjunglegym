@@ -20,6 +20,8 @@ error if any id cannot be matched, if the bar count changes, or if the notes no 
 """
 import json, re, sys, collections, pathlib
 import verovio
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import credit  # embedded attribution (R14)
 
 HERE = pathlib.Path(__file__).resolve().parent
 SCORES = HERE.parent
@@ -210,6 +212,7 @@ def main():
                 svg = tk_g.renderToSVG(1)
                 idm = id_map(tk_c, tk_g, canon, svg)
             svg = post(svg, scale, idm)
+            svg = credit.embed(svg, key, meta)  # R14: source edition + licence inside every SVG
             bars, notes = verify(key, svg, meta, tk_c)
             (SCORES / f'{key}{suf}.svg').write_text(svg)
             wh = re.search(r'<svg width="(\d+)px" height="(\d+)px"', svg)
