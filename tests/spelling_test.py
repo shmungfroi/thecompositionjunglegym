@@ -13,7 +13,9 @@ Sections
      signature the staff is drawn with, theoretical keys flagged with the usual enharmonic tonic, and the chords of
      the key (roots, qualities, numerals) for every seven-note scale.
   C  Keys & the Circle tab: all 24 keys. Title, key signature, enharmonic twin, relative, parallel, neighbours, and
-     the seven mode chips named from the parent major.
+     the seven mode chips named from the parent major. Since the 0.48 R6 fix the neighbour keys (dominant = V/v, subdominant =
+     IV/iv) must be spelled exactly as music21 transposes the tonic (a P5 up, a P4 up), with no enharmonic respelling
+     (D-flat major's subdominant is G-flat, not F-sharp; B-flat minor's is E-flat, not D-sharp; F-sharp major's dominant is C-sharp).
   I  Intervals tab: every start pad x every interval x up/down. The second note's spelling (music21 Interval),
      semitone count, interval number and the inversion.
   R  Climbs 3-8 (#climbs/3 ... #climbs/8): every example, builder combination, quiz and period progression the climb
@@ -296,6 +298,14 @@ CHORDS_JS = r"""()=>{S.level=6;location.hash='seed';room('seed');const out=[];co
   out.push({root:L+a,q:q.k,err,notes:cap[cap.length-1]||null,resp:$('staff').dataset.resp||'',svg:!!$('staff').querySelector('svg'),note:($('staff').querySelector('.sfnote')||{}).textContent||''})}
  window.drawStaff=ds;return out}"""
 
+# 0.48 R6 fix (H3): every inversion (the inversion caption) and the guitar, ukulele and bass views (the fretboard degree labels) are
+# scanned too. One call per root, so the page's mutation records are delivered between calls (one long call ran the renderer out of memory).
+CHORDS_VIEWS_JS = r"""(root)=>{const out=[];S.root=root;
+ for(const q of Q){S.q=q.k;
+  for(const inst of ['piano','guitar','uke','bass']){S.inst=inst;S.vi=0;const n=inst==='piano'?chord().tones.length:1;
+   for(let v=0;v<n;v++){S.inv=v;try{render();__scan(document.body,`chords ${root} ${q.k} ${inst} inv ${v}`);window.__NV=(window.__NV||0)+1}catch(e){out.push({root,q:q.k+' '+inst+' inv '+v,err:String(e).slice(0,160),notes:null})}}}}
+ S.inst='piano';S.inv=0;return out}"""
+
 
 # R10 (0.48): no rendered label may spell a double accidental as two characters. The page-side scanner walks every text
 # node (and title / aria-label / alt attributes) and records any "♭b", "♭♭", "♯♯", "♯#", "##" or a note letter followed by
@@ -400,7 +410,7 @@ def check_keys(D):
         steps = []
         for a, b in zip(ms, ms[1:]):
             s = abs(b - a)
-            steps.append('H' if s == 1 else 'W' if s == 2 else 'W+H' if s == 3 else str(s))
+            steps.append('S' if s == 1 else 'T' if s == 2 else 'T+S' if s == 3 else str(s))   # 0.48 R6 fix: Australian T / S (was US W / H)
         if steps != r['steps']:
             fail('K', f"{where}: step labels {r['steps']} vs {steps}")
         else:
@@ -534,17 +544,17 @@ def check_keys(D):
             ok('C', 'parallel keys')
         dom = k.tonic.transpose('P5')
         sub = k.tonic.transpose('P4')
-        # neighbours on the circle are spelled from the circle, so compare pitch class and a sane spelling
+        # neighbours: spelled exactly as music21 spells a P5 / P4 above the tonic (0.48 R6 fix: no enharmonic respelling)
         mm = re.match(r'(\S+) \(one step clockwise.*\) · (\S+) \(one step back', nb)
         if not mm:
             fail('C', f"{where}: neighbours text '{nb}'")
         else:
             for got, want, lab in [(mm.group(1), dom, 'dominant'), (mm.group(2), sub, 'subdominant')]:
                 g = m21key.Key(m21name(got).lower() if mn else m21name(got))
-                if g.tonic.pitchClass != want.pitchClass or abs(g.sharps) > 7:
+                if got != pretty(want.name) or abs(g.sharps) > 7 or abs(g.sharps - k.sharps) != 1:
                     fail('C', f"{where}: {lab} key {got} vs {pretty(want.name)}")
                 else:
-                    ok('C', 'neighbour keys')
+                    ok('C', 'neighbour keys spelled exactly (V/v and IV/iv)')
         # modes from the parent major
         names = [p.name for p in m21scale.MajorScale(maj.tonic).getPitches()[:7]]
         modes = ['ion', 'dor', 'phr', 'lyd', 'mix', 'nmin', 'loc']
@@ -990,6 +1000,12 @@ async def main():
         R = await pg.evaluate(CHORDS_JS)
         await collect_scan(pg, 'Chords room')
         COUNT['Chords room chords drawn (root spellings x qualities)'] = len(R)
+        await pg.evaluate("()=>{window.__BAD.clear();window.__N=0}")
+        for root in [L + x for L in 'CDEFGAB' for x in ['bb', 'b', '', '#', '##']]:
+            R += await pg.evaluate(CHORDS_VIEWS_JS, root)
+            await pg.wait_for_timeout(30)
+        await collect_scan(pg, 'Chords room (inversions; guitar, ukulele, bass)')
+        COUNT['G Chords room views scanned (every inversion on piano; guitar, ukulele, bass)'] = await pg.evaluate("()=>window.__NV||0")
         check_chords_room(R)
         await pg.goto('http://app/index.html#climbs/3')
         await pg.wait_for_timeout(1200)
