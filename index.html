@@ -741,6 +741,10 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-mh small{display:block;margin-top:1px;letter-spacing:.6px;text-transform:none;color:var(--muted);font-size:11px}
 .el-mr{align-self:center;font-size:15px;color:var(--ivory)}
 .el-mr small{display:block;font-size:12.5px;color:var(--muted)}
+.el-mr.irr{grid-row:span 2}
+.el-mh.irr{color:var(--gold);letter-spacing:1px}
+.el-mh.irr small{color:var(--muted)}
+.irrfill{display:block}
 .el-mcell{min-height:76px;flex-direction:row;align-items:center;justify-content:flex-start;gap:14px;padding:10px 14px}
 .el-mcell .sig{flex:none;width:26px;height:44px;fill:var(--ivory)}
 .el-mcell .pic{flex:0 1 auto;min-width:0;max-width:100%;height:16px;fill:var(--gold)}
@@ -822,6 +826,8 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
  .el-mgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
  .el-mgrid .corner{display:none}
  .el-mr{grid-column:1 / -1;margin-top:6px;display:flex;align-items:baseline;gap:8px}
+ .el-mr.irr{grid-row:auto}
+ .el-mh.irr{margin-top:-2px}
  .el-mcell{min-height:100px;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:8px;padding:8px 10px 10px}
  .el-mcell .sig{width:22px;height:38px}
  .el-mcell .pic{height:13px}
@@ -7418,11 +7424,15 @@ function earBadge(v,q){if(!EAR.done)return'';const g=EAR.res&&EAR.res.given;
  if(v===q.a)return`<span class="el-badge">${ELICON.tick}<span>${g===v?'Your answer':'Answer'}</span></span>`;
  if(g===v)return EAR.res.nearly?`<span class="el-badge">${ELICON.near}<span>Your answer</span></span>`:`<span class="el-badge">${ELICON.cross}<span>Your answer</span></span>`;return''}
 function earOptBtn(v,lab,q,o={}){const lock=EAR.done||!q;return`<button class="el-opt ${o.cls||''} ${q?earOptCls(v,q):''}" data-earans="${v}" ${lock?'disabled':''}${o.title?` title="${o.title}"`:''}${o.tk?` data-tk="${o.tk}"`:''}${o.aria?` aria-label="${o.aria}"`:''}>${q?earBadge(v,q):''}${lab}</button>`}
+function ELMETB(m){return METR[m].g.length}
 function earMetreGridHTML(q,l){const wait=!q,rows=[['Simple','each beat splits in two',['2/4','3/4','4/4']],['Compound','each beat splits in three',['6/8','9/8','12/8']]];
  if(l>=3)rows.push(['Irregular','uneven groupings',['5/4','7/8']]);
  const cell=m=>{const[n,d]=m.split('/');return earOptBtn(m,elSigSVG(n,d)+elPicSVG(ELGRP[m],ELGAP[m]),q,{cls:'el-mcell',aria:`${ELMETN[m]}, ${n} ${d}`})};
  let h=`<div class="corner"></div><div class="el-mh" data-notm>Duple<small>2 beats in a bar</small></div><div class="el-mh" data-notm>Triple<small>3 beats in a bar</small></div><div class="el-mh" data-notm>Quadruple<small>4 beats in a bar</small></div>`;
- rows.forEach(([n,sub,list])=>{if(l<2&&n!=='Simple')return;h+=`<div class="el-mr">${n}<small>${sub}</small></div>`+list.map(cell).join('')+(list.length<3?'<div></div>'.repeat(3-list.length):'')});
+ const IRRH={'5/4':['5 beats','grouped 3 + 2'],'7/8':['3 uneven beats','grouped 2 + 2 + 3']};
+ rows.forEach(([n,sub,list])=>{if(l<2&&n!=='Simple')return;const irr=n==='Irregular';
+  /* irregular metres do not sit under Duple/Triple/Quadruple: they get their own header row, one caption per cell, each stating that metre's own beat count */
+  h+=`<div class="el-mr${irr?' irr':''}">${n}<small>${sub}</small></div>`+(irr?list.map(m=>`<div class="el-mh irr" data-notm data-beats="${ELMETB(m)}">${IRRH[m][0]}<small>${IRRH[m][1]}</small></div>`).join('')+'<div class="irrfill"></div>':'')+list.map(cell).join('')+(list.length<3?'<div></div>'.repeat(3-list.length):'')});
  return`<div class="el-lbl" data-notm>Your answer</div><div class="el-mgrid el-opts${wait?' wait':''}" role="group" aria-label="Metre">${h}</div>`}
 function earOptsAreaHTML(q,l){const d=EAR.drill;if(d==='metre')return earMetreGridHTML(q,l);
  const list=d==='qual'?earQualOpts(l):d==='cad'?(q&&q.opts||earCadOpts(l)):earBlindCats(l).length?earBlindCats(l):Object.keys(CADL);
