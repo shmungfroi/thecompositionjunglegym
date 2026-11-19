@@ -7259,7 +7259,7 @@ const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const ELNUM={2:'two',3:'three',4:'four',5:'five',6:'six'};
 function earMetreD(m){const M=METRES[m];return{b:M.b,S:M.sub,irr:m==='5/4'||m==='7/8',comp:M.sub===3,sp:M.sub===3?'three':'two'}}
 function earTeachMetre(q,res){const a=q.a,g=res.given,A=earMetreD(a),nm=A.irr?'Irregular':(A.comp?'Compound':'Simple')+' '+({2:'duple',3:'triple',4:'quadruple'}[A.b]);
- const irrS=a==='5/4'?`Five beats in a bar, each splitting in two. Irregular metres group their beats unevenly, often 3+2 or 2+3. Here the heaviest click is on beat 1 and a lighter one on beat 4: 3+2.`:`Seven quavers in a bar, grouped 2+2+3 here, so the beats are not all the same length. Count the quavers in each group: 2+2+3.`,both=A.irr?irrS:`Start with the heavy click: it comes back every ${ELNUM[A.b]} beats. Then listen inside one beat: it splits in ${A.sp}.`;
+ const irrS=a==='5/4'?`Five beats in a bar, each splitting in two. Irregular metres group their beats unevenly, often 3+2 or 2+3. Here the heaviest click is on beat 1 and a lighter one on beat 4: 3+2.`:`Seven quavers in a bar, grouped 2+2+3 here, so the beats are not all the same length. Count the quavers in each group.`,both=A.irr?irrS:`Start with the heavy click: it comes back every ${ELNUM[A.b]} beats. Then listen inside one beat: it splits in ${A.sp}.`;
  let t;
  if(g===null)t=both;else if(g===a)t=A.irr?irrS:cap1(`${ELNUM[A.b]} beats in a bar, each one splitting in ${A.sp}.`);
  else{const G=earMetreD(g);
@@ -7495,8 +7495,14 @@ function earRhyCaret(u){document.querySelectorAll('#earMain .el-cmp:not([style*=
 // the dock: a copy of the toggle that follows the student on phones while the stage (or the result's first replay) is out of view
 function earDockShow(on){const dk=$('earDock');if(!dk)return;dk.classList.toggle('show',!!on&&ROOM==='ear'&&!!EAR.q);document.body.classList.toggle('ear-docked',dk.classList.contains('show'))}
 function earObserve(){if(EAR.io){EAR.io.disconnect();EAR.io=null}earDockShow(false);const dk=$('earDock');if(!dk||!window.IntersectionObserver||ROOM!=='ear')return;
- const t=$('earStage')||$('earResult');if(!t)return;   /* FR-6: after answering, the dock shows only when the whole result panel has left the view */const top=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top'))||58;
- EAR.io=new IntersectionObserver(es=>{earDockShow(!es[es.length-1].isIntersecting)},{rootMargin:`-${top}px 0px -61px 0px`});EAR.io.observe(t)}
+ /* V-1 (Fable's verify): before answering the dock watches the stage; after answering it watches the panel's own Next button, so it shows whenever Next is not fully visible */
+ const res=$('earResult'),nx=res&&res.querySelector('[data-earnew]'),t=$('earStage')||nx||res;if(!t)return;
+ const top=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top'))||58,phone=innerWidth<=760,bot=phone?68:0;
+ /* once per answer, bring the result panel into view: bottom edge 12 px above the tab bar if it fits, otherwise its top edge 12 px under the top bar (instant, so reduced motion is respected) */
+ if(res&&EAR.done&&!EAR.scrolled){EAR.scrolled=true;const r=res.getBoundingClientRect(),room=innerHeight-top-bot-24;
+  if(r.bottom>innerHeight-bot-12||r.top<top+12){const y=r.height<=room?scrollY+r.bottom-(innerHeight-bot-12):scrollY+r.top-top-12;scrollTo({top:Math.max(0,y),behavior:'auto'})}}
+ if(!EAR.done)EAR.scrolled=false;
+ EAR.io=new IntersectionObserver(es=>{const e=es[es.length-1];earDockShow(nx&&t===nx?e.intersectionRatio<1:!e.isIntersecting)},{rootMargin:`-${top}px 0px -${bot}px 0px`,threshold:[0,1]});EAR.io.observe(t)}
 function earTeardown(){if(EAR.io){EAR.io.disconnect();EAR.io=null}document.body.classList.remove('ear-docked','ear-sounding');if(EAR.tick){clearInterval(EAR.tick);EAR.tick=null}}
 elOn(ev=>{if(ev.type==='beat'){earLane(ev);return}if(ev.type!=='state')return;const q=EAR.q;
  if(ev.state==='playing'&&q&&ELT.item===q&&ELT.variant!=='tap'&&EAR.lastPid!==ev.id){EAR.lastPid=ev.id;q.plays=(q.plays||0)+1}

@@ -231,7 +231,33 @@ async def run(p):
     firsts = [order.index(k) for k in want if k in order]
     check(firsts == sorted(firsts), f'DOM (tab) order {order[:30]}')
     check(not errs, f'desktop page errors {errs[:3]}')
-    await pg.close(); await b.close()
+    await pg.close(); await vcheck(b); await b.close()
+
+async def vcheck(b):
+    """V-1 (Fable's verify): after a real click on an answer, Next is on screen or in the visible dock, and the dock never covers the teaching sentence."""
+    RNGJS = "window.mk=s=>()=>(s=(s*16807)%2147483647)/2147483647;"
+    for w, h in ((1440, 900), (1366, 768), (1024, 768), (390, 844), (390, 664)):
+        ph = w == 390
+        pg = await b.new_page(viewport={'width': w, 'height': h}); errs = []; pg.on('pageerror', lambda e: errs.append(str(e)[:160]))
+        await pg.route('**/*', cjg.make_route(REPO)); await pg.goto('http://app/index.html'); await pg.wait_for_timeout(1000)
+        await pg.evaluate("()=>{" + RNGJS + "S.level=6;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===6));location.hash='ear';EAR.all=false;EAR.st={};room('ear')}")
+        await pg.evaluate("window.__ep=window.elPlay;window.elPlay=function(q,v,o){if(v==='tap')return null;return window.__ep(q,v,o)}")
+        for d, l in (('cad', 3), ('metre', 2), ('rhy', 2), ('mel', 2)):
+            await pg.evaluate("(a)=>{const[d,l]=a;try{elStop()}catch(e){};EAR.drill=d;EAR.lvl[d]=l;EAR.q=null;EAR.done=false;EAR.res=null;EAR.ans=[];EAR.st[d]={n:14,ok:11,streak:3,best:6,shown:2,skipped:1};renderEar()}", [d, l])
+            await pg.evaluate("(a)=>{const[d,pred]=a;const f=pred?eval('(q=>'+pred+')'):(()=>true);let q,i=0;do{q=earGen(d,earLvl(),mk(7+(i++)*1000003))}while(!f(q)&&i<3000);q.plays=1;EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar()}", [d, "q.a==='phrygian'" if d == 'cad' else None])
+            if d == 'mel': await pg.evaluate("()=>{const q=EAR.q;EAR.ans=q.a.slice(1);EAR.ans[2]=EAR.ans[2]==='r'?'m':'r';renderEar()}")
+            if d == 'rhy': await pg.evaluate("()=>{const q=EAR.q;EAR.ans=q.a.slice();const C=earCells(q.l);EAR.ans[0]=C.find(k=>k!==q.a[0]&&RCELL[k].d===RCELL[q.a[0]].d)||q.a[0];renderEar()}")
+            await pg.evaluate("scrollTo(0,0)"); await pg.wait_for_timeout(150)
+            sel = '#earMain [data-earans="imperfect"]' if d == 'cad' else '#earMain [data-earans="3/4"]' if d == 'metre' else '#earMain [data-earchk]'
+            btn = pg.locator(sel).first; await btn.scroll_into_view_if_needed(); await pg.wait_for_timeout(250); await btn.click(); await pg.wait_for_timeout(900)
+            m = await pg.evaluate("""()=>{const p=document.getElementById('earResult');if(!p)return null;const n=p.querySelector('[data-earnew]').getBoundingClientRect(),t=p.querySelector('.el-teach').getBoundingClientRect(),dk=document.getElementById('earDock'),k=dk.getBoundingClientRect();
+              const tab=innerHeight-(innerWidth<=760?68:0),show=dk.classList.contains('show');const dn=show&&dk.querySelector('[data-eardock=next]');const dr=dn?dn.getBoundingClientRect():null;
+              return{nextVisible:n.bottom<=tab+.5&&n.top>=57.5,dock:show,dockNext:!!dr&&dr.bottom<=innerHeight&&dr.top>=0,covers:show&&k.top<t.bottom&&k.bottom>t.top}}""")
+            tag = f'V-1 {w}x{h} {d}'
+            check(m is not None and (m['nextVisible'] or (m['dock'] and m['dockNext'])), f'{tag}: Next on screen or in the dock {m}')
+            check(m is not None and not m['covers'], f'{tag}: dock does not cover the teaching sentence {m}')
+        check(not errs, f'V-1 {w}x{h} page errors {errs[:2]}')
+        await pg.close()
 
 async def main():
     async with async_playwright() as p: await run(p)

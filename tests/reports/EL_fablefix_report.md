@@ -59,3 +59,9 @@ Cadence and Nearly teaching text was not touched (earCad* text from the reconcil
 - terms_test 200 failures, identical to 048-int without my changes (200): short cadence buttons in Forms/climbs carry "US: authentic" hovers; no new findings from the Ear Lab card (before my change terms_test had 0 findings on the pre-merge base, 162 views)
 - earlab_test 1 failure ("cadences L1: lowest and highest note ... predicts the answer 32%"), identical on 048-int without my changes
 No browser crashes needing a retry; one run was slow under load from other agents.
+
+## Addendum: V-1 (Fable's verify, 20 Nov)
+- After an answer the result panel is scrolled into view once (bottom edge 12 px above the tab bar if it fits, else top edge 12 px under the top bar; instant scroll, so reduced motion is respected). After an answer the dock watches the panel's own Next button (threshold 1), so it shows whenever Next is not fully visible. Before answering it still watches the stage.
+- 7/8 teaching sentence now ends "Count the quavers in each group." (2+2+3 appears twice, not three times).
+- earlab_ui_test: new V-1 section, real click on an answer in cadences, metre, rhythm and melody at 1440x900, 1366x768, 1024x768, 390x844, 390x664: Next on screen or in the visible dock, dock never over the teaching sentence. 45 checks; 9 of them fail on the previous build, all pass now. Suite total 467 checks, 0 failed.
+- layout_test 162 views 0 findings; pageerrors_test 0 errors; transport_test 0 fails (first run timed out under load, rerun clean).
