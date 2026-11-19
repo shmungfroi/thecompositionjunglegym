@@ -456,7 +456,8 @@ async def main():
                 COUNT['fixture rows (chords)'] += 1
                 got = next((q for q in cad if q['t'] == row['t'] and q['k'] == row['k'] and q['md'] == row['md']), None)
                 if got is None:
-                    COUNT['fixture rows (chords) for models since retired'] += 1
+                    # R16 (0.48): rows for retired models were removed (tests/fixtures/make_cadence_pcs.py), so an unmatched row is a failure
+                    fail('J', f"fixture {row['t']} key {row['k']} {row['md']}: the app no longer has this model")
                     continue
                 if not got['ch']:
                     fail('J', f"fixture {row['t']} key {row['k']}: not generated")
@@ -464,8 +465,14 @@ async def main():
                 for i, pcs in enumerate(row['pcs']):
                     if not {m % 12 for m in got['ch'][i]} <= set(pcs):
                         fail('J', f"fixture {row['t']} key {row['k']} chord {i+1}: {sorted({m%12 for m in got['ch'][i]})} vs {pcs}")
+            # every model x key the app uses has a fixture row
+            rows = {(r['t'], r['k'], r['md']) for r in F.get('cadence_pcs', [])}
+            miss = sorted({(q['t'], q['k'], q['md']) for q in cad} - rows)
+            COUNT['fixture coverage (model x key)'] = f"{len(rows & {(q['t'], q['k'], q['md']) for q in cad})} of {len({(q['t'], q['k'], q['md']) for q in cad})}"
+            if miss:
+                fail('J', f'{len(miss)} model x key combinations have no fixture row, e.g. {miss[:3]}')
         else:
-            COUNT['fixture rows (none present)'] = 0
+            fail('J', 'tests/fixtures/earlab_ic.json is missing')
         await b.close()
 
     report = {'counts': dict(COUNT), 'failures': {k: v[:25] for k, v in FAIL.items()}, 'n_failures': sum(len(v) for v in FAIL.values())}
