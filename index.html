@@ -583,13 +583,322 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .sylk{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}.sylsep{opacity:.4}.sylmore{opacity:.7;text-decoration:underline dotted}
 .sylbody{margin-top:8px;line-height:1.55;color:var(--ivory)}.sylbody b{color:var(--gold);font-weight:500;margin-right:6px}.sylbody ul{margin:6px 0;padding-left:18px}.sylbody code,.log code{color:var(--goldhi);font-size:12.5px;margin-right:4px}
 .sylpanel{margin:14px 0;border-top:1px solid var(--line);padding-top:10px}.sylpanel summary{cursor:pointer;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-size:11px}.sylpanel select{background:#0e0c08;color:var(--ivory);border:1px solid var(--line);border-radius:8px;padding:4px 6px;margin:4px 4px 0 0;max-width:100%}
-.eartabs{margin-bottom:12px}.eartabs small{opacity:.6}
-.earq{margin:12px 0}.earopt{display:inline-block;margin:0 8px 8px 0;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;font-size:14px}.earopt:hover:not([disabled]){border-color:var(--gold)}
-.earopt.ok{border-color:var(--green);color:var(--green)}.earopt.bad{border-color:var(--red);color:var(--red)}.earopt[disabled]{cursor:default}
-.earres{padding:10px 14px;border-radius:10px;margin:6px 0;border-left:3px solid}.earres.ok{border-color:var(--green);background:rgba(143,191,106,.08)}.earres.bad{border-color:var(--red);background:rgba(200,71,59,.08)}
-.earstat{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted);margin-top:10px;flex-wrap:wrap}.earstat .sp,.earq .sp{flex:1}
-.earslots{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}.earslot{min-width:54px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;text-align:center;font-size:16px}.earslot.cur{border-color:var(--gold)}.earslot small{display:block;font-size:11px}.okt{color:var(--green)}.badt{color:var(--red)}
-.earlad{display:flex;flex-direction:column;gap:3px;max-width:280px;margin:8px 0}.earstep{display:flex;align-items:center;gap:10px;padding:4px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);cursor:pointer;color:var(--ivory)}.earstep:hover:not([disabled]){border-color:var(--gold)}.earstep b{font-weight:500;min-width:28px}.earstep small{color:var(--muted)}
+/* =====================================================================
+   EAR LAB 0.48 — new component styles (design mock-up).
+   Written to be lifted into index.html as-is. Uses only the app's existing
+   variables (--ink --panel --panel2 --line --gold --goldhi --ivory --muted
+   --red --green --violet --lush --pink) plus the three below.
+   Type scale: 11 / 12.5 / 14 / 15 / 16 px for text; Poiret One display at 28 and 52.
+   ===================================================================== */
+:root{--r-s:8px;--r-m:12px;--r-pill:999px;--inset:#0e0c08}
+
+/* ---- layout: drill card + "Listening for it" beside it on wide screens ---- */
+#earMain.el{max-width:1180px}
+.el-cols{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+.el-cols>.card{margin-bottom:0}
+@media (max-width:1179px){#earMain.el{max-width:880px}.el-cols{grid-template-columns:minmax(0,1fr)}}
+
+/* ---- drill strip (one row; scrolls sideways when it does not fit) ---- */
+.el-drills{display:flex;gap:2px;margin:0 0 18px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.el-drills::-webkit-scrollbar{display:none}
+.el-drill{position:relative;flex:none;min-height:48px;padding:7px 14px 11px;background:none;border:0;text-align:left;cursor:pointer;color:var(--ivory)}
+.el-drill b{display:block;font-weight:400;font-size:14px;white-space:nowrap}
+.el-drill small{display:block;margin-top:2px;font-size:11px;letter-spacing:.6px;color:var(--muted);white-space:nowrap}
+.el-drill:hover b{color:var(--goldhi)}
+.el-drill.on b{color:var(--goldhi)}.el-drill.on small{color:var(--gold)}
+.el-drill.on:after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--lush),var(--pink))}
+.el-all{flex:none;align-self:center;margin-left:8px;background:none;border:0;border-bottom:1px dotted var(--muted);padding:0 0 1px;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.el-all:hover{color:var(--goldhi);border-color:var(--gold)}
+
+/* ---- card header: title, rungs, tally ---- */
+.el-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 24px;align-items:start;margin-bottom:16px}
+.el-tag{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:600}
+.el-title{margin:4px 0 0;font-family:"Poiret One",Outfit,sans-serif;font-weight:400;font-size:28px;line-height:1.1;letter-spacing:.5px;color:var(--ivory)}
+.el-rungrow{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.el-rungs{display:inline-flex;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden}
+.el-rungs button{height:34px;padding:0 16px;background:none;border:0;font-size:14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.el-rungs button+button{border-left:1px solid var(--line)}
+.el-rungs button:hover{color:var(--goldhi)}
+.el-rungs button.on{background:var(--gold);color:var(--ink);font-weight:600}
+.el-rungnote{font-size:12.5px;color:var(--muted)}
+
+/* ---- tally (R5): shared by Ear Lab, Keys interval quiz, Sing it back ---- */
+.el-tally{grid-column:2;grid-row:1 / span 3;display:flex;align-items:center;gap:16px;padding-top:2px}
+.el-score{display:flex;align-items:baseline;gap:7px;white-space:nowrap}
+.el-score b{font-family:"Poiret One",Outfit,sans-serif;font-weight:400;font-size:52px;line-height:.86;color:var(--goldhi);font-variant-numeric:lining-nums}
+.el-score span{font-size:14px;color:var(--muted)}
+.el-side{display:grid;gap:5px;padding-left:16px;border-left:1px solid var(--line)}
+.el-side div{display:flex;justify-content:space-between;gap:12px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);line-height:1.2}
+.el-side b{font-size:14px;font-weight:400;letter-spacing:0;color:var(--ivory);font-variant-numeric:tabular-nums}
+.el-tally.is-new .el-score b{color:var(--muted)}
+
+/* ---- the question line ---- */
+.el-ask{margin:0 0 14px;font-size:16px;line-height:1.45;max-width:60ch}
+
+/* ---- sound stage: the one Play/Stop toggle, its state, the variants ---- */
+.el-stage{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 14px;align-items:center;background:var(--inset);border:1px solid var(--line);border-radius:var(--r-m);padding:12px 14px}
+.el-play{--sz:48px;position:relative;flex:none;width:var(--sz);height:var(--sz);border-radius:50%;border:0;padding:0;display:grid;place-items:center;background:var(--gold);color:var(--ink);cursor:pointer;transition:background-color .15s,transform .08s}
+.el-play:hover{background:var(--goldhi)}.el-play:active{transform:scale(.96)}
+.el-play .ico{width:38%;height:38%;display:block}
+.el-play .ico.stop{display:none;width:30%;height:30%}
+.el-play .ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);opacity:0}
+.el-play .trk{fill:none;stroke:rgba(201,162,74,.28);stroke-width:3}
+.el-play .arc{fill:none;stroke:var(--goldhi);stroke-width:3;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100}
+.el-play.playing{background:#1b170f;color:var(--goldhi)}
+.el-play.playing .ring{opacity:1}
+.el-play.playing .ico.play{display:none}.el-play.playing .ico.stop{display:block}
+.el-play.playing .arc{animation:elRing var(--dur,8s) linear forwards}
+.el-play.loading .ring{opacity:1;animation:elSpin 1.1s linear infinite}.el-play.loading .arc{stroke-dashoffset:72}
+.el-play[disabled]{background:#3a3220;color:#8a7f66;cursor:default}
+@keyframes elRing{to{stroke-dashoffset:0}}
+@keyframes elSpin{to{transform:rotate(270deg)}}
+@media (prefers-reduced-motion:reduce){.el-play.loading .ring{animation:none}}
+.el-now{min-width:0}
+.el-now b{display:block;font-size:15px;font-weight:400;color:var(--ivory)}
+.el-now span{display:block;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.el-now.playing span{color:var(--goldhi)}
+.el-acts{display:flex;gap:8px;align-items:center}
+.el-btn{height:34px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-pill);background:none;font-size:14px;color:var(--ivory);cursor:pointer;white-space:nowrap}
+.el-btn:hover{border-color:var(--gold);color:var(--goldhi)}
+.el-btn.gold{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:600}
+.el-btn.gold:hover{background:var(--goldhi);color:var(--ink)}
+.el-btn[disabled]{opacity:.4;cursor:default}
+.el-vars{grid-column:2 / -1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:8px;border-top:1px solid var(--line)}
+.el-vars .cap{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.el-var{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-pill);background:none;font-size:12.5px;color:var(--ivory);cursor:pointer}
+.el-var:hover{border-color:var(--gold);color:var(--goldhi)}
+.el-var i{width:8px;height:8px;border-radius:1px;background:currentColor;display:none}
+.el-var.on{border-color:var(--gold);color:var(--goldhi)}.el-var.on i{display:block}
+.el-seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden}
+.el-seg button{height:30px;padding:0 12px;background:none;border:0;font-size:12.5px;color:var(--muted);cursor:pointer}
+.el-seg button+button{border-left:1px solid var(--line)}
+.el-seg button[aria-pressed=true]{background:rgba(201,162,74,.16);color:var(--goldhi)}
+.el-vars .gap{width:10px}
+.el-vars .fix{font-size:12.5px;color:var(--muted)}
+
+/* ---- result (EL-8): takes the place of the stage after an answer ---- */
+.el-result{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:0 14px;align-items:start;background:var(--inset);border:1px solid var(--line);border-radius:var(--r-m);padding:14px 16px 16px}
+.el-result.ok{border-color:rgba(143,191,106,.5);background:linear-gradient(180deg,rgba(143,191,106,.07),rgba(143,191,106,.02) 70%),var(--inset)}
+.el-result.bad{border-color:rgba(200,71,59,.55);background:linear-gradient(180deg,rgba(200,71,59,.08),rgba(200,71,59,.02) 70%),var(--inset)}
+.el-result.near,.el-result.shown{border-color:rgba(201,162,74,.55);background:linear-gradient(180deg,rgba(201,162,74,.08),rgba(201,162,74,.02) 70%),var(--inset)}
+.el-mark{width:32px;height:32px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;margin-top:2px}
+.el-mark svg{width:16px;height:16px}
+.ok .el-mark,.ok .el-verdict{color:var(--green)}.bad .el-mark,.bad .el-verdict{color:var(--red)}
+.near .el-mark,.near .el-verdict,.shown .el-mark,.shown .el-verdict{color:var(--gold)}
+.el-verdict{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:600}
+.el-answer{margin:3px 0 8px;font-family:"Poiret One",Outfit,sans-serif;font-weight:400;font-size:28px;line-height:1.15;letter-spacing:.5px;color:var(--ivory)}
+.el-answer small{font-family:Outfit,sans-serif;font-size:14px;letter-spacing:0;color:var(--muted);margin-left:8px;white-space:nowrap}
+.el-teach{margin:0;font-size:15px;line-height:1.5;max-width:58ch}
+.el-teach .us{color:var(--muted)}
+.el-body{grid-column:2 / -1;min-width:0}
+.el-replays{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:14px}
+.el-replay{display:inline-flex;align-items:center;gap:10px;padding:0;border:0;background:none;color:var(--goldhi);font-size:14px;line-height:1.3;cursor:pointer;text-align:left}
+.el-replay .el-play{display:grid}
+.el-replay .el-play{--sz:40px}
+.el-replay:hover .el-play{background:var(--goldhi)}
+
+/* chord row inside a result: numerals in function colours, cadence bracketed */
+.el-chords{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;margin:12px 0 0}
+.el-ch{min-width:46px;padding:6px 10px 5px;border:1px solid var(--line);border-radius:var(--r-s);text-align:center;font-family:"EB Garamond",Georgia,serif;font-weight:500;font-size:20px;line-height:1.1;color:var(--fc,var(--ivory));background:var(--panel)}
+.el-ch small{display:block;margin-top:3px;font-family:Outfit,sans-serif;font-size:11px;font-weight:300;letter-spacing:.6px;color:var(--muted)}
+.el-cad{display:flex;gap:6px;padding:0 0 6px;border-bottom:1.5px solid var(--gold);position:relative;margin-bottom:14px}
+.el-cad:after{content:attr(data-l);position:absolute;left:0;right:0;bottom:-17px;text-align:center;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.el-key{align-self:center;margin-left:8px;font-size:12.5px;color:var(--muted);padding-bottom:14px}
+.fig{display:inline-flex;flex-direction:column;vertical-align:middle;font-size:.7em;line-height:.88;margin-left:2px;font-style:normal;font-variant-numeric:lining-nums}
+.el-ch sup,.el-teach sup{font-size:.62em;line-height:0}
+.fig i{font-style:normal}
+
+/* ---- answer options: fixed grid ---- */
+.el-lbl{margin:18px 0 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.el-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.el-opts.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.el-opt{position:relative;min-height:56px;padding:10px 14px;display:flex;flex-direction:column;justify-content:center;gap:2px;border:1px solid var(--line);border-radius:var(--r-m);background:var(--panel);text-align:left;font-size:15px;color:var(--ivory);cursor:pointer;transition:border-color .15s,background-color .15s}
+.el-opt:hover:not([disabled]){border-color:var(--gold)}
+.el-opt[disabled]{cursor:default;color:var(--ivory)}
+.el-opts.wait .el-opt{opacity:.55}
+.el-opt.is-ans{border-color:var(--green);background:rgba(143,191,106,.07)}
+.el-opt.is-mine{border-color:var(--red);background:rgba(200,71,59,.07)}
+.el-opt.is-near{border-color:var(--gold);background:rgba(201,162,74,.08)}
+.el-opt.is-dim{opacity:.6}
+.el-badge{display:flex;align-items:center;gap:5px;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.el-badge svg{width:13px;height:13px;flex:none}
+.is-ans .el-badge{color:var(--green)}.is-mine .el-badge{color:var(--red)}.is-near .el-badge{color:var(--gold)}
+
+/* ---- metre grid (EL-3) ---- */
+.el-mgrid{display:grid;grid-template-columns:150px repeat(3,minmax(0,1fr));gap:10px}
+.el-mh{align-self:end;padding:0 2px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ivory)}
+.el-mh small{display:block;margin-top:1px;letter-spacing:.6px;text-transform:none;color:var(--muted);font-size:11px}
+.el-mr{align-self:center;font-size:15px;color:var(--ivory)}
+.el-mr small{display:block;font-size:12.5px;color:var(--muted)}
+.el-mcell{min-height:76px;flex-direction:row;align-items:center;justify-content:flex-start;gap:14px;padding:10px 14px}
+.el-mcell .sig{flex:none;width:26px;height:44px;fill:var(--ivory)}
+.el-mcell .pic{flex:0 1 auto;min-width:0;max-width:100%;height:16px;fill:var(--gold)}
+.el-mcell .el-badge{position:absolute;right:10px;top:8px}
+
+/* beats shown (after answering) */
+.el-beats{display:grid;grid-template-columns:repeat(4,minmax(0,max-content));justify-content:start;gap:6px 0;margin-top:12px}
+.el-beats svg{display:block;width:100%;height:auto}
+
+/* ---- rhythm (EL-5) ---- */
+.el-rhy{margin-top:4px}
+.el-rhy svg{display:block;max-width:100%}
+.el-sys{display:flex;flex-wrap:wrap;gap:0 4px}
+.el-tiles{display:flex;flex-wrap:wrap;gap:8px}
+.el-tile{flex:none;height:64px;padding:0;border:1px solid var(--line);border-radius:var(--r-s);background:var(--panel);cursor:pointer;display:flex;flex-direction:column;align-items:stretch;justify-content:center}
+.el-tile:hover:not([disabled]){border-color:var(--gold);background:#1a160f}
+.el-tile[disabled]{opacity:.32;cursor:default}
+.el-tile svg{display:block}
+.el-tile small{display:block;text-align:center;font-size:11px;color:var(--muted);letter-spacing:.4px;margin-top:-2px;padding-bottom:4px}
+.el-tiles.named .el-tile{height:76px}
+.el-edit{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.el-edit .sp{flex:1}
+.el-cmp{grid-column:1 / -1;display:grid;grid-template-columns:84px minmax(0,1fr);gap:6px 12px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.el-cmp .who{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.el-cmp .who.ans{color:var(--gold)}
+
+/* ---- foot: stats, Reset (inline confirm + undo), Save to journal ---- */
+.el-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:18px;padding-top:12px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.el-foot .sp{flex:1}
+.el-foot b{font-weight:400;color:var(--ivory)}
+.el-confirm{display:inline-flex;align-items:center;gap:8px;color:var(--ivory)}
+.el-btn.sm{height:30px;padding:0 12px;font-size:12.5px}
+.el-btn.danger{border-color:var(--red);color:#e58a80}
+
+/* ---- "Listening for it" ---- */
+.el-tips{margin:0;padding:0;list-style:none;counter-reset:tip}
+.el-tips li{position:relative;padding:0 0 12px 30px;font-size:14px;line-height:1.5;color:var(--ivory);counter-increment:tip}
+.el-tips li:before{content:counter(tip);position:absolute;left:0;top:-3px;font-family:"Poiret One",Outfit,sans-serif;font-size:22px;color:var(--gold)}
+.el-tips li b{font-weight:400;color:var(--goldhi)}
+.el-tips+p{margin:4px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+
+/* ---- focus (EL-9) ---- */
+.el-drill:focus-visible,.el-rungs button:focus-visible,.el-seg button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+.el-play:focus-visible{outline:2px solid var(--goldhi);outline-offset:3px}
+.el-opt:focus-visible,.el-tile:focus-visible,.el-btn:focus-visible,.el-var:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
+
+/* ---- phone dock (EL-2) ---- */
+.el-dock{display:none}
+
+@media (max-width:760px){
+ #room-ear .card{padding:16px 16px 18px}
+ .el-drills{margin:0 -14px 14px;padding:0 6px}
+ .el-drill{padding:7px 12px 11px}.el-drill.on:after{left:12px;right:12px}
+ .el-head{grid-template-columns:minmax(0,1fr) auto;gap:0 12px;margin-bottom:14px}
+ .el-title{font-size:24px}
+ .el-tally{grid-row:1 / span 2;gap:10px}
+ .el-score b{font-size:44px}.el-score span{font-size:12.5px}
+ .el-side{padding-left:10px}
+ .el-rungrow{grid-column:1 / -1;margin-top:14px}
+ .el-rungs{display:flex;flex:1 1 100%}.el-rungs button{flex:1;height:44px;padding:0 6px}
+ .el-stage{grid-template-columns:auto minmax(0,1fr);padding:12px}
+ .el-play{--sz:56px}
+ .el-acts{grid-column:1 / -1}.el-acts .el-btn{flex:1}
+ .el-btn{height:44px}.el-btn.sm{height:44px}
+ .el-vars{grid-column:1 / -1}
+ .el-var,.el-seg button{height:44px;padding:0 14px}
+ .el-result{grid-template-columns:auto minmax(0,1fr);padding:14px 12px 14px}
+ .el-result>.el-btn{grid-column:1 / -1;order:9;margin-top:14px}
+ .el-beats.two{grid-template-columns:repeat(2,minmax(0,max-content))}
+ .el-body{grid-column:1 / -1;margin-top:6px}
+ .el-answer{font-size:24px}
+ .el-replay .el-play{--sz:56px}
+ .el-replays .el-btn{flex:1 1 auto}
+ .el-opts{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .el-opt{min-height:60px;padding:10px 12px}
+ .el-mgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .el-mgrid .corner{display:none}
+ .el-mr{grid-column:1 / -1;margin-top:6px;display:flex;align-items:baseline;gap:8px}
+ .el-mcell{min-height:100px;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:8px;padding:8px 10px 10px}
+ .el-mcell .sig{width:22px;height:38px}
+ .el-mcell .pic{height:13px}
+ .el-mcell .el-badge{position:static;order:-1;margin-bottom:auto;letter-spacing:.6px}
+ .el-tile{height:64px}
+ .el-cmp{grid-template-columns:minmax(0,1fr);gap:2px}
+ .el-cmp .who{margin-top:8px}
+ .el-foot .el-btn{flex:1}
+ .el-foot .stats{flex:1 1 100%}
+ /* the docked toggle: shown while the stage row is out of view */
+ .el-dock.show{display:flex;position:fixed;left:12px;right:12px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:8;height:64px;align-items:center;gap:12px;padding:4px 6px 4px 4px;background:rgba(22,19,13,.98);border:1px solid rgba(201,162,74,.5);border-radius:var(--r-pill);box-shadow:0 10px 28px rgba(0,0,0,.6)}
+ .el-dock .el-now{flex:1}
+ body.ear-docked main{padding-bottom:calc(152px + env(safe-area-inset-bottom))}
+ .el-dock .el-btn{height:48px;padding:0 18px}
+ /* the floating global Stop gives way to the Ear Lab's own toggle */
+ body.ear-sounding .tstop{display:none}
+ /* melody ladder rows (kept from 0.47) reach the 44 px minimum */
+ .meldesk .earlad{grid-auto-rows:44px}
+}
+
+/* two bars sit on one line from 761 px; on phones each bar takes its own line */
+.el-rhy.narrow,.el-cmp.narrow{display:none}
+@media (max-width:760px){.el-rhy.wide,.el-cmp.wide{display:none}.el-rhy.narrow{display:block}.el-cmp.narrow{display:grid}}
+
+
+/* build additions, part 2 */
+.el-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.el-play.playing .arc{animation:elRing var(--dur,8s) linear var(--del,0s) forwards}
+.el-play.loading.playing .arc{animation:none;stroke-dashoffset:72}
+.el-play.loading .ring{animation:elSpin 1.1s linear infinite}
+.el-play.loading:not(.playing) .arc{stroke-dashoffset:72}
+.el-rn text{font-family:Outfit,sans-serif;font-size:11px;font-weight:400;fill:#9c927c}
+.el-rn circle{fill:rgba(240,212,138,.16);stroke:#f0d48a;stroke-width:1;opacity:0}
+.el-rn.lit text{font-size:12.5px;font-weight:600;fill:#f0d48a}.el-rn.now circle{opacity:1}
+.el-beats .bt .halo{fill:rgba(240,212,138,.16);stroke:#f0d48a;opacity:0}.el-beats .bt .dot{fill:#c9a24a}.el-beats .bt text{font-family:Outfit,sans-serif;font-size:11px;fill:#9c927c}
+.el-beats .bt.now .halo{opacity:1}.el-beats .bt.now .dot{fill:#f0d48a;fill-opacity:1}.el-beats .bt.now text{fill:#f0d48a}
+.el-ch.now{border-color:var(--goldhi);background:rgba(240,212,138,.08)}
+.el-score b.fade{animation:elFade .18s ease-out}
+@keyframes elFade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.el-score b.fade,.el-dock.show{animation:none}.el-play.loading .ring{animation:none}}
+.el-dock.show{animation:elDock .16s ease-out}
+@keyframes elDock{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.el-mgrid.wait .el-opt{opacity:.55}
+.el-var.on{background:rgba(201,162,74,.08)}
+.el-cmp.narrow{display:none}.el-rhy.narrow{display:none}
+@media (max-width:800px){.el-rhy.wide,.el-cmp.wide{display:none}.el-rhy.narrow{display:block}.el-cmp.narrow{display:grid}}
+.el-rhy.narrow svg{margin-bottom:2px}
+.el-note .el-btn{margin-left:6px}
+.el-body .el-note{margin-top:12px}
+
+/* build additions */
+.el-play .ico{pointer-events:none}
+.el-play.loading .ring{opacity:1}
+.el-now b,.el-now span{overflow-wrap:anywhere}
+.el-opts.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.el-opt .fn{display:block;font-size:11px;color:var(--muted);letter-spacing:.4px}
+.el-opt.num{align-items:center;text-align:center;min-height:56px;font-family:"EB Garamond",Georgia,serif;font-weight:500;font-size:20px;color:var(--fc,var(--ivory))}
+.el-opt.num[disabled]{opacity:.6;color:var(--fc,var(--ivory))}
+.el-opt.num .fn{font-family:Outfit,sans-serif;font-weight:300}
+.el-slots{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap}
+.el-slot{position:relative;width:56px;height:56px;border:1px solid var(--line);border-radius:var(--r-s);display:grid;place-items:center;font-family:"EB Garamond",Georgia,serif;font-weight:500;font-size:20px;color:var(--fc,var(--muted));background:var(--panel)}
+.el-slot.cur{border-color:var(--gold)}
+.el-slot .st{position:absolute;right:3px;top:2px;width:13px;height:13px}
+.el-slot .st svg{width:13px;height:13px}.el-slot.okk .st{color:var(--green)}.el-slot.badk .st{color:var(--red)}
+.el-slot small{position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-family:Outfit,sans-serif;font-weight:300;font-size:11px;color:var(--muted)}
+.el-slots.lock{margin-bottom:24px}
+.el-opts.wait{pointer-events:none}
+.el-lb{margin:0 0 6px}
+.el-rungs button[disabled]{opacity:.4}
+.el-seg button{min-width:44px}
+.el-gold{color:var(--goldhi)}
+.el-note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.el-rhy .tag{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.el-count{font-variant-numeric:tabular-nums}
+.el-bf{display:grid;grid-template-columns:repeat(4,minmax(0,max-content))}
+.el-result .el-play{position:relative}
+.el-body .el-chords{margin-top:12px}
+.el-melres .el-result{margin:0}
+.melres .el-result{grid-template-columns:auto minmax(0,1fr)}
+.melres .el-result>.el-btn{grid-column:1 / -1;margin-top:12px;justify-self:start}
+.el-key2{font-size:12.5px;color:var(--muted)}
+.el-sticky{position:static}
+.el-tally.kt{margin:0}
+.kqhead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:10px}
+.kqhead .el-tally{flex:none}
+.el-dock .el-now b{font-size:15px}
+@media (max-width:760px){.kqhead{gap:10px}.el-slot{width:56px}.el-opts.c4{gap:8px}.el-ask{max-width:none}}
+.el-tally.kt .el-score b{font-size:44px}
+@media (min-width:761px){.el-tally.kt .el-score b{font-size:52px}}
+
+.earlad{display:flex;flex-direction:column;gap:3px;max-width:280px;margin:8px 0}.earstep{display:flex;align-items:center;gap:10px;padding:4px 10px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--panel);cursor:pointer;color:var(--ivory)}.earstep:hover:not([disabled]){border-color:var(--gold)}.earstep b{font-weight:500;min-width:28px}.earstep small{color:var(--muted)}
 .hsw{position:relative;display:inline-flex;width:64px;height:34px;align-items:center;justify-content:center}.hsi{max-width:64px;max-height:34px;object-fit:contain}.hsw em{position:absolute;right:-4px;top:-4px;font-style:normal;color:var(--goldhi);font-size:12.5px}
 .hs{width:24px;height:24px;color:var(--gold)}.earrhy{min-height:100px}
 /* R2: Ear Lab melody desk (ladder beside the stave) */
@@ -600,7 +909,6 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .melfr{display:inline-block;max-width:100%;line-height:0;vertical-align:top}
 .melfr svg{overflow:visible}
 .melfr .vf-stavenote.now path[fill=none]{stroke:var(--goldhi)}.melfr .vf-stavenote.now path:not([fill=none]){fill:var(--goldhi)}.melfr text.now{fill:var(--goldhi)}
-.melres .earres{margin:12px 0 0;font-size:14px;line-height:1.5}
 .melacts .go{margin-top:0!important}.melacts .note{display:inline-block;margin-top:10px}
 .meldesk .earstep{grid-column:1;margin:1.5px 0;padding:0 12px 0 8px;gap:12px;min-height:0;text-align:left;font-size:16px;font-family:inherit}
 .meldesk .hsw{width:76px;height:40px;flex:none}.meldesk .hsi{max-width:76px;max-height:40px}
@@ -609,12 +917,12 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .earstep.home{box-shadow:inset 3px 0 0 var(--gold)}.earstep.last{border-color:var(--gold)}
 .earstep.now{border-color:var(--goldhi);background:rgba(240,212,138,.08)}
 .meldesk .earstep[disabled]{cursor:default;opacity:.55}
-.earstep:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.earstep:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
 @media (max-width:760px){
  .meldesk{display:flex;flex-direction:column;align-items:stretch;gap:12px}.melscore{order:-2}.melres{order:-1}.melacts{order:2}
  .melscore{position:sticky;top:var(--top);z-index:3;background:linear-gradient(180deg,#15120d 88%,rgba(21,18,13,0));padding-top:6px;padding-bottom:10px;margin-bottom:-6px}
  .melfr{display:block}
- .meldesk .earlad{grid-auto-rows:24px}.meldesk .earstep{margin:.5px 0}
+ .meldesk .earlad{grid-auto-rows:22px}.meldesk .earstep{margin:0;box-sizing:border-box}
  .meldesk .hsw{width:64px;height:34px}.meldesk .hsi{max-width:64px;max-height:34px}
 }
 .phexp select{background:#0e0c08;color:var(--ivory);border:1px solid var(--line);border-radius:6px;padding:2px 4px}.phexp td,.phexp th{padding:4px 6px}
@@ -2244,7 +2552,7 @@ let ROOM='seed';
 function setCrumb(){const c=document.querySelector('.top .crumb');
  if(ROOM==='keys'){c.innerHTML='Level 1 · <b>Keys &amp; Scales</b>';return}if(ROOM==='analysis'){c.innerHTML='Level 3 · <b>Analysis</b>';return}if(ROOM==='ear'){c.innerHTML='Level 3 · <b>Ear Lab</b>';return}if(ROOM==='forms'){c.innerHTML='Level 3 · <b>Forms</b>'+(F.open?' · '+FORMS.find(x=>x.k===F.open).t:'');return}
  c.innerHTML=ROOM==='seed'?`Seed Bank · <b id="crumbSym">${$('sym').textContent}</b>`:ROOM==='gym'?`The Gym · <b>${keyName(K)}</b> · ${P.length} chord${P.length===1?'':'s'}`:ROOM==='voice'?`Level 2 · <b>Voices</b> · ${$('sym').textContent}`:ROOM==='climbs'?`Level 3 · <b>The Climbs</b>`:`The Oracle · <b>${keyName(K)}</b>`}
-function room(r){if(!['seed','keys','gym','oracle','climbs','voice','forms','analysis','ear'].includes(r))r='seed';if(typeof ROOM!=='undefined'&&ROOM&&ROOM!==r)stopAll();if(ROOM==='ear'&&r!=='ear'&&PLAY.src==='ear')stopAll();if(ROOM==='keys'&&r!=='keys'&&typeof micStop==='function'){micStop();KS.sing=null}ROOM=r;
+function room(r){if(!['seed','keys','gym','oracle','climbs','voice','forms','analysis','ear'].includes(r))r='seed';if(typeof ROOM!=='undefined'&&ROOM&&ROOM!==r)stopAll();if(ROOM==='ear'&&r!=='ear'&&PLAY.src==='ear')stopAll();if(ROOM==='keys'&&r!=='keys'&&typeof micStop==='function'){micStop();KS.sing=null}ROOM=r;if(r!=='ear'&&typeof earTeardown==='function')earTeardown();
  document.querySelectorAll('.room').forEach(s=>s.hidden=s.id!=='room-'+r);
  document.querySelectorAll('.rail button,.tabbar button[data-room],.msheet button[data-room]').forEach(b=>b.classList.toggle('on',b.dataset.room===r));const tm=document.getElementById('tbMore');if(tm)tm.classList.toggle('on',['keys','forms','analysis','ear','oracle'].includes(r));const ms=document.getElementById('msheet');if(ms)ms.hidden=true;
  document.querySelectorAll('[data-ask]').forEach(e=>{const q=rnd(QS);e.innerHTML=`<span class="disp">Before you climb</span><span class="q">${q}</span><button class="mini" data-openj>Answer it in your journal</button>`});
@@ -2591,7 +2899,7 @@ $('satbSolo').onclick=()=>{VL.solo=VL.solo>=3?-1:VL.solo+1;$('satbSolo').textCon
    ===================================================================== */
 let SCSONGS={"maj": [{"slot": "Blues/jazz", "song": "What a Wonderful World", "artist": "Louis Armstrong", "year": 1967, "where": "Verse and bridge of the Armstrong recording; the whole tune", "listen_for": "A melody that stays entirely inside the major scale, with no borrowed or altered notes: stepwise and leaping diatonic lines over I–iii–IV–iii–ii7.", "key_heard": "F major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/louis-armstrong/what-a-wonderful-world (F major, verse I–iii–IV–iii–ii7)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Pop", "song": "Count On Me", "artist": "Bruno Mars", "year": 2010, "where": "Verse and chorus (same four-bar loop throughout)", "listen_for": "Bright, completely diatonic melody over I–iii–vi–V–IV with no flattened notes anywhere; the sound of plain major.", "key_heard": "C major", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/bruno-mars/count-on-me (C major, all sections, I–iii–vi–V–IV)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Rock", "song": "Don't Stop Believin'", "artist": "Journey", "year": 1981, "where": "Intro piano riff, verses and chorus", "listen_for": "The I–V–vi–IV loop (E–B–C#m–A) with a melody built from the E major scale; the whole song sits in major with no modal colouring.", "key_heard": "E major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/journey/dont-stop-believin (E major in every section; I–V–vi–IV–I)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Musical theatre", "song": "Do-Re-Mi", "artist": "Rodgers & Hammerstein (The Sound of Music; Mary Martin / Julie Andrews)", "year": 1959, "where": "The refrain, where each solfège syllable is sung on its own scale degree", "listen_for": "Do–Re–Mi–Fa–Sol–La–Ti–Do sung up the major scale, syllable by syllable; the lyric literally teaches the scale.", "key_heard": "B♭ major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/rodgers-and-hammerstein/do-re-mi---the-sound-of-music (B♭ major)", "Wikipedia 'Do-Re-Mi': melody built on the major scale in solfège, each syllable sung on its own pitch https://en.wikipedia.org/wiki/Do-Re-Mi"], "genre_note": null, "content": null, "fallback": false}], "ion": [{"slot": "Blues/jazz", "song": "What a Wonderful World", "artist": "Louis Armstrong", "year": 1967, "where": "Verse and bridge of the Armstrong recording; the whole tune", "listen_for": "A melody that stays entirely inside the major scale, with no borrowed or altered notes: stepwise and leaping diatonic lines over I–iii–IV–iii–ii7.", "key_heard": "F major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/louis-armstrong/what-a-wonderful-world (F major, verse I–iii–IV–iii–ii7)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Pop", "song": "Count On Me", "artist": "Bruno Mars", "year": 2010, "where": "Verse and chorus (same four-bar loop throughout)", "listen_for": "Bright, completely diatonic melody over I–iii–vi–V–IV with no flattened notes anywhere; the sound of plain major.", "key_heard": "C major", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/bruno-mars/count-on-me (C major, all sections, I–iii–vi–V–IV)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Rock", "song": "Don't Stop Believin'", "artist": "Journey", "year": 1981, "where": "Intro piano riff, verses and chorus", "listen_for": "The I–V–vi–IV loop (E–B–C#m–A) with a melody built from the E major scale; the whole song sits in major with no modal colouring.", "key_heard": "E major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/journey/dont-stop-believin (E major in every section; I–V–vi–IV–I)"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Musical theatre", "song": "Do-Re-Mi", "artist": "Rodgers & Hammerstein (The Sound of Music; Mary Martin / Julie Andrews)", "year": 1959, "where": "The refrain, where each solfège syllable is sung on its own scale degree", "listen_for": "Do–Re–Mi–Fa–Sol–La–Ti–Do sung up the major scale, syllable by syllable; the lyric literally teaches the scale.", "key_heard": "B♭ major", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/rodgers-and-hammerstein/do-re-mi---the-sound-of-music (B♭ major)", "Wikipedia 'Do-Re-Mi': melody built on the major scale in solfège, each syllable sung on its own pitch https://en.wikipedia.org/wiki/Do-Re-Mi"], "genre_note": null, "content": null, "fallback": false}], "nmin": [{"slot": "Pop", "song": "Rolling in the Deep", "artist": "Adele", "year": 2010, "where": "Verse (i–v–VII) and chorus (i–VII–VI)", "listen_for": "Minor with a flat sixth and flat seventh and a minor v chord (G minor, not G major): the chord loop i–VII–VI never uses a raised seventh.", "key_heard": "C minor", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/adele/rolling-in-the-deep (C minor; verse i–v–VII, chorus i–VII–VI7–VII, minor v throughout)"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: anger and heartbreak themes, no explicit language."}, "fallback": false}, {"slot": "Rock", "song": "All Along the Watchtower", "artist": "Jimi Hendrix Experience (Bob Dylan song)", "year": 1968, "where": "Verse and the repeating riff/solo loop; Hendrix version", "listen_for": "Three-chord loop i–♭VII–♭VI–♭VII (Cm–B♭–A♭–B♭) which is the classic Aeolian 'rock minor' sound.", "key_heard": "C minor (Hendrix recording)", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/jimi-hendrix/all-along-the-watchtower (C minor / Aeolian; i–VII–VI–VII)", "hellomusictheory.com Songs in the Aeolian Mode (i–VII–VI–VII) https://hellomusictheory.com/learn/songs-in-the-aeolian-mode/", "Wikipedia 'Aeolian mode' lists the song https://en.wikipedia.org/wiki/Aeolian_mode"], "genre_note": null, "content": null, "fallback": false}], "hmin": [{"slot": "Blues/jazz", "song": "Minor Swing", "artist": "Quintette du Hot Club de France (Django Reinhardt & Stéphane Grappelli)", "year": 1937, "where": "Head and every solo chorus; Am–Dm–E7 cycle", "listen_for": "Phrases rise to the raised seventh (G♯) over the E7 chord, then drop the augmented second to the tonic: the 'gypsy jazz' sound.", "key_heard": "A minor (A harmonic minor)", "sources": ["Wikipedia 'Minor Swing' (composition): key A minor; Am / Dm / E7 changes; recorded Paris 25 Nov 1937 https://en.wikipedia.org/wiki/Minor_Swing_(composition)", "Peghead Nation: harmonic minor over Am, Dm6, E7 in Minor Swing https://pegheadnation.com/string-school/courses/theory-mandolin-and-fiddle/harmonic-minor-scale-and-gypsy-jazz/", "HubGuitar repertoire page: scales used = A minor and A harmonic minor https://hubguitar.com/repertoire/minor-swing"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Rock", "song": "Hotel California", "artist": "Eagles", "year": 1976, "where": "Verse chord cycle (Bm–F♯7–A–E–G–D–Em–F♯7); the F♯7 each time", "listen_for": "The F♯7 chord contains A♯, the raised seventh of B minor: that major-V 'pull' back to Bm is the harmonic-minor sound.", "key_heard": "B minor", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/eagles/hotel-california (verse B minor: i – V7 – VII(add9) – IV9 – VI)"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: hedonism and addiction imagery in the lyric."}, "fallback": false}], "dor": [{"slot": "Blues/jazz", "song": "So What", "artist": "Miles Davis (Kind of Blue)", "year": 1959, "where": "Whole head after the bass/piano intro: A sections and the 8-bar bridge", "listen_for": "Two chords only: D Dorian for 16 bars (the natural B is the Dorian note), then the same shape up a semitone in E♭ Dorian for the bridge, then back to D.", "key_heard": "D Dorian (A sections), E♭ Dorian (bridge)", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/miles-davis/so-what (D Dorian, ii7(add11) → i7(add11))", "Wikipedia 'Dorian mode': A sections D Dorian, B section E♭ Dorian https://en.wikipedia.org/wiki/Dorian_mode", "Ethan Hein, Identifying the diatonic modes https://www.ethanhein.com/wp/2024/identifying-the-diatonic-modes/", "hellomusictheory.com Songs in the Dorian Mode https://hellomusictheory.com/learn/songs-in-the-dorian-mode/"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Pop", "song": "Uptown Funk", "artist": "Mark Ronson feat. Bruno Mars", "year": 2014, "where": "The main riff and chorus", "listen_for": "The i7 → IV9 shuffle (Dm7 to G9): the major IV chord carries the Dorian raised sixth (B natural over D minor).", "key_heard": "D Dorian", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/mark-ronson/uptown-funk (D Dorian, chorus i7 → IV9)", "Wikipedia 'Dorian mode': Uptown Funk, D Dorian https://en.wikipedia.org/wiki/Dorian_mode"], "genre_note": null, "content": {"language": true, "themes": true, "note": "Mild: some coarse words, swagger and suggestive lines (lyrics not word-checked)."}, "fallback": false}, {"slot": "Rock", "song": "Another Brick in the Wall (Part 2)", "artist": "Pink Floyd", "year": 1979, "where": "Intro bass/guitar riff and verses (i–IV)", "listen_for": "The riff and verse hover on D minor with a major IV chord (G), so the sixth degree is B natural: the Dorian signature.", "key_heard": "D Dorian", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/pink-floyd/another-brick-in-the-wall-(part-2) (D Dorian, all sections)", "Wikipedia 'Dorian mode': Another Brick in the Wall, D Dorian https://en.wikipedia.org/wiki/Dorian_mode"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: anti-school sarcasm; a children's choir sings the chorus."}, "fallback": false}], "lyd": [{"slot": "Rock", "song": "Flying in a Blue Dream", "artist": "Joe Satriani", "year": 1989, "where": "Main theme (instrumental)", "listen_for": "Soaring theme that keeps landing on the raised fourth over a static tonic.", "key_heard": "C Lydian", "sources": ["Wikipedia 'Lydian mode' lists it https://en.wikipedia.org/wiki/Lydian_mode", "fachords.com Guitar Scales Through Examples (C Lydian) https://www.fachords.com/guitar-scale-song-examples/", "thefretboard.co.uk thread cites it as Lydian https://thefretboard.co.uk/discussion/comment/1590883/favicon.ico"], "genre_note": "Instrumental rock; recognisable mainly to guitar students.", "content": null, "fallback": false}], "mix": [{"slot": "Blues/jazz", "song": "All Blues", "artist": "Miles Davis (Kind of Blue)", "year": 1959, "where": "The repeating 6/8 bass vamp and horn riff, then each solo chorus", "listen_for": "A 12-bar blues in 6/8 on G Mixolydian: the F natural (flat seventh) over a dominant tonic chord is the mode's trademark.", "key_heard": "G Mixolydian", "sources": ["Wikipedia 'All Blues': original key G; described as Mixolydian; modal jazz https://en.wikipedia.org/wiki/All_Blues", "hellomusictheory.com Songs in the Mixolydian Mode https://hellomusictheory.com/learn/songs-in-the-mixolydian-mode/", "fachords.com Guitar Scales Through Examples (G Mixolydian) https://www.fachords.com/guitar-scale-song-examples/"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Pop", "song": "Don't Stop 'Til You Get Enough", "artist": "Michael Jackson", "year": 1979, "where": "Opening vocal line and chorus", "listen_for": "The opening 'tritone' leap and the chord pattern with a major chord on the flat seventh (A) beside the tonic (B).", "key_heard": "B Mixolydian", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/michael-jackson/dont-stop-til-you-get-enough (B Mixolydian, chorus VII → I11)", "Ethan Hein, Identifying the diatonic modes (B Mixolydian, chords A/B alternating) https://www.ethanhein.com/wp/2024/identifying-the-diatonic-modes/"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: dance-floor/romantic lyrics."}, "fallback": false}, {"slot": "Rock", "song": "Clocks", "artist": "Coldplay", "year": 2002, "where": "Opening piano riff and verses", "listen_for": "The rolling piano pattern over E♭–B♭m–Fm (I–v–ii) with D♭ as the flat seventh: major tonic with a minor v.", "key_heard": "E♭ Mixolydian", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/coldplay/clocks (E♭ Mixolydian: I – v – ii7)", "hellomusictheory.com Songs in the Mixolydian Mode (E♭ Mixolydian) https://hellomusictheory.com/learn/songs-in-the-mixolydian-mode/", "fachords.com Guitar Scales Through Examples https://www.fachords.com/guitar-scale-song-examples/", "Wikipedia 'Mixolydian mode' lists the song https://en.wikipedia.org/wiki/Mixolydian"], "genre_note": null, "content": null, "fallback": false}, {"slot": "Metal", "song": "Thunderstruck", "artist": "AC/DC", "year": 1990, "where": "Intro riff, verses and chorus", "listen_for": "Verse and chorus chords of B–A–E (I–♭VII–IV): major tonic with a major chord on the flat seventh.", "key_heard": "B Mixolydian", "sources": ["Wikipedia 'Mixolydian mode' lists the song (classed as rock) https://en.wikipedia.org/wiki/Mixolydian", "fachords.com Guitar Scales Through Examples (Thunderstruck listed as Mixolydian) https://www.fachords.com/guitar-scale-song-examples/"], "genre_note": "AC/DC are usually classed as hard rock rather than metal; used as a metal-adjacent stand-in.", "content": null, "fallback": false}], "loc": [{"slot": "Pop", "song": "Army of Me", "artist": "Björk", "year": 1995, "where": "Opening bass riff and the verses (from the first second)", "listen_for": "The grinding bass riff leans on the flat second and flat fifth; the tonic C is heard as unstable because the fifth above it is diminished (G♭, not G).", "key_heard": "C Locrian (riff and verse); chorus shifts to C minor", "sources": ["Hooktheory TheoryTab: https://hooktheory.com/theorytab/view/bjork/army-of-me (C Locrian intro and verse; chorus C minor)", "Ethan Hein, Musical simples: Army of Me (bass riff entirely Locrian) https://ethanhein.substack.com/p/musical-simples-army-of-me", "Wikipedia 'Locrian mode': C Locrian bass line https://en.wikipedia.org/wiki/Locrian_mode", "cmuse.org Songs in the Locrian Mode (notes the vocal also suggests Phrygian) https://www.cmuse.org/?p=67866"], "genre_note": null, "content": {"language": false, "themes": true, "note": "Mild: aggressive, confrontational lyric; no explicit language."}, "fallback": false}], "mpent": [{"slot": "Blues/jazz", "song": "Amazing Grace", "artist": "Traditional hymn (John Newton words, 1779)", "year": 1779, "where": "The whole melody, any verse", "listen_for": "Five notes only (do re mi sol la); no fa or ti anywhere in the tune, which is why it sounds open and folk-like.", "key_heard": "Any major key (commonly sung in G, F or D)", "sources": ["Wikipedia 'Pentatonic scale': hymn melodies sometimes pentatonic https://en.wikipedia.org/wiki/Pentatonic_scale", "fachords.com Guitar Scales Through Examples https://www.fachords.com/guitar-scale-song-examples/"], "genre_note": "Fallback: no recognisable jazz example; folk/hymn used.", "content": null, "fallback": true}], "whole": [{"slot": "Blues/jazz", "song": "Voiles (Préludes, Book 1)", "artist": "Claude Debussy", "year": 1910, "where": "Whole opening and closing sections", "listen_for": "Six notes a whole tone apart, so no tonic pull: floating, dream-like.", "key_heard": "Whole-tone (A♭/B♭ whole-tone sets)", "sources": ["fachords.com Guitar Scales Through Examples ('stays almost entirely within the whole tone scale') https://www.fachords.com/guitar-scale-song-examples/", "Wikipedia list of pieces using the whole-tone scale; ragajunglism.org whole-tone examples https://ragajunglism.org/scales/whole-tone/"], "genre_note": "Fallback: classical (piano), used because no recognisable jazz example.", "content": null, "fallback": true}, {"slot": "Pop", "song": "You Are the Sunshine of My Life", "artist": "Stevie Wonder", "year": 1973, "where": "The piano intro, before the vocal enters", "listen_for": "An ascending whole-tone run in the piano intro.", "key_heard": "B major (song); whole-tone intro", "sources": ["Wikipedia list of pieces using the whole-tone scale (cites Perone 2006): introduction https://en.wikipedia.org/wiki/List_of_pieces_that_use_the_whole-tone_scale", "fachords.com Guitar Scales Through Examples https://www.fachords.com/guitar-scale-song-examples/", "ragajunglism.org whole-tone examples https://ragajunglism.org/scales/whole-tone/"], "genre_note": "Whole-tone is the intro only; the song itself is major.", "content": null, "fallback": false}], "phrd": [{"slot": "Rock", "song": "Misirlou", "artist": "Dick Dale and His Del-Tones", "year": 1962, "where": "The opening tremolo-picked melody and the solo", "listen_for": "Tremolo-picked melody with the flat second and an augmented second to the major third.", "key_heard": "E Phrygian dominant", "sources": ["Hooktheory TheoryTab: https://www.hooktheory.com/theorytab/view/dick-dale/misirlou (E Phrygian Dominant, verse I–II)", "Wikipedia 'Phrygian dominant scale' lists Misirlou https://en.wikipedia.org/wiki/Phrygian_dominant_scale", "Hooktheory (Greek version) https://www.hooktheory.com/theorytab/view/tetos-dimitriadis/misirlou (D♯ Phrygian Dominant)"], "genre_note": null, "content": null, "fallback": false}]},IVSONGS={"m2": {"up": [{"song": "Theme from Jaws", "artist_or_origin": "John Williams (film Jaws)", "year": 1975, "where": "Two-note bass ostinato, first two notes", "notes": "E–F (alternating; octave varies)", "content": null}, {"song": "The Pink Panther Theme", "artist_or_origin": "Henry Mancini", "year": 1963, "where": "Opening riff, first two notes (then F♯–G)", "notes": "D♯–E", "content": null}], "down": [{"song": "Für Elise", "artist_or_origin": "Ludwig van Beethoven", "year": 1810, "where": "Opening motif, first two notes", "notes": "E–D♯ (E5–D♯5), repeated", "content": null}, {"song": "Joy to the World", "artist_or_origin": "Isaac Watts (words); tune arr. Lowell Mason", "year": 1719, "where": "'Joy' to 'to' = tonic down to leading note (do'–ti)", "notes": "e.g. C5–B4 in C major (D5–C♯5 in D)", "content": null}]}, "M2": {"up": [{"song": "Frère Jacques", "artist_or_origin": "Traditional (French)", "year": null, "where": "'Frè-re Jac-ques': first two notes (do–re)", "notes": "C4–D4 in C", "content": null}, {"song": "Do-Re-Mi", "artist_or_origin": "Rodgers & Hammerstein (The Sound of Music)", "year": 1959, "where": "First two notes of the refrain (do–re)", "notes": "C4–D4 in C", "content": null}, {"song": "Rudolph the Red-Nosed Reindeer", "artist_or_origin": "Johnny Marks", "year": 1949, "where": "First two notes of the opening line (sol–la, then sol–mi–do)", "notes": "G4–A4 in C", "content": null}], "down": [{"song": "Mary Had a Little Lamb", "artist_or_origin": "Traditional (children's song)", "year": null, "where": "'Ma-ry': first two notes (mi–re)", "notes": "E4–D4 in C", "content": null}, {"song": "The First Noel", "artist_or_origin": "Traditional (English carol)", "year": null, "where": "'The first': first two notes (mi–re) before the stepwise descent to do", "notes": "E4–D4 in C (carol often sung in D)", "content": null}, {"song": "Friday", "artist_or_origin": "Rebecca Black", "year": 2011, "where": "Chorus hook: its first two notes", "notes": "descending M2 between the hook's first two notes (pitches not stated by sources)", "content": null}]}, "m3": {"up": [{"song": "Greensleeves", "artist_or_origin": "Traditional (English)", "year": null, "where": "'A-las my love': pick-up A to C (first two notes)", "notes": "A4–C5 in A minor (E–G in E minor)", "content": null}, {"song": "Smoke on the Water", "artist_or_origin": "Deep Purple", "year": 1972, "where": "Opening guitar riff, first two notes (then C)", "notes": "G–B♭", "content": null}], "down": [{"song": "Hey Jude", "artist_or_origin": "The Beatles", "year": 1968, "where": "First two notes of the opening line (so–mi)", "notes": "C–A in F", "content": null}, {"song": "The Star-Spangled Banner", "artist_or_origin": "Francis Scott Key / John Stafford Smith", "year": 1814, "where": "'O say': first two notes (so–mi, then mi–do)", "notes": "e.g. G4–E4 in C (so–mi)", "content": null}, {"song": "This Old Man", "artist_or_origin": "Traditional (English nursery song)", "year": null, "where": "'This old': first two notes (so–mi)", "notes": "G4–E4 in C", "content": null}]}, "M3": {"up": [{"song": "When the Saints Go Marching In", "artist_or_origin": "Traditional (spiritual)", "year": null, "where": "'Oh when': first two notes (do–mi)", "notes": "C4–E4 in C", "content": null}], "down": [{"song": "Swing Low, Sweet Chariot", "artist_or_origin": "Traditional (African-American spiritual)", "year": null, "where": "'Swing low': first two notes (mi–do)", "notes": "M3 down (pitches vary by key)", "content": {"language": false, "themes": true, "note": "Spiritual from the era of slavery; sensitive historical context worth framing."}}, {"song": "Symphony No. 5, 1st movement", "artist_or_origin": "Ludwig van Beethoven", "year": 1808, "where": "Hook: G–G–G then E♭. The falling M3 is the leap after three repeated notes, so the first two notes are a unison", "notes": "G4–E♭4", "content": null}]}, "P4": {"up": [{"song": "Amazing Grace", "artist_or_origin": "Traditional hymn (words John Newton)", "year": null, "where": "'A-ma-zing': first two notes (so–do')", "notes": "e.g. D4–G4 in G (C4–F4 in F)", "content": null}, {"song": "Here Comes the Bride (Bridal Chorus)", "artist_or_origin": "Richard Wagner (Lohengrin)", "year": 1850, "where": "'Here comes': first two notes (so–do')", "notes": "G–C", "content": null}, {"song": "Hedwig's Theme (Harry Potter)", "artist_or_origin": "John Williams", "year": 2001, "where": "Celesta opening, first two notes (then G, F♯, E)", "notes": "B–E (octave varies)", "content": null}], "down": [{"song": "Today", "artist_or_origin": "The Smashing Pumpkins", "year": 1993, "where": "Very first notes of the song: the high two-note guitar intro", "notes": "E♭5–B♭4 sounding (guitars tuned down a semitone; tab shows D–A)", "content": {"language": false, "themes": true, "note": "Lyrics deal with depression and suicidal thoughts."}}]}, "TT": {"up": [{"song": "Maria (West Side Story)", "artist_or_origin": "Leonard Bernstein / Stephen Sondheim", "year": 1957, "where": "First two notes of the opening line", "notes": "tritone up (e.g. C–F♯ as given in sources)", "content": null}, {"song": "The Simpsons Theme", "artist_or_origin": "Danny Elfman", "year": 1989, "where": "The opening notes of the theme (lydian 'do–fi')", "notes": "tritone up (e.g. C–F♯)", "content": null}]}, "P5": {"up": [{"song": "Also sprach Zarathustra (Sunrise)", "artist_or_origin": "Richard Strauss", "year": 1896, "where": "Opening trumpet fanfare: C–G then C", "notes": "C–G (then G–C')", "content": null}, {"song": "Star Wars (Main Title)", "artist_or_origin": "John Williams", "year": 1977, "where": "First bar of the melody: B♭ up to F", "notes": "B♭–F", "content": null}], "down": [{"song": "Minuet in G (BWV Anh. 114)", "artist_or_origin": "Christian Petzold (long attributed to J. S. Bach)", "year": 1725, "where": "Opening of right-hand melody: D then G (then A–B–C–D)", "notes": "D5–G4", "content": null}]}, "m6": {"up": [{"song": "The Entertainer", "artist_or_origin": "Scott Joplin", "year": 1902, "where": "Opening run D–D♯–E (chromatic pick-up), then the leap E up to high C: the iconic m6", "notes": "E4–C5 (after pick-up D–D♯–E)", "content": null}, {"song": "We Are Young", "artist_or_origin": "fun. ft. Janelle Monáe", "year": 2011, "where": "Chorus hook: the sustained note covers an ascending m6", "notes": "m6 on the sustained note of the chorus hook (pitches not stated by sources)", "content": {"language": false, "themes": true, "note": "Lyrics reference drinking and getting drunk."}}]}, "M6": {"up": [{"song": "My Bonnie Lies over the Ocean", "artist_or_origin": "Traditional (Scottish)", "year": null, "where": "'My Bon-': first two notes (so,–mi)", "notes": "G3–E4 in C", "content": null}, {"song": "NBC Chimes", "artist_or_origin": "NBC (US network)", "year": 1927, "where": "Three chime notes G–E–C; the first interval is G up to E", "notes": "G–E (then C)", "content": null}], "down": [{"song": "Man in the Mirror", "artist_or_origin": "Michael Jackson", "year": 1987, "where": "Chorus: after the highest note so far, the voice falls a M6", "notes": "M6 down in the chorus (pitches not stated)", "content": null}, {"song": "Nobody Knows the Trouble I've Seen", "artist_or_origin": "Traditional (African-American spiritual)", "year": null, "where": "'No-bo-': per UIdaho the interval is so–mi (high to low)", "notes": "M6 down (so–mi; pitches vary by key)", "content": {"language": false, "themes": true, "note": "Spiritual from the era of slavery; sensitive historical context."}}]}, "m7": {"up": [{"song": "Somewhere (West Side Story)", "artist_or_origin": "Leonard Bernstein / Stephen Sondheim", "year": 1957, "where": "The song opens with an ascending m7, then a descending m2", "notes": "m7 up (key varies)", "content": null}], "down": [{"song": "Watermelon Man", "artist_or_origin": "Herbie Hancock", "year": 1962, "where": "First two notes of the lead melody (Soundfly)", "notes": "m7 down", "content": null}]}, "M7": {"up": [{"song": "Take On Me", "artist_or_origin": "a-ha", "year": 1985, "where": "Chorus hook: its first two notes are a M7 leap (direction per all list sources)", "notes": "M7 up in the chorus hook (pitches not stated)", "content": null}, {"song": "Don't Know Why", "artist_or_origin": "Norah Jones", "year": 2002, "where": "Per Musical-U: between the first two notes of the opening line", "notes": "M7 up (pitches not stated)", "content": null}], "down": [{"song": "I Love You", "artist_or_origin": "Cole Porter", "year": 1944, "where": "The first two notes of the opening line", "notes": "M7 down between the first two notes", "content": null}]}, "P8": {"up": [{"song": "Somewhere Over the Rainbow", "artist_or_origin": "Harold Arlen / E. Y. Harburg", "year": 1939, "where": "First two notes of the opening line", "notes": "octave up (E♭4–E♭5 in the original published key)", "content": null}]}};
 const KS={tab:'scales',tonic:'C',sc:'maj',desc:false,inst:'piano',clef:'treble',ring:'C',
- iv:{start:'C',k:'M3',dir:'up'},gym:{mode:'name',q:null,right:0,n:0,hist:[],voice:'high',dirs:{up:true,down:true,harm:false}},sing:null};
+ iv:{start:'C',k:'M3',dir:'up'},gym:{mode:'name',q:null,right:0,n:0,hist:[],voice:'high',dirs:{up:true,down:true,harm:false},st:(()=>{const z=()=>({n:0,ok:0,streak:0,best:0});let v=null;try{v=JSON.parse(localStorage.getItem('cjg_kgym')||'null')}catch(e){}return{name:{...z(),...((v&&v.name)||{})},sing:{...z(),...((v&&v.sing)||{})}}})()},sing:null};
 const degSemi=d=>{const n=parseInt(d.replace(/[#b]/g,''));let a=0;for(const ch of d.replace(/\d/g,''))a+=ch==='#'?1:-1;return NAT[(n-1)%7]+a+12*Math.floor((n-1)/7)};
 function degPretty(d){return d.replace(/bb/g,'𝄫').replace(/##/g,'𝄪').replace(/b/g,'♭').replace(/#/g,'♯')}
 const SCALES=[
@@ -2785,14 +3093,17 @@ function gymLabel(x){return x.tt?'Tritone':x.k}
 function newQ(){const G=KS.gym,set=gymSet(),dirs=Object.keys(G.dirs).filter(k=>G.dirs[k]);if(!dirs.length)G.dirs.up=true;
  const iv=rnd(set),dir=rnd(Object.keys(G.dirs).filter(k=>G.dirs[k])),base=G.mode==='sing'?(G.voice==='high'?60:48)+Math.floor(Math.random()*7):52+Math.floor(Math.random()*14);
  const st=dir==='down'?base+iv.s:base;G.q={iv,dir,m0:st,m1:dir==='down'?st-iv.s:st+iv.s,ans:null};return G.q}
+/* R5: the interval quiz and Sing it back keep a score, a streak and a best, per mode, shown with the Ear Lab's tally */
+function gymRec(ok){const G=KS.gym,t=G.st[G.mode];t.n++;if(ok){t.ok++;t.streak++;t.best=Math.max(t.best,t.streak)}else t.streak=0;G.right=t.ok;G.n=t.n;try{localStorage.setItem('cjg_kgym',JSON.stringify(G.st))}catch(e){}}
+function gymTallyRefresh(){const e=$('ivGym')&&$('ivGym').querySelector('.el-tally');if(e)e.outerHTML=earTallyHTML(KS.gym.st[KS.gym.mode],'kt')}
 function playQ(){const q=KS.gym.q;if(!q)return;if(q.dir==='harm')play([q.m0,q.m1],0,'piano');else play([q.m0,q.m1],.7,'piano')}
 function renderGymUI(){const G=KS.gym,el=$('ivGym');if(!el)return;const q=G.q;
- let s=`<div class="gtabs"><button class="mini ${G.mode==='name'?'gold':''}" data-kgm="name">Hear it · name it</button><button class="mini ${G.mode==='sing'?'gold':''}" data-kgm="sing">Sing it back</button></div>`;
- if(G.mode==='name'){s+=`<div class="ctrl" style="margin-top:10px">${['up','down','harm'].map(d=>`<label class="tick"><input type="checkbox" data-kgd="${d}" ${G.dirs[d]?'checked':''}> ${d==='up'?'up':d==='down'?'down':'together'}</label>`).join('')}<span class="note">${G.n?`Score: <b style="color:var(--goldhi)">${G.right} / ${G.n}</b>`:'Uses the intervals for your stage.'}</span></div>`;
+ let s=`<div class="kqhead"><div class="gtabs"><button class="mini ${G.mode==='name'?'gold':''}" data-kgm="name">Hear it · name it</button><button class="mini ${G.mode==='sing'?'gold':''}" data-kgm="sing">Sing it back</button></div>${earTallyHTML(G.st[G.mode],'kt')}</div>`;
+ if(G.mode==='name'){s+=`<div class="ctrl" style="margin-top:10px">${['up','down','harm'].map(d=>`<label class="tick"><input type="checkbox" data-kgd="${d}" ${G.dirs[d]?'checked':''}> ${d==='up'?'up':d==='down'?'down':'together'}</label>`).join('')}<span class="note">Uses the intervals for your stage.</span></div>`;
   s+=`<div class="gq">${q?`<button class="mini gold" data-kgq="again">↻ Hear it again</button>`:''}<button class="mini ${q?'':'gold'}" data-kgq="new">${q?'Next interval →':'▶ Start'}</button></div>`;
   if(q){s+=`<div class="gans">${gymSet().map(x=>`<button class="chip ${q.ans?(gymLabel(x)===gymLabel(q.iv)?'right':gymLabel(x)===q.ans?'wrong':''):''}" data-kga="${gymLabel(x)}">${gymLabel(x)}</button>`).filter((v,i,a)=>a.indexOf(v)===i).join('')}</div>`;
    if(q.ans){const ok=q.ans===gymLabel(q.iv),a=spell(LET.indexOf(KS.iv.start[0]),q.m0);s+=`<div class="${ok?'ok':'iss warn'}" style="margin-top:10px">${ok?'✓ Yes: ':'Not quite. It was '}<b>${q.iv.n}</b> ${q.dir==='harm'?'played together':q.dir==='up'?'going up':'going down'}. In solfa: ${q.iv.so}.</div>`}}}
- else{s+=`<div class="ctrl" style="margin-top:10px"><span class="note" style="margin-left:0">Voice:</span>${['high','low'].map(v=>`<button class="mini ${G.voice===v?'gold':''}" data-kgv="${v}">${v==='high'?'Higher voice':'Lower voice'}</button>`).join('')}<span class="note">${G.n?`Sung in tune: <b style="color:var(--goldhi)">${G.right} / ${G.n}</b>`:''}</span></div>`;
+ else{s+=`<div class="ctrl" style="margin-top:10px"><span class="note" style="margin-left:0">Voice:</span>${['high','low'].map(v=>`<button class="mini ${G.voice===v?'gold':''}" data-kgv="${v}">${v==='high'?'Higher voice':'Lower voice'}</button>`).join('')}<span class="note">Sung in tune, within 40 cents.</span></div>`;
   if(q&&q.dir==='harm')q.dir='up';
   s+=`<div class="gq"><button class="mini gold" data-kgq="snew">${q?'Next interval →':'▶ Start'}</button>${q?'<button class="mini" data-kgq="sref">↻ Starting note</button><button class="mini" data-kgq="shint">Hear the answer</button>':''}</div>`;
   if(q){const a=spell(0,q.m0);s+=`<div class="singtask">Sing <b>${q.iv.n}</b> ${q.dir==='down'?'down':'up'} from the note you hear. <span class="note">(${q.iv.so})</span></div><div class="meter" id="ksMeter"><div class="tgt"></div><div class="needle" id="ksNeedle"></div><span id="ksHeard">Listening…</span></div>`}}
@@ -2846,15 +3157,15 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-ktab],[dat
  if(d.kiv){KS.iv.k=d.kiv;renderIntervals();const[a,b]=ivNotes(KS.iv.start,IVS.find(x=>x.k===KS.iv.k),KS.iv.dir);play([a.midi,b.midi],.6,'piano');logIt('looked at the interval '+d.kiv);return}
  if(d.kivd){KS.iv.dir=d.kivd;renderIntervals();const[a,b]=ivNotes(KS.iv.start,IVS.find(x=>x.k===KS.iv.k),KS.iv.dir);play([a.midi,b.midi],.6,'piano');return}
  const G=KS.gym;
- if(d.kgm){G.mode=d.kgm;G.q=null;G.right=0;G.n=0;micStop();renderGymUI();return}
+ if(d.kgm){G.mode=d.kgm;G.q=null;G.right=G.st[G.mode].ok;G.n=G.st[G.mode].n;micStop();renderGymUI();return}
  if(d.kgv){G.voice=d.kgv;G.q=null;renderGymUI();return}
  if(d.kgq==='new'){newQ();renderGymUI();playQ();return}
  if(d.kgq==='again'){playQ();return}
- if(d.kga&&G.q&&!G.q.ans){G.q.ans=d.kga;G.n++;if(d.kga===gymLabel(G.q.iv))G.right++;renderGymUI();if(G.n%10===0)logIt(`aural gym: named ${G.right}/${G.n} intervals`);return}
+ if(d.kga&&G.q&&!G.q.ans){G.q.ans=d.kga;gymRec(d.kga===gymLabel(G.q.iv));renderGymUI();if(G.n%10===0)logIt(`aural gym: named ${G.right}/${G.n} intervals`);return}
  if(d.kgq==='snew'){G.dirs.harm=false;newQ();if(G.q.dir==='harm')G.q.dir='up';renderGymUI();play([G.q.m0],0,'piano');const q=G.q;
-  setTimeout(()=>singListen(q.m1,()=>{if(G.q!==q)return;G.right++;G.n++;micStop();tone(q.m1,ac().currentTime,'piano');const el=$('ksMeter');if(el)el.outerHTML=`<div class="ok" style="margin-top:10px">✓ In tune: ${q.iv.n}. ${q.iv.so}.</div>`;const sp=$('ivGym').querySelector('.note b');if(sp)sp.textContent=G.right+' / '+G.n}).then(ok=>{if(!ok){const el=$('ksMeter');if(el)el.outerHTML=`<div class="iss warn"><span>!</span>${MICFAIL}</div>`}}),900);return}
+  setTimeout(()=>singListen(q.m1,()=>{if(G.q!==q)return;gymRec(true);micStop();tone(q.m1,ac().currentTime,'piano');const el=$('ksMeter');if(el)el.outerHTML=`<div class="ok" style="margin-top:10px">✓ In tune: ${q.iv.n}. ${q.iv.so}.</div>`;gymTallyRefresh()}).then(ok=>{if(!ok){const el=$('ksMeter');if(el)el.outerHTML=`<div class="iss warn"><span>!</span>${MICFAIL}</div>`}}),900);return}
  if(d.kgq==='sref'&&G.q){play([G.q.m0],0,'piano');return}
- if(d.kgq==='shint'&&G.q){play([G.q.m0,G.q.m1],.7,'piano');if(!G.q.counted){G.q.counted=1;G.n++}return}
+ if(d.kgq==='shint'&&G.q){play([G.q.m0,G.q.m1],.7,'piano');if(!G.q.counted){G.q.counted=1;gymRec(false);gymTallyRefresh()}return}
 });
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.kgd){KS.gym.dirs[t.dataset.kgd]=t.checked;if(!Object.values(KS.gym.dirs).some(Boolean)){KS.gym.dirs.up=true}renderGymUI()}});
 $('ksMySongForm').onsubmit=e=>{e.preventDefault();const v=$('ksMySong').value.trim();if(!v)return;const A=LS.get('cjg_myscsongs')||{};(A[KS.sc]=A[KS.sc]||[]).push(v);LS.set('cjg_myscsongs',A);$('ksMySong').value='';renderScales();logIt(`heard the ${scaleName(KS.tonic,KS.sc)} in "${v}"`);toast('Saved to your journal log')};
@@ -6237,7 +6548,7 @@ function sylLine(c){const m=SYLM[c];return m?`Syllabus: ${m.n} · ${[...m.e].map
    EAR LAB (Level 3)
    ===================================================================== */
 const EARSAVE=LS.get('cjg_ear')||{};
-const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,all:!!EARSAVE.all,rhy:{pulse:!EARSAVE.rhy||EARSAVE.rhy.pulse!==false,bpm:EARSAVE.rhy&&EARSAVE.rhy.bpm===72?72:100},q:null,ans:[],done:false,res:null,meta:null,blind:null};
+const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,all:!!EARSAVE.all,rhy:{pulse:!EARSAVE.rhy||EARSAVE.rhy.pulse!==false,bpm:EARSAVE.rhy&&(EARSAVE.rhy.bpm===72||EARSAVE.rhy.bpm===100)?EARSAVE.rhy.bpm:null},q:null,ans:[],done:false,res:null,meta:null,blind:null};
 function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all,rhy:EAR.rhy})}
 const EDR=[['metre','Pulse and metre','4–5'],['rhy','Rhythm dictation','4–5'],['qual','Chord quality','4–6'],['cad','Cadences','5–6'],['bass','Bass and numerals','5–6'],['mel','Melodic dictation','4–6'],['blind','Blind analysis','5–6']];
 /* EL-11: each drill's levels are rungs (Rung 1, 2, 3). One Stage table, EARSTAGE (0.48 design spec, section 3): the Stage at which each
@@ -6263,9 +6574,9 @@ const METRES={'2/4':{b:2,sub:2,acc:[2,0]},'3/4':{b:3,sub:2,acc:[2,0,0]},'4/4':{b
 const METL={'2/4':'Simple duple (2/4)','3/4':'Simple triple (3/4)','4/4':'Simple quadruple (4/4)','6/8':'Compound duple (6/8)','9/8':'Compound triple (9/8)','12/8':'Compound quadruple (12/8)','5/4':'Irregular: 5/4 (3+2)','7/8':'Irregular: 7/8 (2+2+3)'};
 // rung 3 has all eight metres (0.48 design spec: no dead cell in the answer grid)
 function earMetreOpts(l){return l===1?['2/4','3/4','4/4']:l===2?['2/4','3/4','4/4','6/8','9/8','12/8']:['2/4','3/4','4/4','6/8','9/8','12/8','5/4','7/8']}
-function earGenMetre(l,r){const m=epick(earMetreOpts(l),r),M=METRES[m],ev=[];let t=0;
+function earGenMetre(l,r,fix){const m=fix?fix.m:epick(earMetreOpts(l),r),M=METRES[m],ev=[];let t=0;
  // tempo is drawn at random for every metre (60–120 beats a minute), so speed never gives away simple or compound
- const bpm=60+Math.floor(r()*61),bd=60/bpm,q8=bd/2;
+ const bpm=fix?fix.bpm:60+Math.floor(r()*61),bd=60/bpm,q8=bd/2;
  // a pattern of accented beats and lighter subdivisions; t in seconds
  for(let bar=0;bar<4;bar++){if(m==='7/8'){M.grp.forEach((g,gi)=>{for(let s=0;s<g;s++){ev.push({t,a:s===0?(gi===0?2:1):-1});t+=q8}});continue}
   for(let b=0;b<M.b;b++){ev.push({t,a:M.acc[b]});for(let s=1;s<M.sub;s++)if(r()<.75)ev.push({t:t+bd*s/M.sub,a:-1});t+=bd}}
@@ -6498,7 +6809,7 @@ function elPlay(item=EAR.q,variant='all',opts={}){if(!item)return null;const now
   elPreload(item.d).then(()=>{const p=ELT.pend;if(p&&p.item===item&&p.variant===variant){ELT.pend=null;ELT.st='idle';elPlay(item,variant,opts)}}).catch(()=>{if(ELT.pend&&ELT.pend.item===item)elIdle('error')});return elInfo()}
  stopAll();const A=ac();SEND.v=0;MAST.disconnect();MAST.connect(elLim(A));const d=variant==='tap'?'tap':item.d;MAST.gain.value=.5*(ELG[d]||1);
  const t0=A.currentTime,r=earSched(item,variant,t0+ELPRE,opts);if(r.gain)MAST.gain.value*=r.gain;const end=Math.max(r.end,SEND.v),id=++ELT.id;
- Object.assign(ELT,{st:'playing',item,variant,start:now,t0,end,dur:end-t0,lead:r.lead||0,beats:r.beats||null});PLAY.on=true;PLAY.src='ear';PLAY.guard=variant==='tap'?0:now+300;
+ Object.assign(ELT,{st:'playing',item,variant,start:now,t0,end,dur:end-t0,lead:r.lead||0,bl:r.bl||null,beats:r.beats||null});PLAY.on=true;PLAY.src='ear';PLAY.guard=variant==='tap'?0:now+300;
  if(variant==='beats'&&r.beats)r.beats.forEach((b,i)=>PLAY.timers.push(setTimeout(()=>{if(ELT.id===id)elEmit({type:'beat',i,...b})},b.t*1000)));
  const watch=()=>{if(ELT.id!==id)return;const left=ELT.end-ac().currentTime;if(left<=.005)elIdle('end');else ELT.tm=setTimeout(watch,Math.max(5,left*1000))};ELT.tm=setTimeout(watch,(end-t0)*1000);
  elEmit({type:'state',...elInfo()});return elInfo()}
@@ -6541,31 +6852,129 @@ function earSchedMetre(q,t0){const barLen=q.len/4,nb=Math.max(4,Math.ceil(10/bar
  return{end:t+nb*barLen+.25,lead,beats,events:ev,gain:Math.sqrt(120/pw)*Math.pow(q.bpm/90,.45)}}
 /* rhythm (EL-4): one bar of count-in on the woodblock, then the rhythm; the pulse goes on (switchable off); 72 or 100 crotchets a minute.
    Rung 1 is clapped; from rung 2 a tone, because a clap can't show a held note against a note and a rest. */
-function earSchedRhy(q,t0,o={}){const bpm=o.bpm||EAR.rhy.bpm,pulse=o.pulse!==undefined?o.pulse:EAR.rhy.pulse,clap=o.clap!==undefined?o.clap:(q.lvl||earLvl())===1,beat=60/bpm,sq=beat/4,lead=.15,ev=[];
+function earRhyBpm(l){return EAR.rhy.bpm||(l===1?72:100)}
+function earSchedRhy(q,t0,o={}){const bpm=o.bpm||earRhyBpm(q.lvl||earLvl()),pulse=o.pulse!==undefined?o.pulse:EAR.rhy.pulse,clap=o.clap!==undefined?o.clap:(q.lvl||earLvl())===1,beat=60/bpm,sq=beat/4,lead=.15,ev=[];
  let t=t0+lead;for(let i=0;i<4;i++)elBlock(t+i*beat,!i);t+=4*beat;let p=0;
- q.a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest){if(clap)elClap(t+p*sq);else elRhyNote(t+p*sq,d*sq);ev.push({t:t+p*sq-t0+ELPRE,d:d*sq,u:p,du:d})}p+=d}));
+ q.a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest){if(clap)elClap(t+p*sq);else elRhyNote(t+p*sq,d*sq);ev.push({t:t+p*sq-t0+ELPRE,d:d*sq,u:p,du:d});if(o.follow&&!ELT.rendering){const u0=p;PLAY.timers.push(setTimeout(()=>earRhyCaret(u0),Math.max(0,(t+p*sq-ac().currentTime)*1000)))}}p+=d}));
  if(pulse)for(let i=0;i<p/4;i++)elBlock(t+i*beat,false);
  // claps are short, so a bar of two minims would sound much quieter than a bar of quavers: the clapped level follows the number of claps
- return{end:t,lead:lead+ELPRE,events:ev,start:t-t0+ELPRE,beat,gain:clap?Math.sqrt(5/Math.max(2,ev.length/q.bars)):1}}
+ return{end:t,lead:lead+ELPRE,bl:beat,events:ev,start:t-t0+ELPRE,beat,gain:clap?Math.sqrt(5/Math.max(2,ev.length/q.bars)):1}}
+/* replays for the feedback panel (0.48): each is a variant, so the transport, the toggle and the stop rules all apply */
+function earQualNotes(root,qk,reg){const c=chordOf(root,qk);let m=c.tones.map(t=>t.midi).sort((a,b)=>a-b);const lo=49+12*reg;while(m[0]>lo+11)m=m.map(x=>x-12);while(m[0]<lo)m=m.map(x=>x+12);return m}
+function earSchedReplay(q,variant,t0,o){let t=t0,end=t0;const O=(o&&o.o)||[];
+ if(q.d==='qual'){const n=q.notes;
+  if(variant==='qab'){const g=EAR.res&&EAR.res.given,gn=earQualNotes(q.root,g,q.reg);gn.forEach(m=>pn(m,t,1.4));t+=1.9;n.forEach(m=>pn(m,t,1.6));end=t+1.6}
+  else{const i={q3:1,q5:2,q7:3}[variant];pn(n[0],t,1.1);pn(n[i],t,1.1);t+=1.5;n.forEach(m=>pn(m,t,1.6));end=t+1.6}}
+ else if(q.d==='cad'){const n=q.a==='cad64'?3:2,src=q.ch.slice(-n);src.forEach((c,i)=>{const last=i===src.length-1;c.forEach(m=>pn(m,t,last?2.2:1.6));end=t+(last?2.2:1.6);t+=1.6})}
+ else if(q.d==='bass'){const k=O[0]||1,pair=[q.ch[k-1],q.ch[k]];pair.forEach((c,i)=>{c.forEach(m=>pn(m,t,i?1.8:1.2));end=t+(i?1.8:1.2);t+=1.4})}
+ else if(q.d==='mel'){const G=[q.a[0],...(EAR.res&&EAR.res.given||[])],k=Math.max(1,O[0]||1),i0=Math.max(0,k-1),i1=Math.min(q.a.length-1,k+1),say=(arr)=>{for(let i=i0;i<=i1;i++){if(arr[i]!==undefined)c2Tone(eSolMidi(eSolParse(arr[i]),q.key),t+(i-i0)*.65,.6,1)}end=t+(i1-i0)*.65+.6;t+=(i1-i0+1)*.65+.7};
+  say(G);say(q.a)}
+ else if(q.d==='blind'){const m=AN.meta[q.score],from=Math.max(q.s,q.e-3500);m.events.forEach(([ms,p,d])=>{if(ms>=from-5&&ms<q.e-5){const st=t+Math.max(0,ms-from)/1000,du=Math.min(d,q.e-ms)/1000;tone(p,st,'piano',1,du);end=Math.max(end,st+du)}})}
+ return{end:end+.05,lead:ELPRE}}
+function earSchedRhyBeat(q,t0,o){const g=(EAR.res&&EAR.res.given)||[],[bar,bt]=(o&&o.o)||[0,0],bpm=72,beat=60/bpm,sq=beat/4,lead=.15,clap=(q.lvl||earLvl())===1,b0=(bar||0)*4+(bt||0);
+ const wl=c=>{const x=earRhyCellAt(c,b0);return x?[x.start,x.start+RCELL[x.k].w]:[b0*4,b0*4+4]},[ga,gb]=wl(g),[aa,ab]=wl(q.a),W0=Math.min(ga,aa),W1=Math.max(gb,ab),len=W1-W0;let t=t0+lead;
+ const one=(cells,st)=>{let p=0;cells.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest&&p>=W0&&p<W1){const tt=st+(p-W0)*sq;if(clap)elClap(tt);else elRhyNote(tt,d*sq)}p+=d}));for(let i=0;i<len/4;i++)elBlock(st+i*beat,false)};
+ one(g,t);t+=len*sq+beat;one(q.a,t);t+=len*sq;return{end:t,lead:lead+ELPRE,bl:beat,gain:clap?1.2:1}}
 function earSched(q,variant,t0,o={}){let t=t0,end=t0;
  if(variant==='tap'){c2Tone(o.midi,t,.5,1);return{end:t+.55,lead:ELPRE}}
+ if(variant==='given'&&q.d==='metre'){const g=EAR.res&&EAR.res.given;return earSchedMetre(earGenMetre(3,Math.random,{m:g,bpm:q.bpm}),t0)}
  if(q.d==='metre')return earSchedMetre(q,t0);
- if(q.d==='rhy')return earSchedRhy(q,t0,o);
+ if(q.d==='rhy')return variant==='beat'?earSchedRhyBeat(q,t0,o):earSchedRhy(q,t0,{...o,follow:variant==='follow'});
+ if(['q3','q5','q7','qab','last','pair','frag','ending'].includes(variant))return earSchedReplay(q,variant,t0,o);
  if(q.d==='qual'){const n=q.notes;n.forEach(m=>pn(m,t,1.2));n.forEach((m,i)=>pn(m,t+1.5+i*.4,.5));n.forEach(m=>pn(m,t+1.6+n.length*.4,1.4));end=t+1.6+n.length*.4+1.4}
- else if(q.d==='cad'||q.d==='bass'){if(variant!=='nokey')t=earKeyCue(q.key,t);const src=variant==='bassonly'?q.ch.map(c=>[c[0]]):q.ch;src.forEach((c,i)=>{const last=i===src.length-1;c.forEach(m=>pn(m,t,last?1.8:1));end=t+(last?1.8:1);t+=1.1})}
+ else if(q.d==='cad'||q.d==='bass'){if(variant!=='nokey')t=earKeyCue(q.key,t);const src=variant==='bassonly'?q.ch.map(c=>[c[0]]):q.ch;src.forEach((c,i)=>{const last=i===src.length-1;c.forEach(m=>pn(m,t,last?1.8:1));if(q.d==='bass'&&variant==='bassonly'&&EAR.done&&!ELT.rendering){const i0=i;PLAY.timers.push(setTimeout(()=>{earClearNow();const x=document.querySelector(`#earBassRow .el-ch[data-i="${i0}"]`);if(x)x.classList.add('now')},Math.max(0,(t-ac().currentTime)*1000)))}end=t+(last?1.8:1);t+=1.1})}
  else if(q.d==='mel'){if(variant!=='nokey')t=earKeyCue(q.key,t);const notes=variant==='first'?q.midi.slice(0,1):q.midi;notes.forEach((m,i)=>c2Tone(m,t+i*.65,.6,1));end=t+(notes.length-1)*.65+.6;if(EAR.done&&!ELT.rendering)earMelFollow(q,0,notes.length,t)}
  else if(q.d==='blind'){const m=AN.meta[q.score],tn=EAR.blindTonic(q.key);[tn-12,tn,tn+(/minor/.test(q.key)?3:4),tn+7].forEach(x=>pn(x,t,1.3,1));t+=1.8;
   // event times can sit a millisecond either side of a barline, so allow 5 ms; each note sounds for its written length, cut at the end of the cadence chord
   m.events.forEach(([ms,p,d])=>{if(ms>=q.s-5&&ms<q.e-5){const st=t+Math.max(0,ms-q.s)/1000,du=Math.min(d,q.e-ms)/1000;tone(p,st,'piano',1,du);end=Math.max(end,st+du)}})}
  return{end:end+.05,lead:ELPRE}}
 EAR.blindTonic=k=>{const L=k[0],acc=/♭/.test(k)?-1:/♯/.test(k)?1:0;let m=48+mod(NAT[LET.indexOf(L)]+acc,12);if(m>54)m-=12;return m+12};
-/* ---- notation ---- */
-function earRhyDraw(el,cells,bars){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,earRhyDraw,arguments);const VF=Vex.Flow,G=[];
- let i=0;for(let b=0;b<bars;b++){const g=[];let w=0;while(i<cells.length&&w+RCELL[cells[i]].w<=16){g.push(cells[i]);w+=RCELL[cells[i]].w;i++}G.push({g,w})}
- const build=b=>{const ns=[];G[b].g.forEach(c=>RCELL[c].v.forEach(([d,rest,dot])=>{const sn=new VF.StaveNote({keys:['b/4'],duration:d+(rest?'r':''),dots:dot?1:0});if(dot)VF.Dot.buildAndAttach([sn],{all:true});ns.push(sn)}));
-  if(!ns.length)return[{voices:[]}];return[{voices:[new VF.Voice({num_beats:G[b].w/4||4,beat_value:4}).setMode(VF.Voice.Mode.SOFT).addTickables(ns)],beams:VF.Beam.generateBeams(ns.filter(n=>!n.isRest()))}]};
- const S=ENG.score(el,{task:'glance',n:bars,staves:[{clef:'percussion'}],time:'4/4',top:24,bottom:24,build,barNums:false,pref:[bars],just:false,perBeat:30});
- ENG.finish(S)}
+/* ---- Ear Lab 0.48 notation (design spec sections 6-7): the one-line rhythm stave, entry tiles, metre signatures and the beat lane.
+   Drawn as inline SVG from the Bravura outlines VexFlow already ships (ELGLY), so no extra font is loaded. ---- */
+const ELGLY={"noteheadBlack":"M140 -180C268 -180 425 -62 425 60C425 134 367 180 285 180C127 180 0 63 0 -60C0 -135 62 -180 140 -180Z","noteheadHalf":"M140 -180C377 -180 425 13 425 60C425 134 366 180 282 180C68 180 0 14 0 -60C0 -137 60 -180 140 -180ZM108 -125C78 -125 60 -109 50 -92C46 -84 42 -73 42 -63C42 7 251 121 318 121C346 121 361 108 372 91C376 82 380 73 380 63C380 1 177 -125 108 -125Z","restQuarter":"M112 -55C135 -84 156 -111 174 -141C177 -147 183 -158 183 -161C183 -163 183 -166 181 -167C179 -173 173 -174 166 -174C160 -174 148 -171 143 -170C141 -170 138 -170 137 -170L125 -166C50 -166 1 -233 1 -304C1 -376 63 -446 168 -527C180 -536 194 -540 206 -540C216 -540 226 -537 228 -531C229 -527 230 -524 230 -521C230 -508 219 -497 207 -487C189 -487 173 -448 170 -435C166 -423 164 -410 164 -397C164 -338 194 -292 255 -292C297 -292 344 -308 369 -317L370 -318C376 -320 379 -320 382 -320C386 -320 389 -318 389 -314C389 -297 351 -249 336 -232C281 -166 236 -112 236 -32C236 -30 236 -29 236 -27L238 -17C238 -16 238 -14 238 -13C243 71 295 140 333 199C337 206 338 213 338 220C338 235 333 248 333 248C333 248 120 501 95 526C88 533 78 537 69 537C55 537 40 527 40 507C40 500 42 492 46 484C52 468 134 395 134 291C134 238 112 176 48 108C33 94 27 78 27 66C27 46 42 32 42 32Z","flag8thUp":"M343 -1138C343 -1138 380 -1001 380 -888C380 -708 305 -539 215 -395C141 -281 81 -157 58 -19C53 4 42 13 27 13C12 13 0 9 0 -9L0 -353C95 -370 232 -566 284 -688C305 -737 318 -819 318 -904C318 -969 308 -1037 284 -1102C281 -1110 279 -1117 279 -1123C279 -1146 294 -1159 302 -1165C311 -1171 336 -1162 343 -1138Z","augmentationDot":"M144 0C144 40 112 72 72 72C32 72 0 40 0 0C0 -40 32 -72 72 -72C112 -72 144 -40 144 0Z","timeSig0":"M648 0C648 200 510 361 338 361C167 361 29 200 29 0C29 -199 167 -360 338 -360C510 -360 648 -199 648 0ZM338 317C397 317 446 180 446 10C446 -158 397 -295 338 -295C278 -295 230 -158 230 10C230 180 278 317 338 317Z","timeSig1":"M35 19C35 19 29 10 29 0C29 -7 33 -16 45 -20C50 -22 56 -23 58 -23C72 -23 78 -10 78 -10C78 -10 140 89 156 117C161 127 167 131 170 131C176 131 179 120 179 111L179 -261C179 -294 145 -315 115 -315C105 -315 91 -320 91 -337C91 -353 104 -360 122 -360L429 -360C452 -360 452 -337 452 -337C452 -337 452 -315 431 -315C410 -315 384 -289 384 -265L384 328C384 351 376 360 356 361C336 361 300 356 281 356C253 356 228 357 206 360C203 360 200 361 199 361C184 361 179 347 173 334Z","timeSig2":"M606 -131C606 -114 599 -111 589 -111C577 -111 573 -117 570 -127L569 -128C554 -164 543 -192 513 -192C505 -192 498 -190 488 -187C469 -180 459 -179 445 -171C416 -160 348 -137 289 -137C271 -137 252 -140 236 -145C268 -94 390 -50 422 -42C523 -14 613 27 613 147C613 300 464 366 330 366C229 366 140 357 69 275C45 245 29 209 29 170C29 150 33 130 42 108C63 63 108 29 160 29C248 29 261 120 261 156C261 242 161 246 161 275C164 295 190 330 275 330C403 330 405 233 405 192C405 60 297 -39 193 -102C114 -153 58 -223 33 -317L32 -321C32 -340 48 -370 69 -370C101 -370 118 -282 203 -282C261 -282 282 -360 410 -360C472 -360 583 -354 606 -131Z","timeSig3":"M307 357C305 357 304 357 301 357L291 359C289 359 287 359 285 359C161 359 37 276 37 200C37 153 65 89 154 84L161 84C225 84 256 130 256 177L256 189C252 242 216 245 209 248C202 251 180 248 180 268L180 274C183 298 228 310 240 310C363 310 374 233 374 199L374 189C374 82 289 40 199 36C184 35 164 27 164 12C164 -6 189 -6 200 -6C366 -6 379 -118 379 -137C379 -289 301 -307 269 -307C264 -307 258 -305 256 -305C245 -304 217 -304 216 -282L216 -275C216 -243 248 -222 249 -180C249 -120 207 -76 145 -76C140 -76 135 -76 130 -78C105 -82 78 -96 60 -115C36 -137 29 -171 29 -203C32 -315 134 -359 275 -361L288 -361C431 -361 577 -288 577 -161L577 -151C575 -109 564 -82 537 -50C528 -39 517 -29 503 -20L472 -3L425 10C418 12 413 12 410 17C409 20 409 22 409 24C409 30 410 36 415 37C431 42 446 43 459 50C517 78 547 115 547 181C547 314 367 353 307 357Z","timeSig4":"M521 -107L521 202C521 213 520 226 504 226C491 226 484 223 475 213L338 48C333 40 325 32 325 14L325 -107L131 -107C246 -9 477 318 481 336L482 340C482 353 472 361 461 361C448 361 389 359 363 359C337 359 272 361 261 361C248 361 228 357 228 334C228 156 86 -45 43 -105L35 -117C35 -117 35 -118 35 -118L33 -120C30 -127 29 -132 29 -137C29 -151 40 -161 58 -161L325 -161L325 -252C325 -291 294 -302 268 -302C245 -302 235 -315 235 -330C235 -344 240 -360 262 -360L569 -360C583 -360 598 -350 598 -330C598 -310 580 -301 566 -301C552 -301 521 -292 521 -246L521 -161L626 -161C641 -161 648 -151 648 -134C648 -117 642 -107 626 -107Z","timeSig5":"M109 85C109 85 115 166 117 179C118 190 125 197 138 197L144 197C158 194 226 184 285 184C485 184 492 300 492 323C492 341 488 353 472 353C454 353 341 340 295 340C249 340 125 351 101 354C75 354 68 341 66 330L50 10L50 7C50 -12 65 -14 79 -14C94 -14 95 -1 111 14C125 29 160 62 209 62C258 62 357 35 357 -125C357 -284 272 -304 235 -304C223 -304 212 -304 202 -300C194 -295 186 -289 184 -279C184 -269 194 -264 202 -259C235 -239 256 -203 256 -163C256 -99 206 -50 144 -50C66 -50 35 -107 30 -157C29 -166 29 -174 29 -183C29 -302 107 -361 284 -361C456 -361 552 -255 552 -125C552 6 445 112 314 112C230 112 168 98 122 71C120 69 117 69 115 69C109 69 109 75 109 79Z","timeSig6":"M439 120C500 120 554 167 554 229C554 235 554 239 553 245C539 337 426 361 348 361C239 360 137 307 85 209C53 148 29 72 29 4L29 -1C30 -68 42 -143 73 -200C132 -307 203 -359 324 -359C389 -359 461 -348 513 -307C563 -266 596 -202 596 -137C596 -24 490 72 379 72C333 72 285 55 248 22C245 19 242 19 239 19C230 19 226 30 226 53C230 320 315 327 346 327C374 327 393 320 393 305C393 285 366 268 357 251C350 238 347 223 347 209C347 187 354 166 369 150C379 131 420 120 439 120ZM320 3C366 3 405 -69 405 -158C405 -248 366 -320 320 -320C274 -320 236 -248 236 -158C236 -69 274 3 320 3Z","timeSig7":"M606 294C606 333 606 351 582 351C580 351 557 346 552 336C541 318 521 236 485 236C449 236 382 359 262 359C179 359 157 325 137 307C117 288 108 282 98 281C86 281 68 301 60 315C58 321 50 325 43 325C36 325 29 321 29 308L29 71C29 71 30 48 45 48C56 48 60 60 66 76C81 112 99 196 164 196C222 196 291 88 374 88C415 88 435 109 446 118C451 121 456 124 459 124C465 124 468 120 469 111C469 71 359 -10 272 -112C217 -176 173 -259 173 -315C173 -346 173 -360 200 -360C226 -360 258 -347 294 -347C330 -347 397 -360 412 -360C426 -360 435 -348 435 -307C435 -66 606 140 606 288Z","timeSig8":"M481 52C533 85 567 132 567 204C567 351 356 373 317 373C150 373 36 297 36 176C36 76 92 23 161 -16C86 -52 29 -99 29 -190C29 -315 158 -373 301 -373C445 -373 599 -311 599 -117C599 -30 549 17 481 52ZM406 85C291 125 168 150 168 240C168 301 251 331 314 331C360 331 482 308 482 207C482 150 454 112 406 85ZM295 -325C199 -325 111 -276 111 -183C111 -125 161 -72 225 -48C330 -94 436 -124 436 -219C436 -276 392 -325 295 -325Z","timeSig9":"M186 -117C125 -117 71 -164 71 -226C71 -232 71 -236 72 -242C86 -334 199 -359 276 -359C386 -357 488 -304 540 -206C572 -145 596 -69 596 -1L596 4C595 71 583 145 552 203C492 310 422 361 301 361C236 361 164 351 112 310C62 269 29 204 29 140C29 27 135 -69 246 -69C292 -69 340 -52 377 -19C380 -16 383 -16 386 -16C395 -16 399 -27 399 -50C395 -317 310 -324 279 -324C251 -324 232 -317 232 -302C232 -282 259 -265 268 -248C275 -235 278 -220 278 -206C278 -184 271 -163 256 -147C246 -128 204 -117 186 -117ZM305 0C259 0 220 72 220 161C220 251 259 323 305 323C351 323 389 251 389 161C389 72 351 0 305 0Z"};
+
+const ELC={IV:'#ece2c8',MUTED:'#9c927c',GOLD:'#c9a24a',GOLDHI:'#f0d48a',RED:'#c8473b',GREEN:'#8fbf6a'},ELS=.02376,ELHW=425*ELS;
+const ELICON={tick:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.6l3.3 3.2L13 4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ cross:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+ near:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6.2c2-2 3.4-1.6 5 0s3 2 5 0M3 10.6c2-2 3.4-1.6 5 0s3 2 5 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+ eye:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8C3.3 5 5.5 3.6 8 3.6S12.7 5 14.5 8c-1.8 3-4 4.4-6.5 4.4S3.3 11 1.5 8z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>'};
+// time names on the entry tiles: one constant, keyed by rung (spec section 7.4: rung 1 only). Add a rung here to show names there too.
+const EL_TIMENAMES={1:{q:'ta',e2:'ti-ti',h:'ta-a'}};
+const ELCN={q:'a crotchet',e2:'two quavers',h:'a minim',s4:'four semiquavers',qr:'a crotchet rest',dq:'a dotted crotchet and a quaver',es2:'a quaver and two semiquavers',s2e:'two semiquavers and a quaver',syn:'a quaver, a crotchet and a quaver'};
+const ELTITLE={q:'crotchet',e2:'2 quavers',h:'minim',s4:'4 semiquavers',qr:'crotchet rest',dq:'dotted crotchet, quaver',es2:'quaver, 2 semiquavers',s2e:'2 semiquavers, quaver',syn:'quaver, crotchet, quaver'};
+const ELW={q:'one sound',e2:'two even sounds',s4:'four even sounds',h:'one sound held for two beats',qr:'a beat of silence',dq:'long-short across two beats',es2:'long-short-short',s2e:'short-short-long',syn:'short-long-short across two beats'};
+function elGlyph(name,x,y,fill,s=ELS){return`<path d="${ELGLY[name]}" transform="translate(${x.toFixed(1)},${y.toFixed(1)}) scale(${s},${-s})" fill="${fill}"/>`}
+// one cell's notes. x: left edge of its first semiquaver; u: px per semiquaver; top: stem top; base: notehead centre
+function elCellMarks(cell,x,u,top,base,stick,ink=ELC.IV){let o='',pos=0;const stems=[];
+ RCELL[cell].u.forEach(([d,rest])=>{const nx=x+pos*u+6;
+  if(rest)o+=elGlyph('restQuarter',nx,base,ink);
+  else{let sx=nx+ELHW-.65;
+   if(stick&&d<8){sx=nx+ELHW/2;o+=`<line x1="${sx.toFixed(1)}" y1="${base+4.5}" x2="${sx.toFixed(1)}" y2="${top}" stroke="${ink}" stroke-width="1.6" stroke-linecap="round"/>`}
+   else{o+=elGlyph(d===8?'noteheadHalf':'noteheadBlack',nx,base,ink)+`<line x1="${sx.toFixed(1)}" y1="${base-1.5}" x2="${sx.toFixed(1)}" y2="${top}" stroke="${ink}" stroke-width="1.3"/>`}
+   if(d===6)o+=elGlyph('augmentationDot',nx+ELHW+3,base-4.3,ink);
+   stems.push([sx,d])}
+  pos+=d});
+ const allShort=stems.every(s=>s[1]<=2);
+ if(allShort&&stems.length>1){const a=stems[0][0],b=stems[stems.length-1][0];o+=`<rect x="${(a-.65).toFixed(1)}" y="${top}" width="${(b-a+1.3).toFixed(1)}" height="4" fill="${ink}"/>`;
+  for(let i=0;i<stems.length-1;i++)if(stems[i][1]===1&&stems[i+1][1]===1)o+=`<rect x="${(stems[i][0]-.65).toFixed(1)}" y="${top+6.5}" width="${(stems[i+1][0]-stems[i][0]+1.3).toFixed(1)}" height="4" fill="${ink}"/>`}
+ else stems.forEach(([sx,d])=>{if(d===2)o+=stick?`<path d="M${sx.toFixed(1)} ${top}l7 8" stroke="${ink}" stroke-width="1.6" stroke-linecap="round" fill="none"/>`:elGlyph('flag8thUp',sx-.65,top,ink)});
+ return o}
+// the cells of a one- or two-bar answer, grouped bar by bar
+function earRhyBars(cells,bars){const G=[];let i=0;for(let b=0;b<bars;b++){const g=[];let w=0;while(i<cells.length&&w+RCELL[cells[i]].w<=16){g.push(cells[i]);w+=RCELL[cells[i]].w;i++}G.push(g)}return G}
+// one key per beat (starts n, holds -, rests r): two beats match when the keys are equal (spec 7.6). cells beyond the bar count are ignored
+function earRhyBeats(cells,bars=1){const n=16*bars,s=new Array(n).fill('.');let p=0;
+ cells.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{for(let j=0;j<d&&p+j<n;j++)s[p+j]=rest?'r':j===0?'n':'-';p+=d}));
+ const out=[];for(let b=0;b<n/4;b++)out.push(s.slice(4*b,4*b+4).join(''));return out}
+// the cell that covers beat b (0-based over the whole line): {k, start} with start in semiquavers, or null
+function earRhyCellAt(cells,b){let p=0;for(const k of cells){const w=RCELL[k].w;if(b*4>=p&&b*4<p+w)return{k,start:p};p+=w}return null}
+/* earRhySVG(cells, o): o = {u, bars, sig, stick, ruler, strip, cursor, marks, countin, ink, stripCol, final, label, total}
+   geometry in px (spec 7.1): ruler y 13, stem top 26, stave line and notehead centre y 60, sound strip y 76-82, left margin 34, bar gap 16, 88 high */
+function earRhySVG(cells,o={}){const u=o.u||18,bars=o.bars||1,sig=o.sig!==false,stick=!!o.stick,ink=o.ink||ELC.IV,X0=sig?34:10,BG=16,top=26,base=60,sy=76,
+  Wd=X0+bars*16*u+(bars-1)*BG+14,Ht=88,barx=b=>X0+b*(16*u+BG),marks=o.marks,ruler=o.ruler!==false,strip=o.strip!==false,fin=o.final!==false;
+ let s=`<svg class="el-rsvg" viewBox="0 0 ${Wd} ${Ht}" width="${Wd}" height="${Ht}" role="img" aria-label="${o.label||'Rhythm'}">`;
+ if(marks)marks.forEach((ok,i)=>{if(!ok){const b=Math.floor(i/4),k=i%4;s+=`<rect x="${barx(b)+k*4*u}" y="0" width="${4*u}" height="${Ht}" rx="6" fill="rgba(200,71,59,.13)"/>`}});
+ if(!stick)s+=`<line x1="4" y1="${base}" x2="${Wd-6}" y2="${base}" stroke="#c9b98f" stroke-opacity=".55" stroke-width="1"/>`;
+ if(sig)s+=elGlyph('timeSig4',6,base-8.6,ink)+elGlyph('timeSig4',6,base+8.6,ink);
+ for(let b=0;b<bars;b++){for(let k=0;k<4;k++){const cx=barx(b)+k*4*u+6+ELHW/2,lit=o.countin&&b===0&&k<o.countin,now=o.countin&&b===0&&k===o.countin-1;let col=lit?ELC.GOLDHI:ELC.MUTED;
+   if(marks){const okb=marks[b*4+k];col=okb?ELC.GREEN:ELC.RED;const p=okb?'M-3 0l2.2 2.2L3.4 -2.6':'M-2.6 -2.6l5.2 5.2M2.6 -2.6l-5.2 5.2';
+    s+=`<path d="${p}" transform="translate(${(cx+11).toFixed(1)},9)" fill="none" stroke="${col}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`}
+   if(ruler)s+=`<g class="el-rn${b===0&&o.first!==false?' c':''}${lit?' lit':''}${now?' now':''}" data-k="${k}"><circle cx="${cx.toFixed(1)}" cy="9" r="9"/><text x="${cx.toFixed(1)}" y="13" text-anchor="middle"${marks?` fill="${col}"`:''}>${k+1}</text></g>`}
+  if(b<bars-1){const bx=barx(b)+16*u+BG/2-1;s+=`<line x1="${bx}" y1="${base-17}" x2="${bx}" y2="${base+17}" stroke="${ink}" stroke-width="1"/>`}}
+ if(fin){const ex=Wd-6;s+=`<line x1="${ex-6}" y1="${base-17}" x2="${ex-6}" y2="${base+17}" stroke="${ink}" stroke-width="1"/><rect x="${ex-3}" y="${base-17}" width="3.5" height="34" fill="${ink}"/>`}
+ let pos=0;const sc=o.stripCol||ink;
+ cells.forEach(c=>{const b=Math.floor(pos/16),p=pos%16,x=barx(b)+p*u;s+=elCellMarks(c,x,u,top,base,stick,ink);
+  if(strip){let q=0;RCELL[c].u.forEach(([d,rest])=>{const xx=x+q*u+2.5;
+   s+=rest?`<line x1="${(xx+1).toFixed(1)}" y1="${sy+3}" x2="${(xx+d*u-6).toFixed(1)}" y2="${sy+3}" stroke="${ELC.MUTED}" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round"/>`
+    :`<rect x="${xx.toFixed(1)}" y="${sy}" width="${(d*u-5).toFixed(1)}" height="6" rx="3" fill="${sc}" fill-opacity=".8"/>`;q+=d})}
+  pos+=RCELL[c].w});
+ const tot=o.total!==undefined?o.total:bars*16;
+ if(o.cursor&&pos<tot){const b=Math.floor(pos/16),p=pos%16,x=barx(b)+p*u;
+  s+=`<line x1="${x+1}" y1="${top-4}" x2="${x+1}" y2="${sy+8}" stroke="${ELC.GOLD}" stroke-width="1.5" stroke-linecap="round"/><path d="M${x-3.5} ${top-9}h9l-4.5 5.5z" fill="${ELC.GOLD}"/>`;
+  for(let k=pos;k<tot;k+=4){const bb=Math.floor(k/16),pp=k%16;s+=`<rect x="${barx(bb)+pp*u+3}" y="${sy+.5}" width="${4*u-6}" height="5" rx="2.5" fill="none" stroke="#7a6e55" stroke-width="1" stroke-dasharray="2 3"/>`}}
+ // the follow caret ("Hear it all, following the notes"): parked off to the left until the replay moves it
+ if(o.caret)s+=`<g class="el-caret" data-x0="${barx(0)}" data-u="${u}" data-bg="${BG}" style="opacity:0"><line x1="0" y1="${top-4}" x2="0" y2="${sy+8}" stroke="${ELC.GOLD}" stroke-width="1.5" stroke-linecap="round"/><path d="M-3.5 ${top-9}h9l-4.5 5.5z" fill="${ELC.GOLD}"/></g>`;
+ return s+'</svg>'}
+// one entry tile: the cell in the same notation on a faint line, width = duration x 14 px
+function earRhyTile(k,o={}){const u=14,w=RCELL[k].w*u,base=44,stick=!!o.stick,nm=o.named&&o.named[k];
+ const marks=elCellMarks(k,[ 'q','qr','h'].includes(k)?(w-ELHW)/2-6:RCELL[k].w===4?-2.5:2,u,12,base,stick);
+ return`<button class="el-tile" style="width:${w}px" data-earcell="${k}" aria-label="${ELTITLE[k]}" title="${ELTITLE[k]}" ${o.disabled?'disabled':''}><svg viewBox="0 0 ${w} 56" width="${w}" height="56" aria-hidden="true">${stick?'':`<line x1="0" y1="${base}" x2="${w}" y2="${base}" stroke="#c9b98f" stroke-opacity=".3"/>`}${marks}</svg>${nm?`<small>${nm}</small>`:''}</button>`}
+/* ---- metre: signatures, beat pictures, the beat lane ---- */
+function elSigSVG(n,d){const s=ELS*1.05,num=(v,y)=>{let x,wd=0,out='';String(v).split('').forEach(c=>wd+=(c==='1'?300:470)*1.44*s);x=(26-wd)/2;
+  String(v).split('').forEach(c=>{out+=`<path d="${ELGLY['timeSig'+c]}" transform="translate(${x.toFixed(1)},${y}) scale(${s},${-s})"/>`;x+=(c==='1'?300:470)*1.44*s});return out};
+ return`<svg class="sig" viewBox="0 0 26 44" aria-hidden="true">${num(n,11.5)}${num(d,32.5)}</svg>`}
+// groups: the number of units in each beat's group (2,2,2 simple triple; 3,3 compound duple; 3,2 for 5/4; 2,2,3 for 7/8)
+const ELGRP={'2/4':[2,2],'3/4':[2,2,2],'4/4':[2,2,2,2],'6/8':[3,3],'9/8':[3,3,3],'12/8':[3,3,3,3],'5/4':[3,2],'7/8':[2,2,3]};
+function elPicSVG(g){let x=5,o='';g.forEach(n=>{o+=`<circle cx="${x}" cy="8" r="4.6"/>`;for(let s=1;s<n;s++)o+=`<circle cx="${x+s*10}" cy="8" r="2.3" fill-opacity=".8"/>`;x+=n*10+8});
+ return`<svg class="pic" viewBox="0 0 ${x-8-10+5+2} 16" aria-hidden="true">${o}</svg>`}
+// the four-bar beat lane: a dot per beat (strong, medium, weak), small dots for the splits, beat numbers beneath
+function elBeatsSVG(m){const M=METRES[m],step=11,irr=m==='7/8',acc=M.acc,groups=irr?M.grp:null,units=irr?M.grp.reduce((a,b)=>a+b,0):M.b*M.sub;let h='';
+ for(let bar=0;bar<4;bar++){const w=units*step+16;let s=`<svg viewBox="0 0 ${w} 36" width="${w}" height="36" aria-hidden="true"><line x1="1" y1="2" x2="1" y2="22" stroke="#5a5040"/>`,u0=0;
+  for(let b=0;b<M.b;b++){const subs=irr?groups[b]-1:M.sub-1,x=12+u0*step,r={2:5.5,1:4.2,0:3.4}[acc[b]];
+   s+=`<g class="bt" data-bar="${bar}" data-beat="${b}"><circle class="halo" cx="${x}" cy="12" r="9.5"/><circle class="dot" cx="${x}" cy="12" r="${r}" fill-opacity="${acc[b]?1:.7}"/>`;
+   for(let k=1;k<=subs;k++)s+=`<circle cx="${x+k*step}" cy="12" r="1.7" fill="${ELC.MUTED}"/>`;
+   s+=`<text x="${x}" y="34" text-anchor="middle">${b+1}</text></g>`;u0+=irr?groups[b]:M.sub}
+  h+=s+'</svg>'}
+ return`<div class="el-beats${units>6?' two':''}" id="earLane" role="img" aria-label="Four bars of ${m}, the beats shown">${h}</div>`}
 /* ---- Curwen hand signs (simple line drawings) ---- */
 const EHSIGN={
  d:'<rect x="7" y="9" width="14" height="11" rx="4"/><path d="M10 9v3M14 9v3M18 9v3M7 14h-2"/>',
@@ -6595,12 +7004,12 @@ function earRecord(kind){EAR.st[EAR.drill]=earStatNext(earSt(),kind);EAR.resetUn
 // 'correct' | 'nearly' | 'wrong'. Nearly only when EAR_NEARLY is on, at cadences, when the answer given is the family (CADPARENT) of a Phrygian or cadential 6/4 answer
 function earJudge(q,given){if(q&&given===q.a)return'correct';if(EAR_NEARLY&&q&&q.d==='cad'&&CADPARENT[q.a]&&CADPARENT[q.a]===given)return'nearly';return'wrong'}
 // ok: true, false, or 'nearly'; given null = "Show me"
-function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===null?'shown':ok==='nearly'?'nearly':ok?'ok':'miss';earRecord(kind);EAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};
+function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===null?'shown':ok==='nearly'?'nearly':ok?'ok':'miss';earRecord(kind);EAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};EAR.focus='[data-earnew]';EAR.announce=true;
  // undo and redo end once the answer is marked
  HIST.ear.u=[];HIST.ear.r=[];hBtns();
  logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${kind==='ok'?'correct':kind==='shown'?'shown':kind==='nearly'?'nearly':'missed'}`)}
 // a question left before it was answered is recorded as skipped; returns true if one was
-function earSkip(){if(!EAR.q||EAR.done)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: skipped`);return true}
+function earSkip(){if(!EAR.q||EAR.done||EAR.q.plays===0)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: skipped`);return true}
 // the rung in use: an open question's own rung, else the rung chosen for this drill (shown even when it is above the Stage), else the first rung shown
 function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill];return l||earRungsShown(EAR.drill)[0]}
 function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a](q.key.mode)}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
@@ -6613,8 +7022,8 @@ function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){earMark(rhyOnsets
  renderEar()}
 HIST.ear=mkHist(()=>EAR.ans,v=>{if(EAR.done)return;EAR.ans=v;renderEar()});
 function earNew(){elStop();if(earSkip())toast('Skipped. It counts as skipped, not as a miss.');EAR.done=false;EAR.res=null;EAR.ans=[];HIST.ear.u=[];HIST.ear.r=[];
- if(EAR.drill==='blind'&&!EAR.blind){EAR.q=null;renderEar();earLoadBlind().then(()=>{EAR.q=earGen('blind',earLvl());renderEar();earPlay()}).catch(()=>{$('earMain')&&($('earMain').querySelector('.earq').innerHTML='<p class="note">The scores could not be loaded. Blind analysis needs the score files that come with the published app.</p>')});return}
- EAR.q=earGen(EAR.drill,earLvl());renderEar();earPlay()}
+ if(EAR.drill==='blind'&&!EAR.blind){EAR.q=null;renderEar();earLoadBlind().then(()=>{EAR.q=earGen('blind',earLvl());EAR.q.plays=0;EAR.focus='[data-earplay="all"]';renderEar();earPlay()}).catch(()=>{$('earMain')&&($('earMain').querySelector('.earq').innerHTML='<p class="note">The scores could not be loaded. Blind analysis needs the score files that come with the published app.</p>')});return}
+ EAR.q=earGen(EAR.drill,earLvl());EAR.q.plays=0;EAR.focus='[data-earplay="all"]';renderEar();earPlay()}
 /* ---- R2: melody desk (hand-sign ladder beside the stave) ---- */
 // R2: the Ear Lab melody stave, drawn through the shared engraving layer (ENG): exercise task size, final-px text, house colours.
 // opts: {rows:[{label?,cells:[{n:{s,o}|null,col?,tcol?}]}], cur:index of the place being written (-1 none), reserve:[{s,o}...] (pitches to leave room for)}
@@ -6659,13 +7068,6 @@ function earMelLadderHTML(q,lock,full){const[lo,hi]=q.range,A=EAR.ans,last=A.len
   h+=`<button class="earstep${isH?' home':''}${tx===last?' last':''}" style="grid-row:${2*k+1}/span 2" data-earsol="${tx}" ${dis} aria-label="${eSolName(n.s)}${n.o<0?' low':n.o>0?' high':''}${isH?', home note':''}">${ehsign(n.s)}<b>${tx}</b>${EAR.letters?`<small>${pretty(sp.name)}</small>`:''}${isH&&n.o===(q.mode==='min'?-1:0)?'<span class="hm">home</span>':''}</button>`}
  return`<div class="earlad${lock?' listen':''}" role="group" aria-label="Solfa ladder, high to low">${h}</div>`}
 function earMelWrong(q){const g=EAR.res&&EAR.res.given;return g?q.a.slice(1).filter((x,i)=>g[i]!==x).length:0}
-function earMelDeskHTML(q){const lock=EAR.done,A=EAR.ans,full=A.length>=q.a.length-1,res=EAR.res;let strip='';
- if(lock){const bad=res.given!==null&&!res.ok,n=earMelWrong(q),tot=q.a.length-1;
-  strip=`<div class="earres ${res.ok?'ok':'bad'}"><b>${res.ok?'Correct.':res.given===null?'Here it is.':'Not this time.'}</b> ${res.ok?'Sing it once more with the hand signs.':res.given===null?'Sing it back with the hand signs, then try the next one.':`${n} of the ${tot} notes you wrote ${n===1?'differs':'differ'}. Compare the two staves, then sing the melody with the hand signs.`}</div>`}
- const aria=lock?'The melody: '+q.a.join(' ')+'.'+(res.given&&!res.ok?' You wrote: '+[q.a[0],...res.given].join(' ')+'.':''):'Your melody so far: '+[q.a[0],...A].join(' ');
- return`<div class="meldesk">${earMelLadderHTML(q,lock,full)}
-  <div class="melscore"><div class="lbl">${lock?`Melody · ${q.a.length} notes`:`Write the melody · ${A.length+1} of ${q.a.length} notes`}</div><div class="melfr" id="earMel" role="img" aria-label="${aria}"></div></div>${strip?`<div class="melres">${strip}</div>`:''}
-  <div class="melacts">${earEditBtns(full)}<label class="note"><input type="checkbox" id="earLet" ${EAR.letters?'checked':''}> show letter names</label></div></div>`}
 function earMelMount(q){const el=document.getElementById('earMel');if(!el)return;const IV='#ece2c8',GIVEN='#c9b98f',RED='#c8473b',lock=EAR.done,A=EAR.ans,res=EAR.res;
  const truth=q.notes.map((n,i)=>({n,col:i===0?GIVEN:IV}));let rows;
  if(!lock)rows=[{cells:q.notes.map((n,i)=>i===0?{n,col:GIVEN}:A[i-1]?{n:eSolParse(A[i-1]),col:IV}:{n:null})}];
@@ -6689,61 +7091,295 @@ const EARHOW={metre:'Count along. Where does the strongest click fall, and how m
  bass:'The tonic chord plays first. The first chord of the progression is always I. Sing the bass line back, then name chords 2–4. "Bass only" plays just the bottom notes.',
  mel:'The key chord plays first, and the first note is always given (at rung 1 it may be do, mi or so). Sing it back in solfa before you answer. Movable do: in a minor key (rung 3) the home note is la.',
  blind:'A phrase from a real score in the Analysis room, with the score hidden. The tonic chord plays first. Name the cadence at the end of the phrase, then check it against the score in Analysis.'};
-function earOptsHTML(q){const res=EAR.res,lock=EAR.done;const btn=(v,l)=>{const cls=lock?(v===q.a?'ok':res&&res.given===v?'bad':''):'';return`<button class="earopt ${cls}" data-earans="${v}" ${lock?'disabled':''}>${l}</button>`};
- if(q.d==='metre')return earMetreOpts(earLvl()).map(m=>btn(m,METL[m])).join('');
- if(q.d==='qual')return earQualOpts(earLvl()).map(k=>btn(k,QUALS[k])).join('');
- if(q.d==='cad')return(q.opts||earCadOpts(q.l||earLvl())).map(k=>btn(k,CADL3[k])).join('');
- if(q.d==='blind')return earBlindCats(earLvl()).map(k=>btn(k,CADL[k])).join('');return''}
 function earBlindCats(l){const P=earBlindPool(l);return Object.keys(CADL).filter(k=>P.some(x=>x.cat===k))}
-function earBuildHTML(q){const lock=EAR.done,A=EAR.ans;
- if(q.d==='rhy'){const used=A.reduce((s,k)=>s+RCELL[k].w,0),tot=16*q.bars;
-  if(lock)return'';return`<div class="lbl">Build the rhythm · ${used/4} of ${tot/4} beats</div><div class="earrhy" id="earRhy"></div>
-  <div class="chips">${earCells(earLvl()).map(k=>{const w=RCELL[k].w,pos=used%16;const ok=!lock&&used+w<=tot&&(w<8||pos%8===0)&&pos+w<=16;return`<button class="chip" data-earcell="${k}" ${ok?'':'disabled'}>${RCELL[k].l}</button>`}).join('')}</div>
-  ${earEditBtns(used===tot)}`}
- if(q.d==='bass'){return`<div class="lbl">Name chords 2–4 in ${keyName(q.key)}</div><div class="earslots">${[0,1,2,3].map(i=>`<div class="earslot ${i===A.length+1&&!lock?'cur':''}">${i===0?'I':A[i-1]||'?'}${lock&&i>0?`<small class="${A[i-1]===q.a[i]?'okt':'badt'}">${q.a[i]}</small>`:''}</div>`).join('')}</div>
-  <div class="chips">${q.opts.map(o=>`<button class="chip" data-earrn="${o}" ${lock||A.length>=3?'disabled':''}>${o}</button>`).join('')}</div>${earEditBtns(A.length===3)}`}
- if(q.d==='mel')return earMelDeskHTML(q);
- return''}
-function earEditBtns(full){return EAR.done?'':`<div class="go" style="margin-top:8px"><button class="mini" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="mini" data-hist="ear:r" title="Redo">↷ Redo</button><button class="mini" data-earclr>Clear</button><span class="sp"></span><button class="mini gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
-function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill);
- if(!rdy&&!EAR.preloading){EAR.preloading=elPreload(EAR.drill).catch(()=>{}).then(()=>{EAR.preloading=null;if(ROOM==='ear'&&$('earMain'))renderEar()})}
- const tabs=EDR.filter(([k])=>earDrillShown(k)),rungs=[...new Set([...earRungsShown(EAR.drill),l])].sort(),hid=earHidden();
- el.innerHTML=`<div class="chips eartabs">${tabs.map(([k,n])=>`<button class="chip ${EAR.drill===k?'on':''}" data-eardr="${k}">${n}<small> · ${earStageTag(k)}</small></button>`).join('')}${hid||EAR.all?`<button class="chip earall${EAR.all?' on':''}" data-earall aria-pressed="${EAR.all}" title="${EAR.all?`Offer only the drills and rungs for Stage ${earStage()}`:`Also offer the drills and rungs outside Stage ${earStage()}`}">${EAR.all?'Show Stage '+earStage()+' only':'Show all'}</button>`:''}</div>
- <section class="card"><h3>${EDR.find(x=>x[0]===EAR.drill)[1]}<span class="sp"></span>${rungs.map(n=>`<button class="chip ${l===n?'on':''}" data-earlv="${n}" title="${earRungStages(EAR.drill,n)}">Rung ${n}</button>`).join('')}</h3>
-  <p class="note">${EARHOW[EAR.drill]}</p>
-  <div class="go"><button class="mini gold" data-earplay="all" ${q?'':'disabled'}>▶ Play${q?' again':''}</button>
-   ${q&&(q.d==='cad'||q.d==='bass'||q.d==='mel')&&!(q.d==='cad'&&q.l===1)?`<button class="mini" data-earplay="nokey">Without the key chord</button>`:''}
-   ${q&&q.d==='bass'?`<button class="mini" data-earplay="bassonly">Bass only</button>`:''}${q&&q.d==='mel'?`<button class="mini" data-earplay="first">First note</button>`:''}
-   <button class="mini" data-earstop>■ Stop</button><span class="sp"></span>${q&&!EAR.done?`<button class="mini" data-earshow>Show me</button>`:''}<button class="mini ${EAR.done||!q?'gold':''}" data-earnew ${!q&&!rdy?'disabled aria-busy="true"':''}>${q?'Next question →':rdy?'Start →':'Loading…'}</button></div>
-  ${EAR.drill==='rhy'?`<div class="go earopts"><label class="note"><input type="checkbox" id="earPulse" ${EAR.rhy.pulse?'checked':''}> Pulse</label><label class="note">Speed <select id="earSpd"><option value="72" ${EAR.rhy.bpm===72?'selected':''}>steady (72)</option><option value="100" ${EAR.rhy.bpm===100?'selected':''}>normal (100)</option></select></label></div>`:''}
-  <div class="earq">${q?earOptsHTML(q)+earBuildHTML(q):`<p class="note">${!rdy?(EAR.drill==='blind'?'Loading the scores and the piano…':'Loading the piano…'):EAR.drill==='blind'&&!EAR.blind?'Press Start to load the scores.':'Press Start to hear the first question.'}</p>`}</div>
-  ${EAR.done&&q&&q.d!=='mel'?`<div class="earres ${EAR.res.ok?'ok':EAR.res.nearly?'near':'bad'}"><b>${EAR.res.ok?'Correct.':EAR.res.nearly?'Nearly.':EAR.res.given===null?'Here it is.':'Not this time.'}</b> ${earAnsTxt(q)}${earNearTxt(q,EAR.res)}</div><div id="earNote"></div>`:''}
-  <div class="earstat">Score ${s.ok} / ${s.n} · streak ${s.streak} · best ${s.best}${s.nearly?` · nearly ${s.nearly}`:''}${s.shown?` · shown ${s.shown}`:''}${s.skipped?` · skipped ${s.skipped}`:''}<span class="sp"></span>${earResetHTML()}<button class="mini" data-earjournal>Save to journal</button></div>
- </section>
- <section class="card"><h3>Listening for it</h3>${earTips(EAR.drill)}</section>`;
- if(q&&q.d==='rhy'&&!EAR.done)earRhyDraw($('earRhy'),EAR.ans,q.bars);
- if(q&&q.d==='mel')earMelMount(q);
- if(EAR.done&&q&&$('earNote')){if(q.d==='rhy')earRhyDraw($('earNote'),q.a,q.bars);  if(q.d==='blind')$('earNote').innerHTML=`<p class="note">From ${q.t||q.score}. <button class="mini" data-earscore="${q.score}">Open this score in Analysis</button></p>`}
- hBtns();sylMount(true)}
-function earResetHTML(){const nm=EDR.find(x=>x[0]===EAR.drill)[1].toLowerCase();
- if(EAR.resetAsk)return`<span class="earask" role="group" aria-label="Confirm reset">Reset the ${nm} score to zero? <button class="mini" data-earresetyes>Reset</button><button class="mini" data-earresetno>Keep it</button></span>`;
- if(EAR.resetUndo&&EAR.resetUndo.drill===EAR.drill)return`<span class="earask" role="status">Score reset. <button class="mini" data-earresetundo>Undo</button></span>`;
- return`<button class="mini" data-earreset>Reset score</button>`}
-function earTips(d){const T={
- metre:'<p>Simple metres split each beat in two; compound metres split it in three (6/8 is two beats of three quavers, not six beats). Irregular metres mix groups of 2 and 3: 5/4 here is felt 3+2, 7/8 as 2+2+3.</p>',
- rhy:'<p>Say the rhythm in time names or counting syllables first (ta, ti-ti, ta-a; or 1 & 2 &). The dotted crotchet + quaver is long-short across two beats; the syncopation is short-long-short.</p>',
- qual:'<p>Major and minor differ by the 3rd. Diminished squeezes the 5th down (tense, unstable); augmented stretches it up (unresolved, dreamy). For 7th chords: the dominant 7th wants to move; the major 7th glows; the minor 7th is soft; the half-diminished is dark; the diminished 7th is the most unstable of all.</p>',
- cad:'<p>Perfect cadence: V–I, a full stop. Plagal cadence: IV–I, the "Amen". Imperfect cadence: ends on V, a comma or question. Interrupted cadence: V goes to vi (VI in minor) instead of I. The US terms are in brackets. A cadential 6/4 (I⁶₄ – V – I) decorates a perfect cadence. The Phrygian cadence (iv⁶ – V in minor) is an imperfect cadence.</p>',
- bass:'<p>In root position the bass is the chord\'s root, so the bass line spells the numerals. I, IV and V are the pillars; ii and vi are the minor relatives of IV and I. A secondary dominant (V7/V, V7/vi) brings in a note from outside the key that leans into the next chord.</p>',
- mel:'<p>Movable do: do is the home of a major key; in a minor key the home is la, and si is the raised 7th that leads up to la. A comma marks the octave below (s, l, t,), an apostrophe the octave above (d\'). The hand signs are the Curwen signs used in Kodály teaching (si uses the so sign, raised). Hand-sign drawings © 2003 Kodály Music Education Institute of Australia (KMEIA).</p>',
- blind:'<p>The phrases come from the scores in the Analysis room. Their cadence labels were re-read in music21 and checked by an independent review on 18 Nov 2026. A "perfect cadence in B minor" is still a perfect cadence: it closes, but in a new key for a moment.</p>'};return T[d]}
-document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earall],[data-earplay],[data-earstop],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore]');if(!t)return;const d=t.dataset;
+/* ---- Ear Lab 0.48 card: the drill strip, tally, sound stage (one Play/Stop toggle), result panel, answer areas, foot (design spec) ---- */
+const ELRING='<svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle class="trk" cx="24" cy="24" r="22.5"/><circle class="arc" cx="24" cy="24" r="22.5" pathLength="100"/></svg><svg class="ico play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.2v11.6L14 8z" fill="currentColor"/></svg><svg class="ico stop" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="1.5" fill="currentColor"/></svg>';
+const ELASK={metre:'How many beats in a bar? Does each beat split in two or in three?',rhy:'Four clicks count you in, then the rhythm plays on one note. Write what you hear.',
+ qual:'One chord: together, then note by note, then together. What kind of chord is it?',cad:'The key chord plays first, then a short phrase. How does the phrase end?',
+ bass:'The key chord plays first. Chord 1 is always I. Name chords 2 to 4.',mel:'The key chord plays first and the first note is given. Write the rest in solfa.',
+ blind:'A phrase from a real score, with the score hidden. Name the cadence at the end.'};
+const ELTIPS={
+ metre:[['Find the heavy click.','It marks beat 1. Tap it on your knee.'],['Count to the next heavy click.','Two, three or four beats give you duple, triple or quadruple.'],['Listen inside one beat.','Two even sounds is simple. Three is compound, with a rolling, skipping feel.']],
+ rhy:[['Keep the pulse.','Tap the four beats with one hand while you listen.'],['Say it back.','Use time names (ta, ti-ti, ta-a) or count 1 &amp; 2 &amp; before you write anything.'],['Write one beat at a time.','Each tile is as wide as it is long, so a full bar fills the line.']],
+ qual:[['Listen to the 3rd first.','Major is the brighter chord, minor the darker.'],['Then the 5th.','A perfect 5th sounds settled. Diminished squeezes it down and sounds tense; augmented stretches it up and hangs unresolved.'],['Last, the 7th (rung 3).','The dominant 7th wants to move on, the major 7th glows, the minor 7th is soft, the half-diminished is dark and the diminished 7th is the most unstable.']],
+ cad:[['Start with the last chord.','Home (I), the dominant (V), or somewhere else (vi)?'],['Then the chord before it.','V before I is perfect; IV before I is plagal.'],['Follow the bass.','Sing the last two bass notes. Fa falling a semitone to mi in a minor key is the Phrygian cadence.'],['Listen for a delay.','A cadential 6/4 holds the dominant bass under I, then V, before the close.']],
+ bass:[['Sing the bass line first.','In root position the bass is the chord\'s root, so the bass line spells the numerals.'],['I, IV and V are the pillars.','ii and vi are the minor relatives of IV and I.'],['Listen for a note from outside the key.','A secondary dominant (V7/V, V7/vi) leans into the next chord.']],
+ mel:[['Sing it back in solfa before you answer.','The key chord plays first and the first note is always given.'],['Movable do.','Do is home in a major key; in a minor key the home is la, and si is the raised 7th that leads up to la.'],['Mind the octave marks.','A comma marks the octave below (s, l, t,), an apostrophe the octave above (d\').']],
+ blind:[['Hear the tonic chord first.','It sets the key, then the phrase plays with the score hidden.'],['Name the cadence at the end.','Listen to the last chord, then the one before it.'],['Check it against the score.','Open the same phrase in the Analysis room and compare.']]};
+const ELTIPNOTE={metre:'The speed changes every time (60–120 beats a minute), so fast or slow is never a clue. 6/8 is two beats of three quavers, not six beats. Irregular metres mix groups of 2 and 3: 5/4 here is felt 3+2, 7/8 as 2+2+3.',
+ rhy:'The bar under the notes shows how long each sound lasts. A dashed gap is a rest. A dotted crotchet and a quaver is long-short across two beats; quaver, crotchet, quaver is short-long-short. Rung 1 is clapped; from rung 2 it is on one note, so you can hear how long each note lasts.',
+ qual:'Every chord is in root position, played high or low.',
+ cad:'Australian names are used here: perfect cadence (US: authentic cadence), imperfect cadence (US: half cadence), interrupted cadence (US: deceptive cadence). Rung 3 (Stage 6) adds the Phrygian cadence, an imperfect cadence in a minor key (iv⁶–V), and the cadential 6/4, the decorated approach to V.',
+ bass:'The key chord plays first, and chord 1 is always I. "Bass only" plays just the bottom notes.',
+ mel:'The hand signs are the Curwen signs used in Kodály teaching (si uses the so sign, raised). Hand-sign drawings © 2003 Kodály Music Education Institute of Australia (KMEIA).',
+ blind:'The phrases come from the scores in the Analysis room. Their cadence labels were re-read in music21 and checked by an independent review on 18 Nov 2026. A "perfect cadence in B minor" is still a perfect cadence: it closes, but in a new key for a moment.'};
+const ELCADL={perfect:'Perfect',plagal:'Plagal',imperfect:'Imperfect',interrupted:'Interrupted',phrygian:'Phrygian',cad64:'Cadential <span class="fig"><i>6</i><i>4</i></span>'};
+const ELCADUS={perfect:'US: authentic',imperfect:'US: half',interrupted:'US: deceptive'};
+const ELFN={T:['tonic','var(--green)'],PD:['pre-dominant','var(--gold)'],D:['dominant','var(--red)'],X:['outside the key','var(--violet)']};
+const ELMETN={'2/4':'Simple duple','3/4':'Simple triple','4/4':'Simple quadruple','6/8':'Compound duple','9/8':'Compound triple','12/8':'Compound quadruple','5/4':'Irregular, 5 4','7/8':'Irregular, 7 8'};
+function earNumFn(rn){const r=rn.replace(/:\d/,'');if(r.includes('/'))return'X';const b=r.replace(/[°7]/g,'').toLowerCase();return b==='ii'||b==='iv'?'PD':b==='v'||b==='vii'?'D':'T'}
+function earRnHTML(rn){const m=rn.match(/^([^:]*)(?::(\d))?$/),b=m[1];return m[2]==='1'?`${b}<sup>6</sup>`:m[2]==='2'?`${b}<span class="fig"><i>6</i><i>4</i></span>`:b}
+function earRnTxt(rn){return rn.replace(':2','⁶₄').replace(':1','⁶')}
+function earSolOfMidi(m,key){return{0:'do',1:'di',2:'re',3:'ri',4:'mi',5:'fa',6:'fi',7:'so',8:'si',9:'la',10:'ta',11:'ti'}[mod(m-earDo(key).m,12)]}
+const elFmt=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const elDrillName=d=>EDR.find(x=>x[0]===d)[1];
+const elTimes=n=>n===1?'once':n===2?'twice':n+' times';
+function earTallyHTML(s,cls=''){const n=s.n||0,lab=n?`Score ${s.ok} of ${n}, streak ${s.streak}, best ${s.best}`:'Score: no answers yet';
+ if(!n)return`<div class="el-tally is-new ${cls}" role="status" aria-label="${lab}"><div class="el-score"><b>–</b><span>no answers yet</span></div></div>`;
+ return`<div class="el-tally ${cls}" role="status" aria-label="${lab}"><div class="el-score"><b data-ok="${s.ok}">${s.ok}</b><span>of ${n}</span></div><div class="el-side"><div>Streak <b>${s.streak}</b></div><div>Best <b>${s.best}</b></div></div></div>`}
+function earFootHTML(s){const any=s.n||s.shown||s.skipped||s.nearly;
+ return`<div class="el-foot"><span class="stats">${any?`<b>${s.n}</b> answered · <b>${s.shown}</b> shown · <b>${s.skipped}</b> skipped${s.nearly?` · <b>${s.nearly}</b> nearly`:''}`:'No answers yet'}</span><span class="sp"></span>${earResetHTML()}<button class="el-btn sm" data-earjournal>Save to journal</button></div>`}
+function earResetHTML(){const nm=elDrillName(EAR.drill);
+ if(EAR.resetAsk)return`<span class="el-confirm" role="group" aria-label="Confirm reset">Reset the ${nm} score?<button class="el-btn sm danger" data-earresetyes>Reset</button><button class="el-btn sm" data-earresetno>Keep it</button></span>`;
+ if(EAR.resetUndo&&EAR.resetUndo.drill===EAR.drill)return`<span class="el-confirm" role="status">Score reset.<button class="el-btn sm" data-earresetundo>Undo</button></span>`;
+ return`<button class="el-btn sm" data-earreset>Reset score</button>`}
+// ---- the sound stage
+function earNow(){const I=elInfo(),q=EAR.q,mine=I.state!=='idle'&&ELT.item===q&&ELT.variant!=='tap';
+ if(mine&&I.state==='loading')return{st:'loading',b:'Stop',s:q.d==='blind'||!EAR.blind&&EAR.drill==='blind'?'Loading the scores…':'Loading the piano…'};
+ if(mine){const el=Math.min(I.dur,I.elapsed),ci=earCountIn();return{st:'playing',b:'Stop',s:ci?`Count-in · ${ci}`:`Playing · ${elFmt(el)} of ${elFmt(I.dur)}`,ci}}
+ if(!q){const rdy=elReady(EAR.drill);return rdy?{st:'ready',b:'Play',s:'Press play to hear the first one'}:{st:'wait',b:'Loading…',s:EAR.drill==='blind'?'Loading the scores and the piano…':'Loading the piano…'}}
+ return{st:'ready',b:'Play again',s:q.plays?`Ready · played ${elTimes(q.plays)}`:'Ready'}}
+// the rhythm count-in: beats 0-3 at 60/bpm from the lead-in (the visible count 1 2 3 4 lights with it)
+function earCountIn(){const q=EAR.q;if(!q||q.d!=='rhy'||ELT.variant!=='all'||ELT.st!=='playing'||!ELT.bl)return 0;const e=(performance.now()-ELT.start)/1000-ELT.lead,n=Math.floor(e/ELT.bl)+1;return e>=0&&n>=1&&n<=4?n:0}
+function earVarsHTML(q,l){const d=EAR.drill;
+ if(d==='rhy'){const bpm=earRhyBpm(l);return`<div class="el-vars"><span class="cap">Pulse</span><div class="el-seg" role="group" aria-label="Pulse"><button data-earpulse="1" aria-pressed="${EAR.rhy.pulse}">On</button><button data-earpulse="0" aria-pressed="${!EAR.rhy.pulse}">Off</button></div><span class="gap"></span><span class="cap">Speed</span><div class="el-seg" role="group" aria-label="Speed"><button data-earspd="72" aria-pressed="${bpm===72}">Steady · 72</button><button data-earspd="100" aria-pressed="${bpm===100}">Normal · 100</button></div><span class="gap"></span><span class="fix">Sound: ${l===1?'clap':'tone'}</span></div>`}
+ const v=[];if(q&&(d==='cad'||d==='bass'||d==='mel')&&!(d==='cad'&&q.l===1))v.push(['nokey','Without the key chord']);if(q&&d==='bass')v.push(['bassonly','Bass only']);if(q&&d==='mel')v.push(['first','First note']);
+ return v.length?`<div class="el-vars"><span class="cap">Or just</span>${v.map(([k,t])=>`<button class="el-var" data-earplay="${k}" aria-pressed="false"><i></i>${t}</button>`).join('')}</div>`:''}
+function earStageHTML(q,l){const N=earNow(),dis=N.st==='wait';
+ return`<div class="el-stage" id="earStage"><button class="el-play${N.st==='loading'||dis?' loading':''}" data-earplay="all" data-v="*" aria-label="${N.b}" aria-pressed="false" ${dis?'disabled aria-busy="true"':''}>${ELRING}</button><div class="el-now ${N.st}"><b>${N.b}</b><span>${N.s}</span></div>
+  <div class="el-acts">${q?`<button class="el-btn" data-earshow>Show me</button><button class="el-btn" data-earnew>Skip →</button>`:''}</div>${earVarsHTML(q,l)}</div>`}
+function earDockHTML(q){if(!q)return'';const N=earNow(),rb=EAR.done?`<button class="el-btn gold" data-eardock="next">Next →</button>`:(EAR.drill==='rhy'||EAR.drill==='bass'||EAR.drill==='mel')?`<button class="el-btn gold" data-eardock="check" ${earFull(q)?'':'disabled'}>Check</button>`:'';
+ return`<div class="el-dock" id="earDock" role="region" aria-label="Ear Lab playback"><button class="el-play" data-eardock="toggle" data-v="*" aria-label="${N.b}" aria-pressed="false">${ELRING}</button><div class="el-now ${N.st}"><b>${elDrillName(EAR.drill)}</b><span>${N.s}</span></div>${rb}</div>`}
+function earFull(q){const A=EAR.ans;return q.d==='rhy'?A.reduce((s,k)=>s+RCELL[k].w,0)===16*q.bars:q.d==='bass'?A.length===3:q.d==='mel'?A.length>=q.a.length-1:false}
+// ---- the result panel (spec 9)
+function elReplayBtn(r,first){const o=r.o!==undefined?` data-earo="${r.o}"`:'';
+ return first?`<button class="el-replay" data-earplay="${r.v}"${o} aria-pressed="false"><span class="el-play" data-v="${r.v}" aria-hidden="true">${ELRING}</span><span>${r.t}</span></button>`:`<button class="el-btn" data-earplay="${r.v}"${o} aria-pressed="false">${r.t}</button>`}
+function earResultHTML(q,T){const res=EAR.res,k=T.kind,cls=k==='ok'?'ok':k==='nearly'?'near':k==='shown'?'shown':'bad',ico=k==='ok'?'tick':k==='nearly'?'near':k==='shown'?'eye':'cross',vt=k==='ok'?'Correct':k==='nearly'?'Nearly':k==='shown'?'Shown':'Not this time';
+ return`<div class="el-result ${cls}" id="earResult" role="group" aria-label="Result: ${vt}"><div class="el-mark">${ELICON[ico]}</div><div><div class="el-verdict">${vt}</div><div class="el-answer" role="heading" aria-level="3">${T.head}${T.small?` <small>${T.small}</small>`:''}</div></div><button class="el-btn gold" data-earnew>Next →</button>
+  <div class="el-body"><p class="el-teach">${T.teach}</p>${T.pic||''}</div>${T.cmp||''}<div class="el-body"><div class="el-replays">${T.replays.map((r,i)=>elReplayBtn(r,i===0)).join('')}</div>${T.after||''}</div></div>`}
+/* ---- feedback that teaches (spec 9): the answer as the headline, one or two sentences relating the student's choice to it, a replay that demonstrates it ---- */
+const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const ELNUM={2:'two',3:'three',4:'four',5:'five',6:'six'};
+function earMetreD(m){const M=METRES[m];return{b:M.b,S:M.sub,irr:m==='5/4'||m==='7/8',comp:M.sub===3,sp:M.sub===3?'three':'two'}}
+function earTeachMetre(q,res){const a=q.a,g=res.given,A=earMetreD(a),nm=A.irr?'Irregular':(A.comp?'Compound':'Simple')+' '+({2:'duple',3:'triple',4:'quadruple'}[A.b]);
+ const irrS=`The beats are not all the same length. Count the quick notes: ${a==='5/4'?'3+2':'2+2+3'}.`,both=A.irr?irrS:`Start with the heavy click: it comes back every ${ELNUM[A.b]} beats. Then listen inside one beat: it splits in ${A.sp}.`;
+ let t;
+ if(g===null)t=both;else if(g===a)t=A.irr?irrS:cap1(`${ELNUM[A.b]} beats in a bar, each one splitting in ${A.sp}.`);
+ else{const G=earMetreD(g);
+  if(A.irr)t=irrS;else if(G.irr)t=both;
+  else if(G.b*G.S===A.b*A.S&&G.S!==A.S)t=`You heard ${ELNUM[A.b*A.S]} quavers in every bar, and that is right. In ${g} they fall in ${G.S===2?'twos':'threes'}, making ${ELNUM[G.b]} beats. Here they fall in ${A.S===2?'twos':'threes'}, so there are ${A.b===2?'only two':'three'} beats in a bar.`;
+  else if(A.S===G.S&&((a==='2/4'&&g==='4/4')||(a==='4/4'&&g==='2/4')))t=`You heard the beats split in two, and that is right. Here the heaviest click comes back every ${ELNUM[A.b]} beats${a==='4/4'?', with a lighter one on beat 3':''}.`;
+  else if(A.S===G.S)t=`You heard each beat split in ${A.sp}, and that is right. Now count from one heavy click to the next: ${ELNUM[A.b]} beats, not ${ELNUM[G.b]}.`;
+  else if(A.b===G.b)t=`You counted ${ELNUM[A.b]} beats in a bar, and that is right. Now listen inside one beat: it splits in ${A.sp}, not ${G.sp}, so this is ${A.comp?'compound':'simple'}.`;
+  else t=both}
+ const rp=[{v:'beats',t:'Hear it again with the beats shown'}];if(g&&g!==a)rp.push({v:'given',t:`Hear ${g} at the same speed`});
+ return{kind:res.kind,head:nm,small:A.irr?`${a} (${a==='5/4'?'3+2':'2+2+3'})`:a,teach:t,replays:rp,after:elBeatsSVG(a)}}
+function earRhyCmpHTML(q,res){const bars=q.bars,g=res.given,kb=earRhyBeats(q.a,bars),gb=g?earRhyBeats(g,bars):null,marks=gb?kb.map((k,i)=>gb[i]===k):null,stick=q.l===1,ink=ELC.IV;
+ const one=(cells,o)=>earRhySVG(cells,{stick,...o}),GB=earRhyBars(g||[],bars),AB=earRhyBars(q.a,bars),who=(t,c='')=>`<div class="who ${c}">${t}</div>`;
+ const wide=`<div class="el-cmp wide">${g?who('You wrote')+one(g,{u:18,bars,marks,label:'You wrote: '+g.map(k=>ELTITLE[k]).join(', ')}):''}${who('It was','ans')}${one(q.a,{u:18,bars,ruler:!g,stripCol:ELC.GOLD,caret:true,label:'It was: '+q.a.map(k=>ELTITLE[k]).join(', ')})}</div>`;
+ let nar='';for(let b=0;b<bars;b++){const last=b===bars-1,mk=marks?marks.slice(b*4,b*4+4):null;
+  nar+=(g?who(bars>1?`You wrote · bar ${b+1}`:'You wrote')+one(GB[b]||[],{u:17,bars:1,marks:mk,final:last,label:'You wrote, bar '+(b+1)}):'')+who(g||bars>1?(bars>1?`It was · bar ${b+1}`:'It was'):'It was','ans')+one(AB[b],{u:17,bars:1,ruler:!g,stripCol:ELC.GOLD,final:last,caret:true,label:'It was, bar '+(b+1)})}
+ return`${wide.replace('class="el-cmp wide"','class="el-cmp wide" id="earCmpW"')}<div class="el-cmp narrow" id="earCmpN">${nar}</div>`}
+function earTeachRhy(q,res){const bars=q.bars,N=4*bars,g=res.given,kb=earRhyBeats(q.a,bars),gb=g?earRhyBeats(g,bars):null,rp=[];let head,teach;
+ const cmp=earRhyCmpHTML(q,res);
+ if(g===null){head='Here is the rhythm';teach='Follow the notes as it plays, then tap it back.'}
+ else{const bad=[];kb.forEach((k,i)=>{if(gb[i]!==k)bad.push(i)});const m=N-bad.length;
+  if(!bad.length){head='Every beat right';const sp=q.a.includes('dq')?', including the dotted rhythm':q.a.includes('syn')?', including the syncopation':q.a.includes('qr')?', including the rest':'';teach=`Every beat right${sp}. Tap it once more as you listen.`}
+  else{head=`${m} of ${N} beats match`;const b0=bad[0],bar=Math.floor(b0/4)+1,beat=b0%4+1,ga=earRhyCellAt(g,b0),aa=earRhyCellAt(q.a,b0),where=bars>1?`<span data-notm>bar ${bar}</span>, beat ${beat}`:`beat ${beat}`;
+   let lead='';if(bars>1){const okBars=[];for(let b=0;b<bars;b++)if(!bad.some(i=>Math.floor(i/4)===b))okBars.push(b+1);lead=okBars.length?`<span data-notm>Bar ${okBars[0]}</span> is exactly right. `:`${m} of ${N} beats match. `}
+   teach=`${lead}${cap1(where)}: you wrote ${ga?`${ELCN[ga.k]} (${ELW[ga.k]})`:'nothing'}. Listen for ${ELW[aa.k]} there: ${ELCN[aa.k]}.`;
+   rp.push({v:'beat',o:`${Math.floor(b0/4)}:${b0%4}`,t:`Hear ${bars>1?`<span data-notm>bar ${bar}</span>, `:''}beat ${beat}: yours, then the answer`})}}
+ rp.push({v:'follow',t:'Hear it all, following the notes'});
+ return{kind:res.kind,head,teach,cmp,replays:rp}}
+const ELQP={'':['major','perfect',null],m:['minor','perfect',null],dim:['minor','diminished',null],aug:['major','augmented',null],maj7:['major','perfect','major'],7:['major','perfect','minor'],m7:['minor','perfect','minor'],m7b5:['minor','diminished','minor'],dim7:['minor','diminished','diminished']};
+function earQualDeciding(a,g){const A=ELQP[a],G=g!==null&&g!==undefined?ELQP[g]:null;if(!G){return a==='dim'||a==='aug'?'q5':ELQP[a][2]?'q7':'q3'}
+ if(A[0]!==G[0])return'q3';if(A[1]!==G[1])return'q5';return'q7'}
+function earTeachQual(q,res){const a=q.a,g=res.given,A=ELQP[a],r=pretty(q.root),sym=!!QSYM[a],head=QUALS[a],small=sym?`on ${r}`:`on ${r}, root position`;let t;
+ const bottom=()=>`Take it from the bottom: the 3rd is ${A[0]}, the 5th is ${A[1]}${A[2]?`, the 7th is ${A[2]}`:''}.`;
+ const SEVTXT={major:'a semitone under the octave: major 7th',minor:'a tone under the octave, and it wants to move on: dominant 7th'};
+ if(g===null)t=bottom();
+ else if(g===a)t=cap1(`${A[0]} 3rd, ${A[1]} 5th${A[2]?`, and a ${A[2]} 7th`:''}.`);
+ else{const k=[g,a].sort().join('|'),is=(x,y)=>k===[x,y].sort().join('|');
+  if(is('','m'))t=`Both have a perfect 5th, so either way the chord sounds settled. The difference is the 3rd: here it is ${a===''?'major, the brighter one':'minor, the darker one'}.`;
+  else if(is('m','dim'))t=`You heard the minor 3rd, and that is right. Now the 5th: ${a==='dim'?'it is squeezed down a semitone, which makes the chord tense':'it is perfect, so the chord is settled'}.`;
+  else if(is('','aug'))t=`You heard the major 3rd, and that is right. Now the 5th: ${a==='aug'?'it is stretched up a semitone, so the chord hangs unresolved':'it is perfect, so the chord is settled'}.`;
+  else if(is('maj7','7'))t=`You heard a major triad underneath, and that is right. The 7th on top is ${a==='maj7'?'a semitone under the octave: major 7th':'a tone under the octave, and it wants to move on: dominant 7th'}.`;
+  else if(is('7','m7'))t=`You heard the 7th a tone under the octave, and that is right. Underneath, the 3rd is ${a==='7'?'major':'minor'}.`;
+  else if(is('m7','m7b5'))t=`Minor 3rd and minor 7th: right. The 5th is ${a==='m7'?'perfect':'diminished, which darkens it'}.`;
+  else if(is('m7b5','dim7'))t=`You heard the diminished triad, and that is right. The 7th is ${a==='m7b5'?'a minor 7th':'a diminished 7th: every note a minor 3rd from the next'}.`;
+  else t=bottom()}
+ const dec=earQualDeciding(a,g),dn={q3:'3rd',q5:'5th',q7:'7th'}[dec],rp=[{v:dec,t:`Hear the ${dn}, then the chord`}];if(g&&g!==a)rp.push({v:'qab',t:`Hear ${QUALS[g]}, then ${QUALS[a]}, on ${r}`});
+ return{kind:res.kind,head,small,teach:t,replays:rp}}
+const ELCSENT={perfect:'V to I: the leading note rises to the home note and the bass lands there. A full stop.',plagal:'IV to I. No leading note; the home note is held through both chords. The Amen.',
+ imperfect:'It stops on V and waits there. A comma, not a full stop.',interrupted:'V sets up the close, then the bass steps up to vi instead of falling home.',
+ phrygian:'iv⁶ to V in a minor key: the bass falls a semitone, fa to mi, and the phrase stops on V.',cad64:'The bass reaches the dominant early and holds it: I⁶₄, then V, then home. A perfect cadence with a delay built in.'};
+function earCadWrong(a,g,min){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?'VI':'vi',key=`${g}>${a}`;
+ const M={'plagal>perfect':`You heard it come home to ${T}, and that is right. Listen to the chord before: it is V, with the leading note pulling up to the home note. A plagal cadence has ${SD} there.`,
+ 'perfect>plagal':`You heard it come home to ${T}, and that is right. Listen to the chord before: it is ${SD}. There is no leading note, and the home note is held through both chords.`,
+ 'perfect>interrupted':`You heard V set up a close, and that is right. But the bass steps up to ${S6} instead of falling home, so the close never arrives.`,
+ 'interrupted>perfect':'You heard V set up a close, and that is right. This time it arrives: the bass falls to the home note.',
+ 'perfect>imperfect':'You heard V, and that is right. But V is the last chord. The phrase stops there and the home chord never comes.',
+ 'imperfect>perfect':'You heard V, and that is right. But it is not the last chord: it goes on to the home chord and closes.',
+ 'imperfect>interrupted':`You heard that it does not close on ${T}, and that is right. V is not the last chord: it moves on, up a step to ${S6}.`,
+ 'interrupted>imperfect':`You heard that it does not close on ${T}, and that is right. The last chord is V itself; nothing follows it.`,
+ 'plagal>imperfect':`You heard ${SD} near the end, and that is right. But the last chord is V, not ${T}, so the phrase is left open.`,
+ 'imperfect>plagal':`You heard ${SD} near the end, and that is right. It moves to ${T}, not V: the phrase comes home.`,
+ 'plagal>phrygian':`You heard the subdominant, and it is there: iv is the chord before the end. But the phrase does not come home to i. It stops on V, with the bass stepping down a semitone, fa to mi. That falling semitone is the Phrygian cadence, a kind of imperfect cadence (US: half).`,
+ 'imperfect>phrygian':'You heard it stop on V, and that is right: this is an imperfect cadence (US: half). It is the special kind. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.',
+ 'perfect>cad64':`You heard V to ${T} close the phrase, and that is right. Listen just before V: the bass is already on the dominant, with the tonic chord sitting on top of it (${T}⁶₄). That delay is the cadential 6/4.`,
+ 'phrygian>imperfect':'You heard it stop on V, and that is right. But the bass does not fall a semitone into V here, so it is a plain imperfect cadence (US: half).',
+ 'cad64>perfect':`You heard V to ${T}, and that is right. Here V arrives directly: there is no ${T}⁶₄ held over the dominant bass before it.`};
+ if(M[key])return M[key];
+ if(a==='phrygian')return'The phrase does not close: it stops on V. In the bass, fa falls a semitone to mi. That is the Phrygian cadence, a kind of imperfect cadence (US: half).';
+ if(a==='cad64')return`Follow the bass: it reaches the dominant and holds it for two chords, ${T}⁶₄ then V, before falling home to ${T}.`;
+ if(g==='phrygian'||g==='cad64'){const par=CADPARENT[g],base=par===a?'':M[`${par}>${a}`]||'';return`${base} There is no ${g==='phrygian'?'semitone fall in the bass':'held dominant bass'} here.`.trim()}
+ return`Start with the last chord: here it is ${a==='interrupted'?S6:a==='imperfect'?'V':T}.${a==='perfect'?' Then the chord before it: V.':a==='plagal'?` Then the chord before it: ${SD}.`:a==='interrupted'?' Then the chord before it: V.':''}`}
+function earChordRowHTML(q){const n=q.rns.length,cn=q.a==='cad64'?3:2,key=q.key;if(!q.ch||q.ch.length!==n)return'';
+ const chip=(rn,i,cad)=>{const f=earNumFn(rn),[fnm,col]=ELFN[f];return`<div class="el-ch" style="--fc:${col}" title="${fnm}">${earRnHTML(rn)}<small>${cad?'bass '+earSolOfMidi(q.ch[i][0],key):fnm}</small></div>`};
+ const pre=q.rns.slice(0,n-cn).map((rn,i)=>chip(rn,i,false)).join(''),cad=q.rns.slice(n-cn).map((rn,i)=>chip(rn,n-cn+i,true)).join('');
+ return`<div class="el-chords" aria-label="${q.rns.map(earRnTxt).join(', ')} in ${keyName(key)}">${pre}<div class="el-cad" data-l="the cadence">${cad}</div><span class="el-key">in ${keyName(key)}</span></div>`}
+function earTeachCad(q,res){const a=q.a,g=res.given,min=q.key&&q.key.mode==='min',nm=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':CADL[a]||ELCADL[a]+' cadence';
+ const head=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':a==='phrygian'?'Phrygian cadence':CADL[a];
+ let t;if(g===null)t=ELCSENT[a];else if(g===a)t=ELCSENT[a];else t=earCadWrong(a,g,min);
+ if(min&&g===a)t=t.replace(/^V to I/,'V to i');
+ const last=a==='cad64'?'Hear the last three chords, slowly':'Hear the last two chords, slowly',rp=[{v:'last',t:last},{v:'bassonly',t:'Bass only'},{v:'all',t:'The whole phrase'}];
+ if(q.d==='blind')return{kind:res.kind,head:CADL[a],teach:t,replays:[{v:'ending',t:'Hear the ending again'},{v:'all',t:'The whole phrase'}],
+  after:`<p class="el-note">From ${q.t||q.score}, bar ${q.bar}. <button class="el-btn sm" data-earscore="${q.score}">Open this score in Analysis</button></p>`};
+ return{kind:res.kind,head,teach:t,pic:earChordRowHTML(q),replays:rp}}
+function earBassSolTxt(q){return q.bass.map(m=>earSolOfMidi(m,q.key)).join(' – ')}
+function earTeachBass(q,res){const g=res.given,a=q.a,key=q.key,heads=a.map((rn,i)=>`<span style="color:${ELFN[earNumFn(rn)][1]}">${earRnTxt(rn)}</span>`).join(' – ');
+ const bad=g?[1,2,3].filter(i=>g[i-1]!==a[i]):[];let t;
+ if(g===null)t=`The bass spells it out: ${earBassSolTxt(q)}.`;
+ else if(!bad.length)t=`All three right. The bass spells it out: ${earBassSolTxt(q)}.`;
+ else{const k=bad[0],gv=g[k-1],av=a[k],gf=earNumFn(gv),af=earNumFn(av),sol=earSolOfMidi(q.bass[k],key);
+  if(/\//.test(av))t=`Chord ${k+1} has a note from outside the key, ${/V7\/vi/.test(av)?'si':'fi'}, leaning into the next chord. It is ${av}, the dominant of ${av.split('/')[1]}.`;
+  else if(gf===af)t=`Chord ${k+1}: you wrote ${gv}; it is ${av}. Both do the same job here (${af==='PD'?'pre-dominant: they lead to V':af==='T'?'tonic: a place of rest':'dominant'}), so you heard its role. The bass tells them apart: it is on ${sol}, not ${ELDEG[gv]||'the root of '+gv}.`;
+  else t=`Chord ${k+1}: you wrote ${gv}; it is ${av}. Sing the bass: it ${q.bass[k]>q.bass[k-1]?'rises':'falls'} to ${sol}, the root of ${av}.`;
+  if(bad.length>1)t+=` Chord${bad.length>2?'s':''} ${bad.slice(1).map(i=>i+1).join(' and ')} ${bad.length>2?'are':'is'} marked below.`}
+ const rp=[{v:'bassonly',t:'Bass only, with the solfa shown'}];if(bad.length)rp.push({v:'pair',o:String(bad[0]),t:`Hear chords ${bad[0]} and ${bad[0]+1}`});
+ const row=`<div class="el-chords" id="earBassRow" aria-label="${a.map(earRnTxt).join(', ')} in ${keyName(key)}">${a.map((rn,i)=>{const[fnm,col]=ELFN[earNumFn(rn)];return`<div class="el-ch" data-i="${i}" style="--fc:${col}" title="${fnm}">${earRnHTML(rn)}<small>bass ${earSolOfMidi(q.bass[i],key)}</small></div>`}).join('')}<span class="el-key">in ${keyName(key)}</span></div>`;
+ return{kind:res.kind,head:heads,small:`in ${keyName(key)}`,teach:t,pic:row,replays:rp}}
+const ELDEG={I:'do',ii:'re',iii:'mi',IV:'fa',V:'so',vi:'la'};
+function earMelStep(a,b,key){return Math.abs(eSolMidi(eSolParse(a),key)-eSolMidi(eSolParse(b),key))<=2}
+function earTeachMel(q,res){const g=res.given,a=q.a,head=a.join(' ');let t,k=1;
+ if(g===null)t='Sing it back with the hand signs, then try the next one.';
+ else if(res.ok)t='Every note right. Sing it once more with the hand signs.';
+ else{const G=[a[0],...g];let j=a.findIndex((x,i)=>G[i]!==x);if(j<1)j=1;k=j;const dir=(x,y)=>{const d=eSolMidi(eSolParse(y),q.key)-eSolMidi(eSolParse(x),q.key);return d>0?1:d<0?-1:0};
+  let shape=true;for(let i=1;i<a.length;i++)if(G[i]===undefined||dir(a[i-1],a[i])!==dir(G[i-1],G[i]))shape=false;
+  const kn=j+1;if(shape){const st=earMelStep(a[j-1],a[j],q.key),gs=G[j]!==undefined&&G[j-1]!==undefined?earMelStep(G[j-1],G[j],q.key):st;
+   t=`You heard the shape: every rise and fall is right. Between notes ${j} and ${kn} the melody ${st?'steps':'skips'} from ${a[j-1]} to ${a[j]}; you wrote ${G[j]!==undefined?`${gs?'a step':'a skip'}, ${G[j-1]} to ${G[j]}`:'nothing'}.`}
+  else{const nd=dir(a[j-1],a[j]),gd=G[j]===undefined?null:dir(G[j-1],G[j]),w=d=>d>0?'goes up':d<0?'goes down':'stays on the same note',w2=d=>d===null?'nothing':d>0?'going up':d<0?'going down':'staying on the same note';
+   t=`${j===1?'The first note is given.':`Notes 1 to ${j} are right.`} After note ${j} the melody ${w(nd)}; you wrote it ${w2(gd)}.`}}
+ const rp=[];if(g&&!res.ok)rp.push({v:'frag',o:String(Math.max(1,k)),t:`Hear notes ${Math.max(1,k)} to ${Math.min(a.length,k+2)}: yours, then the answer`});
+ rp.push({v:'all',t:'Hear it all with the hand signs'});
+ return{kind:res.kind,head,teach:t,replays:rp}}
+function earTeach(q,res){const T=q.d==='metre'?earTeachMetre(q,res):q.d==='rhy'?earTeachRhy(q,res):q.d==='qual'?earTeachQual(q,res):q.d==='bass'?earTeachBass(q,res):q.d==='mel'?earTeachMel(q,res):earTeachCad(q,res);
+ return T}
+/* ---- answer areas ---- */
+function earOptCls(v,q,pre=''){if(!EAR.done)return'';const res=EAR.res,g=res&&res.given;
+ if(v===q.a)return g===v?'is-ans mine':'is-ans';if(g===v)return res.nearly?'is-near':'is-mine';return'is-dim'}
+function earBadge(v,q){if(!EAR.done)return'';const g=EAR.res&&EAR.res.given;
+ if(v===q.a)return`<span class="el-badge">${ELICON.tick}<span>${g===v?'Your answer':'Answer'}</span></span>`;
+ if(g===v)return EAR.res.nearly?`<span class="el-badge">${ELICON.near}<span>Your answer</span></span>`:`<span class="el-badge">${ELICON.cross}<span>Your answer</span></span>`;return''}
+function earOptBtn(v,lab,q,o={}){const lock=EAR.done||!q;return`<button class="el-opt ${o.cls||''} ${q?earOptCls(v,q):''}" data-earans="${v}" ${lock?'disabled':''}${o.title?` title="${o.title}"`:''}${o.aria?` aria-label="${o.aria}"`:''}>${q?earBadge(v,q):''}${lab}</button>`}
+function earMetreGridHTML(q,l){const wait=!q,rows=[['Simple','each beat splits in two',['2/4','3/4','4/4']],['Compound','each beat splits in three',['6/8','9/8','12/8']]];
+ if(l>=3)rows.push(['Irregular','beats of unequal length',['5/4','7/8']]);
+ const cell=m=>{const[n,d]=m.split('/');return earOptBtn(m,elSigSVG(n,d)+elPicSVG(ELGRP[m]),q,{cls:'el-mcell',aria:`${ELMETN[m]}, ${n} ${d}`})};
+ let h=`<div class="corner"></div><div class="el-mh">Duple<small>2 beats in a bar</small></div><div class="el-mh">Triple<small>3 beats in a bar</small></div><div class="el-mh">Quadruple<small>4 beats in a bar</small></div>`;
+ rows.forEach(([n,sub,list])=>{if(l<2&&n!=='Simple')return;h+=`<div class="el-mr">${n}<small>${sub}</small></div>`+list.map(cell).join('')+(list.length<3?'<div></div>'.repeat(3-list.length):'')});
+ return`<div class="el-lbl">Your answer</div><div class="el-mgrid el-opts${wait?' wait':''}" role="group" aria-label="Metre">${h}</div>`}
+function earOptsAreaHTML(q,l){const d=EAR.drill;if(d==='metre')return earMetreGridHTML(q,l);
+ const list=d==='qual'?earQualOpts(l):d==='cad'?(q&&q.opts||earCadOpts(l)):earBlindCats(l).length?earBlindCats(l):Object.keys(CADL);
+ const lab=k=>d==='qual'?QUALS[k]:d==='cad'?ELCADL[k]:ELCADL[k],ttl=k=>d!=='qual'?ELCADUS[k]:'',cls=d==='qual'&&list.length===2?' c2':'';
+ return`<div class="el-lbl">Your answer</div><div class="el-opts${cls}${q?'':' wait'}" role="group" aria-label="Answer">${list.map(k=>earOptBtn(k,`<span>${lab(k)}</span>`,q,{title:ttl(k)||''})).join('')}</div>`}
+function earBassAreaHTML(q){const lock=EAR.done,A=lock&&EAR.res&&EAR.res.given?EAR.res.given:EAR.ans,col=rn=>ELFN[earNumFn(rn)][1];
+ const slots=[0,1,2,3].map(i=>{const rn=i===0?'I':A[i-1],ok=lock&&i>0&&A[i-1]===q.a[i];return`<div class="el-slot${i===A.length+1&&!lock?' cur':''}${lock&&i>0?(ok?' okk':' badk'):''}" style="--fc:${rn?col(rn):'var(--muted)'}"${lock&&i>0?` aria-label="Chord ${i+1}: ${ok?'right':'wrong, it is '+q.a[i]}"`:''}>${rn?earRnHTML(rn):'?'}${lock&&i>0?`<span class="st">${ok?ELICON.tick:ELICON.cross}</span>${ok?'':`<small style="color:${col(q.a[i])}">${earRnHTML(q.a[i])}</small>`}`:''}</div>`}).join('');
+ return`<div class="el-lbl">Name chords 2–4 in ${keyName(q.key)}</div><div class="el-slots${lock?' lock':''}">${slots}</div>
+  <div class="el-opts c4" role="group" aria-label="Chord numerals">${q.opts.map(o=>{const f=earNumFn(o),[fnm,c]=ELFN[f];return`<button class="el-opt num" style="--fc:${c}" data-earrn="${o}" title="${fnm}" ${lock||A.length>=3?'disabled':''}>${earRnHTML(o)}<span class="fn">${fnm}</span></button>`}).join('')}</div>${lock?'':earEditBtns(A.length===3)}`}
+function earEditBtns(full){return EAR.done?'':`<div class="el-edit"><button class="el-btn sm" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="el-btn sm" data-hist="ear:r" title="Redo">↷ Redo</button><button class="el-btn sm" data-earclr>Clear</button><span class="sp"></span><button class="el-btn gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
+function earRhyAreaHTML(q,l){if(EAR.done)return'';const A=EAR.ans,used=A.reduce((s,k)=>s+RCELL[k].w,0),tot=16*q.bars,stick=l===1,nm=EL_TIMENAMES[l],GA=earRhyBars(A,q.bars);
+ const lab=`Your rhythm · ${used/4} of ${tot/4} beats`,alab='Your rhythm so far: '+(A.length?A.map(k=>ELTITLE[k]).join(', '):'nothing yet');
+ const wide=`<div class="el-rhy wide">${earRhySVG(A,{u:18,bars:q.bars,stick,cursor:true,countin:0,label:alab,caret:false,first:true})}</div>`;
+ let nar='';for(let b=0;b<q.bars;b++){const last=b===q.bars-1,cur=b===Math.min(q.bars-1,Math.floor(used/16))&&used<tot;nar+=earRhySVG(GA[b]||[],{u:17,bars:1,stick,cursor:cur,total:16,label:'Bar '+(b+1),final:last,first:b===0,ruler:true})}
+ const pos=used%16;const tiles=earCells(l).map(k=>{const w=RCELL[k].w,ok=used+w<=tot&&(w<8||pos%8===0)&&pos+w<=16;return earRhyTile(k,{stick,named:nm,disabled:!ok})}).join('');
+ return`<div class="el-lbl">${lab}</div>${wide}<div class="el-rhy narrow">${nar}</div><div class="el-lbl">Add the next beat</div><div class="el-tiles${nm?' named':''}">${tiles}</div>${earEditBtns(used===tot)}`}
+function earMelDeskHTML(q){const lock=EAR.done,A=EAR.ans,full=A.length>=q.a.length-1,res=EAR.res;let strip='';
+ if(lock)strip=earResultHTML(q,earTeachMel(q,res));
+ const aria=lock?'The melody: '+q.a.join(' ')+'.'+(res.given&&!res.ok?' You wrote: '+[q.a[0],...res.given].join(' ')+'.':''):'Your melody so far: '+[q.a[0],...A].join(' ');
+ return`<div class="meldesk">${earMelLadderHTML(q,lock,full)}
+  <div class="melscore"><div class="lbl">${lock?`Melody · ${q.a.length} notes`:`Write the melody · ${A.length+1} of ${q.a.length} notes`}</div><div class="melfr" id="earMel" role="img" aria-label="${aria}"></div></div>${strip?`<div class="melres">${strip}</div>`:''}
+  <div class="melacts">${earEditBtns(full)}<label class="note"><input type="checkbox" id="earLet" ${EAR.letters?'checked':''}> show letter names</label></div></div>`}
+function earAnswerAreaHTML(q,l){const d=EAR.drill;
+ if(!q){if(['metre','qual','cad','blind'].includes(d))return earOptsAreaHTML(null,l);return''}
+ if(d==='metre'||d==='qual'||d==='cad'||d==='blind')return earOptsAreaHTML(q,l);if(d==='rhy')return earRhyAreaHTML(q,l);if(d==='bass')return earBassAreaHTML(q);if(d==='mel')return earMelDeskHTML(q);return''}
+function earTipsHTML(d){return`<section class="card" id="earTips"><h3>Listening for it</h3><ol class="el-tips">${ELTIPS[d].map(([a,b])=>`<li><b>${a}</b> ${b}</li>`).join('')}</ol><p>${ELTIPNOTE[d]}</p></section>`}
+/* ---- the card ---- */
+function earFocusKey(){const a=document.activeElement;if(!a||!a.closest||!a.closest('#earMain')||!a.dataset)return null;
+ for(const k of ['earplay','eardr','earlv','earpulse','earspd','earall','earreset','earresetno','earresetyes','earresetundo','earjournal','eardock']){if(a.dataset[k]!==undefined)return a.dataset[k]===''?`[data-${k}]`:`[data-${k}="${a.dataset[k]}"]`}return null}
+function earLiveSay(t){let n=document.getElementById('earLive');if(!n){n=document.createElement('div');n.id='earLive';n.className='el-sr';n.setAttribute('role','status');n.setAttribute('aria-live','polite');n.setAttribute('aria-atomic','true');document.getElementById('room-ear').appendChild(n)}n.textContent='';setTimeout(()=>{n.textContent=t},30)}
+function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill),d=EAR.drill;
+ if(!rdy&&!EAR.preloading){EAR.preloading=elPreload(d).catch(()=>{}).then(()=>{EAR.preloading=null;if(ROOM==='ear'&&$('earMain'))renderEar()})}
+ el.classList.add('el');const fk=EAR.focus||earFocusKey();EAR.focus=null;
+ const tabs=EDR.filter(([k])=>earDrillShown(k)),hidD=EDR.filter(([k])=>!earDrillShown(k)),rungs=[...new Set([...earRungsShown(d),l])].sort(),hidR=rungs.length<3;
+ const hmin=Math.min(...hidD.map(([k])=>EARSTAGE[k][0])),hmax=Math.max(...hidD.map(([k])=>Math.max(...EARSTAGE[k])));
+ const allBtn=hidD.length?`<button class="el-all" data-earall aria-pressed="false" title="Also offer the drills and rungs outside Stage ${earStage()}">${hidD.length} more for ${earStageTxt(hmin,hmax)} · show all</button>`:EAR.all?`<button class="el-all" data-earall aria-pressed="true" title="Offer only the drills and rungs for Stage ${earStage()}">Show Stage ${earStage()} only</button>`:'';
+ const fresh=EAR.ok0===undefined?s.ok:EAR.ok0,fade=s.ok>fresh&&EAR.ok0Drill===d;EAR.ok0=s.ok;EAR.ok0Drill=d;
+ let tally=earTallyHTML(s);if(fade)tally=tally.replace('<b data-ok','<b class="fade" data-ok');
+ const T=q&&EAR.done&&EAR.res&&d!=='mel'?earTeach(q,EAR.res):null;
+ el.innerHTML=`<div class="el-drills" role="tablist" aria-label="Ear Lab drills">${tabs.map(([k,n])=>`<button class="el-drill${d===k?' on':''}" role="tab" aria-selected="${d===k}" data-eardr="${k}"><b>${n}</b><small>${earStageTag(k)}</small></button>`).join('')}${allBtn}</div>
+ <div class="el-cols"><section class="card" id="earCard"><div class="el-head"><div><div class="el-tag">${earStageTag(d)}</div><h2 class="el-title">${elDrillName(d)}</h2></div>${tally}
+  <div class="el-rungrow"><div class="el-rungs" role="group" aria-label="Rung">${rungs.map(n=>`<button data-earlv="${n}" aria-pressed="${l===n}" class="${l===n?'on':''}" title="${earRungStages(d,n)}">Rung ${n}</button>`).join('')}</div>${hidR&&!hidD.length&&!EAR.all?`<button class="el-all" data-earall aria-pressed="false">show all rungs</button>`:''}</div></div>
+  <p class="el-ask">${d==='rhy'&&l===1?ELASK.rhy.replace('the rhythm plays on one note','the rhythm is clapped'):ELASK[d]}</p>
+  ${T?earResultHTML(q,T):d==='mel'&&q&&EAR.done?'':earStageHTML(q,l)}
+  ${earAnswerAreaHTML(q,l)}${earFootHTML(s)}</section>${earTipsHTML(d)}</div>${earDockHTML(q)}`;
+ if(q&&d==='mel')earMelMount(q);
+ if(EAR.announce&&T){const tmp=document.createElement('div');tmp.innerHTML=`${T.head}. ${T.teach}`;earLiveSay(`${T.kind==='ok'?'Correct':T.kind==='shown'?'Shown':T.kind==='nearly'?'Nearly':'Not this time'}. ${tmp.textContent}`);EAR.announce=false}
+ else if(EAR.announce&&q&&d==='mel'){earLiveSay(`${EAR.res.kind==='ok'?'Correct':EAR.res.kind==='shown'?'Shown':'Not this time'}. ${q.a.join(' ')}`);EAR.announce=false}
+ const on=el.querySelector('.el-drill.on');if(on&&on.scrollIntoView)on.scrollIntoView({block:'nearest',inline:'nearest'});
+ if(fk){const n=el.querySelector(fk);if(n&&!n.disabled)n.focus({preventScroll:true})}
+ hBtns();sylMount(true);earSync();earObserve()}
+/* ---- the toggle's state: driven by the transport (elOn), never by redrawing the card ---- */
+function earSync(){const el=$('earMain');if(!el)return;const I=elInfo(),q=EAR.q,snd=I.state!=='idle',mine=snd&&ELT.item===q&&ELT.variant!=='tap',N=earNow();
+ document.body.classList.toggle('ear-sounding',snd&&ROOM==='ear');
+ el.querySelectorAll('.el-play').forEach(b=>{const v=b.dataset.v,on=mine&&(v==='*'||v===ELT.variant),pl=on&&I.state==='playing',ld=on&&I.state==='loading';
+  b.classList.toggle('loading',ld||(!q&&N.st==='wait'&&v==='*'));
+  if(on){b.classList.add('playing');if(pl&&b.dataset.pid!==String(I.id)){b.classList.remove('playing');void b.offsetWidth;b.style.setProperty('--dur',I.dur.toFixed(2)+'s');b.style.setProperty('--del',(-I.elapsed).toFixed(2)+'s');b.dataset.pid=I.id;b.classList.add('playing')}}
+  else{b.classList.remove('playing');delete b.dataset.pid}
+  if(b.tagName==='BUTTON'){b.setAttribute('aria-pressed',on?'true':'false');if(v==='*')b.setAttribute('aria-label',on?'Stop':N.st==='wait'?'Loading':'Play')}});
+ el.querySelectorAll('.el-now').forEach(n=>{const dock=!!n.closest('.el-dock');n.className='el-now '+N.st;const b=n.querySelector('b'),sp=n.querySelector('span');if(b&&!dock)b.textContent=N.b;if(sp)sp.textContent=N.s});
+ el.querySelectorAll('.el-var,.el-btn[data-earplay],.el-replay').forEach(b=>{const on=mine&&ELT.variant===b.dataset.earplay;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
+ const ci=N.ci||0;el.querySelectorAll('.el-rn.c').forEach(g=>{const k=+g.dataset.k;g.classList.toggle('lit',k<ci);g.classList.toggle('now',k===ci-1&&ci>0)});
+ const tx=N.st==='playing'?'Playing':N.st==='ready'&&q?'Ready':'';if(tx!==EAR.said){if(EAR.said!==undefined&&tx)earLiveSay(tx);EAR.said=tx}
+ if(snd&&!EAR.tick)EAR.tick=setInterval(()=>earSync(),100);else if(!snd&&EAR.tick){clearInterval(EAR.tick);EAR.tick=null}}
+function earLane(ev){const L=document.getElementById('earLane');if(!L)return;L.querySelectorAll('.bt.now').forEach(x=>x.classList.remove('now'));
+ const t=L.querySelector(`.bt[data-bar="${(ev.bar-1)%4}"][data-beat="${ev.beat-1}"]`);if(t)t.classList.add('now')}
+function earClearNow(){const L=document.getElementById('earLane');if(L)L.querySelectorAll('.bt.now').forEach(x=>x.classList.remove('now'));document.querySelectorAll('#earBassRow .el-ch.now').forEach(x=>x.classList.remove('now'));
+ document.querySelectorAll('#earMain .el-caret').forEach(c=>c.style.opacity=0)}
+function earRhyCaret(u){document.querySelectorAll('#earMain .el-cmp:not([style*="none"]) .el-caret').forEach(c=>{const svg=c.closest('svg');if(!svg||!svg.getBoundingClientRect().width)return;const x0=+c.dataset.x0,uu=+c.dataset.u,bg=+c.dataset.bg,b=Math.floor(u/16),p=u%16;
+  c.setAttribute('transform',`translate(${x0+b*(16*uu+bg)+p*uu+1},0)`);c.style.opacity=1})}
+// the dock: a copy of the toggle that follows the student on phones while the stage (or the result's first replay) is out of view
+function earDockShow(on){const dk=$('earDock');if(!dk)return;dk.classList.toggle('show',!!on&&ROOM==='ear'&&!!EAR.q);document.body.classList.toggle('ear-docked',dk.classList.contains('show'))}
+function earObserve(){if(EAR.io){EAR.io.disconnect();EAR.io=null}earDockShow(false);const dk=$('earDock');if(!dk||!window.IntersectionObserver||ROOM!=='ear')return;
+ const t=$('earStage')||document.querySelector('#earResult .el-replay')||$('earResult');if(!t)return;const top=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top'))||58;
+ EAR.io=new IntersectionObserver(es=>{earDockShow(!es[es.length-1].isIntersecting)},{rootMargin:`-${top}px 0px -61px 0px`});EAR.io.observe(t)}
+function earTeardown(){if(EAR.io){EAR.io.disconnect();EAR.io=null}document.body.classList.remove('ear-docked','ear-sounding');if(EAR.tick){clearInterval(EAR.tick);EAR.tick=null}}
+elOn(ev=>{if(ev.type==='beat'){earLane(ev);return}if(ev.type!=='state')return;const q=EAR.q;
+ if(ev.state==='playing'&&q&&ELT.item===q&&ELT.variant!=='tap'&&EAR.lastPid!==ev.id){EAR.lastPid=ev.id;q.plays=(q.plays||0)+1}
+ if(ev.state==='idle')earClearNow();earSync()});
+function earSounding(){return ELT.st!=='idle'&&ELT.item===EAR.q&&ELT.variant!=='tap'}
+function earPress(v,main,o){const q=EAR.q;
+ if(main){if(!q){earNew();return}if(earSounding()){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,'all');return}
+ if(!q)return;if(earSounding()&&ELT.variant===v){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,v,o)}
+document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earall],[data-earplay],[data-eardock],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earpulse],[data-earspd],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore]');if(!t)return;const d=t.dataset;
  // EL-11: leaving a question unanswered (a change of drill or rung) records it as skipped, and says so
  if(d.eardr){if(d.eardr===EAR.drill)return;elStop();const sk=earSkip();EAR.drill=d.eardr;EAR.q=null;EAR.done=false;EAR.ans=[];EAR.resetAsk=false;earSave();renderEar();if(sk)toast('The unanswered question was recorded as skipped (not a miss).');return}
  if(d.earlv){if(+d.earlv===earLvl())return;elStop();const sk=earSkip();EAR.lvl[EAR.drill]=+d.earlv;earSave();EAR.q=null;EAR.done=false;EAR.ans=[];renderEar();if(sk)toast('Rung changed: the unanswered question was recorded as skipped (not a miss).');return}
  if(d.earall!==undefined){EAR.all=!EAR.all;earSave();renderEar();return}
- if(d.earplay){earPlay(d.earplay);return}if(d.earstop!==undefined){elStop();earMelNowClear();return}
+ if(d.earplay!==undefined){const o=(d.earo||'').split(':').map(Number);earPress(d.earplay,d.v==='*',{o});return}
+ if(d.eardock!==undefined){if(d.eardock==='toggle')earPress('all',true);else if(d.eardock==='check'){elStop();earCheck()}else earNew();return}
  if(d.earnew!==undefined){earNew();return}
+ if(d.earpulse!==undefined){elStop();EAR.rhy.pulse=d.earpulse==='1';earSave();renderEar();return}
+ if(d.earspd!==undefined){elStop();EAR.rhy.bpm=+d.earspd===72?72:100;earSave();renderEar();return}
  if(d.earans!==undefined&&EAR.q&&!EAR.done){elStop();const j=earJudge(EAR.q,d.earans);earMark(j==='nearly'?'nearly':j==='correct',d.earans);renderEar();return}
  if(d.earcell&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earcell);renderEar();return}
  if(d.earrn&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earrn);renderEar();return}
@@ -6753,14 +7389,16 @@ document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.cl
  if(d.earchk!==undefined){elStop();earCheck();return}
  if(d.earshow!==undefined){elStop();earMark(false,null);renderEar();return}
  // EL-10: Reset asks inline (no browser dialog), then offers Undo
- if(d.earreset!==undefined){EAR.resetAsk=true;renderEar();const b=document.querySelector('[data-earresetno]');if(b)b.focus();return}
- if(d.earresetno!==undefined){EAR.resetAsk=false;renderEar();return}
- if(d.earresetyes!==undefined){EAR.resetAsk=false;EAR.resetUndo={drill:EAR.drill,st:{...earSt()}};EAR.st[EAR.drill]={...EARST0};earSave();renderEar();const b=document.querySelector('[data-earresetundo]');if(b)b.focus();return}
- if(d.earresetundo!==undefined){const u=EAR.resetUndo;if(u){EAR.st[u.drill]=u.st;EAR.resetUndo=null;earSave();toast('Score restored')}renderEar();return}
+ if(d.earreset!==undefined){EAR.resetAsk=true;EAR.focus='[data-earresetno]';renderEar();return}
+ if(d.earresetno!==undefined){EAR.resetAsk=false;EAR.focus='[data-earreset]';renderEar();return}
+ if(d.earresetyes!==undefined){EAR.resetAsk=false;EAR.resetUndo={drill:EAR.drill,st:{...earSt()}};EAR.st[EAR.drill]={...EARST0};earSave();EAR.focus='[data-earresetundo]';renderEar();return}
+ if(d.earresetundo!==undefined){const u=EAR.resetUndo;if(u){EAR.st[u.drill]=u.st;EAR.resetUndo=null;earSave();toast('Score restored')}EAR.focus='[data-earreset]';renderEar();return}
  if(d.earjournal!==undefined){const s=earSt();logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${s.ok}/${s.n} correct, best streak ${s.best}, ${s.shown} shown, ${s.skipped} skipped${s.nearly?`, ${s.nearly} nearly`:''}`);toast('Saved to the process log in your journal');return}
  if(d.earscore){AN.score=d.earscore;AN.tab='score';location.hash='analysis';room('analysis');return}});
+// Esc answers the inline Reset question with "Keep it"
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ROOM==='ear'&&EAR.resetAsk){EAR.resetAsk=false;EAR.focus='[data-earreset]';renderEar()}});
 document.addEventListener('change',e=>{if(e.target.id==='earLet'){EAR.letters=e.target.checked;earSave();renderEar()}
- if(e.target.id==='earPulse'){EAR.rhy.pulse=e.target.checked;earSave()}if(e.target.id==='earSpd'){EAR.rhy.bpm=+e.target.value===72?72:100;earSave()}});
+});
 
 setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
 /* phones: bottom tab bar built from the rail; More opens a sheet with the other rooms, the stage and the journal */
