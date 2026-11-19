@@ -13,6 +13,20 @@ LICENCE = {  # licence name -> (url, repository licence text in scores/src/licen
     'CC BY-NC-SA 4.0': 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
     'CC BY 4.0': 'https://creativecommons.org/licenses/by/4.0/'}
 MARK = 'data-credit="cjg"'
+COPYRIGHT = [  # (substring of the src line, copyright notice kept from the licensor, as in NOTICE.md)
+    ('bach-370-chorales', 'Copyright (C) 2009 Craig Stuart Sapp.'),
+    ('mozart-piano-sonatas', 'Copyright (C) 2004-2018 Craig Stuart Sapp.'),
+    ('craigsapp/joplin', 'Copyright (C) 2004-2021 Craig Stuart Sapp.'),
+    ('humdrum-chopin-first-editions', 'Copyright 2017-2021 The Fryderyk Chopin Institute (https://nifc.pl).')]
+CHANGES = ('Changes made: engraved to SVG with Verovio (instrument names blanked, restyled) and annotated by the '
+           'Composition Jungle Gym.')
+
+
+def copyright_of(src):
+    for sub, notice in COPYRIGHT:
+        if sub in src:
+            return notice
+    raise SystemExit('no copyright notice for src line: ' + src)
 
 
 def licence_of(src):
@@ -25,13 +39,15 @@ def licence_of(src):
 def credit_block(key, meta):
     m = meta[key]
     lic = licence_of(m['src'])
-    text = f"{m['t']}. {m['src']} Licence: {lic}, {LICENCE[lic]}. Full credits: NOTICE.md and the app's Credits panel."
+    cr = copyright_of(m['src'])
+    text = f"{m['t']}. {m['src']} {cr} {CHANGES} Licence: {lic}, {LICENCE[lic]}. Full credits: NOTICE.md and the app's Credits panel."
     return (f'<desc {MARK}>{escape(text)}</desc>'
             f'<metadata {MARK}><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
             f'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#">'
             f'<cc:Work rdf:about=""><dc:title>{escape(m["t"])}</dc:title>'
             f'<dc:source>{escape(m["src"])}</dc:source>'
             f'<dc:rights>{escape(text)}</dc:rights>'
+            f'<cc:attributionName>{escape(cr)}</cc:attributionName>'
             f'<cc:license rdf:resource="{LICENCE[lic]}"/></cc:Work></rdf:RDF></metadata>')
 
 
