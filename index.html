@@ -1306,32 +1306,55 @@ function voicing(c){
 /* Piano: Versilian Community Sample Library, Steinway B (CC0). Guitar and bass: FluidR3_GM by Frank Wen (CC BY 3.0), via midi-js-soundfonts. See audio/CREDITS.md. */
 const SMP={piano:{dir:'audio/piano/',notes:Array.from({length:34},(_,i)=>36+2*i),len:2.6},
  'guitar-steel':{dir:'audio/guitar-steel/',lo:40,hi:88,len:2.4},'guitar-nylon':{dir:'audio/guitar-nylon/',lo:40,hi:96,len:2.4},bass:{dir:'audio/bass/',lo:28,hi:67,len:1.5}};
-const SBUF={},SLOAD={};
+const SBUF={},SLOAD={},SLOADED={};
 function smpNotes(k){const d=SMP[k];return d.notes||Array.from({length:d.hi-d.lo+1},(_,i)=>d.lo+i)}
 function loadSamples(k){if(SLOAD[k]||!SMP[k]||location.protocol==='file:')return SLOAD[k];const a=ac();SBUF[k]={};
- SLOAD[k]=Promise.all(smpNotes(k).map(m=>fetch(SMP[k].dir+m+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((ok,no)=>a.decodeAudioData(b,ok,no))).then(buf=>{SBUF[k][m]=buf}).catch(()=>{})));return SLOAD[k]}
+ SLOAD[k]=Promise.all(smpNotes(k).map(m=>fetch(SMP[k].dir+m+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((ok,no)=>a.decodeAudioData(b,ok,no))).then(buf=>{SBUF[k][m]=buf}).catch(()=>{}))).then(()=>{SLOADED[k]=true});return SLOAD[k]}
 function smpKind(kind){if(kind==='piano')return'piano';if(kind==='bass')return'bass';if(kind==='guitar')return S.gtone==='nylon'?'guitar-nylon':'guitar-steel';if(kind==='uke')return'guitar-nylon';
  if(kind==='pluck')return S.inst==='bass'?'bass':S.inst==='guitar'?(S.gtone==='nylon'?'guitar-nylon':'guitar-steel'):S.inst==='uke'?'guitar-nylon':'guitar-steel';return null}
-function smpTone(m,t0,k,vel,dur){const B=SBUF[k];if(!B)return false;let best=null;for(const n in B){const d=Math.abs(n-m);if(d<=3&&(best===null||d<Math.abs(best-m)))best=+n}if(best===null)return false;
- const a=ac(),src=a.createBufferSource(),g=a.createGain(),len=SMP[k].len;src.buffer=B[best];src.playbackRate.value=Math.pow(2,(m-best)/12);
+function smpTone(m,t0,k,vel,dur){const B=SBUF[k];if(!B)return false;let best=null,lo=Infinity;for(const n in B){lo=Math.min(lo,+n);const d=Math.abs(n-m);if(d<=3&&(best===null||d<Math.abs(best-m)))best=+n}
+ // R13+: below the lowest piano sample (C2), the lowest sample is pitched down, as far as A0 (MIDI 21), instead of falling back to the synth
+ if(best===null&&k==='piano'&&isFinite(lo)&&m<lo&&m>=21)best=lo;if(best===null)return false;
+ const a=ac(),src=a.createBufferSource(),g=a.createGain(),len=SMP[k].len,rate=Math.pow(2,(m-best)/12),L=dur>0&&k==='piano'?smpLoop(B[best]):null,lp=L&&dur>L.F/rate-.02;src.buffer=lp?L.buf:B[best];src.playbackRate.value=rate;
  const pk=1.5*vel;g.gain.setValueAtTime(pk,t0);
  // dur (seconds, optional): the written length. The note is released at its end with a short fade, instead of ringing for the whole sample.
- if(dur>0){const e=t0+Math.min(dur,len);g.gain.setValueAtTime(pk,e);g.gain.exponentialRampToValueAtTime(.0001,e+.1);src.connect(g);g.connect(MAST);src.start(t0);src.stop(e+.12)}
+ // R13: a piano note longer than the steady part of its sample is held on a crossfaded loop of that sample (smpLoop), decaying gently, to its written end.
+ if(dur>0){let e;
+  if(lp){e=t0+dur;src.loop=true;src.loopStart=L.P;src.loopEnd=L.Q;const tp=t0+L.P/rate,tau=3.5,fl=pk*.4;
+   if(e>tp){g.gain.setValueAtTime(pk,tp);g.gain.setTargetAtTime(fl,tp,tau);g.gain.setValueAtTime(fl+(pk-fl)*Math.exp(-(e-tp)/tau),e)}else g.gain.setValueAtTime(pk,e)}
+  else{e=t0+Math.min(dur,L?L.F/rate:len);g.gain.setValueAtTime(pk,e)}
+  g.gain.exponentialRampToValueAtTime(.0001,e+.1);src.connect(g);g.connect(MAST);src.start(t0);src.stop(e+.12);schEnd(e+.12)}
  else{g.gain.setValueAtTime(pk,t0+len);g.gain.exponentialRampToValueAtTime(.0001,t0+len+.45);
- src.connect(g);g.connect(MAST);src.start(t0);src.stop(t0+len+.5)}ACT.push(src);if(ACT.length>600)ACT.splice(0,300);return true}
+ src.connect(g);g.connect(MAST);src.start(t0);src.stop(t0+len+.5);schEnd(t0+len+.5)}ACT.push(src);if(ACT.length>600)ACT.splice(0,300);return true}
+/* R13: make a piano sample loopable once. The samples are trimmed with a 1 s fade at the end; the loop sits in the steady part before it.
+   Inside the loop the level is evened out (so it doesn't pulse each time round) and the last 0.25 s crossfades into the audio just before
+   the loop start, so the jump back is seamless. The loop ends before the sample's fade and while the note is still within 20 dB of its peak
+   (high notes die away fast). Returns {buf, P, Q (loop start/end, s), F (where the original sample is used up to, s)}. */
+function smpLoop(B){if(B.__loop!==undefined)return B.__loop;try{const sr=B.sampleRate,D=B.duration,F=D>2.2?D-1.05:D*.55,x0=B.getChannelData(0),w0=Math.round(.05*sr);
+ let pk=0,q20=0;for(let s=0;s+w0<=x0.length;s+=w0){let e=0;for(let i=s;i<s+w0;i++)e+=x0[i]*x0[i];e=Math.sqrt(e/w0);if(e>pk)pk=e;if(e>=pk*.1)q20=(s+w0)/sr}
+ const Q=Math.min(F-.02,Math.max(.6,q20)),Lg=Math.min(.8,Q-.3);if(Lg<.25)return B.__loop=null;
+ const P=Q-Lg,X=Math.min(.25,Lg/2),iP=Math.round(P*sr),iQ=Math.round(Q*sr),iX=Math.round(X*sr),n=iQ+16,A=new AudioBuffer({length:n,numberOfChannels:B.numberOfChannels,sampleRate:sr});
+ for(let c=0;c<B.numberOfChannels;c++){const x=B.getChannelData(c),y=A.getChannelData(c);y.set(x.subarray(0,n));
+  const rms=(i0,i1)=>{let s=0;for(let i=i0;i<i1;i++)s+=x[i]*x[i];return Math.sqrt(s/Math.max(1,i1-i0))+1e-9},w=Math.round(.1*sr),r1=rms(iP,iP+w),r2=rms(iQ-w,iQ),k=Math.log(r1/r2)/(iQ-iP);
+  for(let i=iP;i<iQ;i++)y[i]=x[i]*Math.exp(k*(i-iP));
+  for(let j=0;j<iX;j++){const i=iQ-iX+j,u=j/iX;y[i]=y[i]*Math.cos(u*Math.PI/2)+x[iP-iX+j]*Math.sin(u*Math.PI/2)}
+  for(let i=iQ;i<n;i++)y[i]=x[iP+(i-iQ)]}
+ return B.__loop={buf:A,P,Q,F:Q}}catch(e){return B.__loop=null}}
 let AC,MAST,COMP;
+/* EL-1: the latest stop time of any node scheduled since it was reset (the Ear Lab transport reads it to know when its sound really ends) */
+const SEND={v:0};function schEnd(e){if(e>SEND.v)SEND.v=e}
 /* every sounding or scheduled source node is registered here and removes itself when it ends, so Stop can always reach it */
 const ACT={s:new Set(),push(...n){n.forEach(x=>{if(!x)return;this.s.add(x);try{x.addEventListener('ended',()=>this.s.delete(x))}catch(e){}})},forEach(f){[...this.s].forEach(f)},get length(){return this.s.size},set length(v){if(!v)this.s.clear()},splice(){},clear(){this.s.clear()}};
-function ac(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MAST=AC.createGain();MAST.gain.value=.7;COMP=AC.createDynamicsCompressor();MAST.connect(COMP);COMP.connect(AC.destination)}if(AC.state==='suspended')AC.resume();if(!SLOAD.piano)setTimeout(()=>loadSamples('piano'),0);return AC}
+function ac(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MAST=AC.createGain();MAST.gain.value=.7;COMP=AC.createDynamicsCompressor();MAST.connect(COMP);COMP.connect(AC.destination)}if(AC.state==='suspended'&&!(window.OfflineAudioContext&&AC instanceof OfflineAudioContext))AC.resume();if(!SLOAD.piano)setTimeout(()=>loadSamples('piano'),0);return AC}
 const hz=m=>440*Math.pow(2,(m-69)/12);
 function tone(m,t0,kind,vel=1,len){const sk=smpKind(kind);if(sk){if(smpTone(m,t0,sk,vel,len))return;loadSamples(sk);if(kind!=='piano')kind='pluck'}
  const a=ac(),o=a.createOscillator(),o2=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter();
- const dur=len>0?Math.min(len,2.6)+.1:kind==='pluck'?1.8:kind==='horn'?1.1:2.6;
+ const dur=len>0?len+.1:kind==='pluck'?1.8:kind==='horn'?1.1:2.6;
  o.type=kind==='pluck'?'sawtooth':kind==='horn'?'sawtooth':'triangle';o2.type='sine';o.frequency.value=hz(m);o2.frequency.value=hz(m)*2;
  f.type='lowpass';f.frequency.setValueAtTime(kind==='pluck'?3200:kind==='horn'?900:2400,t0);f.frequency.exponentialRampToValueAtTime(kind==='horn'?1800:500,t0+(kind==='horn'?.15:dur));
  const pk=(kind==='horn'?.16:.22)*vel;g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(pk,t0+(kind==='horn'?.06:.006));
  if(kind==='horn'){g.gain.setValueAtTime(pk*.8,t0+.7);g.gain.exponentialRampToValueAtTime(.0001,t0+dur)}else g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
- const g2=a.createGain();g2.gain.value=.25;o.connect(f);o2.connect(g2);g2.connect(f);f.connect(g);g.connect(MAST);o.start(t0);o2.start(t0);ACT.push(o,o2);if(ACT.length>600)ACT.splice(0,300);o.stop(t0+dur+.05);o2.stop(t0+dur+.05)}
+ const g2=a.createGain();g2.gain.value=.25;o.connect(f);o2.connect(g2);g2.connect(f);f.connect(g);g.connect(MAST);o.start(t0);o2.start(t0);ACT.push(o,o2);if(ACT.length>600)ACT.splice(0,300);o.stop(t0+dur+.05);o2.stop(t0+dur+.05);schEnd(t0+dur+.05)}
 function play(midis,gap=0,kind='piano'){const a=ac(),t=a.currentTime+.03;MAST.gain.value=.7/Math.max(1,Math.sqrt(midis.length));midis.forEach((m,i)=>tone(m,t+i*gap,kind))}
 
 
@@ -1810,7 +1833,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-
  if(t.dataset.v!==undefined){S.vi=+t.dataset.v;document.querySelectorAll('.vbox').forEach((b,i)=>b.classList.toggle('on',i===S.vi));const x=instMidis(chord());play(x.m,x.gap,x.k);return}
  if(t.dataset.i){S.inst=t.dataset.i;S.vi=0;const k=smpKind(S.inst==='piano'?'piano':S.inst==='bass'?'bass':S.inst);if(k)loadSamples(k);renderInst(chord());return}
  if(t.dataset.gtone){S.gtone=t.dataset.gtone;loadSamples(smpKind('guitar'));renderInst(chord());return}
- if(t.dataset.l){S.level=+t.dataset.l;try{localStorage.setItem('cjg_stage',S.level)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
+ if(t.dataset.l){S.level=+t.dataset.l;if(typeof EAR!=='undefined'&&EAR.all){EAR.all=false;earSave()}try{localStorage.setItem('cjg_stage',S.level)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
  if(t.dataset.room)return;
  if(t.dataset.m!==undefined){play([+t.dataset.m],0,S.inst==='piano'?'piano':'pluck')}
 });
@@ -1956,8 +1979,10 @@ function voiceProg(list){let pr=null,pb=null;
   pr=best;return{c,bass,rh:best}})}
 
 /* ---------- playback ---------- */
-const PLAY={on:false,timers:[],src:null};
-function stopAll(){PLAY.on=false;PLAY.timers.forEach(clearTimeout);PLAY.timers=[];
+const PLAY={on:false,timers:[],src:null,guard:0};
+/* EL-1: the Ear Lab transport's state (see the Ear Lab audio section for the API). Defined here so stopAll can reach it. */
+const ELT={st:'idle',id:0,start:0,t0:0,dur:0,end:0,lead:0,item:null,variant:null,beats:null,fns:new Set(),tm:null,pend:null,rendering:false};
+function stopAll(){PLAY.on=false;if(ELT.st!=='idle'||ELT.pend)elIdle('stop');PLAY.timers.forEach(clearTimeout);PLAY.timers=[];
  if(AC&&MAST){const t=AC.currentTime,old=MAST,g=old.gain.value;try{old.gain.cancelScheduledValues(t);old.gain.setValueAtTime(g,t);old.gain.linearRampToValueAtTime(0,t+.04)}catch(e){}
   ACT.forEach(o=>{try{o.stop(t+.05)}catch(e){}});ACT.clear();MAST=AC.createGain();MAST.gain.value=g;MAST.connect(COMP);setTimeout(()=>{try{old.disconnect()}catch(e){}},300)}
  if(typeof C1!=='undefined'&&C1.droneOn){C1.droneOn=false;if(typeof C1DR!=='undefined')C1DR=[]}
@@ -4502,7 +4527,7 @@ function c2Sol(p){const s='drmfslt'[p.li];return p.acc>0?{d:'di',f:'fi',s:'si',r
 function c2Tone(m,t,dur,v,vel=1){const a=ac(),o=a.createOscillator(),o2=a.createOscillator(),g=a.createGain(),f=a.createBiquadFilter(),g2=a.createGain();
  o.type=v?'triangle':'sine';o2.type='sine';o.frequency.value=hz(m);o2.frequency.value=hz(m)*(v?2:3);g2.gain.value=v?.18:.1;f.type='lowpass';f.frequency.value=v?2400:1500;
  const pk=(v?.16:.13)*vel,e=t+Math.max(.25,dur);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(pk,t+.05);g.gain.setValueAtTime(pk*.85,e-.09);g.gain.linearRampToValueAtTime(.0001,e);
- o.connect(f);o2.connect(g2);g2.connect(f);f.connect(g);g.connect(MAST);o.start(t);o2.start(t);o.stop(e+.05);o2.stop(e+.05);ACT.push(o,o2);if(ACT.length>600)ACT.splice(0,300)}
+ o.connect(f);o2.connect(g2);g2.connect(f);f.connect(g);g.connect(MAST);o.start(t);o2.start(t);o.stop(e+.05);o2.stop(e+.05);schEnd(e+.05);ACT.push(o,o2);if(ACT.length>600)ACT.splice(0,300)}
 function c2Now(b){document.querySelectorAll('[data-c2bar]').forEach(e=>e.classList.toggle('now',+e.dataset.c2bar===b))}
 function c2Play(M,spc,cpDn,which,slow,br){stopAll();const a=ac(),cf=c2CF(M),n=cf.length,A=c2Layout(spc,n,br).att,cp=c2Notes(M,spc,cpDn,br),bd=(spc===1?1.25:spc===3?2.2:spc===5?2.4:1.6)*(slow?1.35:1),t0=a.currentTime+.12;
  MAST.gain.value=.55;PLAY.on=true;PLAY.src='climb';
@@ -6212,26 +6237,32 @@ function sylLine(c){const m=SYLM[c];return m?`Syllabus: ${m.n} · ${[...m.e].map
    EAR LAB (Level 3)
    ===================================================================== */
 const EARSAVE=LS.get('cjg_ear')||{};
-const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,all:!!EARSAVE.all,q:null,ans:[],done:false,res:null,meta:null,blind:null};
-function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all})}
-const EDR=[['metre','Pulse and metre','4'],['rhy','Rhythm dictation','4–5'],['qual','Chord quality','4–6'],['cad','Cadences','5–6'],['bass','Bass and numerals','5–6'],['mel','Melodic dictation','4–6'],['blind','Blind analysis','5–6']];
-/* EL-11: each drill's levels are rungs (Rung 1, 2, 3). ERUNG gives the Stage at which each rung starts; a rung is offered from that Stage
-   to the top of the drill's range in EDR. The Stage switch (4/5/6) offers the drills whose range includes it and the rungs that have
-   started; everything else sits behind "Show all". */
-const ERUNG={metre:[4,4,4],rhy:[4,4,5],qual:[4,5,6],cad:[5,5,6],bass:[5,5,6],mel:[4,5,6],blind:[5,5,6]};
+const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,all:!!EARSAVE.all,rhy:{pulse:!EARSAVE.rhy||EARSAVE.rhy.pulse!==false,bpm:EARSAVE.rhy&&EARSAVE.rhy.bpm===72?72:100},q:null,ans:[],done:false,res:null,meta:null,blind:null};
+function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all,rhy:EAR.rhy})}
+const EDR=[['metre','Pulse and metre','4–5'],['rhy','Rhythm dictation','4–5'],['qual','Chord quality','4–6'],['cad','Cadences','5–6'],['bass','Bass and numerals','5–6'],['mel','Melodic dictation','4–6'],['blind','Blind analysis','5–6']];
+/* EL-11: each drill's levels are rungs (Rung 1, 2, 3). One Stage table, EARSTAGE (0.48 design spec, section 3): the Stage at which each
+   rung starts. A drill or rung is offered when its Stage is at or below the top-bar Stage switch (4/5/6); everything else sits behind
+   "Show all" (EAR.all, saved; changing the Stage clears it). The drill and rung in use always show, and a drill outside the Stage offers
+   all its rungs, so a student is never stranded. */
+const EARSTAGE={metre:[4,4,5],rhy:[4,4,5],qual:[4,5,6],cad:[5,5,6],bass:[5,5,6],mel:[4,5,6],blind:[5,5,6]};
 function earStage(){return typeof S!=='undefined'&&[4,5,6].includes(S.level)?S.level:6}
-function earDrillStages(d){const st=EDR.find(x=>x[0]===d)[2].split('–').map(Number);return[st[0],st[st.length-1]]}
 function earStageTxt(a,b){return a===b?`Stage ${a}`:`Stage ${a}–${b}`}
-function earDrillOn(d,g=earStage()){const[a,b]=earDrillStages(d);return a<=g&&g<=b}
-function earRungOn(d,r,g=earStage()){return earDrillOn(d,g)&&ERUNG[d][r-1]<=g}
-function earRungStages(d,r){return earStageTxt(ERUNG[d][r-1],earDrillStages(d)[1])}
+function earStageTag(d){const v=EARSTAGE[d];return earStageTxt(Math.min(...v),Math.max(...v))}
+function earDrillOn(d,g=earStage()){return EARSTAGE[d][0]<=g}
+function earRungOn(d,r,g=earStage()){return EARSTAGE[d][r-1]<=g}
+function earRungStages(d,r){return earStageTxt(EARSTAGE[d][r-1],Math.max(...EARSTAGE[d]))}
 // a drill outside the Stage (open because it was chosen, or through Show all) offers all its rungs
 function earRungsShown(d){if(EAR.all||!earDrillOn(d))return[1,2,3];return[1,2,3].filter(r=>earRungOn(d,r))}
+function earDrillShown(d,g=earStage()){return !!EAR.all||earDrillOn(d,g)||d===EAR.drill}
+function earRungShown(d,l){return earRungsShown(d).includes(l)||(d===EAR.drill&&l===earLvl())}
+// whether anything is behind "Show all" at this Stage
+function earHidden(g=earStage()){return EDR.some(([k])=>!earDrillOn(k,g)||[1,2,3].some(r=>!earRungOn(k,r,g)))}
 const epick=(a,r)=>a[Math.floor(r()*a.length)];
 /* ---- question generators: pure, given a random function ---- */
 const METRES={'2/4':{b:2,sub:2,acc:[2,0]},'3/4':{b:3,sub:2,acc:[2,0,0]},'4/4':{b:4,sub:2,acc:[2,0,1,0]},'6/8':{b:2,sub:3,acc:[2,0]},'9/8':{b:3,sub:3,acc:[2,0,0]},'12/8':{b:4,sub:3,acc:[2,0,1,0]},'5/4':{b:5,sub:2,acc:[2,0,0,1,0]},'7/8':{b:3,sub:0,grp:[2,2,3],acc:[2,1,1]}};
 const METL={'2/4':'Simple duple (2/4)','3/4':'Simple triple (3/4)','4/4':'Simple quadruple (4/4)','6/8':'Compound duple (6/8)','9/8':'Compound triple (9/8)','12/8':'Compound quadruple (12/8)','5/4':'Irregular: 5/4 (3+2)','7/8':'Irregular: 7/8 (2+2+3)'};
-function earMetreOpts(l){return l===1?['2/4','3/4','4/4']:l===2?['2/4','3/4','4/4','6/8','9/8','12/8']:['3/4','4/4','6/8','9/8','5/4','7/8']}
+// rung 3 has all eight metres (0.48 design spec: no dead cell in the answer grid)
+function earMetreOpts(l){return l===1?['2/4','3/4','4/4']:l===2?['2/4','3/4','4/4','6/8','9/8','12/8']:['2/4','3/4','4/4','6/8','9/8','12/8','5/4','7/8']}
 function earGenMetre(l,r){const m=epick(earMetreOpts(l),r),M=METRES[m],ev=[];let t=0;
  // tempo is drawn at random for every metre (60–120 beats a minute), so speed never gives away simple or compound
  const bpm=60+Math.floor(r()*61),bd=60/bpm,q8=bd/2;
@@ -6283,10 +6314,18 @@ CADT[3]={maj:{perfect:['I IV V V7 I'],plagal:['I IV I:1 IV I','I IV vi IV I'],im
   interrupted:['i iv V V7 VI','i iv ii°:1 V VI'],phrygian:['i iv VI iv:1 V','i iv i:1 iv:1 V'],cad64:['i iv i:2 V i','i iv i:2 V7 i']}};
 const CADL3={...CADL,phrygian:'Phrygian',cad64:'Cadential 6/4'};
 // the family each Stage 6 answer belongs to, named in the feedback
-const CADFAM={phrygian:'an imperfect (half) cadence in a minor key: iv⁶–V, with the bass falling a semitone (le–so)',
- cad64:'the decorated approach to V in a perfect or imperfect cadence: over the bass so, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect (authentic) cadence'};
+// solfa follows the app's rule, movable do with la-based minor: the dominant is so in major and mi in minor; the Phrygian bass le–so of
+// do-based minor is fa–mi (independent theory check 0.48)
+const EARSOL5=md=>md==='min'?'mi':'so';
+const CADFAM={phrygian:md=>`an imperfect (half) cadence in a minor key: iv⁶–V, with the bass falling a semitone (${md==='min'?'fa–mi':'le–so'})`,
+ cad64:md=>`the decorated approach to V in a perfect or imperfect cadence: over the bass ${EARSOL5(md)}, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect (authentic) cadence`};
 const CADPARENT={phrygian:'imperfect',cad64:'perfect'};
 function earCadOpts(l){return l===3?['perfect','plagal','imperfect','interrupted','phrygian','cad64']:Object.keys(CADL)}
+/* Held out of rung 3 pending Justin's ruling (0.48 design spec, open question 2): interrupted after a cadential 6/4, where both "Interrupted"
+   and "Cadential 6/4" would be defensible answers. They are written in R4's rung 3 shape (five chords, opening I–IV / i–iv). One switch:
+   set CAD3_HOLD to false to restore them as interrupted models (they would then also need fixture rows and the one-right-answer rule relaxed). */
+const CAD3_HOLD=true,CAD3_HELD=['I IV I:2 V vi','i iv i:2 V VI'];
+if(!CAD3_HOLD){CADT[3].maj.interrupted.push(CAD3_HELD[0]);CADT[3].min.interrupted.push(CAD3_HELD[1])}
 const CKEYS2={maj:[0,2,5,7,10,3,9],min:[9,4,2,7,0]};
 // rung 1 draws from all twelve major keys: with only two chords, a small set of keys would let the absolute pitch of the last chord hint at the answer
 const CKEYS1=[0,1,2,3,4,5,6,7,8,9,10,11];
@@ -6294,22 +6333,51 @@ const CKEYS1=[0,1,2,3,4,5,6,7,8,9,10,11];
 const CKEYS3={maj:CKEYS1,min:CKEYS1};
 function earCadKeys(l,mode){return l===1?CKEYS1:l===3?CKEYS3[mode]:CKEYS2[mode]}
 function cadSub(rns){const s=rns.join(' ');return/(^| )(iv|IV):1 V$/.test(s)?'Phrygian cadence (iv⁶–V)':/:2 V7? (I|i|vi|VI)?$/.test(s)?'with a cadential 6/4':''}
+/* Strict rules for cadences rung 3 (independent theory check 0.48, /home/claude/checks/IC_EarLab_items.md): rung 3 rejects, beyond the
+   checker's errors, the faults that check found. Per chord: a 6/4 doubles its bass; no doubled leading note in V/V7 or in V7/V; no doubled 7th;
+   voices within B E2–D4, T C3–G4, A G3–D5, S C4–G5; S–A and A–T within an octave. Per move: no leap of a 7th or of more than an octave in any
+   voice; no augmented 2nd (le–si); no overlap; no parallel or contrary 5ths/8ves; no hidden 5th/8ve in the outer voices with a soprano leap;
+   the leading note rises (in an inner voice it may fall to the 5th of I), and always into vi/VI; every 7th falls by step; the raised 4th (fi)
+   of V7/V rises a semitone. */
+const EARRN={maj:{I:[0,'maj'],ii:[2,'min'],iii:[4,'min'],IV:[5,'maj'],V:[7,'maj'],V7:[7,'dom7'],vi:[9,'min'],'V7/V':[2,'dom7']},
+ min:{i:[0,'min'],'ii°':[2,'dim'],III:[3,'maj'],iv:[5,'min'],V:[7,'maj'],V7:[7,'dom7'],VI:[8,'maj']}};
+const EARQ={maj:[0,4,7],min:[0,3,7],dim:[0,3,6],dom7:[0,4,7,10]};
+function earRnInfo(x,key){const[rn,iv]=x.split(':'),e=EARRN[key.mode][rn];if(!e)return null;const root=mod(key.k+e[0],12),T=EARQ[e[1]].map(i=>mod(root+i,12)),inv=+(iv||0);
+ return{rn,r:e[0],q:e[1],inv,root,T,bass:T[inv],third:T[1],fifth:T[2],sev:T.length>3?T[3]:null}}
+function earStrictChord(v,c,key){if(!c)return true;const pcs=v.map(m=>mod(m,12)),cnt=p=>pcs.filter(x=>x===p).length,LN=mod(key.k+11,12),RG=[[40,62],[48,67],[55,74],[60,79]];
+ if(v.some((m,k)=>m<RG[k][0]||m>RG[k][1]))return false;if(v[3]-v[2]>12||v[2]-v[1]>12)return false;
+ if(c.inv===2&&cnt(c.bass)<2)return false;if((c.rn==='V'||c.rn==='V7')&&cnt(LN)>1)return false;
+ if(c.rn==='V7/V'&&cnt(mod(c.root+4,12))>1)return false;if(c.sev!==null&&cnt(c.sev)>1)return false;return true}
+function earStrictPair(P,N,cp,cn,key){if(!cp||!cn)return true;const LN=mod(key.k+11,12),t=key.k;
+ for(let k=0;k<4;k++){const mv=Math.abs(N[k]-P[k]);if(mv>12||mv===10||mv===11)return false;
+  if(key.mode==='min'&&mv===3){const a=mod(P[k],12),b=mod(N[k],12),le=mod(t+8,12);if((a===le&&b===LN)||(a===LN&&b===le))return false}}
+ for(let k=0;k<3;k++)if(N[k]>P[k+1]||N[k+1]<P[k])return false;
+ for(let a=0;a<4;a++)for(let b=a+1;b<4;b++){if(P[a]===N[a]&&P[b]===N[b])continue;const i1=mod(P[b]-P[a],12),i2=mod(N[b]-N[a],12);if(i1===i2&&(i1===0||i1===7)&&P[a]!==N[a]&&P[b]!==N[b])return false}
+ const io=mod(N[3]-N[0],12);if((io===0||io===7)&&(N[0]-P[0])*(N[3]-P[3])>0&&Math.abs(N[3]-P[3])>2)return false;
+ if((cp.rn==='V'||cp.rn==='V7')&&['I','i','vi','VI'].includes(cn.rn))for(let k=0;k<4;k++)if(mod(P[k],12)===LN&&N[k]-P[k]!==1){
+  if(k===0||k===3||cn.rn==='vi'||cn.rn==='VI')return false;if(!(cn.inv===0&&mod(N[k],12)===cn.fifth&&[3,4].includes(P[k]-N[k])))return false}
+ if(cp.sev!==null&&cn.rn!==cp.rn)for(let k=0;k<4;k++)if(mod(P[k],12)===cp.sev&&![1,2].includes(P[k]-N[k]))return false;
+ if(cp.rn==='V7/V'){const fi=mod(cp.root+4,12);for(let k=0;k<4;k++)if(mod(P[k],12)===fi&&N[k]-P[k]!==1)return false}
+ return true}
 /* strict SATB voicing for Ear Lab: the app's SATB candidates, searched with hard rules.
    Rejected outright: any part-writing error from the checker (parallel or consecutive 5ths and 8ves, a 7th that doesn't fall,
    a leading note that doesn't rise in an outer voice, an augmented 2nd, ranges, spacing), consecutive 5ths/8ves by contrary motion, and overlaps.
    After V, vi/VI doubles its 3rd.
    reg {b,s}: where the bass and soprano like to sit (MIDI). Drawn at random per question, so register never hints at the answer. */
 // opt.open: open spacing only (soprano more than an octave above the tenor), for cadences rung 1
-function earSATB(L,key,reg={b:47,s:70},opt={}){return withKey(key,()=>{const I=L.map(ch=>chordInfo(ch,key));
- const C=I.map((x,i)=>{let c=satbCandidates(x).filter(n=>!chordIssues(n.v,x).some(e=>e.sev==='error')&&(!opt.open||n.v[3]-n.v[1]>12)).map(n=>({v:n.v,cost:n.cost+Math.abs(n.v[0]-reg.b)*.15+Math.abs(n.v[3]-reg.s)*.08}));
+function earSATB(L,key,reg={b:47,s:70},opt={}){return withKey(key,()=>{const I=L.map(ch=>chordInfo(ch,key)),SR=opt.strict&&opt.rns?opt.rns.map(x=>earRnInfo(x,key)):null;
+ const C=I.map((x,i)=>{let c=satbCandidates(x).filter(n=>!chordIssues(n.v,x).some(e=>e.sev==='error')&&(!opt.open||n.v[3]-n.v[1]>12)&&(!SR||earStrictChord(n.v,SR[i],key))).map(n=>({v:n.v,cost:n.cost+Math.abs(n.v[0]-reg.b)*.15+Math.abs(n.v[3]-reg.s)*.08}));
   if(i>0&&I[i-1].dom&&x.a.dia&&x.a.d===5&&x.third){const t3=mod(x.third.midi,12);c=c.filter(n=>n.v.filter(m=>mod(m,12)===t3).length===2)}
+  // strict (rung 3): a final major tonic in root position does not double its 3rd, when another voicing exists
+  if(SR&&i===I.length-1&&SR[i]&&SR[i].q==='maj'&&SR[i].r===0&&!SR[i].inv){const t3=mod(key.k+4,12),c2=c.filter(n=>n.v.filter(m=>mod(m,12)===t3).length<2);if(c2.length)c=c2}
   return c});
  if(C.some(c=>!c.length))return null;
- const bad=(P,N,a,b)=>pairIssues(P,N,a,b).some(e=>e.sev==='error'||e.rule==='contrary'||e.rule==='overlap');
+ const bad=(P,N,a,b)=>pairIssues(P,N,a,b).some(e=>e.sev==='error'||e.rule==='contrary'||e.rule==='overlap')||(SR&&!earStrictPair(P,N,SR[I.indexOf(a)],SR[I.indexOf(b)],key));
  // the opening chord's voicing is chosen on its own (the best single voicing for this key and register), so it never depends on the cadence
  const c0=C[0].slice().sort((a,b)=>a.cost-b.cost),go=start=>{let best=start.map(x=>({cost:x.cost,path:[x.v]}));
  for(let i=1;i<C.length;i++){best=C[i].map(n=>{let bb=null;for(const p of best){const P=p.path[p.path.length-1];if(bad(P,n.v,I[i-1],I[i]))continue;const cc=p.cost+n.cost+moveCost(P,n.v,I[i-1],I[i]);if(!bb||cc<bb.cost)bb={cost:cc,path:p.path.concat([n.v])}}return bb}).filter(Boolean).sort((a,b)=>a.cost-b.cost).slice(0,80);if(!best.length)return null}
  return best[0].path};
+ if(opt.startIdx!==undefined)return c0[opt.startIdx]?go([c0[opt.startIdx]]):null;
  return go(c0.slice(0,1))||go(c0)})}
 /* EL-7: rung 1 (two chords). Every strict, open-spaced pair of voicings is weighed, and the one nearest a register drawn at random wins
    (lowest note reg.b, highest note reg.s, first bass reg.fb, last soprano reg.ls), with smooth voice leading counted too. So the register of
@@ -6324,12 +6392,37 @@ function earSATBPair(L,key,reg){reg={b:46,s:72,fb:48,ls:72,...(reg||{})};return 
  return best&&best.path})}
 function earProg(rns,key,reg,opt){if(opt&&opt.pair){const L=cadList(rns.join(' '),key),V=earSATBPair(L,key,reg);return{L,V,ch:V?V.map(v=>v.slice()):null}}const L=cadList(rns.join(' '),key),V=earSATB(L,key,reg,opt);return{L,V,ch:V?V.map(v=>v.slice()):null}}
 // the realisation a cadence question at rung l uses
-function earCadProg(l,rns,key,reg){return earProg(rns,key,reg,l===1?{pair:true}:undefined)}
+function earCadProg(l,rns,key,reg){return earProg(rns,key,reg,l===1?{pair:true}:l===3?{strict:true,rns,startIdx:earCad3Open(key,reg)}:undefined)}
+/* rung 3 (strict): the opening tonic's voicing is the best one (for this key and register) from which every rung 3 model of the mode can be
+   realised under the strict rules, so the opening voicing never depends on the cadence. Memoised per key and register. */
+const EARC3O=new Map();
+function earCad3Open(key,reg={b:47,s:70}){const mk=key.k+key.mode+'|'+reg.b+','+reg.s;if(EARC3O.has(mk))return EARC3O.get(mk);const M=Object.values(CADT[3][key.mode]).flat();let idx;
+ for(let i=0;i<40&&idx===undefined;i++)if(M.every(m=>{const rns=m.split(' ');return earSATB(cadList(m,key),key,reg,{strict:true,rns,startIdx:i})}))idx=i;
+ EARC3O.set(mk,idx);return idx}
 function earGenCad(l,r){const mode=l===1?'maj':l===3?epick(['maj','min'],r):epick(['maj','maj','min'],r),key={k:epick(earCadKeys(l,mode),r),mode},ts=CADT[l][mode];
  // the mode is drawn first, then the answer from those the mode has (at rung 3 minor has all six, major all but the Phrygian)
  const a=epick(Object.keys(ts),r),lens=[...new Set(Object.values(ts).flat().map(x=>x.split(' ').length))],n=epick(lens,r);
  const rns=epick(ts[a].filter(x=>x.split(' ').length===n),r).split(' ');
- const reg=l===1?{b:41+Math.floor(r()*12),s:67+Math.floor(r()*11),fb:41+Math.floor(r()*16),ls:67+Math.floor(r()*11)}:l===3?{b:41+Math.floor(r()*13),s:64+Math.floor(r()*13)}:{b:42+Math.floor(r()*11),s:66+Math.floor(r()*9)},P=earCadProg(l,rns,key,reg);return{d:'cad',l,a,key,rns,sub:l===3?'':cadSub(rns),reg,ch:P.ch,opts:earCadOpts(l)}}
+  const{reg,P}=earCadReg(rns,key,r,l);return{d:'cad',l,a,key,rns,sub:l===3?'':cadSub(rns),reg,ch:P.ch,opts:earCadOpts(l)}}
+/* R13+: outer-voice registers for cadence items, drawn independently of the category. earGenCad calls this and only this.
+   Rung 1 (EL-7, two chords in open spacing): a lowest note, highest note, first bass and last soprano are drawn, and earSATBPair weighs
+   every strict open pair against them. Rungs 2 and 3: a target lowest and highest note are drawn first (the same for every category);
+   of nine realisations (bass and soprano preferences on a 3 x 3 grid) the one whose lowest and highest notes come nearest the targets is
+   used, so where the bass bottoms out or the soprano peaks no longer hints at the cadence. Realisations are memoised. */
+const EARCADM=new Map();
+function earCadReg(rns,key,r,l=2){
+ if(l===1){const tl=41+Math.floor(r()*12),th=67+Math.floor(r()*11),fb=41+Math.floor(r()*16),ls=67+Math.floor(r()*11),j=r(),C=[];
+  // the pair search is weighted to a draw (EL-7); of nine draws on a 3 x 3 grid around it, the one whose lowest and highest notes come nearest
+  // the targets is used, so the lowest and highest note together do not hint at the cadence (merge 0.48)
+  for(const b of [tl-4,tl,tl+4])for(const s of [th-4,th,th+4]){const reg={b,s,fb,ls},k=rns.join(' ')+'|'+key.k+'|1|'+b+','+s+','+fb+','+ls;let P=EARCADM.get(k);if(!P){P=earCadProg(1,rns,key,reg);EARCADM.set(k,P)}
+   if(P.ch){const f=P.ch.flat();C.push({reg,P,d:Math.abs(Math.min(...f)-tl)+Math.abs(Math.max(...f)-th)})}}
+  if(!C.length){const reg={b:tl,s:th,fb,ls};return{reg,P:earCadProg(1,rns,key,reg)}}
+  const m=Math.min(...C.map(c=>c.d)),B=C.filter(c=>c.d===m),c=B[Math.floor(j*B.length)];return{reg:c.reg,P:{L:c.P.L,V:c.P.V,ch:c.P.ch.map(v=>v.slice())}}}
+ const W=l===3,tl=(W?41:41)+Math.floor(r()*(W?13:11)),th=(W?64:65)+Math.floor(r()*(W?13:11)),j=r(),C=[],BG=W?[41,47,53]:[42,47,52],SG=W?[64,70,76]:[66,70,74];
+ for(const b of BG)for(const s of SG){const k=rns.join(' ')+'|'+key.k+key.mode+'|'+b+','+s;let P=EARCADM.get(k);if(!P){P=earCadProg(l,rns,key,{b,s});EARCADM.set(k,P)}
+  if(P.ch){const f=P.ch.flat();C.push({reg:{b,s},P,d:Math.abs(Math.min(...f)-tl)+Math.abs(Math.max(...f)-th)})}}
+ if(!C.length){const reg={b:47,s:70};return{reg,P:earCadProg(l,rns,key,reg)}}
+ const m=Math.min(...C.map(c=>c.d)),B=C.filter(c=>c.d===m),c=B[Math.floor(j*B.length)];return{reg:c.reg,P:{L:c.P.L,V:c.P.V,ch:c.P.ch.map(v=>v.slice())}}}
 function earBassPool(l){return l===1?['I','IV','V','vi']:l===2?['I','ii','IV','V','vi']:['I','ii','IV','V','vi','V7/V','V7/vi']}
 // common-practice successions only (tradition: Tonal/common practice). V–IV and ii–I belong to the later popular-music track.
 const EBALLOW={I:['ii','IV','V','vi','V7/V','V7/vi'],ii:['V','V7/V'],IV:['I','ii','V','V7/V'],V:['I','vi'],vi:['ii','IV','V','V7/V'],'V7/V':['V'],'V7/vi':['vi']};
@@ -6359,7 +6452,7 @@ const EARSC=[['chorale',1],['ohaupt',1],['jesu',2],['k331a',2],['k331d',3],['cho
 function cadCat(t){return/Interrupted/i.test(t)?'interrupted':/Plagal/i.test(t)?'plagal':/Imperfect|Half/i.test(t)?'imperfect':'perfect'}
 function earBlindPool(l){if(!EAR.blind)return[];return EAR.blind.filter(x=>x.lvl<=l)}
 function earGenBlind(l,r){const P=earBlindPool(l);if(!P.length)return null;const x=epick(P,r);return{d:'blind',...x,a:x.cat}}
-function earGen(d,l,r=Math.random){const q=earGen1(d,l,r);if(q&&!q.l)q.l=l;return q}
+function earGen(d,l,r=Math.random){const q=earGen1(d,l,r);if(q){if(!q.l)q.l=l;q.lvl=l}return q}
 function earGen1(d,l,r){return d==='metre'?earGenMetre(l,r):d==='rhy'?earGenRhy(l,r):d==='qual'?earGenQual(l,r):d==='cad'?earGenCad(l,r):d==='bass'?earGenBass(l,r):d==='mel'?earGenMel(l,r):earGenBlind(l,r)}
 window.earGen=earGen;
 /* ---- blind analysis: find each cadence's bar from the engraved score ---- */
@@ -6369,20 +6462,102 @@ function earLoadBlind(){if(EAR.blind)return Promise.resolve(EAR.blind);return an
    // the excerpt starts three bars back and ends where the cadence chord is released (c.e in meta.json), not at the next barline
    const s=ms[Math.max(0,mi-3)],e=c.e||(mi+1<ms.length?ms[mi+1]:Math.max(...m.events.map(v=>v[0]+v[2])));out.push({score:k,lvl,key:m.key,t:m.t||k,short:m.short||k,bar:m.measures[mi][0]||String(mi),s,e,a:c.a,cat:cadCat(c.t),label:c.t,chords:c.ch})})});
  EAR.blind=out;return out}))}
-/* ---- audio ---- */
-function earClick(t,a){const A=ac(),o=A.createOscillator(),g=A.createGain();o.type='square';o.frequency.value=a>=2?1568:a===1?1175:a===0?988:784;const pk=a>=2?.2:a===1?.13:a===0?.1:.045;
- g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(pk,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(g);g.connect(MAST);o.start(t);o.stop(t+.09);ACT.push(o)}
-function earKeyCue(key,t){const D=earDo(key),tn=key.mode==='maj'?D.m:D.m-3,ch=key.mode==='maj'?[tn-12,tn,tn+4,tn+7]:[tn-12,tn,tn+3,tn+7];ch.forEach(m=>c2Tone(m,t,1.3,1));return t+1.6}
-function earPlay(what){const q=EAR.q;if(!q)return;stopAll();const A=ac();let t=A.currentTime+.1;MAST.gain.value=.5;PLAY.on=true;PLAY.src='ear';
- if(q.d==='metre'){q.ev.forEach(e=>{earClick(t+e.t,e.a);if(e.a>=2)c2Tone(43,t+e.t,.25,0)})}
- else if(q.d==='rhy'){for(let i=0;i<4;i++)earClick(t+i*.6,i?0:2);t+=2.4;let p=0;q.a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest)c2Tone(67,t+p*.15,Math.max(.12,d*.15*.9),1);p+=d}));for(let i=0;i<p/4;i++)earClick(t+i*.6,-1)}
- else if(q.d==='qual'){const n=q.notes;n.forEach(m=>c2Tone(m,t,1.2,1));n.forEach((m,i)=>c2Tone(m,t+1.5+i*.4,.5,1));n.forEach(m=>c2Tone(m,t+1.6+n.length*.4,1.4,1))}
- else if(q.d==='cad'||q.d==='bass'){if(what!=='nokey')t=earKeyCue(q.key,t);const src=what==='bassonly'?q.ch.map(c=>[c[0]]):q.ch;src.forEach((c,i)=>{const last=i===src.length-1;c.forEach(m=>c2Tone(m,t,last?1.8:1,1));t+=1.1})}
- else if(q.d==='mel'){if(what!=='nokey'){t=earKeyCue(q.key,t)}const notes=what==='first'?q.midi.slice(0,1):q.midi;notes.forEach((m,i)=>c2Tone(m,t+i*.65,.6,1));if(EAR.done)earMelFollow(q,0,notes.length,t)}
- else if(q.d==='blind'){const m=AN.meta[q.score],tn=EAR.blindTonic(q.key);[tn-12,tn,tn+(/minor/.test(q.key)?3:4),tn+7].forEach(x=>c2Tone(x,t,1.3,1));t+=1.8;
+/* ---- audio: the Ear Lab transport and sounds (register 0.48: EL-1, EL-3, EL-4, EL-12) ----
+   Transport API (for the Play/Stop toggle and its progress ring):
+     elPlay(item=EAR.q, variant='all', opts) -> info   play an item; anything sounding stops first. variant: 'all' | 'nokey' | 'bassonly' | 'first'
+                                                       | 'beats' (metre: the same playback, with beat events reported) | 'tap' (one ladder note, opts.midi)
+                                                       A second tap of the same item and variant within 300 ms is ignored (double-tap safe).
+     elStop()                                         stop the Ear Lab sound (and everything else: it calls stopAll)
+     elOn(fn) -> unsubscribe                          fn({type:'state', state, id, start, dur, end, lead, variant, beats, elapsed}) on every change;
+                                                       fn({type:'beat', i, t, a, bar, beat, kind}) live for each beat with the 'beats' variant
+     elInfo()                                         the current state: state 'idle' | 'loading' | 'playing'; start = performance.now() ms at the press; t0 = audio time of the press;
+                                                       dur = seconds from the press to the real scheduled end (lead-in included); lead = silent lead-in (s);
+                                                       beats = [{t (s from the press), a, bar, beat, kind}] for the 'beats' variant, else null
+     elReady(drill) / elPreload(drill) -> Promise      whether the sounds (and for blind analysis the scores) are loaded; start loading them
+     elRender(item, variant, opts) -> Promise<{buf, info}>   the same playback rendered offline (for the tests)
+   State follows the scheduled end of the sound itself (no fixed timer). stopAll (top-bar Stop, Esc, leaving the room, any other playback) sets idle. */
+// per-drill output level, set from measured loudness (K-weighted, gated; tests/transport_test.py checks every drill is within 2 dB of the others)
+const ELG={metre:1,rhy:1,qual:1,cad:1,bass:1,mel:1,blind:1,tap:1};const dbg=x=>Math.pow(10,x/20);
+[['metre',7],['rhy',-2],['qual',4.8],['cad',2.9],['bass',3],['mel',1.4],['blind',-4.3],['tap',1.9]].forEach(([k,v])=>ELG[k]=dbg(v));
+// Ear Lab sound goes through its own transparent limiter (not the app's compressor), so the metre accent steps and the drill levels stay as set
+function elLim(A){if(A.__elim)return A.__elim;const c=A.createDynamicsCompressor();c.threshold.value=-2;c.knee.value=0;c.ratio.value=20;c.attack.value=.001;c.release.value=.08;c.connect(A.destination);return A.__elim=c}
+function elEmit(ev){ELT.fns.forEach(f=>{try{f(ev)}catch(e){}})}
+function elOn(fn){ELT.fns.add(fn);return()=>ELT.fns.delete(fn)}
+function elInfo(){return{state:ELT.st,id:ELT.id,start:ELT.start,t0:ELT.t0,dur:ELT.dur,end:ELT.end,lead:ELT.lead,variant:ELT.variant,beats:ELT.beats,elapsed:ELT.st==='playing'?(performance.now()-ELT.start)/1000:0}}
+function elIdle(why){ELT.id++;clearTimeout(ELT.tm);ELT.pend=null;const was=ELT.st;ELT.st='idle';ELT.beats=null;
+ if(why==='end'){if(PLAY.src==='ear')PLAY.on=false;if(AC&&MAST&&COMP)try{MAST.disconnect();MAST.connect(COMP)}catch(e){}}
+ if(was!=='idle')elEmit({type:'state',...elInfo(),why})}
+function elStop(){stopAll()}
+/* readiness: piano samples for every drill that uses them (the key chord included), the scores for blind analysis */
+function elNeedsPiano(d){return d!=='metre'&&d!=='rhy'}
+function elReady(d){if(elNeedsPiano(d)&&location.protocol!=='file:'&&!SLOADED.piano)return false;if(d==='blind'&&!EAR.blind)return false;return true}
+function elPreload(d){const P=[];if(elNeedsPiano(d)){ac();P.push(Promise.resolve(loadSamples('piano')))}if(d==='blind')P.push(earLoadBlind());return Promise.all(P)}
+function elPlay(item=EAR.q,variant='all',opts={}){if(!item)return null;const now=performance.now();
+ if(variant!=='tap'&&ELT.st!=='idle'&&ELT.item===item&&ELT.variant===variant&&now-ELT.start<300)return elInfo();
+ if(!elReady(item.d)){stopAll();ELT.pend={item,variant,opts};ELT.item=item;ELT.variant=variant;ELT.start=now;ELT.st='loading';elEmit({type:'state',...elInfo()});
+  elPreload(item.d).then(()=>{const p=ELT.pend;if(p&&p.item===item&&p.variant===variant){ELT.pend=null;ELT.st='idle';elPlay(item,variant,opts)}}).catch(()=>{if(ELT.pend&&ELT.pend.item===item)elIdle('error')});return elInfo()}
+ stopAll();const A=ac();SEND.v=0;MAST.disconnect();MAST.connect(elLim(A));const d=variant==='tap'?'tap':item.d;MAST.gain.value=.5*(ELG[d]||1);
+ const t0=A.currentTime,r=earSched(item,variant,t0+ELPRE,opts);if(r.gain)MAST.gain.value*=r.gain;const end=Math.max(r.end,SEND.v),id=++ELT.id;
+ Object.assign(ELT,{st:'playing',item,variant,start:now,t0,end,dur:end-t0,lead:r.lead||0,beats:r.beats||null});PLAY.on=true;PLAY.src='ear';PLAY.guard=variant==='tap'?0:now+300;
+ if(variant==='beats'&&r.beats)r.beats.forEach((b,i)=>PLAY.timers.push(setTimeout(()=>{if(ELT.id===id)elEmit({type:'beat',i,...b})},b.t*1000)));
+ const watch=()=>{if(ELT.id!==id)return;const left=ELT.end-ac().currentTime;if(left<=.005)elIdle('end');else ELT.tm=setTimeout(watch,Math.max(5,left*1000))};ELT.tm=setTimeout(watch,(end-t0)*1000);
+ elEmit({type:'state',...elInfo()});return elInfo()}
+// the old entry point: buttons and tests call earPlay(variant)
+function earPlay(what){return elPlay(EAR.q,what||'all')}
+/* offline render of exactly what elPlay schedules (same functions, same levels, same limiter) */
+function elRender(item,variant='all',o={}){const sr=o.sr||44100,sv=[AC,MAST,COMP],T=PLAY.timers.length;
+ const run=A=>{AC=A;MAST=A.createGain();COMP=A.createGain();MAST.connect(elLim(A));const d=variant==='tap'?'tap':item.d;MAST.gain.value=.5*(ELG[d]||1);
+  SEND.v=0;ELT.rendering=true;let r;try{r=earSched(item,variant,ELPRE,o);if(r.gain)MAST.gain.value*=r.gain}finally{ELT.rendering=false;[AC,MAST,COMP]=sv;PLAY.timers.length=T}return{...r,end:Math.max(r.end,SEND.v)}};
+ const dry=run(new OfflineAudioContext(1,1,sr)),A=new OfflineAudioContext(1,Math.ceil(sr*(dry.end+(o.tail||.3))),sr),r=run(A);
+ return A.startRendering().then(buf=>({buf,info:{dur:r.end,lead:r.lead||0,beats:r.beats||null,events:r.events||null,start:r.start}}))}
+/* the sounds */
+let ELCLAP=4;const ELPRE=.05; // seconds from the press to the first scheduled time (times in the API are from the press)
+// metre clicks. a: 2 downbeat, 1 secondary accent, 0 beat, -1 subdivision; each step 5 dB quieter than the one above (EL-3)
+function earClick(t,a){const A=ac(),o=A.createOscillator(),g=A.createGain();a=Math.max(-1,Math.min(2,a));o.type='square';o.frequency.value=a>=2?1568:a===1?1175:a===0?988:784;const pk=.2*Math.pow(10,-5*(2-a)/20);
+ g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(pk,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(g);g.connect(MAST);o.start(t);o.stop(t+.09);schEnd(t+.09);ACT.push(o)}
+// rhythm tone (EL-4): a clear attack (3 ms), then a steady tone, released hard at the written end (a 10 ms fall ending 6 ms before it, so a following note re-attacks)
+function elRhyNote(t,d,m=72){const A=ac(),o=A.createOscillator(),o2=A.createOscillator(),f=A.createBiquadFilter(),g=A.createGain(),g2=A.createGain(),e=t+d,pk=.32;
+ o.type='triangle';o.frequency.value=hz(m);o2.type='sine';o2.frequency.value=hz(m)*2;g2.gain.value=.22;f.type='lowpass';f.frequency.setValueAtTime(6000,t);f.frequency.exponentialRampToValueAtTime(2200,t+.08);
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(pk,t+.003);g.gain.exponentialRampToValueAtTime(pk*.6,t+Math.min(.07,d*.4));g.gain.setValueAtTime(pk*.6,e-.016);g.gain.linearRampToValueAtTime(0,e-.006);
+ o.connect(f);o2.connect(g2);g2.connect(f);f.connect(g);g.connect(MAST);o.start(t);o2.start(t);o.stop(e);o2.stop(e);schEnd(e);ACT.push(o,o2)}
+// pulse and count-in: a low woodblock, well below the rhythm tone so neither hides the other
+function elBlock(t,acc){const A=ac(),o=A.createOscillator(),o2=A.createOscillator(),g=A.createGain(),g2=A.createGain(),pk=acc?.42:.32;o.type='sine';o2.type='sine';
+ o.frequency.setValueAtTime(acc?230:200,t);o.frequency.exponentialRampToValueAtTime(acc?190:165,t+.06);o2.frequency.value=(acc?230:200)*1.48;g2.gain.value=.12;
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(pk,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+.075);o.connect(g);o2.connect(g2);g2.connect(g);g.connect(MAST);o.start(t);o2.start(t);o.stop(t+.08);o2.stop(t+.08);schEnd(t+.08);ACT.push(o,o2)}
+// a hand clap (rung 1 of rhythm dictation): three quick noise bursts
+function elClap(t){const A=ac(),s=A.createBufferSource(),f=A.createBiquadFilter(),h=A.createBiquadFilter(),g=A.createGain(),k=ELCLAP;s.buffer=noiseBuf();f.type='bandpass';f.frequency.value=1300;f.Q.value=.9;h.type='highpass';h.frequency.value=800;h.Q.value=.7;
+ g.gain.setValueAtTime(0,t);[0,.011,.022].forEach((d,i)=>{g.gain.setValueAtTime(.0001,t+d);g.gain.linearRampToValueAtTime(k*(i===2?1:.65),t+d+.002);g.gain.exponentialRampToValueAtTime(k*(i===2?.3:.1),t+d+.009)});
+ g.gain.exponentialRampToValueAtTime(k*.08,t+.09);g.gain.exponentialRampToValueAtTime(.0001,t+.2);s.connect(f);f.connect(h);h.connect(g);g.connect(MAST);s.start(t);s.stop(t+.21);schEnd(t+.21);ACT.push(s)}
+function earKeyCue(key,t){const D=earDo(key),tn=key.mode==='maj'?D.m:D.m-3,ch=key.mode==='maj'?[tn-12,tn,tn+4,tn+7]:[tn-12,tn,tn+3,tn+7];ch.forEach(m=>tone(m,t,'piano',.55,1.3));return t+1.6}
+const pn=(m,t,d,v=.55)=>tone(m,t,'piano',v,d);
+/* metre (EL-3): 0.6 s of silence, then whole bars until at least 10 s have sounded, then one closing downbeat. No count-in.
+   The generated four-bar pattern repeats. Returns the beats with their times (from the press) for "hear it again with beats shown". */
+function earSchedMetre(q,t0){const barLen=q.len/4,nb=Math.max(4,Math.ceil(10/barLen-1e-9)),lead=.6,t=t0-ELPRE+lead,ev=[],beats=[],n={};
+ for(let b=0;b<nb;b++){const k=b%4;q.ev.forEach(e=>{if(e.t>=k*barLen-1e-6&&e.t<(k+1)*barLen-1e-6)ev.push({t:b*barLen+e.t-k*barLen,a:e.a,bar:b+1})})}
+ ev.push({t:nb*barLen,a:2,bar:nb+1});
+ ev.forEach(e=>{earClick(t+e.t,e.a);if(e.a>=2)c2Tone(43,t+e.t,.25,0);e.t+=lead;e.kind=['sub','beat','accent','down'][e.a+1];if(e.a>=0){n[e.bar]=(n[e.bar]||0)+1;beats.push({t:e.t,a:e.a,bar:e.bar,beat:n[e.bar],kind:e.kind})}});
+ // the level is evened out for how much sounds each second (relative energy of a downbeat, an accent, a beat and a subdivision), so 2/4 and 5/4 sit at the same loudness
+ const E={2:160,1:10,0:3.1,'-1':1},pw=ev.reduce((s,e)=>s+E[e.a],0)/(nb*barLen);
+ return{end:t+nb*barLen+.25,lead,beats,events:ev,gain:Math.sqrt(120/pw)*Math.pow(q.bpm/90,.45)}}
+/* rhythm (EL-4): one bar of count-in on the woodblock, then the rhythm; the pulse goes on (switchable off); 72 or 100 crotchets a minute.
+   Rung 1 is clapped; from rung 2 a tone, because a clap can't show a held note against a note and a rest. */
+function earSchedRhy(q,t0,o={}){const bpm=o.bpm||EAR.rhy.bpm,pulse=o.pulse!==undefined?o.pulse:EAR.rhy.pulse,clap=o.clap!==undefined?o.clap:(q.lvl||earLvl())===1,beat=60/bpm,sq=beat/4,lead=.15,ev=[];
+ let t=t0+lead;for(let i=0;i<4;i++)elBlock(t+i*beat,!i);t+=4*beat;let p=0;
+ q.a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest){if(clap)elClap(t+p*sq);else elRhyNote(t+p*sq,d*sq);ev.push({t:t+p*sq-t0+ELPRE,d:d*sq,u:p,du:d})}p+=d}));
+ if(pulse)for(let i=0;i<p/4;i++)elBlock(t+i*beat,false);
+ // claps are short, so a bar of two minims would sound much quieter than a bar of quavers: the clapped level follows the number of claps
+ return{end:t,lead:lead+ELPRE,events:ev,start:t-t0+ELPRE,beat,gain:clap?Math.sqrt(5/Math.max(2,ev.length/q.bars)):1}}
+function earSched(q,variant,t0,o={}){let t=t0,end=t0;
+ if(variant==='tap'){c2Tone(o.midi,t,.5,1);return{end:t+.55,lead:ELPRE}}
+ if(q.d==='metre')return earSchedMetre(q,t0);
+ if(q.d==='rhy')return earSchedRhy(q,t0,o);
+ if(q.d==='qual'){const n=q.notes;n.forEach(m=>pn(m,t,1.2));n.forEach((m,i)=>pn(m,t+1.5+i*.4,.5));n.forEach(m=>pn(m,t+1.6+n.length*.4,1.4));end=t+1.6+n.length*.4+1.4}
+ else if(q.d==='cad'||q.d==='bass'){if(variant!=='nokey')t=earKeyCue(q.key,t);const src=variant==='bassonly'?q.ch.map(c=>[c[0]]):q.ch;src.forEach((c,i)=>{const last=i===src.length-1;c.forEach(m=>pn(m,t,last?1.8:1));end=t+(last?1.8:1);t+=1.1})}
+ else if(q.d==='mel'){if(variant!=='nokey')t=earKeyCue(q.key,t);const notes=variant==='first'?q.midi.slice(0,1):q.midi;notes.forEach((m,i)=>c2Tone(m,t+i*.65,.6,1));end=t+(notes.length-1)*.65+.6;if(EAR.done&&!ELT.rendering)earMelFollow(q,0,notes.length,t)}
+ else if(q.d==='blind'){const m=AN.meta[q.score],tn=EAR.blindTonic(q.key);[tn-12,tn,tn+(/minor/.test(q.key)?3:4),tn+7].forEach(x=>pn(x,t,1.3,1));t+=1.8;
   // event times can sit a millisecond either side of a barline, so allow 5 ms; each note sounds for its written length, cut at the end of the cadence chord
-  m.events.forEach(([ms,p,d])=>{if(ms>=q.s-5&&ms<q.e-5)tone(p,t+Math.max(0,ms-q.s)/1000,'piano',1,Math.min(d,q.e-ms)/1000)})}
- setTimeout(()=>{if(PLAY.src==='ear')PLAY.on=false},20000)}
+  m.events.forEach(([ms,p,d])=>{if(ms>=q.s-5&&ms<q.e-5){const st=t+Math.max(0,ms-q.s)/1000,du=Math.min(d,q.e-ms)/1000;tone(p,st,'piano',1,du);end=Math.max(end,st+du)}})}
+ return{end:end+.05,lead:ELPRE}}
 EAR.blindTonic=k=>{const L=k[0],acc=/♭/.test(k)?-1:/♯/.test(k)?1:0;let m=48+mod(NAT[LET.indexOf(L)]+acc,12);if(m>54)m-=12;return m+12};
 /* ---- notation ---- */
 function earRhyDraw(el,cells,bars){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,earRhyDraw,arguments);const VF=Vex.Flow,G=[];
@@ -6406,30 +6581,38 @@ function ehsign(s){const k=s==='si'?'s':s;if(EHSIMG[k])return`<span class="hsw">
 /* ---- marking ---- */
 /* EL-10: the stats model. One record per drill: n answered (right or wrong), ok right, streak and best (right answers in a row),
    shown ("Show me" before answering: not a miss, the streak is kept), skipped (Next, or a change of rung or drill, before answering:
-   not a miss, the streak is kept). The score reads ok / n. */
+   not a miss, the streak is kept). The score reads ok / n.
+   "Nearly" (0.48 design spec, open question 1; OFF by default, EAR_NEARLY): at cadences rung 3, Imperfect for a Phrygian cadence or Perfect
+   for a cadential 6/4 is true but not precise. When on, it keeps the streak, is not added to n, and is counted in the field nearly
+   (added to a record only once it occurs, so the six-field model is unchanged while it is off). */
 const EARST0={n:0,ok:0,streak:0,best:0,shown:0,skipped:0};
-// pure: the record after one more question. kind: 'ok' | 'miss' | 'shown' | 'skipped'
+let EAR_NEARLY=false;
+// pure: the record after one more question. kind: 'ok' | 'miss' | 'shown' | 'skipped' | 'nearly'
 function earStatNext(s,kind){const t={...EARST0,...(s||{})};if(kind==='ok'){t.n++;t.ok++;t.streak++;t.best=Math.max(t.best,t.streak)}
- else if(kind==='miss'){t.n++;t.streak=0}else if(kind==='shown')t.shown++;else if(kind==='skipped')t.skipped++;return t}
+ else if(kind==='miss'){t.n++;t.streak=0}else if(kind==='shown')t.shown++;else if(kind==='skipped')t.skipped++;else if(kind==='nearly')t.nearly=(t.nearly||0)+1;return t}
 function earSt(){const s=EAR.st[EAR.drill]=Object.assign({...EARST0},EAR.st[EAR.drill]||{});return s}
 function earRecord(kind){EAR.st[EAR.drill]=earStatNext(earSt(),kind);EAR.resetUndo=null;earSave()}
-function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===null?'shown':ok?'ok':'miss';earRecord(kind);EAR.res={ok,given,kind};
+// 'correct' | 'nearly' | 'wrong'. Nearly only when EAR_NEARLY is on, at cadences, when the answer given is the family (CADPARENT) of a Phrygian or cadential 6/4 answer
+function earJudge(q,given){if(q&&given===q.a)return'correct';if(EAR_NEARLY&&q&&q.d==='cad'&&CADPARENT[q.a]&&CADPARENT[q.a]===given)return'nearly';return'wrong'}
+// ok: true, false, or 'nearly'; given null = "Show me"
+function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===null?'shown':ok==='nearly'?'nearly':ok?'ok':'miss';earRecord(kind);EAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};
  // undo and redo end once the answer is marked
  HIST.ear.u=[];HIST.ear.r=[];hBtns();
- logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${kind==='ok'?'correct':kind==='shown'?'shown':'missed'}`)}
+ logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${kind==='ok'?'correct':kind==='shown'?'shown':kind==='nearly'?'nearly':'missed'}`)}
 // a question left before it was answered is recorded as skipped; returns true if one was
 function earSkip(){if(!EAR.q||EAR.done)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: skipped`);return true}
-// the rung in use: an open question's own rung, else the rung chosen for this drill if it is shown, else the first rung shown
-function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill],R=earRungsShown(EAR.drill);return l&&R.includes(l)?l:R[0]}
-function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a]}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
-// R4: an answer that names the family of a Stage 6 answer (imperfect for a Phrygian cadence, perfect for a cadential 6/4) is still marked wrong, and the feedback says why
+// the rung in use: an open question's own rung, else the rung chosen for this drill (shown even when it is above the Stage), else the first rung shown
+function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill];return l||earRungsShown(EAR.drill)[0]}
+function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a](q.key.mode)}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
+// R4: an answer that names the family of a Stage 6 answer (imperfect for a Phrygian cadence, perfect for a cadential 6/4) is marked wrong
+// (or Nearly, when EAR_NEARLY is on), and the feedback says why
 function earNearTxt(q,res){return q.d==='cad'&&res&&!res.ok&&res.given&&CADPARENT[q.a]===res.given?` ${CADL[res.given]} is its family, so you heard the right kind of ending; the answer here is the more exact name.`:''}
 function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){earMark(rhyOnsets(EAR.ans)===rhyOnsets(q.a),EAR.ans.slice())}
  else if(q.d==='bass'){earMark(EAR.ans.length===3&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
  else if(q.d==='mel'){earMark(EAR.ans.length===q.a.length-1&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
  renderEar()}
 HIST.ear=mkHist(()=>EAR.ans,v=>{if(EAR.done)return;EAR.ans=v;renderEar()});
-function earNew(){if(earSkip())toast('Skipped. It counts as skipped, not as a miss.');EAR.done=false;EAR.res=null;EAR.ans=[];HIST.ear.u=[];HIST.ear.r=[];
+function earNew(){elStop();if(earSkip())toast('Skipped. It counts as skipped, not as a miss.');EAR.done=false;EAR.res=null;EAR.ans=[];HIST.ear.u=[];HIST.ear.r=[];
  if(EAR.drill==='blind'&&!EAR.blind){EAR.q=null;renderEar();earLoadBlind().then(()=>{EAR.q=earGen('blind',earLvl());renderEar();earPlay()}).catch(()=>{$('earMain')&&($('earMain').querySelector('.earq').innerHTML='<p class="note">The scores could not be loaded. Blind analysis needs the score files that come with the published app.</p>')});return}
  EAR.q=earGen(EAR.drill,earLvl());renderEar();earPlay()}
 /* ---- R2: melody desk (hand-sign ladder beside the stave) ---- */
@@ -6500,7 +6683,7 @@ function earMelFollow(q,first,count,t0){const A=ac();earMelNowClear();for(let i=
  PLAY.timers.push(setTimeout(()=>earMelNow(q,k),ms));PLAY.timers.push(setTimeout(earMelNowClear,ms+600))}}
 /* ---- the room ---- */
 const EARHOW={metre:'Count along. Where does the strongest click fall, and how many beats come before it returns? Then listen inside each beat: does it split in two (simple) or in three (compound)? The speed changes each time (60–120 bpm), so do not use tempo as a clue.',
- rhy:'You hear a count-in of four clicks, then the rhythm on one note. Tap it back on your knee before you answer, then build it beat by beat.',
+ rhy:'You hear a count-in of four woodblock beats, then the rhythm (clapped at rung 1, on one note from rung 2, so you can hear how long each note lasts). Tap it back on your knee before you answer, then build it beat by beat.',
  qual:'Each chord is played together, then up as an arpeggio, then together again. Every chord is in root position, played high or low. Listen to the 3rd first (major or minor), then the 5th (perfect, diminished or augmented), then the 7th.',
  cad:'The tonic chord plays first, to set the key. At rung 1 you then hear just two chords, the cadence itself; at rungs 2 and 3, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Rung 3 (Stage 6) adds two answers: the Phrygian cadence (an imperfect cadence in minor, iv⁶–V) and the cadential 6/4 (the decorated approach to V).',
  bass:'The tonic chord plays first. The first chord of the progression is always I. Sing the bass line back, then name chords 2–4. "Bass only" plays just the bottom notes.',
@@ -6522,18 +6705,20 @@ function earBuildHTML(q){const lock=EAR.done,A=EAR.ans;
  if(q.d==='mel')return earMelDeskHTML(q);
  return''}
 function earEditBtns(full){return EAR.done?'':`<div class="go" style="margin-top:8px"><button class="mini" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="mini" data-hist="ear:r" title="Redo">↷ Redo</button><button class="mini" data-earclr>Clear</button><span class="sp"></span><button class="mini gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
-function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(),s=earSt();
- const tabs=EDR.filter(([k])=>EAR.all||earDrillOn(k)||k===EAR.drill),rungs=[...new Set([...earRungsShown(EAR.drill),l])].sort(),hid=EDR.some(([k])=>!earDrillOn(k)||[1,2,3].some(r=>!earRungOn(k,r)));
- el.innerHTML=`<div class="chips eartabs">${tabs.map(([k,n,st])=>`<button class="chip ${EAR.drill===k?'on':''}" data-eardr="${k}">${n}<small> · Stage ${st}</small></button>`).join('')}${hid||EAR.all?`<button class="chip earall${EAR.all?' on':''}" data-earall aria-pressed="${EAR.all}" title="${EAR.all?`Offer only the drills and rungs for Stage ${earStage()}`:`Also offer the drills and rungs outside Stage ${earStage()}`}">${EAR.all?'Show Stage '+earStage()+' only':'Show all'}</button>`:''}</div>
+function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill);
+ if(!rdy&&!EAR.preloading){EAR.preloading=elPreload(EAR.drill).catch(()=>{}).then(()=>{EAR.preloading=null;if(ROOM==='ear'&&$('earMain'))renderEar()})}
+ const tabs=EDR.filter(([k])=>earDrillShown(k)),rungs=[...new Set([...earRungsShown(EAR.drill),l])].sort(),hid=earHidden();
+ el.innerHTML=`<div class="chips eartabs">${tabs.map(([k,n])=>`<button class="chip ${EAR.drill===k?'on':''}" data-eardr="${k}">${n}<small> · ${earStageTag(k)}</small></button>`).join('')}${hid||EAR.all?`<button class="chip earall${EAR.all?' on':''}" data-earall aria-pressed="${EAR.all}" title="${EAR.all?`Offer only the drills and rungs for Stage ${earStage()}`:`Also offer the drills and rungs outside Stage ${earStage()}`}">${EAR.all?'Show Stage '+earStage()+' only':'Show all'}</button>`:''}</div>
  <section class="card"><h3>${EDR.find(x=>x[0]===EAR.drill)[1]}<span class="sp"></span>${rungs.map(n=>`<button class="chip ${l===n?'on':''}" data-earlv="${n}" title="${earRungStages(EAR.drill,n)}">Rung ${n}</button>`).join('')}</h3>
   <p class="note">${EARHOW[EAR.drill]}</p>
   <div class="go"><button class="mini gold" data-earplay="all" ${q?'':'disabled'}>▶ Play${q?' again':''}</button>
-   ${q&&(q.d==='cad'||q.d==='bass'||q.d==='mel')?`<button class="mini" data-earplay="nokey">Without the key chord</button>`:''}
+   ${q&&(q.d==='cad'||q.d==='bass'||q.d==='mel')&&!(q.d==='cad'&&q.l===1)?`<button class="mini" data-earplay="nokey">Without the key chord</button>`:''}
    ${q&&q.d==='bass'?`<button class="mini" data-earplay="bassonly">Bass only</button>`:''}${q&&q.d==='mel'?`<button class="mini" data-earplay="first">First note</button>`:''}
-   <button class="mini" data-earstop>■ Stop</button><span class="sp"></span>${q&&!EAR.done?`<button class="mini" data-earshow>Show me</button>`:''}<button class="mini ${EAR.done||!q?'gold':''}" data-earnew>${q?'Next question →':'Start →'}</button></div>
-  <div class="earq">${q?earOptsHTML(q)+earBuildHTML(q):`<p class="note">${EAR.drill==='blind'&&!EAR.blind?'Press Start to load the scores.':'Press Start to hear the first question.'}</p>`}</div>
-  ${EAR.done&&q&&q.d!=='mel'?`<div class="earres ${EAR.res.ok?'ok':'bad'}"><b>${EAR.res.ok?'Correct.':EAR.res.given===null?'Here it is.':'Not this time.'}</b> ${earAnsTxt(q)}${earNearTxt(q,EAR.res)}</div><div id="earNote"></div>`:''}
-  <div class="earstat">Score ${s.ok} / ${s.n} · streak ${s.streak} · best ${s.best}${s.shown?` · shown ${s.shown}`:''}${s.skipped?` · skipped ${s.skipped}`:''}<span class="sp"></span>${earResetHTML()}<button class="mini" data-earjournal>Save to journal</button></div>
+   <button class="mini" data-earstop>■ Stop</button><span class="sp"></span>${q&&!EAR.done?`<button class="mini" data-earshow>Show me</button>`:''}<button class="mini ${EAR.done||!q?'gold':''}" data-earnew ${!q&&!rdy?'disabled aria-busy="true"':''}>${q?'Next question →':rdy?'Start →':'Loading…'}</button></div>
+  ${EAR.drill==='rhy'?`<div class="go earopts"><label class="note"><input type="checkbox" id="earPulse" ${EAR.rhy.pulse?'checked':''}> Pulse</label><label class="note">Speed <select id="earSpd"><option value="72" ${EAR.rhy.bpm===72?'selected':''}>steady (72)</option><option value="100" ${EAR.rhy.bpm===100?'selected':''}>normal (100)</option></select></label></div>`:''}
+  <div class="earq">${q?earOptsHTML(q)+earBuildHTML(q):`<p class="note">${!rdy?(EAR.drill==='blind'?'Loading the scores and the piano…':'Loading the piano…'):EAR.drill==='blind'&&!EAR.blind?'Press Start to load the scores.':'Press Start to hear the first question.'}</p>`}</div>
+  ${EAR.done&&q&&q.d!=='mel'?`<div class="earres ${EAR.res.ok?'ok':EAR.res.nearly?'near':'bad'}"><b>${EAR.res.ok?'Correct.':EAR.res.nearly?'Nearly.':EAR.res.given===null?'Here it is.':'Not this time.'}</b> ${earAnsTxt(q)}${earNearTxt(q,EAR.res)}</div><div id="earNote"></div>`:''}
+  <div class="earstat">Score ${s.ok} / ${s.n} · streak ${s.streak} · best ${s.best}${s.nearly?` · nearly ${s.nearly}`:''}${s.shown?` · shown ${s.shown}`:''}${s.skipped?` · skipped ${s.skipped}`:''}<span class="sp"></span>${earResetHTML()}<button class="mini" data-earjournal>Save to journal</button></div>
  </section>
  <section class="card"><h3>Listening for it</h3>${earTips(EAR.drill)}</section>`;
  if(q&&q.d==='rhy'&&!EAR.done)earRhyDraw($('earRhy'),EAR.ans,q.bars);
@@ -6554,27 +6739,28 @@ function earTips(d){const T={
  blind:'<p>The phrases come from the scores in the Analysis room. Their cadence labels were re-read in music21 and checked by an independent review on 18 Nov 2026. A "perfect cadence in B minor" is still a perfect cadence: it closes, but in a new key for a moment.</p>'};return T[d]}
 document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earall],[data-earplay],[data-earstop],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore]');if(!t)return;const d=t.dataset;
  // EL-11: leaving a question unanswered (a change of drill or rung) records it as skipped, and says so
- if(d.eardr){if(d.eardr===EAR.drill)return;stopAll();const sk=earSkip();EAR.drill=d.eardr;EAR.q=null;EAR.done=false;EAR.ans=[];EAR.resetAsk=false;earSave();renderEar();if(sk)toast('The unanswered question was recorded as skipped (not a miss).');return}
- if(d.earlv){if(+d.earlv===earLvl())return;stopAll();const sk=earSkip();EAR.lvl[EAR.drill]=+d.earlv;earSave();EAR.q=null;EAR.done=false;EAR.ans=[];renderEar();if(sk)toast('Rung changed: the unanswered question was recorded as skipped (not a miss).');return}
+ if(d.eardr){if(d.eardr===EAR.drill)return;elStop();const sk=earSkip();EAR.drill=d.eardr;EAR.q=null;EAR.done=false;EAR.ans=[];EAR.resetAsk=false;earSave();renderEar();if(sk)toast('The unanswered question was recorded as skipped (not a miss).');return}
+ if(d.earlv){if(+d.earlv===earLvl())return;elStop();const sk=earSkip();EAR.lvl[EAR.drill]=+d.earlv;earSave();EAR.q=null;EAR.done=false;EAR.ans=[];renderEar();if(sk)toast('Rung changed: the unanswered question was recorded as skipped (not a miss).');return}
  if(d.earall!==undefined){EAR.all=!EAR.all;earSave();renderEar();return}
- if(d.earplay){earPlay(d.earplay);return}if(d.earstop!==undefined){stopAll();earMelNowClear();return}
+ if(d.earplay){earPlay(d.earplay);return}if(d.earstop!==undefined){elStop();earMelNowClear();return}
  if(d.earnew!==undefined){earNew();return}
- if(d.earans!==undefined&&EAR.q&&!EAR.done){earMark(d.earans===EAR.q.a,d.earans);renderEar();return}
+ if(d.earans!==undefined&&EAR.q&&!EAR.done){elStop();const j=earJudge(EAR.q,d.earans);earMark(j==='nearly'?'nearly':j==='correct',d.earans);renderEar();return}
  if(d.earcell&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earcell);renderEar();return}
  if(d.earrn&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earrn);renderEar();return}
- if(d.earsol&&EAR.done&&EAR.q&&EAR.q.d==='mel'){const n=eSolParse(d.earsol);c2Tone(eSolMidi(n,EAR.q.key),ac().currentTime+.02,.5,1);return}
- if(d.earsol&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earsol);const n=d.earsol.match(/^([a-z]+)([,']*)$/),o=(n[2].match(/'/g)||[]).length-(n[2].match(/,/g)||[]).length;c2Tone(eSolMidi({s:n[1],o},EAR.q.key),ac().currentTime+.02,.5,1);renderEar();return}
+ if(d.earsol&&EAR.done&&EAR.q&&EAR.q.d==='mel'){const n=eSolParse(d.earsol);elPlay(EAR.q,'tap',{midi:eSolMidi(n,EAR.q.key)});return}
+ if(d.earsol&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earsol);const n=d.earsol.match(/^([a-z]+)([,']*)$/),o=(n[2].match(/'/g)||[]).length-(n[2].match(/,/g)||[]).length;elPlay(EAR.q,'tap',{midi:eSolMidi({s:n[1],o},EAR.q.key)});renderEar();return}
  if(d.earclr!==undefined&&!EAR.done){HIST.ear.push();EAR.ans=[];renderEar();return}
- if(d.earchk!==undefined){earCheck();return}
- if(d.earshow!==undefined){earMark(false,null);renderEar();return}
+ if(d.earchk!==undefined){elStop();earCheck();return}
+ if(d.earshow!==undefined){elStop();earMark(false,null);renderEar();return}
  // EL-10: Reset asks inline (no browser dialog), then offers Undo
  if(d.earreset!==undefined){EAR.resetAsk=true;renderEar();const b=document.querySelector('[data-earresetno]');if(b)b.focus();return}
  if(d.earresetno!==undefined){EAR.resetAsk=false;renderEar();return}
  if(d.earresetyes!==undefined){EAR.resetAsk=false;EAR.resetUndo={drill:EAR.drill,st:{...earSt()}};EAR.st[EAR.drill]={...EARST0};earSave();renderEar();const b=document.querySelector('[data-earresetundo]');if(b)b.focus();return}
  if(d.earresetundo!==undefined){const u=EAR.resetUndo;if(u){EAR.st[u.drill]=u.st;EAR.resetUndo=null;earSave();toast('Score restored')}renderEar();return}
- if(d.earjournal!==undefined){const s=earSt();logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${s.ok}/${s.n} correct, best streak ${s.best}, ${s.shown} shown, ${s.skipped} skipped`);toast('Saved to the process log in your journal');return}
+ if(d.earjournal!==undefined){const s=earSt();logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${s.ok}/${s.n} correct, best streak ${s.best}, ${s.shown} shown, ${s.skipped} skipped${s.nearly?`, ${s.nearly} nearly`:''}`);toast('Saved to the process log in your journal');return}
  if(d.earscore){AN.score=d.earscore;AN.tab='score';location.hash='analysis';room('analysis');return}});
-document.addEventListener('change',e=>{if(e.target.id==='earLet'){EAR.letters=e.target.checked;earSave();renderEar()}});
+document.addEventListener('change',e=>{if(e.target.id==='earLet'){EAR.letters=e.target.checked;earSave();renderEar()}
+ if(e.target.id==='earPulse'){EAR.rhy.pulse=e.target.checked;earSave()}if(e.target.id==='earSpd'){EAR.rhy.bpm=+e.target.value===72?72:100;earSave()}});
 
 setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
 /* phones: bottom tab bar built from the rail; More opens a sheet with the other rooms, the stage and the journal */
@@ -6621,9 +6807,10 @@ setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
  addEventListener('keydown',e=>{if(e.key==='Escape'&&busy()){stopAll();return}
   if(e.key===' '&&busy()){const a=document.activeElement,tag=a&&a.tagName;if(!/INPUT|TEXTAREA|SELECT/.test(tag)&&!(a&&a.isContentEditable)){e.preventDefault();stopAll()}}});
  document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.id==='tStop')return;
-  if(b.dataset.playing||(busy()&&PK&&sig(b)===PK)){e.stopImmediatePropagation();e.preventDefault();stopAll();PK=null;unmark();return}
+  if(b.dataset.playing&&!busy()){PK=null;unmark()}
+  if(b.dataset.playing||(busy()&&PK&&sig(b)===PK)){e.stopImmediatePropagation();e.preventDefault();if(performance.now()<PLAY.guard)return;stopAll();PK=null;unmark();return}
   if(!/^\s*▶/.test(b.textContent))return;
-  if(busy())stopAll();unmark();const key=sig(b);
+  if(busy()&&performance.now()>=PLAY.guard)stopAll();unmark();const key=sig(b);
   setTimeout(()=>{if(!busy())return;PK=key;const m=b.isConnected&&/^\s*▶/.test(b.textContent)?b:find();if(m)mark(m)},40)},true)})();
 /* remember the stage between visits */
 (()=>{try{const l=+localStorage.getItem('cjg_stage');if([4,5,6].includes(l)){S.level=l;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}}catch(e){}})();
