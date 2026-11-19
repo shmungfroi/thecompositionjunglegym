@@ -6710,7 +6710,7 @@ const CADFAM={phrygian:md=>`an imperfect cadence in a minor key: iv⁶–V, with
 const CADPARENT={phrygian:'imperfect',cad64:'perfect'};
 // an interrupted cadence reached through a cadential 6/4 (rung 3, CAD3_HELD): the 6/4 is on the way, the cadence itself is V–vi (V–VI)
 function earCad64Int(q){return!!q&&q.d==='cad'&&q.l===3&&q.a==='interrupted'&&q.rns.some(x=>/:2$/.test(x))}
-const CAD64INT=md=>{const I=md==='min'?'i':'I',vi=md==='min'?'VI':'vi';return`A cadential 6/4 (${I}⁶₄ over the dominant bass) comes on the way, but the cadence itself is interrupted: V does not go home to ${I}, it moves up to ${vi} (V–${vi}).`};
+const CAD64INT=md=>{const I=md==='min'?'i':'I',vi=md==='min'?'VI':'vi';return`A cadential 6/4 (${I}⁶₄, the home chord over the dominant bass) comes on the way, but the cadence itself is interrupted (V–${vi}).`};
 function earCadOpts(l){return l===3?['perfect','plagal','imperfect','interrupted','phrygian','cad64']:Object.keys(CADL)}
 /* Interrupted after a cadential 6/4 (0.48 design spec, open question 2). Justin's ruling (19 Nov 2026): keep them, with "Interrupted" as the
    answer. They are written in R4's rung 3 shape (five chords, opening I–IV / i–iv), have fixture rows (tests/fixtures/earlab_ic.json) and pass
@@ -7082,7 +7082,7 @@ function ehsign(s){const k=s==='si'?'s':s;if(EHSIMG[k])return`<span class="hsw">
    cadence or Perfect for a cadential 6/4 is true but not precise. It keeps the streak and is not scored: not added to n or ok (so neither
    right nor wrong in "Score ok / n"), and is counted in the field nearly (shown in the stats line, the journal and the log).
    CAD64_INT_NEARLY (OPEN, still with Justin; default false = wrong): "Cadential 6/4" for an interrupted cadence reached through a cadential
-   6/4 (earCad64Int). One line to flip; the feedback (earNearTxt) explains either way. */
+   6/4 (earCad64Int). One line to flip; the result panel (earCadWrong) explains either way. */
 const EARST0={n:0,ok:0,streak:0,best:0,shown:0,skipped:0,nearly:0};
 let EAR_NEARLY=true,CAD64_INT_NEARLY=false;
 // pure: the record after one more question. kind: 'ok' | 'miss' | 'shown' | 'skipped' | 'nearly'
@@ -7105,15 +7105,8 @@ function earSkip(){if(!EAR.q||EAR.done||EAR.q.plays===0)return false;earRecord('
 // the rung in use: an open question's own rung, else the rung chosen for this drill (shown even when it is above the Stage), else the first rung shown
 function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill];return l||earRungsShown(EAR.drill)[0]}
 function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a](q.key.mode)}`:'')+(earCad64Int(q)?`. ${CAD64INT(q.key.mode)}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
-// R4: an answer that names the family of a Stage 6 answer (imperfect for a Phrygian cadence, perfect for a cadential 6/4) is Nearly
-// (EAR_NEARLY; marked wrong if it is turned off), and the feedback says why (0.48 design spec, section 9.5, Nearly)
-const EARNEAR={phrygian:md=>' You heard it stop on V, and that is right: this is an imperfect cadence. It is the special kind. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.',
- cad64:md=>{const I=md==='min'?'i':'I';return` You heard V to ${I} close the phrase, and that is right. Listen just before V: the bass is already on the dominant, with the tonic chord sitting on top of it (${I}⁶₄). That delay is the cadential 6/4.`}};
-// "Cadential 6/4" for an interrupted cadence reached through one (Nearly only with CAD64_INT_NEARLY)
-const EAR64INT=md=>` You heard the cadential 6/4, and it is there. But the button names the cadence, and Cadential 6/4 is the answer only when the 6/4 leads into a perfect cadence (V–${md==='min'?'i':'I'}).`;
-function earNearTxt(q,res){if(q.d!=='cad'||!res||res.ok||!res.given)return'';const md=q.key&&q.key.mode;
- if(CADPARENT[q.a]===res.given)return res.nearly?EARNEAR[q.a](md):` ${CADL[res.given]} is its family, so you heard the right kind of ending; the answer here is the more exact name.`;
- if(res.given==='cad64'&&earCad64Int(q))return EAR64INT(md);return''}
+// R4 family answers (imperfect for a Phrygian cadence, perfect for a cadential 6/4) are Nearly (EAR_NEARLY) or wrong; the result panel's
+// text for both states comes from earCadNear / earCad64IntGiven (one source, reconcile 0.48)
 function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){earMark(rhyOnsets(EAR.ans)===rhyOnsets(q.a),EAR.ans.slice())}
  else if(q.d==='bass'){earMark(EAR.ans.length===3&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
  else if(q.d==='mel'){earMark(EAR.ans.length===q.a.length-1&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
@@ -7314,38 +7307,73 @@ function earTeachQual(q,res){const a=q.a,g=res.given,A=ELQP[a],r=pretty(q.root),
   else t=bottom()}
  const dec=earQualDeciding(a,g),dn={q3:'3rd',q5:'5th',q7:'7th'}[dec],rp=[{v:dec,t:`Hear the ${dn}, then the chord`}];if(g&&g!==a)rp.push({v:'qab',t:`Hear ${QUALS[g]}, then ${QUALS[a]}, on ${r}`});
  return{kind:res.kind,head,small,teach:t,replays:rp}}
-const ELCSENT={perfect:'V to I: the leading note rises to the home note and the bass lands there. A full stop.',plagal:'IV to I. No leading note; the home note is held through both chords. The Amen.',
- imperfect:'It stops on V and waits there. A comma, not a full stop.',interrupted:'V sets up the close, then the bass steps up to vi instead of falling home.',
- phrygian:'iv⁶ to V in a minor key: the bass falls a semitone, fa to mi, and the phrase stops on V.',cad64:'The bass reaches the dominant early and holds it: I⁶₄, then V, then home. A perfect cadence with a delay built in.'};
-function earCadWrong(a,g,min){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?'VI':'vi',key=`${g}>${a}`;
+/* Cadence teaching text for the result panel (0.48 design spec, section 9.5). The one source for every cadence sentence the panel shows,
+   Nearly included (reconcile 0.48: the logic branch's EARNEAR/earNearTxt were folded in here). Sentences that describe the sound are checked
+   against the item itself (earCadFacts): which way the bass moves into the last chord, whether the home note is held in one voice, whether the
+   bass stays on so, whether a 6/4 is present. A generic sentence is used only where it is true of every item that can reach it. */
+function earCadFacts(q){const f={has:!!(q&&q.ch&&q.rns&&q.key&&q.ch.length===q.rns.length)};if(!f.has)return f;const ch=q.ch,k=q.key.k,n=ch.length,P=ch[n-2],N=ch[n-1],dg=m=>mod(m-k,12);
+ f.dir=Math.sign(N[0]-P[0]);f.doHeld=[0,1,2,3].some(v=>dg(P[v])===0&&N[v]===P[v]);f.soHeld=ch.slice(1).some((c,i)=>c[0]===ch[i][0]&&dg(c[0])===7);
+ f.pen=q.rns[n-2];f.penSD=/^(IV|iv)(:|$)/.test(f.pen);f.int64=earCad64Int(q);return f}
+function earCadRight(a,q,min){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?'VI':'vi',F=earCadFacts(q);
+ const S={perfect:`V to ${T}: the leading note rises to the home note and the bass lands there. A full stop.`,
+  plagal:`${SD} to ${T}. No leading note; the home note ${F.has&&F.doHeld?'is held through both chords':'sounds in both chords'}. The Amen.`,
+  imperfect:'It stops on V and waits there. A comma, not a full stop.',
+  interrupted:`V sets up the close, then the bass steps up to ${S6} instead of going home.`+(F.int64?' '+CAD64INT(q.key.mode):''),
+  phrygian:'iv⁶ to V in a minor key: the bass falls a semitone, fa to mi, and the phrase stops on V.',
+  cad64:`The bass reaches the dominant early and stays on it: ${T}⁶₄, then V, then home. A perfect cadence with a delay built in.`};
+ return S[a]}
+/* Nearly (EAR_NEARLY): the family answer for a Phrygian or cadential 6/4. on = the answer was marked Nearly; off = marked wrong (the switch is
+   off), so the text must not say "that is right" about the answer, only about what was heard. */
+function earCadNear(a,min,on){const T=min?'i':'I';
+ if(a==='phrygian')return on?'You heard it stop on V, and that is right: this is an imperfect cadence (US: half). It is the special kind. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.'
+  :'You heard it stop on V, and that is the right family: a Phrygian cadence is a kind of imperfect cadence (US: half). The answer here is the more exact name. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.';
+ return on?`You heard V to ${T} close the phrase, and that is right. Listen just before V: the bass is already on the dominant, with the tonic chord sitting on top of it (${T}⁶₄). That delay is the cadential 6/4.`
+  :`You heard V to ${T} close the phrase, and that is the right family: a cadential 6/4 decorates a perfect cadence. The answer here is the more exact name. Listen just before V: the bass is already on the dominant, with the tonic chord sitting on top of it (${T}⁶₄). That delay is the cadential 6/4.`}
+// "Cadential 6/4" for an interrupted cadence reached through one (CAD64_INT_NEARLY: on = Nearly, off = wrong)
+function earCad64IntGiven(min,on){const T=min?'i':'I',S6=min?'VI':'vi';
+ return on?`You heard the cadential 6/4, and that is right: ${T}⁶₄ over the dominant bass, then V. But V does not go home to ${T}: it moves up to ${S6}, so the cadence itself is interrupted (V–${S6}), and the answer names the cadence.`
+  :`You heard the cadential 6/4, and it is there: ${T}⁶₄ over the dominant bass, then V. But V does not go home to ${T}: it moves up to ${S6}, so the cadence itself is interrupted (V–${S6}). The answer names the cadence: Cadential 6/4 is the answer only when the 6/4 leads into a perfect cadence (V–${T}).`}
+function earCadWrong(a,g,q,min,res){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?'VI':'vi',key=`${g}>${a}`,F=earCadFacts(q),near=!!(res&&res.kind==='nearly');
+ if(CADPARENT[a]===g)return earCadNear(a,min,near);
+ if(g==='cad64'&&F.int64)return earCad64IntGiven(min,near);
+ const bassHome=F.has?`the bass ${F.dir<0?'falls':'rises'} to the home note`:'the bass goes to the home note',held=F.has&&F.doHeld?'the home note is held through both chords':'the home note sounds in both chords';
  const M={'plagal>perfect':`You heard it come home to ${T}, and that is right. Listen to the chord before: it is V, with the leading note pulling up to the home note. A plagal cadence has ${SD} there.`,
- 'perfect>plagal':`You heard it come home to ${T}, and that is right. Listen to the chord before: it is ${SD}. There is no leading note, and the home note is held through both chords.`,
- 'perfect>interrupted':`You heard V set up a close, and that is right. But the bass steps up to ${S6} instead of falling home, so the close never arrives.`,
- 'interrupted>perfect':'You heard V set up a close, and that is right. This time it arrives: the bass falls to the home note.',
+ 'perfect>plagal':`You heard it come home to ${T}, and that is right. Listen to the chord before: it is ${SD}. There is no leading note, and ${held}.`,
+ 'perfect>interrupted':`You heard V set up a close, and that is right. But the bass steps up to ${S6} instead of going home, so the close never arrives.`,
+ 'interrupted>perfect':`You heard V set up a close, and that is right. This time it arrives: ${bassHome}.`,
  'perfect>imperfect':'You heard V, and that is right. But V is the last chord. The phrase stops there and the home chord never comes.',
  'imperfect>perfect':'You heard V, and that is right. But it is not the last chord: it goes on to the home chord and closes.',
  'imperfect>interrupted':`You heard that it does not close on ${T}, and that is right. V is not the last chord: it moves on, up a step to ${S6}.`,
  'interrupted>imperfect':`You heard that it does not close on ${T}, and that is right. The last chord is V itself; nothing follows it.`,
- 'plagal>imperfect':`You heard ${SD} near the end, and that is right. But the last chord is V, not ${T}, so the phrase is left open.`,
+ // the spec's "You heard IV near the end" is true only when IV comes just before V; otherwise the sentence names the chord that is there
+ 'plagal>imperfect':F.has&&!F.penSD?`The last chord is V, not ${T}, so the phrase is left open. The chord before it is ${earRnTxt(F.pen)}, not ${SD}.`
+  :`You heard ${SD} near the end, and that is right. But the last chord is V, not ${T}, so the phrase is left open.`,
  'imperfect>plagal':`You heard ${SD} near the end, and that is right. It moves to ${T}, not V: the phrase comes home.`,
  'plagal>phrygian':`You heard the subdominant, and it is there: iv is the chord before the end. But the phrase does not come home to i. It stops on V, with the bass stepping down a semitone, fa to mi. That falling semitone is the Phrygian cadence, a kind of imperfect cadence (US: half).`,
- 'imperfect>phrygian':'You heard it stop on V, and that is right: this is an imperfect cadence (US: half). It is the special kind. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.',
- 'perfect>cad64':`You heard V to ${T} close the phrase, and that is right. Listen just before V: the bass is already on the dominant, with the tonic chord sitting on top of it (${T}⁶₄). That delay is the cadential 6/4.`,
  'phrygian>imperfect':'You heard it stop on V, and that is right. But the bass does not fall a semitone into V here, so it is a plain imperfect cadence (US: half).',
- 'cad64>perfect':`You heard V to ${T}, and that is right. Here V arrives directly: there is no ${T}⁶₄ held over the dominant bass before it.`};
- if(M[key])return M[key];
- if(a==='phrygian')return'The phrase does not close: it stops on V. In the bass, fa falls a semitone to mi. That is the Phrygian cadence, a kind of imperfect cadence (US: half).';
- if(a==='cad64')return`Follow the bass: it reaches the dominant and holds it for two chords, ${T}⁶₄ then V, before falling home to ${T}.`;
- if(g==='phrygian'||g==='cad64'){const par=CADPARENT[g],base=par===a?'':M[`${par}>${a}`]||'';return`${base} There is no ${g==='phrygian'?'semitone fall in the bass':'held dominant bass'} here.`.trim()}
- return`Start with the last chord: here it is ${a==='interrupted'?S6:a==='imperfect'?'V':T}.${a==='perfect'?' Then the chord before it: V.':a==='plagal'?` Then the chord before it: ${SD}.`:a==='interrupted'?' Then the chord before it: V.':''}`}
+ 'cad64>perfect':`You heard V to ${T}, and that is right. Here V arrives directly: there is no ${T}⁶₄ held over the dominant bass before it.`+(F.soHeld?` (The bass does stay on ${EARSOL5(q.key.mode)}, but the chord over it is V, then V7.)`:'')};
+ let t;
+ if(M[key])t=M[key];
+ else if(a==='phrygian')t='The phrase does not close: it stops on V. In the bass, fa falls a semitone to mi. That is the Phrygian cadence, a kind of imperfect cadence (US: half).';
+ else if(a==='cad64')t=`Follow the bass: it reaches the dominant and stays on it for two chords, ${T}⁶₄ then V, before moving home to ${T}.`;
+ else if(g==='phrygian')t=`${M[`imperfect>${a}`]||''} A Phrygian cadence stops on V, after the bass falls a semitone into it.`.trim();
+ // the spec's "There is no held dominant bass here" is untrue wherever V moves to V7 over one bass note (rung 3 perfect and interrupted)
+ else if(g==='cad64')t=`${M[`perfect>${a}`]||''} ${F.has&&F.soHeld?`The bass does stay on the dominant here, but the chord over it is V all along (V, then V7): there is no ${T}⁶₄.`:`There is no ${T}⁶₄ (the home chord over the dominant bass) here.`}`.trim();
+ else t=`Start with the last chord: here it is ${a==='interrupted'?S6:a==='imperfect'?'V':T}.${a==='perfect'?' Then the chord before it: V.':a==='plagal'?` Then the chord before it: ${SD}.`:a==='interrupted'?' Then the chord before it: V.':''}`;
+ // an interrupted cadence reached through a cadential 6/4: whatever was answered, say that the 6/4 is there and is not the cadence
+ if(F.int64)t+=' '+CAD64INT(q.key.mode);
+ return t}
 function earChordRowHTML(q){const n=q.rns.length,cn=q.a==='cad64'?3:2,key=q.key;if(!q.ch||q.ch.length!==n)return'';
- const chip=(rn,i,cad)=>{const f=earNumFn(rn),[fnm,col]=ELFN[f];return`<div class="el-ch" style="--fc:${col}" title="${fnm}">${earRnHTML(rn)}<small>${cad?'bass '+earSolOfMidi(q.ch[i][0],key):fnm}</small></div>`};
+ // a cadential 6/4 is named for what it does, not given one function: its colour follows the app's numeral analysis (I in second inversion,
+ // as Analysis labels it, and as Ic in the British/Australian tradition), and its title gives both readings (reconcile 0.48)
+ const chip=(rn,i,cad)=>{const f=earNumFn(rn),[fnm,col]=ELFN[f],c64=/:2$/.test(rn)&&/^V/.test(q.rns[i+1]||''),T=key.mode==='min'?'i':'I';
+  const tt=c64?`Cadential 6/4: the tonic chord in second inversion (${T}⁶₄, also written ${T}c), over the dominant bass. Read by its spelling it is a tonic chord, as this app's Analysis labels it; many harmony texts hear it as part of the dominant, because its 6th and 4th fall to the 5th and 3rd of V over the same bass.`:fnm;
+  return`<div class="el-ch" style="--fc:${col}" title="${tt}">${earRnHTML(rn)}<small>${cad?'bass '+earSolOfMidi(q.ch[i][0],key):c64?'cadential 6/4':fnm}</small></div>`};
  const pre=q.rns.slice(0,n-cn).map((rn,i)=>chip(rn,i,false)).join(''),cad=q.rns.slice(n-cn).map((rn,i)=>chip(rn,n-cn+i,true)).join('');
  return`<div class="el-chords" aria-label="${q.rns.map(earRnTxt).join(', ')} in ${keyName(key)}">${pre}<div class="el-cad" data-l="the cadence">${cad}</div><span class="el-key">in ${keyName(key)}</span></div>`}
 function earTeachCad(q,res){const a=q.a,g=res.given,min=q.key&&q.key.mode==='min',nm=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':CADL[a]||ELCADL[a]+' cadence';
  const head=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':a==='phrygian'?'Phrygian cadence':CADL[a];
- let t;if(g===null)t=ELCSENT[a];else if(g===a)t=ELCSENT[a];else t=earCadWrong(a,g,min);
- if(min&&g===a)t=t.replace(/^V to I/,'V to i');
+ const t=g===null||g===a?earCadRight(a,q,min):earCadWrong(a,g,q,min,res);
  const last=a==='cad64'?'Hear the last three chords, slowly':'Hear the last two chords, slowly',rp=[{v:'last',t:last},{v:'bassonly',t:'Bass only'},{v:'all',t:'The whole phrase'}];
  if(q.d==='blind')return{kind:res.kind,head:CADL[a],teach:t,replays:[{v:'ending',t:'Hear the ending again'},{v:'all',t:'The whole phrase'}],
   after:`<p class="el-note" data-notm>From ${q.t||q.score}, bar ${q.bar}. <button class="el-btn sm" data-earscore="${q.score}">Open this score in Analysis</button></p>`};
