@@ -1,4 +1,4 @@
-"""Targeted unit tests for register items P2-4 and P2-6.
+"""Targeted unit tests for register items P2-4, P2-6 and R9.
 Run: python3 tests/unit_test.py <repo dir>
 
 P2-4  chordInfo().dom is true only for chords that carry the leading note (V, V7, vii°, vii°7 in major and minor),
@@ -6,6 +6,10 @@ P2-4  chordInfo().dom is true only for chords that carry the leading note (V, V7
       forced to double its 3rd (that rule is for V-VI, where the leading note must rise).
 P2-6  Every scale the Keys room offers on every tonic it offers (major, natural, harmonic and melodic minor) is spelled
       as music21 spells it. A theoretical key is flagged, and the flag offers the usual enharmonic tonic.
+R9    chordInfo() on every degree of a major and a minor key (triads and 7th chords, in several keys): the function
+      (analyse().f, shown through FNAME) and chordInfo().dom. vii° and vii°7 in a major key are dominant (D); the minor
+      v / v7 reads "minor v · weak pull (no leading note)" (W), never dominant; VII / VII7 of a minor key is the
+      subtonic (S); dom is true exactly for the D chords (consistent with P2-4).
 """
 import sys, asyncio, json, pathlib
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
@@ -44,10 +48,7 @@ async def main():
         for k, v in dom.items():
             n += 1
             md, rn = k.split(' ')
-            # vii°7 in a major key is the fully diminished 7th borrowed from minor (not diatonic), which chordInfo has never
-            # treated as diatonic; P2-4 does not change that, so it is not asserted here
-            if md == 'maj0' and rn == 'vii°7':
-                continue
+            # vii°7 in a major key (the fully diminished 7th borrowed from minor) carries the leading note: dominant since R9 (0.48)
             want = rn in ('V', 'V7', 'vii°', 'vii°7')
             if v != want:
                 FAIL.append(f'P2-4 {k}: dom={v}, expected {want}')
@@ -57,6 +58,28 @@ async def main():
             n += 1
             if c == 'none':
                 FAIL.append(f'P2-4 {s} in key {k}: no realisation')
+        # ---- R9 ----
+        WANT = {'maj': {'I': 'T', 'ii': 'PD', 'iii': 'T', 'IV': 'PD', 'V': 'D', 'vi': 'T', 'vii°': 'D',
+                        'Imaj7': 'T', 'ii7': 'PD', 'iii7': 'T', 'IVmaj7': 'PD', 'V7': 'D', 'vi7': 'T', 'viiø7': 'D', 'vii°7': 'D'},
+                'min': {'i': 'T', 'ii°': 'PD', 'III': 'T', 'iv': 'PD', 'V': 'D', 'v': 'W', 'VI': 'T', 'VII': 'S', 'vii°': 'D',
+                        'i7': 'T', 'iiø7': 'PD', 'IIImaj7': 'T', 'iv7': 'PD', 'V7': 'D', 'v7': 'W', 'VImaj7': 'T', 'VII7': 'S', 'vii°7': 'D'}}
+        fx = await pg.evaluate("""(W)=>{const o=[];for(const [md,ks] of [['maj',[0,7,2,5,10]],['min',[9,4,2,0,6]]])for(const k of ks)for(const rn of Object.keys(W[md])){
+            const key={k,mode:md},p=parseRoman(rn,key);if(!p){o.push({md,k,rn,err:'parse'});continue}
+            for(const inv of [0,1,2]){const I=withKey(key,()=>chordInfo({...p,inv},key));o.push({md,k,rn,inv,f:I.a.f,name:FNAME[I.a.f],dom:I.dom,num:I.a.num})}}return o}""", WANT)
+        for r in fx:
+            n += 1
+            if r.get('err'):
+                FAIL.append(f"R9 {r['md']}{r['k']} {r['rn']}: could not parse")
+                continue
+            want = WANT[r['md']][r['rn']]
+            if r['f'] != want:
+                FAIL.append(f"R9 {r['md']}{r['k']} {r['rn']} inv {r['inv']}: function {r['f']} ({r['name']}), expected {want}")
+            if r['dom'] != (want == 'D'):
+                FAIL.append(f"R9 {r['md']}{r['k']} {r['rn']} inv {r['inv']}: dom={r['dom']}, expected {want == 'D'}")
+            if want == 'W' and r['name'] != 'minor v · weak pull (no leading note)':
+                FAIL.append(f"R9 {r['md']}{r['k']} {r['rn']}: reads '{r['name']}'")
+            if want != 'D' and (r['name'] or '').endswith('· dominant'):
+                FAIL.append(f"R9 {r['md']}{r['k']} {r['rn']}: reads '{r['name']}' but has no leading note")
         # ---- P2-6 ----
         rows = await pg.evaluate("""async(T)=>{location.hash='keys';await new Promise(r=>setTimeout(r,400));const o=[];
             for(const sc of ['maj','nmin','hmin','mmin'])for(const t of T){KS.tonic=t;KS.sc=sc;KS.desc=false;renderScales();
