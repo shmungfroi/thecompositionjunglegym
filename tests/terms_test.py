@@ -15,6 +15,9 @@ appears), and after every click the page is scanned:
       Australian term only.
   T4  "imperfect authentic" always comes with the note "US 'imperfect authentic' is still a perfect cadence; the Australian
       imperfect cadence is the US half cadence."; "Weaker perfect cadence" is gone.
+  T6  (fix round) rests pair as units (crotchet rest = quarter rest); no pairing in "12-bar", "8-bar" or "bar by bar"; no back-to-back or
+      nested brackets; one bracket per term per list (and per checker list); button hovers are rebuilt from the text, never stacked;
+      the Gym cadence reader carries its bracket; "Perfect cadence, less final" is lower case in the middle of a sentence.
   T5  the pass is idempotent and every added bracket or hover is at least 11 px.
 """
 import sys, os, asyncio, json, pathlib, re, collections
@@ -32,6 +35,8 @@ RULE = {'iac': ('perfect cadence, less final', 'imperfect authentic'),
         'plagal': ('plagal cadence', None), 'interrupted': ('interrupted cadence', 'deceptive cadence'),
         'crotchet': ('crotchet', 'quarter note'), 'quaver': ('quaver', 'eighth note'), 'minim': ('minim', 'half note'),
         'semibreve': ('semibreve', 'whole note'), 'semiquaver': ('semiquaver', 'sixteenth note'),
+        'crest': ('crotchet rest', 'quarter rest'), 'qrest': ('quaver rest', 'eighth rest'), 'mrest': ('minim rest', 'half rest'),
+        'sbrest': ('semibreve rest', 'whole rest'), 'sqrest': ('semiquaver rest', 'sixteenth rest'),
         'bar': ('bar', 'measure'), 'stave': ('stave', 'staff'), 'tone': ('tone', 'whole step'), 'semitone': ('semitone', 'half step')}
 NOTE = "US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence."
 IAC = 'Perfect cadence, less final (US: imperfect authentic)'
@@ -71,10 +76,10 @@ SKIP = "[data-clback],[data-earreset],[data-export],[data-import],[download],[da
 
 # page side: install the checker, run it after every click; violations are collected in window.__TV
 CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:0,headings:0,scopes:0,svg:0};
- const US=/\b(authentic|half[- ]cadence|deceptive|(?:quarter|eighth|sixteenth|half|whole) notes?|quarters|eighths|sixteenths|whole steps?|half steps?|staffs?|measures?)\b/i;
+ const US=/\b(authentic|half[- ]cadence|deceptive|(?:quarter|eighth|sixteenth|half|whole) (?:notes?|rests?)|quarters|eighths|sixteenths|whole steps?|half steps?|staffs?|measures?)\b/i;
  const add=(k,m)=>{const key=k+'|'+m;if(!window.__TV.has(key)&&window.__TV.size<200)window.__TV.set(key,1)};
- const strip=t=>t.replace(/\(US: [^)]*\)/g,' ').replace(/US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence\./g,' ')
-   .replace(/ = US [A-Za-z ]*cadence/g,' ').replace(/measure every interval/g,' ').replace(/\s+/g,' ');
+ const strip=t=>t.replace(/\(US: [^)]*\)/g,' ').replace(/; US: [^)]*\)/g,')').replace(/US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence\./g,' ')
+   .replace(/ = (?:US )?[A-Za-z ]*cadence/g,' ').replace(/measure every interval/g,' ').replace(/\s+/g,' ');
  const bracketed=a=>a.dataset.lit==='1'||(a.nextElementSibling&&a.nextElementSibling.classList.contains('tmus'))||!!a.closest('[data-notm]');
  window.__chk=function(where){termPass();const M=document.querySelector('main')||document.body;window.__TN.scans++;
   // T2: no US term on its own (rendered text outside scores, and every title that is not a US hover)
@@ -85,11 +90,11 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
   // T3 scores: the Australian term only inside svg
   M.querySelectorAll('svg').forEach(sv=>{const s=sv.textContent;window.__TN.svg++;if(/\(US/.test(s)||US.test(s.replace(/staff-space/g,'')))add('T3',where+': score text has a US term: "'+s.slice(0,80)+'"')});
   // T3 buttons, chips, options: the Australian term only; the US term in a title
-  M.querySelectorAll('button,.chip,option,.cad,.pill,.fbar>small').forEach(b=>{const s=b.textContent;window.__TN.buttons++;
+  M.querySelectorAll('button,.chip,option,.pill,.fbar>small').forEach(b=>{const s=b.textContent;window.__TN.buttons++;
    if(/\(US/.test(s)&&!b.closest('[data-notm]'))add('T3',where+': button/chip shows a bracket: "'+s.trim().slice(0,70)+'"');
-   for(const k in RULE){const [au,us]=RULE[k];if(!us)continue;const sx=k==='perfect'?s.replace(/perfect cadences?, less final/ig,''):s;
-    if(!new RegExp('(?<![A-Za-z])'+(k==='tone'?'whole tone':au)+'s?(?![A-Za-z])'+(k==='bar'?'(?![- ]?(?:lines?|chart|graph))':k==='tone'?'(?![- ]scales?)':''),'i').test(sx))continue;
-    const el=b.closest('button,.chip,option,.cad,.pill,.fbar>small')||b,tl=el.getAttribute('title')||'';
+   for(const k in RULE){const [au,us]=RULE[k];if(!us)continue;let sx=k==='perfect'?s.replace(/perfect cadences?, less final/ig,''):s;if(!/rest$/.test(k))sx=sx.replace(/(crotchet|quaver|minim|semibreve|semiquaver) rests?/ig,'');
+    if(!new RegExp('(?<![A-Za-z])'+(k==='tone'?'whole tone':au)+'s?(?![A-Za-z])'+(k==='bar'?'(?![- ]?(?:lines?|chart|graph))':k==='tone'?'(?![- ]scales?)':''),'i').test(sx)||(k==='bar'&&/(?<![A-Za-z])bars?(?![A-Za-z])/i.test(sx.replace(/\w+-bars?\b|\bby bar\b|\bbar by\b/gi,''))===false))continue;
+    const el=b.closest('button,.chip,option,.pill,.fbar>small')||b,tl=el.getAttribute('title')||'';
     if(!tl.includes(us))add('T3',where+': "'+s.trim().slice(0,60)+'" has no US hover for '+au)}});
   // T3 headings: the first mention of a term in a heading carries both
   M.querySelectorAll('h1,h2,h3,h4,h5,h6,summary,th').forEach(h=>{const seen=new Set();h.querySelectorAll('abbr.tm').forEach(a=>{if(a.closest('button,.chip')||seen.has(a.dataset.k))return;seen.add(a.dataset.k);window.__TN.headings++;
@@ -101,6 +106,23 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
   if(/Weaker perfect/i.test(M.textContent))add('T4',where+': "Weaker perfect cadence" is still shown');
   const w2=document.createTreeWalker(M,NodeFilter.SHOW_TEXT);let x;while((x=w2.nextNode())){if(/imperfect authentic/i.test(x.nodeValue)&&!x.parentElement.closest('[data-notm]')){
     const c=x.parentElement.closest('.iss,td,li,p,.card,div')||M;if(!/is still a perfect cadence/.test(c.textContent))add('T4',where+': "imperfect authentic" without the note: "'+c.textContent.trim().slice(0,90)+'"')}}
+  // T6 (fix round)
+  M.querySelectorAll('button,.chip,option,.pill,.fbar>small').forEach(b=>{if(b.closest('[data-notm]'))return;const tl=b.getAttribute('title')||'';
+   if((tl.match(/US:/g)||[]).length>1)add('T6',where+': stacked hover "'+tl+'" on "'+b.textContent.trim().slice(0,40)+'"');
+   if(b.dataset.us!==undefined){const L=[];TM_RX.lastIndex=0;let m;while((m=TM_RX.exec(b.textContent))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUS(k,/s$/i.test(m[0]));if(u&&!L.includes(u))L.push(u)}
+    if(!tl.endsWith('US: '+L.join(', ')))add('T6',where+': hover "'+tl+'" is not rebuilt from the text "'+b.textContent.trim().slice(0,40)+'" ('+L.join(', ')+')')}});
+  M.querySelectorAll('abbr.tm').forEach(a=>{const k=a.dataset.k,prev=a.previousSibling&&a.previousSibling.nodeType===3?a.previousSibling.nodeValue:'',nxt=a.nextSibling&&a.nextSibling.nodeType===3?a.nextSibling.nodeValue:'';
+   if(k==='bar'&&(/-$/.test(prev)||/\bby $/i.test(prev)||/^ by bar/i.test(nxt)))add('T6',where+': "bar" is paired inside a compound or idiom: "'+(a.parentElement.textContent||'').trim().slice(0,70)+'"');
+   if((k==='crotchet'||k==='quaver'||k==='minim'||k==='semibreve'||k==='semiquaver')&&/^ rests?\b/.test(nxt))add('T6',where+': "'+a.textContent+' rest" is split into two terms');
+   if(k==='tone'&&/^(?:[- ]?(?:colour|color)|[- ]scale)/i.test(nxt))add('T6',where+': "tone" paired inside "'+a.textContent+nxt.slice(0,10)+'"')});
+  M.querySelectorAll('.tmus').forEach(u=>{const a=u.previousSibling,b=u.closest('p,li,td,th,dd,dt,h1,h2,h3,h4,h5,h6,summary,div,section,label,figcaption,caption')||M;
+   let y=u,after='';while(y&&!y.nextSibling&&y.parentElement&&y.parentElement!==b)y=y.parentElement;if(y&&y.nextSibling)after=(y.nextSibling.textContent||'').slice(0,12);
+   if(/^\s*\((?!US)/.test(after))add('T6',where+': back-to-back brackets: "'+(u.parentElement.textContent||'').trim().slice(0,80)+'"');
+   try{const r=document.createRange();r.setStart(b,0);r.setEndBefore(u);const lead=r.toString().slice(-160);if(/\([^()]*$/.test(lead)&&!/^;/.test(u.textContent))add('T6',where+': bracket inside a bracket: "'+(lead+u.textContent).trim().slice(-80)+'"')}catch(e){}});
+  const per=new Map();M.querySelectorAll('.tmus').forEach(u=>{const a=u.previousElementSibling;if(!a||!a.dataset)return;const L=u.closest('ul,ol')||(u.closest('.iss')&&u.closest('.iss').parentElement);if(!L)return;
+   const key=a.dataset.k;let m=per.get(L);if(!m)per.set(L,m=new Set());if(m.has(key))add('T6',where+': "'+a.textContent+'" is bracketed twice in one list: "'+L.textContent.trim().slice(0,60)+'"');m.add(key)});
+  if(/[a-z,;] Perfect cadence, less final/.test(M.textContent))add('T6',where+': capital P in the middle of a sentence: "'+(M.textContent.match(/.{25}[a-z,;] Perfect cadence, less final/)||[''])[0]+'"');
+  const cd=document.getElementById('cad');if(cd&&cd.offsetParent&&/(?<![A-Za-z])(perfect|imperfect|plagal|interrupted) cadence/i.test(cd.textContent)&&!/plagal cadence/i.test(cd.textContent.slice(0,40))&&!cd.querySelector('.tmus,abbr[data-lit]'))add('T6',where+': the Gym cadence reader has no US bracket: "'+cd.textContent.slice(0,80)+'"');
   // T5: size
   document.querySelectorAll('abbr.tm,.tmus').forEach(e=>{if(!e.offsetParent)return;const px=parseFloat(getComputedStyle(e).fontSize);if(px<11)add('T5',where+': '+e.className+' is '+px+' px: "'+e.textContent+'"')});
   window.__TN.abbr+=document.querySelectorAll('abbr.tm').length}}"""
@@ -178,9 +200,38 @@ async def main():
         else:
             ok('T5', 'termPass idempotent')
         # ---- the automatic pass: text drawn after load gets its brackets without a call
-        auto = await pg.evaluate("""async()=>{const d=document.createElement('div');d.id='tmauto';d.innerHTML='<p>A crotchet then a quaver. A crotchet again.</p><button>minim</button>';document.querySelector('main').appendChild(d);
-            await new Promise(r=>setTimeout(r,400));const t=d.textContent,bt=d.querySelector('button').title;d.remove();return{t,bt}}""")
-        if auto['t'] != 'A crotchet (US: quarter note) then a quaver (US: eighth note). A crotchet again.minim' or auto['bt'] != 'US: half note':
+        auto = await pg.evaluate("""async()=>{const d=document.createElement('div');d.id='tmauto';
+            d.innerHTML='<p>A crotchet then a quaver. A crotchet again.</p><button>minim</button><button>eighth: quavers</button>'
+            +'<p id="a1">Hold a crotchet rest, then a quaver rest.</p><p id="a2">A 12-bar blues, an 8- to 16-bar phrase, played bar by bar.</p>'
+            +'<p id="a3">Half the beat (quavers) and (the tempo is the dotted crotchet).</p>'
+            +'<p id="a4">Go up a tone. It is a tone apart, a tone below home, or (a tone).</p><p id="a5">A steady tone, a chord tone, tone colour, the tone of voice, a whole-tone scale.</p>'
+            +'<ul id="a6"><li>A dissonant minim.</li><li>Another minim.</li><li>A crotchet.</li></ul>';
+            document.querySelector('main').appendChild(d);
+            await new Promise(r=>setTimeout(r,400));
+            const b2=d.querySelectorAll('button');const o={t:d.querySelector('p').textContent,bt:d.querySelector('button').title,b2:b2[1].title};
+            for(const id of ['a1','a2','a3','a4','a5','a6']){const e=d.querySelector('#'+id);o[id]=e.textContent;o[id+'k']=[...e.querySelectorAll('abbr.tm')].map(a=>a.dataset.k+':'+a.textContent)}
+            // the hover is rebuilt from the text: change the text, the title follows, and nothing stacks
+            b2[1].textContent='crotchets';await new Promise(r=>setTimeout(r,300));o.b3=b2[1].title;
+            b2[1].textContent='plain';await new Promise(r=>setTimeout(r,300));o.b4=b2[1].title||'(none)';
+            d.remove();return o}""")
+        exp = {'t': 'A crotchet (US: quarter note) then a quaver (US: eighth note). A crotchet again.', 'bt': 'US: half note', 'b2': 'US: eighth notes',
+               'a1': 'Hold a crotchet rest (US: quarter rest), then a quaver rest (US: eighth rest).', 'a1k': ['crest:crotchet rest', 'qrest:quaver rest'],
+               'a2': 'A 12-bar blues, an 8- to 16-bar phrase, played bar by bar.', 'a2k': [],
+               'a3': 'Half the beat (quavers; US: eighth notes) and (the tempo is the dotted crotchet; US: quarter note).', 'a3k': ['quaver:quavers', 'crotchet:crotchet'],
+               'a4': 'Go up a tone (US: whole step). It is a tone apart, a tone below home, or (a tone).', 'a4k': ['tone:tone'] * 4,
+               'a5': 'A steady tone, a chord tone, tone colour, the tone of voice, a whole-tone scale.', 'a5k': [],
+               'b3': 'US: quarter notes', 'b4': '(none)'}
+        bad = {k: (auto.get(k), v) for k, v in exp.items() if auto.get(k) != v and True}
+        if bad:
+            fail('T6', f'automatic pass: {bad}')
+        else:
+            ok('T6', 'rests as units, no pairing in N-bar / bar by bar, merged parenthetical brackets, hover rebuilt from the text')
+        ok('T6', "bare interval 'tone' is paired; sound, chord tone, tone colour, whole-tone scale are not")
+        if auto['a6'].count('(US:') != 2 or auto['a6'].count('US: half note') != 1:
+            fail('T6', f"one bracket per term per list: {auto['a6']}")
+        else:
+            ok('T6', 'one bracket per term per list')
+        if auto['t'] != exp['t'] or auto['bt'] != 'US: half note':
             fail('T3', f'automatic pass: {auto}')
         else:
             ok('T3', 'text drawn after load is bracketed automatically (first mention per block, hover on buttons)')

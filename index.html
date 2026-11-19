@@ -1222,32 +1222,38 @@ const TERMS=[
  {k:'imperfect',au:'imperfect cadence',us:'half cadence',rx:'imperfect cadences?'},
  {k:'plagal',au:'plagal cadence',us:null,rx:'plagal cadences?'},            // the same word in both: nothing to add
  {k:'interrupted',au:'interrupted cadence',us:'deceptive cadence',rx:'interrupted cadences?'},
+ {k:'crest',au:'crotchet rest',us:'quarter rest',rx:'crotchet rests?'},   // a rest is named as one unit
+ {k:'qrest',au:'quaver rest',us:'eighth rest',rx:'quaver rests?'},   // a rest is named as one unit
+ {k:'mrest',au:'minim rest',us:'half rest',rx:'minim rests?'},   // a rest is named as one unit
+ {k:'sbrest',au:'semibreve rest',us:'whole rest',rx:'semibreve rests?'},   // a rest is named as one unit
+ {k:'sqrest',au:'semiquaver rest',us:'sixteenth rest',rx:'semiquaver rests?'},   // a rest is named as one unit
  {k:'crotchet',au:'crotchet',us:'quarter note',rx:'crotchets?'},
  {k:'quaver',au:'quaver',us:'eighth note',rx:'quavers?'},
  {k:'minim',au:'minim',us:'half note',rx:'minims?'},
  {k:'semibreve',au:'semibreve',us:'whole note',rx:'semibreves?'},
  {k:'semiquaver',au:'semiquaver',us:'sixteenth note',rx:'semiquavers?'},
- {k:'bar',au:'bar',us:'measure',scoped:true,rx:'bars?(?![- ]?(?:lines?|chart|graph))'},
+ {k:'bar',au:'bar',us:'measure',scoped:true,rx:'(?<!\\bby )(?<!-)bars?(?![- ]?(?:lines?|chart|graph)|\\s+by\\s+bar\\b)'},
  {k:'stave',au:'stave',us:'staff',usp:'staffs',scoped:true,rx:'staves?'},
- {k:'tone',au:'tone',us:'whole step',rx:'whole tones?(?![- ]scales?)'},   // "whole-tone scale" is the same in both
+ {k:'tone',au:'tone',us:'whole step',rx:'whole tones?(?![- ]scales?)|(?<=\\b(?:a|one)\\s)tones?(?=\\s+(?:up|down|below|above|higher|lower|apart|away|from|sharper|flatter)\\b|\\s*[).])'},   // "whole-tone scale" is the same in both
  {k:'semitone',au:'semitone',us:'half step',rx:'semitones?'}
 ];
 const TERMSBY=Object.fromEntries(TERMS.map(t=>[t.k,t]));
 const TERM_IAC='Perfect cadence, less final (US: imperfect authentic)';   // written out in full wherever it is hand-written
+const TERM_IACL=TERM_IAC.charAt(0).toLowerCase()+TERM_IAC.slice(1);   // the same, for the middle of a sentence
 const TERM_NOTE="US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence.";
 const TERM_NOTE_HTML=`<span class="tmnote" data-notm>${TERM_NOTE}</span>`;
 function termUS(k,pl){const t=TERMSBY[k];return t&&t.us?(pl?(t.usp||t.us+'s'):t.us):null}
 function termTip(k,pl){const u=termUS(k,pl);return u?'US: '+u:''}
 function termDual(k,pl){const t=TERMSBY[k],u=termUS(k,pl);return u?`${t.au}${pl?'s':''} (US: ${u})`:t.au+(pl?'s':'')}
 const TM_RX=new RegExp('(?<![A-Za-z])(?:'+TERMS.filter(t=>t.us).map(t=>`(?<${t.k}>${t.rx})`).join('|')+')(?![A-Za-z])','gi');
-const TM_SKIP='svg,script,style,textarea,input,.tm,.tmus,[data-notm]',TM_BTN='button,[role="button"],.chip,option,.cad,.pill,.fbar>small',
+const TM_SKIP='svg,script,style,textarea,input,.tm,.tmus,[data-notm]',TM_BTN='button,[role="button"],.chip,option,button.cad,.pill,.fbar>small',
  TM_HEAD='h1,h2,h3,h4,h5,h6,summary,th,caption,.disp,.kicker,.lbl',TM_BLK='p,li,td,th,dd,dt,h1,h2,h3,h4,h5,h6,summary,div,section,label,figcaption,blockquote,caption';
 function termWrapNode(n){
  const txt=n.nodeValue;TM_RX.lastIndex=0;if(!TM_RX.test(txt))return;
  const p=n.parentElement;if(!p||p.closest(TM_SKIP))return;
  const btn=p.closest(TM_BTN),frag=document.createDocumentFragment();let last=0,m;TM_RX.lastIndex=0;
  while((m=TM_RX.exec(txt))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),word=m[0],tip=termTip(k,/s$/i.test(word));if(!tip)continue;
-  if(btn){const us=termUS(k,false),L=btn.dataset.us?btn.dataset.us.split('|'):[];if(!L.includes(us)){if(btn.dataset.us===undefined)btn.dataset.t0=btn.getAttribute('title')||'';L.push(us);btn.dataset.us=L.join('|');btn.setAttribute('title',(btn.dataset.t0?btn.dataset.t0+' · ':'')+'US: '+L.join(', '))}continue}
+  if(btn)continue;
   frag.appendChild(document.createTextNode(txt.slice(last,m.index)));
   const a=document.createElement('abbr');a.className='tm';a.dataset.k=k;a.title=tip;a.tabIndex=-1;a.textContent=word;
   if(/^\s*\(US[:\s]/.test(txt.slice(m.index+word.length)))a.dataset.lit='1';
@@ -1262,14 +1268,29 @@ function termWrapIn(root){
 function termBrackets(){
  const room=new Map(),blk=new WeakMap();
  document.body.querySelectorAll('abbr.tm').forEach(a=>{
-  const t=TERMSBY[a.dataset.k],sc=a.closest('#climbDetail,.room')||document.body,head=!!a.closest(TM_HEAD),b=a.closest(TM_BLK)||sc;
+  const t=TERMSBY[a.dataset.k],sc=a.closest('#climbDetail,.room')||document.body,head=!!a.closest(TM_HEAD);let b=a.closest(TM_BLK)||sc;if(b.matches('li,.iss')&&b.parentElement)b=b.parentElement;   /* a list (or a checker's list of issues) is one block: one bracket per term */
+  
   let rs=room.get(sc);if(!rs)room.set(sc,rs=new Set());let bs=blk.get(b);if(!bs)blk.set(b,bs=new Set());
-  const lit=a.dataset.lit==='1',want=!lit&&!bs.has(t.k)&&(t.scoped?head||!rs.has(t.k):true);
-  const nx=a.nextElementSibling,has=!!nx&&nx.classList.contains('tmus')&&nx.previousSibling===a;
-  if(want&&!has){const s=document.createElement('span');s.className='tmus';s.textContent=` (US: ${termUS(t.k,/s$/i.test(a.textContent))})`;a.after(s)}
+  const nx=a.nextElementSibling,has=!!nx&&nx.classList.contains('tmus')&&nx.previousSibling===a,nxt=termAfter(has?nx:a),lead=termBefore(a,b);
+  /* never two brackets back to back, and never a bracket inside a bracket: a term that sits in a parenthesis and ends it is merged
+     ("(quavers; US: eighth notes)"); a term followed by a parenthesis, or inside one, keeps its hover and is not counted as a first mention */
+  const open=/\([^()]*$/.test(lead),merge=open&&/^\s*\)/.test(nxt),clash=(!open&&/^\s*\((?!US)/.test(nxt))||(open&&!merge);
+  const lit=a.dataset.lit==='1',want=!lit&&!clash&&!bs.has(t.k)&&(t.scoped?head||!rs.has(t.k):true);
+  const txt=(merge?'; US: ':' (US: ')+termUS(t.k,/s$/i.test(a.textContent))+(merge?'':')');
+  if(want&&!has){const s=document.createElement('span');s.className='tmus';s.textContent=txt;a.after(s)}
+  if(want&&has&&nx.textContent!==txt)nx.textContent=txt;
   if(!want&&has)nx.remove();
   if(want||lit){bs.add(t.k);rs.add(t.k)}})}
-function termPass(roots){(roots&&roots.length?roots:[document.body]).forEach(r=>{if(r&&r.isConnected)termWrapIn(r)});termBrackets()}
+function termAfter(n){let x=n;while(x&&!x.nextSibling&&x.parentElement&&!x.parentElement.matches(TM_BLK+',body'))x=x.parentElement;const y=x&&x.nextSibling;return y?(y.textContent||'').slice(0,40):''}
+function termBefore(a,b){try{const r=document.createRange();r.setStart(b,0);r.setEndBefore(a);return r.toString().slice(-160)}catch(e){return''}}
+/* buttons and chips: the hover is rebuilt from the text they hold now, every pass (it never accumulates) */
+function termButtons(){
+ document.body.querySelectorAll(TM_BTN).forEach(b=>{
+  if(b.closest(TM_SKIP))return;const txt=b.textContent,L=[];TM_RX.lastIndex=0;let m;
+  while((m=TM_RX.exec(txt))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUS(k,/s$/i.test(m[0]));if(u&&!L.includes(u))L.push(u)}
+  if(L.length){if(b.dataset.us===undefined)b.dataset.t0=b.getAttribute('title')||'';b.dataset.us=L.join('|');b.setAttribute('title',(b.dataset.t0?b.dataset.t0+' · ':'')+'US: '+L.join(', '))}
+  else if(b.dataset.us!==undefined){if(b.dataset.t0)b.setAttribute('title',b.dataset.t0);else b.removeAttribute('title');delete b.dataset.us;delete b.dataset.t0}})}
+function termPass(roots){(roots&&roots.length?roots:[document.body]).forEach(r=>{if(r&&r.isConnected)termWrapIn(r)});termButtons();termBrackets()}
 let TM_T=0,TM_OBS=null;const TM_Q=new Set();
 function termInit(){
  const opt={childList:true,subtree:true,characterData:true};
@@ -1478,7 +1499,7 @@ function bassBoxSVG(p,c){
  // same drawing as the chord diagrams: nut or fret label beside the starting note, starting note ringed, string names underneath; one note per dot, so the second number sits beside it
  const tun=TUN.bass,ns=4,sp=38,fh=26,x0=44,top=30,gw=(ns-1)*sp,fd=p.notes.map(n=>n.f).filter(f=>f>0);
  const lo=fd.length?Math.min(...fd):1,hi=fd.length?Math.max(...fd):1,start=hi>4?lo:1,frets=Math.max(5,hi-start+2),fing=(S.dots||'deg')==='fing';
- const H=top+fh*frets+30,W=x0+gw+34,y=f=>top+(f-start+.5)*fh,xs=i=>x0+i*sp,dg=d=>d.replace(/b/g,'♭').replace(/#/g,'♯');
+ const H=top+fh*frets+30,W=x0+gw+34,y=f=>top+(f-start+.5)*fh,xs=i=>x0+i*sp,dg=degPretty;
  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="bass pattern">`;
  if(start===1)s+=`<rect x="${x0-1.5}" y="${top-4}" width="${gw+3}" height="5" rx="1.5" fill="#ece2c8"/>`;
  const f0=p.notes[0].f;if(start>1)s+=`<text x="${x0-15}" y="${y(f0>0?f0:start)+4}" fill="#c9a24a" font-size="11" font-weight="600" text-anchor="end">${f0>0?f0:start}fr</text>`;
@@ -1511,7 +1532,7 @@ function boxSVG(v,inst,c){
  const tun=TUN[inst],ns=tun.length,sp=inst==='uke'?26:22,fh=26,frets=5,x0=44,top=30,gw=(ns-1)*sp;
  const fretted=v.fr.filter(f=>f>0),start=fretted.length&&Math.max(...fretted)>4?Math.min(...fretted):1;
  const FG=v.fg||v.sh||v.from||v.tier!==undefined?vFingers(v):fretFingers(v.fr),ra=frRootAt(v,c,inst),fing=(S.dots||'deg')==='fing';
- const H=top+fh*frets+44,W=x0+gw+24,y=f=>top+(f-start+.5)*fh,xs=i=>x0+i*sp,dg=d=>d.replace(/b/g,'♭').replace(/#/g,'♯');
+ const H=top+fh*frets+44,W=x0+gw+24,y=f=>top+(f-start+.5)*fh,xs=i=>x0+i*sp,dg=degPretty;
  const STR=inst==='uke'?['G','C','E','A']:['E','A','D','G','B','E'];
  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="chord diagram">`;
  // nut or position
@@ -1565,7 +1586,7 @@ function render(){
  $('tiles').innerHTML=c.tones.map(t=>`<div class="tile" data-m="${t.midi}"><b>${pretty(t.name)}</b><small>${degPretty(t.d)}</small><i style="background:${degColor(t.d)}"></i></div>`).join('');
  $('formula').textContent=c.tones.map(t=>degPretty(t.d)).join('  ');
  $('notes').textContent=c.tones.map(t=>pretty(t.name)).join(' · ');
- $('invTxt').textContent=S.inv?`${ORD[S.inv]} inversion: the ${c.bass.d.replace(/b/g,'♭').replace(/#/g,'♯')} is in the bass`:'Root position: the root is in the bass';
+ $('invTxt').textContent=S.inv?`${ORD[S.inv]} inversion: the ${degPretty(c.bass.d)} is in the bass`:'Root position: the root is in the bass';
  $('bassTxt').textContent=pretty(c.bass.name);
  $('desc').textContent=c.q.t;
  renderPads(c);if(typeof renderSongs==='function'&&typeof SONGS!=='undefined')renderSongs();renderKeys(c);renderInst(c);renderStaff(c);renderClimb(c);
@@ -2083,7 +2104,7 @@ function cadence(){if(P.length<2)return null;const a=analyse(P[P.length-2],K),b=
  const isV=x=>x.dia&&x.d===4&&/^V/.test(x.num),isI=x=>x.dia&&x.d===0,isIV=x=>x.dia&&x.d===3,isVI=x=>x.dia&&x.d===5;
  const I=K.mode==='maj'?'I':'i',IV=K.mode==='maj'?'IV':'iv',VI=K.mode==='maj'?'vi':'VI';
  const pa=P[P.length-2],pb=P[P.length-1],inv=(pa.inv||0)>0||(pb.inv||0)>0;
- if(isV(a)&&isI(b)&&inv)return['V–I, but not in root position',`V → ${I} with ${(pa.inv||0)&&(pb.inv||0)?'both chords':(pa.inv||0)?'V':I} inverted: it moves home, but more softly. A perfect cadence needs both chords in root position (and for the strongest ending, do in the melody). This one is a ${TERM_IAC}. ${TERM_NOTE_HTML}`];
+ if(isV(a)&&isI(b)&&inv)return['V–I, but not in root position',`V → ${I} with ${(pa.inv||0)&&(pb.inv||0)?'both chords':(pa.inv||0)?'V':I} inverted: it moves home, but more softly. A perfect cadence needs both chords in root position (and for the strongest ending, do in the melody). This one is a ${TERM_IACL}. ${TERM_NOTE_HTML}`];
  if(isV(a)&&isI(b))return['Perfect cadence',`V → ${I}, both in root position: the strongest full stop, if this is the end of a phrase. Put do in the melody on the last chord for the firmest ending.`];
  if(isIV(a)&&isI(b))return['Plagal cadence',`${IV} → ${I}: the "Amen" ending, gentler than a perfect cadence.`];
  if(isV(a)&&isVI(b))return['Interrupted cadence',`V → ${VI}: the music sets up home, then swerves somewhere unexpected. A great way to extend a phrase.`];
@@ -2408,7 +2429,7 @@ function renderVoicingLab(){
  if(!n){$('vlPiano').innerHTML=pianoHTML([]);$('vlWhy').textContent=VTYPES[VL.type].why+(VL.type==='satb'?' Four voices can\'t spell this chord completely in this inversion: try another inversion.':' This voicing needs a chord with at least four notes: try Cmaj7, Dm7 or G7.');$('vlStats').innerHTML='';$('vlStaff').innerHTML='';return}
  $('vlPiano').innerHTML=pianoHTML(n);$('vlWhy').textContent=VTYPES[VL.type].why;
  const span=n[n.length-1].midi-n[0].midi,gaps=n.slice(1).map((x,i)=>x.midi-n[i].midi);
- $('vlStats').innerHTML=`<span>Notes: <b>${n.map(x=>pretty(x.name)+x.oct).join(' · ')}</b></span><span>Span: <b>${span} semitones</b> (${(span/12).toFixed(1)} octaves)</span><span>Widest gap: <b>${Math.max(...gaps)}</b> semitones</span>`;
+ $('vlStats').innerHTML=`<span>Notes: <b>${n.map(x=>pretty(x.name)+x.oct).join(' · ')}</b></span><span>Span: <b>${span} semitones</b>, or ${(span/12).toFixed(1)} octaves</span><span>Widest gap: <b>${Math.max(...gaps)}</b> semitones</span>`;
  drawStaff($('vlStaff'),n,null,false)}
 
 /* ---------- SATB realisation (dynamic programming over candidate voicings) ---------- */
@@ -2611,7 +2632,7 @@ const SCALES=[
  {k:'whole',n:'Whole-tone',g:'Beyond',l:5,d:['1','2','3','#4','#5','b7'],sol:'d r m fi si ta',pk:null,t:'Six notes, all a whole tone apart. With no semitones there is no pull to any note, so it floats: Debussy, dream sequences, the moment the harp shimmers.'},
  {k:'chrom',n:'Chromatic',g:'Beyond',l:5,d:['1','#1','2','#2','3','4','#4','5','#5','6','#6','7'],sol:'d di r ri m f fi s si l li t',desc:{d:['1','7','b7','6','b6','5','b5','4','3','b3','2','b2','1'],sol:'d t ta l le s se f m ma r ra d'},pk:[0,0],t:'All twelve notes. By convention it is spelled with sharps going up and flats coming down.'},
  {k:'phrd',n:'Phrygian dominant',a:'5th mode of harmonic minor',g:'Beyond',l:6,d:['1','b2','3','4','5','b6','b7'],sol:'m f si l t d r',pk:[5,8],ch:['b2','3'],t:'Harmonic minor starting on its 5th (mi). The ♭2 and major 3rd together give the Flamenco, klezmer and Middle-Eastern-flavoured sound.'},
- {k:'oct',n:'Octatonic',a:'half–whole diminished',g:'Beyond',l:6,d:['1','b2','#2','3','#4','5','6','b7'],sol:'d ra ri m fi s l ta',pk:null,t:'Eight notes alternating semitones and whole tones. Symmetrical and tense: Stravinsky, Bartók, Messiaen and jazz players over dominant 7♭9 chords.'}
+ {k:'oct',n:'Octatonic',a:'semitone–tone diminished',us:'half–whole diminished',g:'Beyond',l:6,d:['1','b2','#2','3','#4','5','6','b7'],sol:'d ra ri m fi s l ta',pk:null,t:'Eight notes alternating semitones and whole tones. Symmetrical and tense: Stravinsky, Bartók, Messiaen and jazz players over dominant 7♭9 chords.'}
 ];
 const SGROUPS=['Major & minor','Modes','Pentatonic & blues','Beyond'];
 const HANDS={d:'closed fist',r:'flat hand, fingers slanting upward',m:'flat hand, palm down, level',f:'fist, thumb pointing down',s:'flat hand, palm facing you, thumb up',l:'hand relaxed, hanging from the wrist',t:'index finger pointing up diagonally'};
@@ -2678,13 +2699,13 @@ function ksPads(attr,cur){return PADS.map(p=>p.length===1?`<button class="rp ${c
   `<div class="rk">${p.map(n=>`<button class="${cur===n?'on':''}" ${attr}="${n}">${pretty(n)}</button>`).join('')}</div>`).join('')+(PADS.flat().includes(cur)?'':`<button class="rp on" ${attr}="${cur}">${pretty(cur)}</button>`)}
 function renderScales(){let sc=SCALES.find(s=>s.k===KS.sc);if(sc.l>S.level){KS.sc='maj';sc=SCALES[0]}
  $('ksRoot').innerHTML=ksPads('data-kst',KS.tonic);
- $('ksType').innerHTML=SGROUPS.map(g=>{const v=SCALES.filter(s=>s.g===g&&s.l<=S.level);if(!v.length)return'';return`<div class="qg"><span class="gl">${g}</span>${v.map(s=>`<button class="qp ${s.k===KS.sc?'on':''}" data-ksc="${s.k}"><b>${s.n}</b>${s.a?`<small>${s.a}</small>`:'<small>&nbsp;</small>'}</button>`).join('')}</div>`}).join('');
+ $('ksType').innerHTML=SGROUPS.map(g=>{const v=SCALES.filter(s=>s.g===g&&s.l<=S.level);if(!v.length)return'';return`<div class="qg"><span class="gl">${g}</span>${v.map(s=>`<button class="qp ${s.k===KS.sc?'on':''}" data-ksc="${s.k}"${s.us?` title="US: ${s.us}" data-notm`:''}><b>${s.n}</b>${s.a?`<small>${s.a}</small>`:'<small>&nbsp;</small>'}</button>`).join('')}</div>`}).join('');
  $('ksDir').innerHTML=`<button class="ip ${KS.desc?'':'on'}" data-kdir="up">Going up</button><button class="ip ${KS.desc?'on':''}" data-kdir="down">Coming down</button>${sc.desc?`<span class="note" style="margin-left:6px">${sc.k==='mmin'?'Melodic minor changes on the way down.':'Spelled with flats on the way down.'}</span>`:''}`;
  const T=scaleTones(KS.tonic,KS.sc,KS.desc),sig=sigFromKS(),name=scaleName(KS.tonic,KS.sc);
- $('ksName').textContent=name;$('ksAka').textContent=sc.a?sc.a[0]==='='?sc.a.slice(2):sc.a:'';
- const steps=[];for(let i=1;i<T.length;i++){const s=Math.abs(T[i].midi-T[i-1].midi);steps.push(s===1?'H':s===2?'W':s===3?'W+H':s+'')}
- $('ksTiles').innerHTML=T.map((t,i)=>`<div class="stile" data-m="${t.midi}" style="--c:${scCol(t,sc)}"><b>${pretty(t.name)}</b><span class="so">${solTxt(t.sol)}</span><small>${degPretty(t.d)}</small></div>`+(i<steps.length?`<span class="stp ${steps[i]==='H'?'h':steps[i]==='W'?'':'x'}">${steps[i]}</span>`:'')).join('');
- $('ksSteps').innerHTML='<span class="note">W = whole tone · <b style="color:var(--red)">H</b> = semitone</span>';
+ $('ksName').textContent=name;$('ksAka').setAttribute('data-notm','');$('ksAka').textContent=(sc.a?sc.a[0]==='='?sc.a.slice(2):sc.a:'')+(sc.us?` (US: ${sc.us.replace(' diminished','')})`:'');
+ const steps=[];for(let i=1;i<T.length;i++){const s=Math.abs(T[i].midi-T[i-1].midi);steps.push(s===1?'S':s===2?'T':s===3?'T+S':s+'')}
+ $('ksTiles').innerHTML=T.map((t,i)=>`<div class="stile" data-m="${t.midi}" style="--c:${scCol(t,sc)}"><b>${pretty(t.name)}</b><span class="so">${solTxt(t.sol)}</span><small>${degPretty(t.d)}</small></div>`+(i<steps.length?`<span class="stp ${steps[i]==='S'?'h':steps[i]==='T'?'':'x'}" title="${{S:'semitone (US: half step)',T:'tone (US: whole step)','T+S':'tone and semitone (US: whole step and half step)'}[steps[i]]||''}">${steps[i]}</span>`:'')).join('');
+ $('ksSteps').innerHTML='<span class="note" data-notm>T = tone (US: whole step) · <b style="color:var(--red)">S</b> = semitone (US: half step)</span>';
  $('ksForm').textContent=(KS.desc&&sc.desc?sc.desc.d:sc.d).map(degPretty).join(' ');
  $('ksSol').textContent=(KS.desc&&sc.desc?sc.desc.sol:sc.sol).split(' ').map(solTxt).join(' ');
  const theo=sig&&sig.theo,alt=theo?altTonic(KS.tonic):null;
@@ -2725,6 +2746,7 @@ function renderKsSongs(sc){const el=$('ksSongs');const L=(typeof SCSONGS!=='unde
 /* ---------- circle of fifths ---------- */
 const CMAJ=['C','G','D','A','E','B','F#','Db','Ab','Eb','Bb','F'],CMIN=['A','E','B','F#','C#','G#','D#','Bb','F','C','G','D'],CENH={6:['Gb','Eb'],5:['Cb','Ab'],7:['C#','A#']};
 let CSEL={i:0,minor:false};
+function fifthFrom(t,dir){const L=(LET.indexOf(t[0])+(dir>0?4:3))%7,pc=mod(pcOf(t)+(dir>0?7:5),12);let a=mod(pc-NAT[L]+6,12)-6;return LET[L]+accStr(a)}
 function renderCircle(){const R1=168,R2=118,R3=74,cx=190,cy=190;let s=`<svg viewBox="0 0 380 380" class="circ">`;
  s+=`<circle cx="${cx}" cy="${cy}" r="${R1+22}" fill="none" stroke="#3a3226"/><circle cx="${cx}" cy="${cy}" r="${(R1+R2)/2-4}" fill="none" stroke="#2a241a"/><circle cx="${cx}" cy="${cy}" r="${R3-20}" fill="none" stroke="#3a3226"/>`;
  for(let i=0;i<12;i++){const a=-Math.PI/2+i*Math.PI/6,x=r=>cx+r*Math.cos(a),y=r=>cy+r*Math.sin(a),n=i<=6?i:i-12,on=CSEL.i===i;
@@ -2736,13 +2758,13 @@ function renderCircle(){const R1=168,R2=118,R3=74,cx=190,cy=190;let s=`<svg view
  const i=CSEL.i,maj=CMAJ[i],mn=CMIN[i],n=i<=6?i:i-12,tonic=CSEL.minor?mn:maj,sig={par:maj,n,theo:false};
  const rel=CSEL.minor?`${pretty(maj)} major`:`${pretty(mn)} minor`,parN=CSEL.minor?n+3:n-3,parT=CSEL.minor?mn:maj,parM=CSEL.minor?'major':'minor',parA=Math.abs(parN)>7?altTonic(parT):null,
   par=`${pretty(parT)} ${parM}`,parFlag=Math.abs(parN)>7?` <span style="color:var(--red)">· a theoretical key (${Math.abs(parN)} ${parN>0?'sharps':'flats'}); musicians write ${parA?pretty(parA)+' '+parM:'its enharmonic twin'}</span>`:'';
- const dom=CSEL.minor?CMIN[(i+1)%12]:CMAJ[(i+1)%12],sub=CSEL.minor?CMIN[(i+11)%12]:CMAJ[(i+11)%12];
+ const dom=fifthFrom(tonic,1),sub=fifthFrom(tonic,-1);   // spelled from the key itself, so the neighbours of D♭ major are A♭ and G♭ (not F♯)
  const li=LET.indexOf(maj[0]),modes=['Ionian','Dorian','Phrygian','Lydian','Mixolydian','Aeolian','Locrian'],mk=['ion','dor','phr','lyd','mix','nmin','loc'];
  const MT=scaleTones(maj,'maj',false).slice(0,7);
  $('ksKeyInfo').innerHTML=`<div class="sym disp" style="font-size:54px">${pretty(tonic)} ${CSEL.minor?'minor':'major'}</div>
   <p class="ctx" style="margin-top:4px">${sigText(sig)}${CENH[i]?` · also written as <b>${pretty(CSEL.minor?CENH[i][1]:CENH[i][0])} ${CSEL.minor?'minor':'major'}</b> (${12-Math.abs(n)} ${n>0?'flats':'sharps'})`:''}</p>
   <div class="staff" id="ksSigStaff"></div>
-  <dl><dt>Relative</dt><dd>${rel} <span class="note">· same key signature, different home</span></dd><dt>Parallel</dt><dd>${par} <span class="note">· same home, different key signature</span>${parFlag}</dd><dt>Neighbours</dt><dd>${pretty(dom)} (one step clockwise: the dominant key) · ${pretty(sub)} (one step back: the subdominant key)</dd></dl>
+  <dl><dt>Relative</dt><dd>${rel} <span class="note">· same key signature, different home</span></dd><dt>Parallel</dt><dd>${par} <span class="note">· same home, different key signature</span>${parFlag}</dd><dt>Neighbours</dt><dd>${pretty(dom)} ${CSEL.minor?'minor':'major'} (one step clockwise: the dominant key) · ${pretty(sub)} ${CSEL.minor?'minor':'major'} (one step back: the subdominant key)</dd></dl>
   <div class="lbl" style="margin-top:14px">Seven modes share this key signature</div>
   <div class="chips">${MT.map((t,j)=>`<button class="chip" data-kmode="${t.name}|${mk[j]}">${pretty(t.name)} ${modes[j]} <span class="note">· on ${solTxt('drmfslt'[j])}</span></button>`).join('')}</div>
   <div class="lbl" style="margin-top:14px">Order of sharps and flats</div><p class="ctx" style="margin:0">Sharps: F C G D A E B &nbsp;(<i>Father Charles Goes Down And Ends Battle</i>)<br>Flats: B E A D G C F &nbsp;(the same, backwards)</p>
@@ -2921,14 +2943,14 @@ function renderClimb3(){const key=CL.key,mode=key.mode,L=cadsFor(mode);if(!L.fin
    <p class="note" style="margin:10px 0 0">Tap a cadence to hear its phrase. Sing the top line back in solfa, then sing just the bass.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-clplay>▶ Play</button><button class="mini" data-clgym>⤴ Open in the Gym</button></h3>
    <div class="staff" id="clStaff"></div>
-   <dl><dt>In the US</dt><dd><span data-notm>${ex.us.toLowerCase()===ex.n.toLowerCase()?'the same name':`${ex.n.toLowerCase()} = US ${ex.us}`}</span></dd><dt>How it works</dt><dd>${ex.why}</dd><dt>Where you hear it</dt><dd>${ex.where}</dd></dl></section>
+   <dl><dt>In the US</dt><dd><span data-notm>${ex.us.toLowerCase()===ex.n.toLowerCase()?'the same name':`${ex.n.toLowerCase()} = ${ex.us}`}</span></dd><dt>How it works</dt><dd>${ex.why}</dd><dt>Where you hear it</dt><dd>${ex.where}</dd></dl></section>
  </div>
  <section class="card"><h3>Understand · home, away and the pull back</h3>
   <div class="fnrow">${fnBox('T','Home','tonic: rest, arrival')}<i>→</i>${fnBox('PD','Away','predominant: moving out')}<i>→</i>${fnBox('D','Pull','dominant: tension that wants home')}<i>→ home</i></div>
   <p class="desc" style="margin-top:14px">Most tonal music, from Bach chorales to today's pop charts, follows this cycle: start at home, move away, build tension, come back. A <b>phrase</b> is one musical sentence, often four bars long, and the <b>cadence</b> is its last two chords: the punctuation. ${mode==='maj'?'In a major key':'In a minor key'} the dominant ${mode==='min'?'is borrowed from harmonic minor (si, the raised 7th) so that it has a leading note to pull home.':'contains the leading note (ti), the note that most wants to move: up a semitone to do.'}</p>
   <table class="cadtab"><tr><th>Cadence</th><th>Chords</th><th>Punctuation</th><th>Feels like</th></tr>${L.map(c=>`<tr><td><b>${c.n}</b></td><td>${c.ch}</td><td>${({perfect:'full stop',plagal:'soft full stop',imperfect:'comma or question mark',interrupted:'swerve',phrygian:'dark question mark',c64:'a decorated full stop'})[c.k]}</td><td>${c.feel}</td></tr>`).join('')}</table>
   <div class="lbl" style="margin-top:16px">Question and answer: the period</div>
-  <p class="desc" style="margin-top:0">Two phrases that start the same way. The first ends with an <b>imperfect cadence</b> (the question), the second with a <b>perfect cadence</b> (the answer). <button class="mini gold" data-clperiod>▶ Hear the period</button></p>
+  <p class="desc" style="margin-top:0">Two phrases that start the same way. The first ends with a question, an <b>imperfect cadence</b>; the second with an answer, a <b>perfect cadence</b>. <button class="mini gold" data-clperiod>▶ Hear the period</button></p>
   <div class="staff" id="clPeriod"></div></section>
  <div class="grid clgrid">
   <section class="card"><h3>Try · cadence detective<span class="sp"></span><span class="note" id="clScore">${CL.det.n?`Score ${CL.det.right} / ${CL.det.n}`:''}</span></h3>
@@ -2996,7 +3018,7 @@ function renderClimb4(){const key=C4.key,kn=keyName(key),EX=C4EX.filter(x=>x.l<=
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Clap on beats 2 and 4, then sing the root of each chord (do, fa, so) as the bass changes.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c4play>▶ Play</button><button class="mini" data-load="${ex.bars}|${ex.k==='mblues'?'min':'maj'}">⤴ Open in the Gym</button></h3>
    <div class="bargrid ${L.length===12?'b12':''}">${L.map((c,i)=>{const f=withKey(ex.k==='mblues'?{k:key.k,mode:'min'}:key,()=>analyse(c,ex.k==='mblues'?{k:key.k,mode:'min'}:key).f);return`<div class="bar" id="c4b${i}" style="--c:${FN[f]||'var(--violet)'}"><small>${i+1}</small><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b/g,'♭')}</span></div>`}).join('')}</div>
-   ${L.length===12?`<div class="note" style="margin-top:8px">Line 1: the statement · Line 2: the statement again, over IV · Line 3: the answer, with the turnaround (bar 12) pulling back to the top.</div>`:''}
+   ${L.length===12?`<div class="note" style="margin-top:8px">Line 1: the statement · Line 2: the statement again, over IV · Line 3: the answer, with the turnaround in bar 12 pulling back to the top.</div>`:''}
   </section>
  </div>
  <section class="card"><h3>Understand · why three chords are enough</h3>
@@ -3325,7 +3347,7 @@ function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.f
   <div class="lbl" style="margin-top:14px">Tonicisation or modulation?</div>
   <p class="desc" style="margin-top:0">A secondary dominant and its target are a <b>tonicisation</b>: a glance at a new home, one or two chords long, and the original key carries on. If the music stays, confirms the new key with a full cadence and keeps going there, it has <b>modulated</b>. "Yesterday" sits right on that line: is the D minor a visit or a new home? Listen and decide.</p>
   <div class="lbl" style="margin-top:14px">Two rules the checker watches</div>
-  <p class="desc" style="margin-top:0">The borrowed leading note rises a semitone (in an outer voice it must), and the 7th of the secondary dominant falls by step. Don't double the borrowed leading note.</p></section>
+  <p class="desc" style="margin-top:0">The borrowed leading note rises a semitone; in an outer voice it must, and the 7th of the secondary dominant falls by step. Don't double the borrowed leading note.</p></section>
  <section class="card"><h3>Hear · where you meet it<span class="sp"></span><span class="note">listen for the chord that doesn't belong, then the arrival</span></h3>
   <div class="c6hear">${C7HEAR.map(x=>{const qy=encodeURIComponent(x.q);return`<div class="c6h"><div class="gt">${x.g}</div><b>${x.w}</b> <span class="note">${x.a} · ${x.y}</span><div class="lf">${x.f}</div><div class="sb"><a href="https://www.youtube.com/results?search_query=${qy}" target="_blank" rel="noopener">▶ YouTube</a><a href="https://open.spotify.com/search/${qy}" target="_blank" rel="noopener">Spotify</a></div></div>`}).join('')}</div>
   <details class="tnote"><summary>Teacher notes</summary><p class="note">Sources. "Yesterday" and "Don't Know Why" are worked examples in Hutchinson, <i>Music Theory for the 21st-Century Classroom</i>, §17.1; the chord readings are confirmed by Alan W. Pollack's "Notes on Yesterday" (V-of-vi, V-of-V) and Ethan Hein's analysis of "Don't Know Why". "Her Majesty": College Music Symposium vol. 49, "Using Beatles songs to demonstrate modulation concepts". "La donna è mobile" is listed in Hutchinson §17.1; the chords are in the figure, not described in the text, so the listening note stays general. No content warnings. The interrupted V7/vi → IV (US: deceptive) follows Hutchinson §17.6.</p></details></section>
@@ -3564,7 +3586,7 @@ function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.f
    <div class="bargrid c7grid" id="c9Bars" style="margin-top:10px">${V.map(v=>`<div class="bar" style="--c:${({m7:'var(--gold)',m7b5:'var(--gold)','7':'var(--red)','7b9':'var(--red)',maj7:'var(--green)'})[v.ch.kind]}"><b>${c9Sym(v.ch,C9.vt)}</b><span>${v.ch.rn.replace(/b(?=[IVX])/g,'♭')}${v.form?` · ${v.form}`:''}</span><em class="nn">${c9Guide(v.ch).map(n=>pretty(n.name)).join(' · ')}</em></div>`).join('')}</div>
    <div class="legend"><span style="--c:var(--goldhi)">guide tones: 3rd · 7th</span><span>Upper voices move ${mv} semitones in total</span></div>
    <div class="staff" id="c9Staff"></div>
-   <p class="note" style="margin:8px 0 0">${C9.vt==='guide'?'Two notes per chord, and they hardly move: the 7th of each chord slips down a semitone (or a tone) to become the 3rd of the next, while the other guide tone holds still.':C9.vt==='shell'?'Root in the bass, guide tones above. This is how jazz guitarists and big-band pianists comp: three notes that say exactly what each chord is.':'The bass player has the root, so the pianist leaves it out. The A form has the 3rd at the bottom, the B form the 7th. In a ii–V–I they usually alternate (A–B–A or B–A–B), so the hand barely moves. The V chord gets its 13th (or ♭9 and ♭13 in minor), the I chord its 9th.'}</p></section>
+   <p class="note" style="margin:8px 0 0">${C9.vt==='guide'?'Two notes per chord, and they hardly move: the 7th of each chord slips down a semitone or a tone to become the 3rd of the next, while the other guide tone holds still.':C9.vt==='shell'?'Root in the bass, guide tones above. This is how jazz guitarists and big-band pianists comp: three notes that say exactly what each chord is.':'The bass player has the root, so the pianist leaves it out. The A form has the 3rd at the bottom, the B form the 7th. In a ii–V–I they usually alternate (A–B–A or B–A–B), so the hand barely moves. The V chord gets its 13th (or ♭9 and ♭13 in minor), the I chord its 9th.'}</p></section>
  </div>
  <section class="card"><h3>Understand · why ii–V–I runs jazz</h3>
   <p class="desc" style="margin-top:0">From climb 6 you know that a root falling a 5th is the strongest move in tonal harmony. ii–V–I is two of them in a row: away, pull, home (climb 3), in three chords. Jazz adds a 7th to every chord, and the 7th is where the magic is: it always falls by step into the next chord's 3rd. So the <b>3rd and 7th</b>, which already decide whether a chord is major, minor or dominant, also make two smooth lines through the whole progression. They are called <b>guide tones</b>, and jazz players use them to comp, to write melodies and to improvise.</p>
@@ -4656,7 +4678,7 @@ function renderClimb2(){const L=Math.max(S.level,4),MS=C2M.filter(m=>m.l<=L).con
    <tr><td><b>contrary</b></td><td class="note">one rises, the other falls</td><td>✓ the best way</td></tr><tr><td><b>oblique</b></td><td class="note">one moves, the other stays</td><td>✓</td></tr>
    <tr><td><b>similar</b></td><td class="note">both move the same way, by different intervals</td><td>✗ a direct (hidden) 5th or octave (V3)</td></tr><tr><td><b>parallel</b></td><td class="note">both move the same way, keeping the same interval</td><td>✗ parallel 5ths and octaves (V1)</td></tr></table></div></div>
   <h4 class="c2h4">The modal cadence</h4>
-  <p class="desc" style="margin-top:0">At the end the two voices close in on the final by step from opposite directions, one of them by a semitone (K1). In the modes without a semitone below the final, singers raised the 7th (<b>musica ficta</b>, K2). Phrygian is the exception: its semitone is above the final, in the cantus (K3).</p>
+  <p class="desc" style="margin-top:0">At the end the two voices close in on the final by step from opposite directions, one of them by a semitone, as in K1. In the modes without a semitone below the final, singers raised the 7th (<b>musica ficta</b>, K2). Phrygian is the exception: its semitone is above the final, in the cantus (K3).</p>
   <table class="cadtab"><tr><th>Cantus</th><th>Final</th><th>Cantus ends</th><th>Counterpoint ends</th><th>Raised note</th></tr>${MS.map(c2CadRow).join('')}</table>
   <p class="desc">Where it comes from: the earliest written polyphony (organum, around 900) simply doubled the chant in parallel 4ths or 5ths, the sound you tried at the end of climb 1. Over the next six centuries the second voice won its independence, until Renaissance composers such as Josquin, Lassus and Palestrina wrote lines that are equal partners. Fux turned their practice into this step-by-step course; Haydn worked through it and taught Beethoven from it. In climb 3 the same two outer voices become the soprano and bass of tonal harmony.</p></section>
  <section class="card" id="c2RB"><h3>Understand · the rule book<span class="sp"></span><span class="note">every checker message links here</span></h3><div id="c2RBin">${c2RBHTML()}</div></section>
@@ -5178,7 +5200,7 @@ FB.rag={mode:'maj',l:5,len:16,keys:[{k:0,mode:'maj'},{k:5,mode:'maj'},{k:7,mode:
  </div>
  <section class="card"><h3>Understand · strains, repeats and the trio</h3>
   <p class="desc"><b>Ragtime</b> was the popular piano music of the USA from about 1895 to 1920, created mainly by African American composers such as Scott Joplin, James Scott and Eubie Blake. Its right hand is <b>syncopated</b> (accents fall between the beats) against a steady left hand that marches: bass, chord, bass, chord.</p>
-  <p class="desc" style="margin-top:10px"><b>The form comes from the march.</b> A rag is built from <b>strains</b>: complete 16-bar tunes, each usually repeated. The common plan is Intro, AA BB A, then the <b>trio</b> CC DD. The trio moves to the <b>subdominant key</b> (IV), as in Sousa's marches. Many rags end in the trio key; some, including "Maple Leaf Rag", return home for the last strain (see its score in the Analysis room). Each strain is itself a small double period: 8 bars ending on V, then 8 bars ending with a perfect cadence (see Phrase, period and sentence).</p>
+  <p class="desc" style="margin-top:10px"><b>The form comes from the march.</b> A rag is built from <b>strains</b>: complete 16-bar tunes, each usually repeated. The common plan is Intro, AA BB A, then the <b>trio</b> CC DD. The trio moves to the <b>subdominant key</b> (IV), as in Sousa's marches. Many rags end in the trio key; some, including "Maple Leaf Rag", return home for the last strain (see its score in the Analysis room). Each strain is itself a small double period: 8 bars ending on V, then 8 bars ending with a perfect cadence. See Phrase, period and sentence.</p>
   <p class="desc" style="margin-top:10px"><b>The harmony</b> is common-practice with a popular accent: chains of secondary dominants (VI7–II7–V7–I), passing diminished chords and borrowed iv. Unlike the blues, the dominant 7ths here do resolve. That is the ragtime sound, and it leads straight into stride piano and early jazz.</p>
   <table class="cadtab" style="margin-top:14px"><tr><th>Part</th><th>Bars</th><th>Key</th><th>Job</th></tr><tr><td><b>Intro</b></td><td>4</td><td>home</td><td>sets up the key and the pulse</td></tr><tr><td><b>A A</b></td><td>16 ×2</td><td>home</td><td>the main tune</td></tr><tr><td><b>B B</b></td><td>16 ×2</td><td>home</td><td>contrast</td></tr><tr><td><b>A</b></td><td>16</td><td>home</td><td>return before the trio</td></tr><tr><td><b>C C</b> (trio)</td><td>16 ×2</td><td>IV</td><td>new key, new tune</td></tr><tr><td><b>D D</b></td><td>16 ×2</td><td>IV (or home)</td><td>a last tune; often stays in IV, sometimes returns home</td></tr></table></section>
  <section class="card"><h3>Try · plan the strains<span class="sp"></span><button class="mini" data-hist="forms:u">↶ Undo</button><button class="mini" data-hist="forms:r">↷ Redo</button></h3>
@@ -5903,7 +5925,7 @@ document.addEventListener('scroll',e=>{if(e.target&&e.target.id==='anScore')anPi
 let anRT=0;addEventListener('resize',()=>{clearTimeout(anRT);anRT=setTimeout(()=>{if(ROOM!=='analysis'||AN.tab!=='score'||!AN.v||!$('anWrap'))return;const L=anLayout();if(L.suf!==AN.v.suf||L.side!==AN.v.side||L.phone!==AN.v.phone)anShowScore()},200)});
 /* ---------- my progression ---------- */
 /* the cadence names the progression report prints: Australian first (the pass adds the US term); the 'less' final one carries its own label */
-function cadWord(c){return c==='less'?TERM_IAC:c==='half'?'imperfect cadence':c+' cadence'}
+function cadWord(c,lc){return c==='less'?(lc?TERM_IACL:TERM_IAC):c==='half'?'imperfect cadence':c+' cadence'}
 function anProg(){if(!P.length)return null;const rows=[];let beat=0;const isV=x=>x.dia&&x.d===4&&/^V/.test(x.num),isI=x=>x.dia&&x.d===0,isIV=x=>x.dia&&x.d===3,isVI=x=>x.dia&&x.d===5;
  const A=P.map(ch=>analyse(ch,K));P.forEach((ch,i)=>{const a=A[i],c=chordOf(ch.root,ch.q,ch.inv||0),bar=Math.floor(beat/4)+1,end=(beat+(ch.beats||4))%4===0?Math.floor((beat+(ch.beats||4))/4):null;let cad=null;
   if(i>0){const p=A[i-1],inv=(P[i-1].inv||0)>0||(ch.inv||0)>0;if(isV(p)&&isI(a))cad=inv?'less':'perfect';else if(isIV(p)&&isI(a))cad='plagal';else if(isV(a)&&!isV(p))cad='half';else if(isV(p)&&isVI(a))cad='interrupted'}
@@ -5916,12 +5938,12 @@ function anProgHTML(){const r=anProg();if(!r)return`<p class="note">The Gym is e
  <table class="cadtab" style="margin-top:12px"><tr><th>What</th><th>Found</th><th>Tradition</th></tr>
  <tr><td><b>Key</b></td><td>${keyName(K)}; ${r.tonic} of ${r.rows.length} chords are tonic-function</td><td><span class="c2src">common practice</span></td></tr>
  <tr><td><b>Functions</b></td><td>${r.rows.map(x=>`<span style="color:${FN[x.f]||'var(--violet)'}">${x.f}</span>`).join(' ')} <span class="note">(T tonic, PD predominant, D dominant, S subtonic, C colour)</span></td><td><span class="c2src">common practice</span></td></tr>
- <tr><td><b>Cadences</b></td><td>${r.cads.length?r.cads.map(x=>`<b>${cadWord(x.cad)}</b> at the end of bar ${x.phraseEnd}`).join('; '):'none at the end of an even-numbered bar: the phrases never close on I or pause on V'}${r.cads.concat(r.inner).some(x=>x.cad==='less')?`<br>${TERM_NOTE_HTML}`:''}${r.inner.length?`<br><span class="note">Also ${r.inner.length} cadence-like move${r.inner.length>1?'s':''} inside a phrase (${r.inner.map(x=>cadWord(x.cad)+' into bar '+x.bar).join(', ')}): a cadence only counts as punctuation at the end of a phrase.</span>`:''}</td><td><span class="c2src">common practice</span></td></tr>
+ <tr><td><b>Cadences</b></td><td>${r.cads.length?r.cads.map((x,i)=>`<b>${cadWord(x.cad,i>0)}</b> at the end of bar ${x.phraseEnd}`).join('; '):'none at the end of an even-numbered bar: the phrases never close on I or pause on V'}${r.cads.concat(r.inner).some(x=>x.cad==='less')?`<br>${TERM_NOTE_HTML}`:''}${r.inner.length?`<br><span class="note">Also ${r.inner.length} cadence-like move${r.inner.length>1?'s':''} inside a phrase (${r.inner.map(x=>cadWord(x.cad,1)+' into bar '+x.bar).join(', ')}): a cadence only counts as punctuation at the end of a phrase.</span>`:''}</td><td><span class="c2src">common practice</span></td></tr>
  <tr><td><b>Phrases</b></td><td>${r.ends.length?`${r.ends.length} phrase ending${r.ends.length>1?'s':''}, at bar ${r.ends.map(x=>x.phraseEnd).join(', ')}${r.ends.length>=2?(r.ends.some(x=>x.cad==='half')&&r.ends[r.ends.length-1].cad==='perfect'?': a question answered by a full stop, like a period':''):''}`:'no cadence lands at the end of an even-numbered bar'}</td><td><span class="c2src">classical</span></td></tr>
  <tr><td><b>Tonicisations</b></td><td>${r.sec.length?r.sec.map(x=>`${x.num} (${x.sym}) in bar ${x.bar}`).join('; '):'none'}</td><td><span class="c2src">common practice</span></td></tr>
  <tr><td><b>Borrowed chords</b></td><td>${r.bor.length?r.bor.map(x=>`${x.num} (${x.sym}) in bar ${x.bar}`).join('; '):'none'}</td><td><span class="c2src">common practice and popular</span></td></tr></table>
  <div class="go" style="margin-top:10px"><button class="mini gold" data-anrep>✎ Save this report to my journal</button><button class="mini" data-room="gym">Open the Gym</button></div>`}
-function anReportText(){const r=anProg();if(!r)return'';return`Analysis of my progression in ${keyName(K)} (${r.bars} bars): ${r.rows.map(x=>x.num).join(' ')}. Functions: ${r.rows.map(x=>x.f).join(' ')}. Cadences: ${r.cads.map(x=>cadWord(x.cad)+' at bar '+x.phraseEnd).join('; ')||'none'}. Tonicisations: ${r.sec.map(x=>x.num).join(', ')||'none'}. Borrowed: ${r.bor.map(x=>x.num).join(', ')||'none'}.`}
+function anReportText(){const r=anProg();if(!r)return'';return`Analysis of my progression in ${keyName(K)} (${r.bars} bars): ${r.rows.map(x=>x.num).join(' ')}. Functions: ${r.rows.map(x=>x.f).join(' ')}. Cadences: ${r.cads.map(x=>cadWord(x.cad,1)+' at bar '+x.phraseEnd).join('; ')||'none'}. Tonicisations: ${r.sec.map(x=>x.num).join(', ')||'none'}. Borrowed: ${r.bor.map(x=>x.num).join(', ')||'none'}.`}
 /* ---------- listening map (any recording) ---------- */
 function anMapRows(){if(!AN.map.rows)AN.map.rows=[{t:'0:00',lab:'Intro',note:''}];return AN.map.rows}
 function anMapHTML(){const R=anMapRows(),sec=s=>{const m=String(s||'').match(/^(\d+):(\d{1,2})$/);return m?+m[1]*60+ +m[2]:null},end=sec(AN.map.end),pts=R.map(r=>sec(r.t));const ok=end!=null&&pts.every((p,i)=>p!=null&&(i===0||p>pts[i-1]))&&end>pts[pts.length-1];
@@ -6110,7 +6132,7 @@ function renderPhrase(el){const st=phState(),key=phKey(),ex=PHEX.find(x=>x.k===(
    <div class="fleg"><span style="--c:${FN.T}">tonic (I)</span><span style="--c:${FN.PD}">predominant (IV, ii)</span><span style="--c:${FN.D}">dominant (V, V7)</span></div></section>
  </div>
  <section class="card"><h3>Understand · questions, answers and momentum</h3>
-  <p class="desc">A <b>phrase</b> is a musical sentence that ends in a <b>cadence</b>, usually after 4 bars. An <b>imperfect cadence</b> (ending on V) is a comma or question mark. A <b>perfect cadence</b> (V–I, melody ending on do) is a full stop. A <b>perfect cadence, less final</b> (US: imperfect authentic) is V–I with the melody on mi or so: an answer, but not a final one. ${TERM_NOTE_HTML}</p>
+  <p class="desc">A <b>phrase</b> is a musical sentence that ends in a <b>cadence</b>, usually after 4 bars. An <b>imperfect cadence</b>, ending on V, is a comma or question mark. A <b>perfect cadence</b>, V–I with the melody ending on do, is a full stop. A <b>perfect cadence, less final</b> (US: imperfect authentic) is V–I with the melody on mi or so: an answer, but not a final one. ${TERM_NOTE_HTML}</p>
   <p class="desc" style="margin-top:10px">A <b>period</b> is two phrases: a question (the <i>antecedent</i>, ending with a weaker cadence) and an answer (the <i>consequent</i>, ending with a stronger one). If the answer starts like the question it is a <b>parallel period</b>; if it starts with new material it is a <b>contrasting period</b>.</p>
   <p class="desc" style="margin-top:10px">A <b>sentence</b> works differently: an idea (2 bars), the idea again (2 bars), then a <b>continuation</b> (4 bars) where the idea breaks into smaller pieces, the chords change faster, and everything drives to one cadence at the end. There is no cadence in bar 4.</p>
   <p class="desc" style="margin-top:10px"><b>Where these terms come from.</b> Period and sentence are terms from the analysis of Classical music (Haydn, Mozart, Beethoven), described by Arnold Schoenberg and William Caplin. Songs, hymns and film themes use the same shapes, and you can hear question-and-answer phrasing in pop and jazz too, but the imperfect and perfect cadence rules here are common-practice harmony.</p>
@@ -6317,8 +6339,8 @@ const CADL3={...CADL,phrygian:'Phrygian',cad64:'Cadential 6/4'};
 // solfa follows the app's rule, movable do with la-based minor: the dominant is so in major and mi in minor; the Phrygian bass le–so of
 // do-based minor is fa–mi (independent theory check 0.48)
 const EARSOL5=md=>md==='min'?'mi':'so';
-const CADFAM={phrygian:md=>`an imperfect (half) cadence in a minor key: iv⁶–V, with the bass falling a semitone (${md==='min'?'fa–mi':'le–so'})`,
- cad64:md=>`the decorated approach to V in a perfect or imperfect cadence: over the bass ${EARSOL5(md)}, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect (authentic) cadence`};
+const CADFAM={phrygian:md=>`an imperfect cadence in a minor key: iv⁶–V, with the bass falling a semitone (${md==='min'?'fa–mi':'le–so'})`,
+ cad64:md=>`the decorated approach to V in a perfect or imperfect cadence: over the bass ${EARSOL5(md)}, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect cadence`};
 const CADPARENT={phrygian:'imperfect',cad64:'perfect'};
 function earCadOpts(l){return l===3?['perfect','plagal','imperfect','interrupted','phrygian','cad64']:Object.keys(CADL)}
 /* Held out of rung 3 pending Justin's ruling (0.48 design spec, open question 2): interrupted after a cadential 6/4, where both "Interrupted"
@@ -6685,7 +6707,7 @@ function earMelFollow(q,first,count,t0){const A=ac();earMelNowClear();for(let i=
 const EARHOW={metre:'Count along. Where does the strongest click fall, and how many beats come before it returns? Then listen inside each beat: does it split in two (simple) or in three (compound)? The speed changes each time (60–120 bpm), so do not use tempo as a clue.',
  rhy:'You hear a count-in of four woodblock beats, then the rhythm (clapped at rung 1, on one note from rung 2, so you can hear how long each note lasts). Tap it back on your knee before you answer, then build it beat by beat.',
  qual:'Each chord is played together, then up as an arpeggio, then together again. Every chord is in root position, played high or low. Listen to the 3rd first (major or minor), then the 5th (perfect, diminished or augmented), then the 7th.',
- cad:'The tonic chord plays first, to set the key. At rung 1 you then hear just two chords, the cadence itself; at rungs 2 and 3, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Rung 3 (Stage 6) adds two answers: the Phrygian cadence (an imperfect cadence in minor, iv⁶–V) and the cadential 6/4 (the decorated approach to V).',
+ cad:'The tonic chord plays first, to set the key. At rung 1 you then hear just two chords, the cadence itself; at rungs 2 and 3, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Rung 3 (Stage 6) adds two answers: the Phrygian cadence, an imperfect cadence in minor (iv⁶–V) and the cadential 6/4 (the decorated approach to V).',
  bass:'The tonic chord plays first. The first chord of the progression is always I. Sing the bass line back, then name chords 2–4. "Bass only" plays just the bottom notes.',
  mel:'The key chord plays first, and the first note is always given (at rung 1 it may be do, mi or so). Sing it back in solfa before you answer. Movable do: in a minor key (rung 3) the home note is la.',
  blind:'A phrase from a real score in the Analysis room, with the score hidden. The tonic chord plays first. Name the cadence at the end of the phrase, then check it against the score in Analysis.'};
@@ -6730,7 +6752,7 @@ function earResetHTML(){const nm=EDR.find(x=>x[0]===EAR.drill)[1].toLowerCase();
  if(EAR.resetUndo&&EAR.resetUndo.drill===EAR.drill)return`<span class="earask" role="status">Score reset. <button class="mini" data-earresetundo>Undo</button></span>`;
  return`<button class="mini" data-earreset>Reset score</button>`}
 function earTips(d){const T={
- metre:'<p>Simple metres split each beat in two; compound metres split it in three (6/8 is two beats of three quavers, not six beats). Irregular metres mix groups of 2 and 3: 5/4 here is felt 3+2, 7/8 as 2+2+3.</p>',
+ metre:'<p>Simple metres split each beat in two; compound metres split it in three: 6/8 is two beats of three quavers, not six beats. Irregular metres mix groups of 2 and 3: 5/4 here is felt 3+2, 7/8 as 2+2+3.</p>',
  rhy:'<p>Say the rhythm in time names or counting syllables first (ta, ti-ti, ta-a; or 1 & 2 &). The dotted crotchet + quaver is long-short across two beats; the syncopation is short-long-short.</p>',
  qual:'<p>Major and minor differ by the 3rd. Diminished squeezes the 5th down (tense, unstable); augmented stretches it up (unresolved, dreamy). For 7th chords: the dominant 7th wants to move; the major 7th glows; the minor 7th is soft; the half-diminished is dark; the diminished 7th is the most unstable of all.</p>',
  cad:'<p>Perfect cadence: V–I, a full stop. Plagal cadence: IV–I, the "Amen". Imperfect cadence: ends on V, a comma or question. Interrupted cadence: V goes to vi (VI in minor) instead of I. The US terms are in brackets. A cadential 6/4 (I⁶₄ – V – I) decorates a perfect cadence. The Phrygian cadence (iv⁶ – V in minor) is an imperfect cadence.</p>',

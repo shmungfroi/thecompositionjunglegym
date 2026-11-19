@@ -297,6 +297,13 @@ CHORDS_JS = r"""()=>{S.level=6;location.hash='seed';room('seed');const out=[];co
  window.drawStaff=ds;return out}"""
 
 
+INVFRET_JS = r"""([inst,L])=>{S.level=6;location.hash='seed';room('seed');const out=[];
+ for(const a of ['bb','b','','#','##'])for(const q of Q)for(let inv=0;inv<q.d.length;inv++){
+  S.inst=inst;S.root=L+a;S.q=q.k;S.inv=inv;let err=null;try{render();__scan(document.body,`${inst} ${L+a} ${q.k} inv${inv}`)}catch(e){err=String(e).slice(0,160)}
+  out.push({inst,root:L+a,q:q.k,inv,err,cap:$('invTxt').textContent,d:q.d[inv],board:[...document.querySelectorAll('.board svg text')].map(t=>t.textContent)})}
+ S.inst='piano';S.inv=0;return out}"""
+
+
 # R10 (0.48): no rendered label may spell a double accidental as two characters. The page-side scanner walks every text
 # node (and title / aria-label / alt attributes) and records any "♭b", "♭♭", "♯♯", "♯#", "##" or a note letter followed by
 # "bb" used as an accidental (so "Bbb", "Bbbm7", but not words such as "Abbey").
@@ -307,6 +314,35 @@ SCAN_JS = r"""()=>{window.__BAD=new Map();window.__N=0;
  window.__scan=function(root,w){root=root||document.body;const tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
   while(n=tw.nextNode()){const p=n.parentNode;if(p&&/^(SCRIPT|STYLE)$/.test(p.nodeName))continue;chk(n.nodeValue,w||'')}
   root.querySelectorAll('[title],[aria-label],[alt]').forEach(e=>{for(const a of ['title','aria-label','alt'])if(e.hasAttribute(a))chk(e.getAttribute(a),(w||'')+' @'+a)})}}"""
+
+
+def check_inversions(R):
+    """0.48 fix round: the inversion caption and the fretboard labels spell a double flat as one glyph (a diminished 7th's
+    bb7 is shown as the double-flat sign then 7, never as two flat signs)."""
+    def degp(d):
+        return d.replace('bb', '𝄫').replace('##', '𝄪').replace('b', '♭').replace('#', '♯')
+    ORDN = ['', '1st', '2nd', '3rd', '4th', '5th', '6th']
+    for r in R:
+        where = f"{r['inst']} {r['root']} {r['q'] or 'major'} inversion {r['inv']}"
+        if r['err']:
+            fail('G', f"{where}: render throws: {r['err']}")
+            continue
+        want = 'Root position: the root is in the bass' if not r['inv'] else f"{ORDN[r['inv']]} inversion: the {degp(r['d'])} is in the bass"
+        # the augmented-sixth chords list their notes in a different order from the inversions, so only the form is checked there
+        if r['q'] in ('It+6', 'Fr+6', 'Ger+6'):
+            if not re.fullmatch(r"Root position: the root is in the bass|(1st|2nd|3rd) inversion: the [♭♯𝄫𝄪]?\d is in the bass", r['cap']):
+                fail('G', f"{where}: caption '{r['cap']}' is not in the usual form")
+            else:
+                ok('G', 'inversion captions (augmented sixths: form only)')
+        elif r['cap'] != want:
+            fail('G', f"{where}: caption '{r['cap']}' vs '{want}'")
+        else:
+            ok('G', 'inversion captions')
+        bad = [t for t in r['board'] if re.search(r'♭b|♭♭|♯♯|♯#|bb|##', t)]
+        if bad:
+            fail('G', f"{where}: fretboard labels {bad[:3]} use two characters for a double accidental")
+        else:
+            ok('G', 'fretboard degree labels')
 
 
 async def collect_scan(pg, where):
@@ -400,7 +436,7 @@ def check_keys(D):
         steps = []
         for a, b in zip(ms, ms[1:]):
             s = abs(b - a)
-            steps.append('H' if s == 1 else 'W' if s == 2 else 'W+H' if s == 3 else str(s))
+            steps.append('S' if s == 1 else 'T' if s == 2 else 'T+S' if s == 3 else str(s))
         if steps != r['steps']:
             fail('K', f"{where}: step labels {r['steps']} vs {steps}")
         else:
@@ -534,17 +570,24 @@ def check_keys(D):
             ok('C', 'parallel keys')
         dom = k.tonic.transpose('P5')
         sub = k.tonic.transpose('P4')
-        # neighbours on the circle are spelled from the circle, so compare pitch class and a sane spelling
-        mm = re.match(r'(\S+) \(one step clockwise.*\) · (\S+) \(one step back', nb)
+        # neighbours: the key a perfect fifth up (dominant) and a fifth down (subdominant), spelled exactly as music21 spells them
+        # (0.48 fix round: D-flat major's subdominant was shown as F-sharp, B-flat minor's as D-sharp)
+        word = 'minor' if mn else 'major'
+        mm = re.match(r'(\S+) (major|minor) \(one step clockwise.*\) · (\S+) (major|minor) \(one step back', nb)
         if not mm:
             fail('C', f"{where}: neighbours text '{nb}'")
         else:
-            for got, want, lab in [(mm.group(1), dom, 'dominant'), (mm.group(2), sub, 'subdominant')]:
+            for got, gw, want, lab in [(mm.group(1), mm.group(2), dom, 'dominant'), (mm.group(3), mm.group(4), sub, 'subdominant')]:
                 g = m21key.Key(m21name(got).lower() if mn else m21name(got))
-                if g.tonic.pitchClass != want.pitchClass or abs(g.sharps) > 7:
+                wk = m21key.Key(want.name.lower() if mn else want.name)
+                if gw != word:
+                    fail('C', f"{where}: {lab} key is called {gw}, the home key is {word}")
+                elif abs(wk.sharps) <= 7 and got != pretty(want.name):
+                    fail('C', f"{where}: {lab} key shows {got} {gw}, music21 spells it {pretty(want.name)}")
+                elif g.tonic.pitchClass != want.pitchClass or abs(g.sharps) > 7:
                     fail('C', f"{where}: {lab} key {got} vs {pretty(want.name)}")
                 else:
-                    ok('C', 'neighbour keys')
+                    ok('C', 'neighbour keys (exact spelling)')
         # modes from the parent major
         names = [p.name for p in m21scale.MajorScale(maj.tonic).getPitches()[:7]]
         modes = ['ion', 'dor', 'phr', 'lyd', 'mix', 'nmin', 'loc']
@@ -991,6 +1034,14 @@ async def main():
         await collect_scan(pg, 'Chords room')
         COUNT['Chords room chords drawn (root spellings x qualities)'] = len(R)
         check_chords_room(R)
+        await pg.evaluate(SCAN_JS)
+        IV = []
+        for inst in ('guitar', 'uke', 'bass'):
+            for L in 'CDEFGAB':
+                IV += await pg.evaluate(INVFRET_JS, [inst, L])
+        await collect_scan(pg, 'Chords room inversions and fretboards')
+        COUNT['G inversion and fretboard renders (instrument x root x quality x inversion)'] = len(IV)
+        check_inversions(IV)
         await pg.goto('http://app/index.html#climbs/3')
         await pg.wait_for_timeout(1200)
         await pg.evaluate(SCAN_JS)

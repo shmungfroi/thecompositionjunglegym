@@ -401,15 +401,15 @@ def sec_S(items, real, ui):
         if len(dist[a]) < 100:
             fail('S', f'{a}: only {len(dist[a])} distinct items')
     # the buttons and the feedback, as rendered
-    if ui['labels'] != ['Perfect (authentic)', 'Plagal', 'Imperfect (half)', 'Interrupted (deceptive)', 'Phrygian', 'Cadential 6/4']:
+    if ui['labels'] != ['Perfect cadence', 'Plagal cadence', 'Imperfect cadence', 'Interrupted cadence', 'Phrygian', 'Cadential 6/4']:
         fail('S', f"rung 3 buttons: {ui['labels']}")
     for a, txt in ui['fb'].items():
-        if a == 'phrygian' and not ('imperfect (half) cadence in a minor key' in txt and 'iv⁶–V' in txt):
+        if a == 'phrygian' and not ('imperfect cadence in a minor key' in txt and 'iv⁶–V' in txt):
             fail('S', f'Phrygian feedback does not name its family: {txt}')
-        if a == 'cad64' and not ('decorated approach to V in a perfect or imperfect cadence' in txt and 'perfect (authentic)' in txt):
+        if a == 'cad64' and not ('decorated approach to V in a perfect or imperfect cadence' in txt and 'decorates a perfect cadence' in txt):
             fail('S', f'cadential 6/4 feedback does not name its family: {txt}')
     for a, txt in ui['near'].items():
-        fam = {'phrygian': 'Imperfect (half) is its family', 'cad64': 'Perfect (authentic) is its family'}[a]
+        fam = {'phrygian': 'Imperfect cadence is its family', 'cad64': 'Perfect cadence is its family'}[a]
         if fam not in txt or not txt.startswith('Not this time.'):
             fail('S', f'{a} answered with its family: strip "{txt}"')
     # strict rules (independent theory check 0.48): every rung 3 item and every model x key x register realisation
