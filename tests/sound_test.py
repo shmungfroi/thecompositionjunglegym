@@ -16,6 +16,7 @@ Run: python3 tests/sound_test.py <repo dir>
    written end; every count-in and pulse beat is detected in the woodblock band. Masking, each sound rendered alone: at every woodblock
    beat the tone's (or clap's) level in the woodblock band is at least 20 dB below the woodblock's, and at every note the woodblock's
    level in the tone band is at least 20 dB below the note's.
+6. EL-12 loudness: K-weighted, gated loudness (ITU-R BS.1770) of every drill, 6 items per rung; each drill's mean within 2 dB of -26 LUFS.
 """
 import sys, asyncio, json, pathlib, math
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
@@ -103,6 +104,10 @@ RHY_JS = DSP + r"""async([lvl,from,to,sepOn])=>{const sr=16000,out={n:0,fails:[]
   let p=0;a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest){const t=S.t0+p*sq;m2=Math.max(m2,DB(win(bHi,t))-DB(win(sHi,t)))}p+=d}));
   const k1=src+'_in_woodblock_band_dB',k2='woodblock_in_'+src+'_band_dB';out.sep[k1]=Math.max(out.sep[k1]??-99,m1);out.sep[k2]=Math.max(out.sep[k2]??-99,m2)}
  return out}"""
+LOUD_JS = DSP + r"""async()=>{ac();await loadSamples('piano');await earLoadBlind();const out={};let s=29;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};
+ for(const d of ['metre','rhy','qual','cad','bass','mel','blind']){const v=[];for(const l of [1,2,3])for(let i=0;i<6;i++){const q=earGen(d,l,R);if(!q)continue;const r=await elRender(q,'all',{sr:48000});v.push(LUFS(r.buf.getChannelData(0),48000))}
+  out[d]={mean:v.reduce((a,b)=>a+b)/v.length,min:Math.min(...v),max:Math.max(...v),n:v.length}}
+ const r=await elRender(earGen('mel',1),'tap',{sr:48000,midi:67});out.tap={mean:LUFS(r.buf.getChannelData(0),48000),n:1};return out}"""
 async def render_tests(p, fails, counts):
     b = await cjg.launch(p)
     errs = []
@@ -170,6 +175,13 @@ async def render_tests(p, fails, counts):
         for k, v in sep.items():
             if v > -20:
                 fails.append(f'rhythm: {k} is {v} dB (must be 20 dB down)')
+    # EL-12
+    pg = await fresh()
+    L = await pg.evaluate(LOUD_JS)
+    counts['loudness per drill (LUFS: mean, min, max)'] = {k: [round(v['mean'], 1)] + ([round(v['min'], 1), round(v['max'], 1)] if 'min' in v else []) for k, v in L.items()}
+    for k, v in L.items():
+        if abs(v['mean'] + 26) > 2:
+            fails.append(f"loudness: {k} averages {v['mean']:.1f} LUFS (target -26 ± 2)")
     if errs:
         fails.append(f'render page errors: {errs[:3]}')
     await b.close()

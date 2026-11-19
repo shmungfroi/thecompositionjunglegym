@@ -1236,10 +1236,10 @@ function voicing(c){
 /* Piano: Versilian Community Sample Library, Steinway B (CC0). Guitar and bass: FluidR3_GM by Frank Wen (CC BY 3.0), via midi-js-soundfonts. See audio/CREDITS.md. */
 const SMP={piano:{dir:'audio/piano/',notes:Array.from({length:34},(_,i)=>36+2*i),len:2.6},
  'guitar-steel':{dir:'audio/guitar-steel/',lo:40,hi:88,len:2.4},'guitar-nylon':{dir:'audio/guitar-nylon/',lo:40,hi:96,len:2.4},bass:{dir:'audio/bass/',lo:28,hi:67,len:1.5}};
-const SBUF={},SLOAD={};
+const SBUF={},SLOAD={},SLOADED={};
 function smpNotes(k){const d=SMP[k];return d.notes||Array.from({length:d.hi-d.lo+1},(_,i)=>d.lo+i)}
 function loadSamples(k){if(SLOAD[k]||!SMP[k]||location.protocol==='file:')return SLOAD[k];const a=ac();SBUF[k]={};
- SLOAD[k]=Promise.all(smpNotes(k).map(m=>fetch(SMP[k].dir+m+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((ok,no)=>a.decodeAudioData(b,ok,no))).then(buf=>{SBUF[k][m]=buf}).catch(()=>{})));return SLOAD[k]}
+ SLOAD[k]=Promise.all(smpNotes(k).map(m=>fetch(SMP[k].dir+m+'.mp3').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>new Promise((ok,no)=>a.decodeAudioData(b,ok,no))).then(buf=>{SBUF[k][m]=buf}).catch(()=>{}))).then(()=>{SLOADED[k]=true});return SLOAD[k]}
 function smpKind(kind){if(kind==='piano')return'piano';if(kind==='bass')return'bass';if(kind==='guitar')return S.gtone==='nylon'?'guitar-nylon':'guitar-steel';if(kind==='uke')return'guitar-nylon';
  if(kind==='pluck')return S.inst==='bass'?'bass':S.inst==='guitar'?(S.gtone==='nylon'?'guitar-nylon':'guitar-steel'):S.inst==='uke'?'guitar-nylon':'guitar-steel';return null}
 function smpTone(m,t0,k,vel,dur){const B=SBUF[k];if(!B)return false;let best=null;for(const n in B){const d=Math.abs(n-m);if(d<=3&&(best===null||d<Math.abs(best-m)))best=+n}if(best===null)return false;
@@ -6248,7 +6248,7 @@ function earLoadBlind(){if(EAR.blind)return Promise.resolve(EAR.blind);return an
    // the excerpt starts three bars back and ends where the cadence chord is released (c.e in meta.json), not at the next barline
    const s=ms[Math.max(0,mi-3)],e=c.e||(mi+1<ms.length?ms[mi+1]:Math.max(...m.events.map(v=>v[0]+v[2])));out.push({score:k,lvl,key:m.key,t:m.t||k,short:m.short||k,bar:m.measures[mi][0]||String(mi),s,e,a:c.a,cat:cadCat(c.t),label:c.t,chords:c.ch})})});
  EAR.blind=out;return out}))}
-/* ---- audio: the Ear Lab transport and sounds (register 0.48: EL-1, EL-3, EL-4) ----
+/* ---- audio: the Ear Lab transport and sounds (register 0.48: EL-1, EL-3, EL-4, EL-12) ----
    Transport API (for the Play/Stop toggle and its progress ring):
      elPlay(item=EAR.q, variant='all', opts) -> info   play an item; anything sounding stops first. variant: 'all' | 'nokey' | 'bassonly' | 'first'
                                                        | 'beats' (metre: the same playback, with beat events reported) | 'tap' (one ladder note, opts.midi)
@@ -6256,32 +6256,44 @@ function earLoadBlind(){if(EAR.blind)return Promise.resolve(EAR.blind);return an
      elStop()                                         stop the Ear Lab sound (and everything else: it calls stopAll)
      elOn(fn) -> unsubscribe                          fn({type:'state', state, id, start, dur, end, lead, variant, beats, elapsed}) on every change;
                                                        fn({type:'beat', i, t, a, bar, beat, kind}) live for each beat with the 'beats' variant
-     elInfo()                                         the current state: state 'idle' | 'playing'; start = performance.now() ms at the press; t0 = audio time of the press;
+     elInfo()                                         the current state: state 'idle' | 'loading' | 'playing'; start = performance.now() ms at the press; t0 = audio time of the press;
                                                        dur = seconds from the press to the real scheduled end (lead-in included); lead = silent lead-in (s);
                                                        beats = [{t (s from the press), a, bar, beat, kind}] for the 'beats' variant, else null
+     elReady(drill) / elPreload(drill) -> Promise      whether the sounds (and for blind analysis the scores) are loaded; start loading them
      elRender(item, variant, opts) -> Promise<{buf, info}>   the same playback rendered offline (for the tests)
    State follows the scheduled end of the sound itself (no fixed timer). stopAll (top-bar Stop, Esc, leaving the room, any other playback) sets idle. */
+// per-drill output level, set from measured loudness (K-weighted, gated; tests/transport_test.py checks every drill is within 2 dB of the others)
+const ELG={metre:1,rhy:1,qual:1,cad:1,bass:1,mel:1,blind:1,tap:1};const dbg=x=>Math.pow(10,x/20);
+[['metre',7],['rhy',-2],['qual',4.8],['cad',2.9],['bass',3],['mel',1.4],['blind',-4.3],['tap',1.9]].forEach(([k,v])=>ELG[k]=dbg(v));
+// Ear Lab sound goes through its own transparent limiter (not the app's compressor), so the metre accent steps and the drill levels stay as set
+function elLim(A){if(A.__elim)return A.__elim;const c=A.createDynamicsCompressor();c.threshold.value=-2;c.knee.value=0;c.ratio.value=20;c.attack.value=.001;c.release.value=.08;c.connect(A.destination);return A.__elim=c}
 function elEmit(ev){ELT.fns.forEach(f=>{try{f(ev)}catch(e){}})}
 function elOn(fn){ELT.fns.add(fn);return()=>ELT.fns.delete(fn)}
 function elInfo(){return{state:ELT.st,id:ELT.id,start:ELT.start,t0:ELT.t0,dur:ELT.dur,end:ELT.end,lead:ELT.lead,variant:ELT.variant,beats:ELT.beats,elapsed:ELT.st==='playing'?(performance.now()-ELT.start)/1000:0}}
 function elIdle(why){ELT.id++;clearTimeout(ELT.tm);ELT.pend=null;const was=ELT.st;ELT.st='idle';ELT.beats=null;
- if(why==='end'&&PLAY.src==='ear')PLAY.on=false;
+ if(why==='end'){if(PLAY.src==='ear')PLAY.on=false;if(AC&&MAST&&COMP)try{MAST.disconnect();MAST.connect(COMP)}catch(e){}}
  if(was!=='idle')elEmit({type:'state',...elInfo(),why})}
 function elStop(){stopAll()}
+/* readiness: piano samples for every drill that uses them (the key chord included), the scores for blind analysis */
+function elNeedsPiano(d){return d!=='metre'&&d!=='rhy'}
+function elReady(d){if(elNeedsPiano(d)&&location.protocol!=='file:'&&!SLOADED.piano)return false;if(d==='blind'&&!EAR.blind)return false;return true}
+function elPreload(d){const P=[];if(elNeedsPiano(d)){ac();P.push(Promise.resolve(loadSamples('piano')))}if(d==='blind')P.push(earLoadBlind());return Promise.all(P)}
 function elPlay(item=EAR.q,variant='all',opts={}){if(!item)return null;const now=performance.now();
  if(variant!=='tap'&&ELT.st!=='idle'&&ELT.item===item&&ELT.variant===variant&&now-ELT.start<300)return elInfo();
- stopAll();const A=ac();SEND.v=0;MAST.gain.value=.5;
- const t0=A.currentTime,r=earSched(item,variant,t0+ELPRE,opts);const end=Math.max(r.end,SEND.v),id=++ELT.id;
+ if(!elReady(item.d)){stopAll();ELT.pend={item,variant,opts};ELT.item=item;ELT.variant=variant;ELT.start=now;ELT.st='loading';elEmit({type:'state',...elInfo()});
+  elPreload(item.d).then(()=>{const p=ELT.pend;if(p&&p.item===item&&p.variant===variant){ELT.pend=null;ELT.st='idle';elPlay(item,variant,opts)}}).catch(()=>{if(ELT.pend&&ELT.pend.item===item)elIdle('error')});return elInfo()}
+ stopAll();const A=ac();SEND.v=0;MAST.disconnect();MAST.connect(elLim(A));const d=variant==='tap'?'tap':item.d;MAST.gain.value=.5*(ELG[d]||1);
+ const t0=A.currentTime,r=earSched(item,variant,t0+ELPRE,opts);if(r.gain)MAST.gain.value*=r.gain;const end=Math.max(r.end,SEND.v),id=++ELT.id;
  Object.assign(ELT,{st:'playing',item,variant,start:now,t0,end,dur:end-t0,lead:r.lead||0,beats:r.beats||null});PLAY.on=true;PLAY.src='ear';PLAY.guard=variant==='tap'?0:now+300;
  if(variant==='beats'&&r.beats)r.beats.forEach((b,i)=>PLAY.timers.push(setTimeout(()=>{if(ELT.id===id)elEmit({type:'beat',i,...b})},b.t*1000)));
  const watch=()=>{if(ELT.id!==id)return;const left=ELT.end-ac().currentTime;if(left<=.005)elIdle('end');else ELT.tm=setTimeout(watch,Math.max(5,left*1000))};ELT.tm=setTimeout(watch,(end-t0)*1000);
  elEmit({type:'state',...elInfo()});return elInfo()}
 // the old entry point: buttons and tests call earPlay(variant)
 function earPlay(what){return elPlay(EAR.q,what||'all')}
-/* offline render of exactly what elPlay schedules (same functions, same level, same compressor) */
+/* offline render of exactly what elPlay schedules (same functions, same levels, same limiter) */
 function elRender(item,variant='all',o={}){const sr=o.sr||44100,sv=[AC,MAST,COMP],T=PLAY.timers.length;
- const run=A=>{AC=A;MAST=A.createGain();COMP=A.createDynamicsCompressor();MAST.connect(COMP);COMP.connect(A.destination);MAST.gain.value=.5;
-  SEND.v=0;ELT.rendering=true;let r;try{r=earSched(item,variant,ELPRE,o)}finally{ELT.rendering=false;[AC,MAST,COMP]=sv;PLAY.timers.length=T}return{...r,end:Math.max(r.end,SEND.v)}};
+ const run=A=>{AC=A;MAST=A.createGain();COMP=A.createGain();MAST.connect(elLim(A));const d=variant==='tap'?'tap':item.d;MAST.gain.value=.5*(ELG[d]||1);
+  SEND.v=0;ELT.rendering=true;let r;try{r=earSched(item,variant,ELPRE,o);if(r.gain)MAST.gain.value*=r.gain}finally{ELT.rendering=false;[AC,MAST,COMP]=sv;PLAY.timers.length=T}return{...r,end:Math.max(r.end,SEND.v)}};
  const dry=run(new OfflineAudioContext(1,1,sr)),A=new OfflineAudioContext(1,Math.ceil(sr*(dry.end+(o.tail||.3))),sr),r=run(A);
  return A.startRendering().then(buf=>({buf,info:{dur:r.end,lead:r.lead||0,beats:r.beats||null,events:r.events||null,start:r.start}}))}
 /* the sounds */
@@ -6302,22 +6314,25 @@ function elBlock(t,acc){const A=ac(),o=A.createOscillator(),o2=A.createOscillato
 function elClap(t){const A=ac(),s=A.createBufferSource(),f=A.createBiquadFilter(),h=A.createBiquadFilter(),g=A.createGain(),k=ELCLAP;s.buffer=noiseBuf();f.type='bandpass';f.frequency.value=1300;f.Q.value=.9;h.type='highpass';h.frequency.value=800;h.Q.value=.7;
  g.gain.setValueAtTime(0,t);[0,.011,.022].forEach((d,i)=>{g.gain.setValueAtTime(.0001,t+d);g.gain.linearRampToValueAtTime(k*(i===2?1:.65),t+d+.002);g.gain.exponentialRampToValueAtTime(k*(i===2?.3:.1),t+d+.009)});
  g.gain.exponentialRampToValueAtTime(k*.08,t+.09);g.gain.exponentialRampToValueAtTime(.0001,t+.2);s.connect(f);f.connect(h);h.connect(g);g.connect(MAST);s.start(t);s.stop(t+.21);schEnd(t+.21);ACT.push(s)}
-function earKeyCue(key,t){const D=earDo(key),tn=key.mode==='maj'?D.m:D.m-3,ch=key.mode==='maj'?[tn-12,tn,tn+4,tn+7]:[tn-12,tn,tn+3,tn+7];ch.forEach(m=>c2Tone(m,t,1.3,1));return t+1.6}
-const pn=(m,t,d)=>c2Tone(m,t,d,1);
+function earKeyCue(key,t){const D=earDo(key),tn=key.mode==='maj'?D.m:D.m-3,ch=key.mode==='maj'?[tn-12,tn,tn+4,tn+7]:[tn-12,tn,tn+3,tn+7];ch.forEach(m=>tone(m,t,'piano',.55,1.3));return t+1.6}
+const pn=(m,t,d,v=.55)=>tone(m,t,'piano',v,d);
 /* metre (EL-3): 0.6 s of silence, then whole bars until at least 10 s have sounded, then one closing downbeat. No count-in.
    The generated four-bar pattern repeats. Returns the beats with their times (from the press) for "hear it again with beats shown". */
 function earSchedMetre(q,t0){const barLen=q.len/4,nb=Math.max(4,Math.ceil(10/barLen-1e-9)),lead=.6,t=t0-ELPRE+lead,ev=[],beats=[],n={};
  for(let b=0;b<nb;b++){const k=b%4;q.ev.forEach(e=>{if(e.t>=k*barLen-1e-6&&e.t<(k+1)*barLen-1e-6)ev.push({t:b*barLen+e.t-k*barLen,a:e.a,bar:b+1})})}
  ev.push({t:nb*barLen,a:2,bar:nb+1});
  ev.forEach(e=>{earClick(t+e.t,e.a);if(e.a>=2)c2Tone(43,t+e.t,.25,0);e.t+=lead;e.kind=['sub','beat','accent','down'][e.a+1];if(e.a>=0){n[e.bar]=(n[e.bar]||0)+1;beats.push({t:e.t,a:e.a,bar:e.bar,beat:n[e.bar],kind:e.kind})}});
- return{end:t+nb*barLen+.25,lead,beats,events:ev}}
+ // the level is evened out for how much sounds each second (relative energy of a downbeat, an accent, a beat and a subdivision), so 2/4 and 5/4 sit at the same loudness
+ const E={2:160,1:10,0:3.1,'-1':1},pw=ev.reduce((s,e)=>s+E[e.a],0)/(nb*barLen);
+ return{end:t+nb*barLen+.25,lead,beats,events:ev,gain:Math.sqrt(120/pw)*Math.pow(q.bpm/90,.45)}}
 /* rhythm (EL-4): one bar of count-in on the woodblock, then the rhythm; the pulse goes on (switchable off); 72 or 100 crotchets a minute.
    Rung 1 is clapped; from rung 2 a tone, because a clap can't show a held note against a note and a rest. */
 function earSchedRhy(q,t0,o={}){const bpm=o.bpm||EAR.rhy.bpm,pulse=o.pulse!==undefined?o.pulse:EAR.rhy.pulse,clap=o.clap!==undefined?o.clap:(q.lvl||earLvl())===1,beat=60/bpm,sq=beat/4,lead=.15,ev=[];
  let t=t0+lead;for(let i=0;i<4;i++)elBlock(t+i*beat,!i);t+=4*beat;let p=0;
  q.a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest){if(clap)elClap(t+p*sq);else elRhyNote(t+p*sq,d*sq);ev.push({t:t+p*sq-t0+ELPRE,d:d*sq,u:p,du:d})}p+=d}));
  if(pulse)for(let i=0;i<p/4;i++)elBlock(t+i*beat,false);
- return{end:t,lead:lead+ELPRE,events:ev,start:t-t0+ELPRE,beat}}
+ // claps are short, so a bar of two minims would sound much quieter than a bar of quavers: the clapped level follows the number of claps
+ return{end:t,lead:lead+ELPRE,events:ev,start:t-t0+ELPRE,beat,gain:clap?Math.sqrt(5/Math.max(2,ev.length/q.bars)):1}}
 function earSched(q,variant,t0,o={}){let t=t0,end=t0;
  if(variant==='tap'){c2Tone(o.midi,t,.5,1);return{end:t+.55,lead:ELPRE}}
  if(q.d==='metre')return earSchedMetre(q,t0);
@@ -6453,16 +6468,17 @@ function earBuildHTML(q){const lock=EAR.done,A=EAR.ans;
  if(q.d==='mel')return earMelDeskHTML(q);
  return''}
 function earEditBtns(full){return EAR.done?'':`<div class="go" style="margin-top:8px"><button class="mini" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="mini" data-hist="ear:r" title="Redo">↷ Redo</button><button class="mini" data-earclr>Clear</button><span class="sp"></span><button class="mini gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
-function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(),s=earSt();
+function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill);
+ if(!rdy&&!EAR.preloading){EAR.preloading=elPreload(EAR.drill).catch(()=>{}).then(()=>{EAR.preloading=null;if(ROOM==='ear'&&$('earMain'))renderEar()})}
  el.innerHTML=`<div class="chips eartabs">${EDR.map(([k,n,st])=>`<button class="chip ${EAR.drill===k?'on':''}" data-eardr="${k}">${n}<small> · S${st}</small></button>`).join('')}</div>
  <section class="card"><h3>${EDR.find(x=>x[0]===EAR.drill)[1]}<span class="sp"></span>${[1,2,3].map(n=>`<button class="chip ${l===n?'on':''}" data-earlv="${n}">Level ${n}</button>`).join('')}</h3>
   <p class="note">${EARHOW[EAR.drill]}</p>
   <div class="go"><button class="mini gold" data-earplay="all" ${q?'':'disabled'}>▶ Play${q?' again':''}</button>
    ${q&&(q.d==='cad'||q.d==='bass'||q.d==='mel')?`<button class="mini" data-earplay="nokey">Without the key chord</button>`:''}
    ${q&&q.d==='bass'?`<button class="mini" data-earplay="bassonly">Bass only</button>`:''}${q&&q.d==='mel'?`<button class="mini" data-earplay="first">First note</button>`:''}
-   <button class="mini" data-earstop>■ Stop</button><span class="sp"></span>${q&&!EAR.done?`<button class="mini" data-earshow>Show me</button>`:''}<button class="mini ${EAR.done||!q?'gold':''}" data-earnew>${q?'Next question →':'Start →'}</button></div>
+   <button class="mini" data-earstop>■ Stop</button><span class="sp"></span>${q&&!EAR.done?`<button class="mini" data-earshow>Show me</button>`:''}<button class="mini ${EAR.done||!q?'gold':''}" data-earnew ${!q&&!rdy?'disabled aria-busy="true"':''}>${q?'Next question →':rdy?'Start →':'Loading…'}</button></div>
   ${EAR.drill==='rhy'?`<div class="go earopts"><label class="note"><input type="checkbox" id="earPulse" ${EAR.rhy.pulse?'checked':''}> Pulse</label><label class="note">Speed <select id="earSpd"><option value="72" ${EAR.rhy.bpm===72?'selected':''}>steady (72)</option><option value="100" ${EAR.rhy.bpm===100?'selected':''}>normal (100)</option></select></label></div>`:''}
-  <div class="earq">${q?earOptsHTML(q)+earBuildHTML(q):`<p class="note">${EAR.drill==='blind'&&!EAR.blind?'Press Start to load the scores.':'Press Start to hear the first question.'}</p>`}</div>
+  <div class="earq">${q?earOptsHTML(q)+earBuildHTML(q):`<p class="note">${rdy?'Press Start to hear the first question.':EAR.drill==='blind'?'Loading the scores and the piano…':'Loading the piano…'}</p>`}</div>
   ${EAR.done&&q&&q.d!=='mel'?`<div class="earres ${EAR.res.ok?'ok':'bad'}"><b>${EAR.res.ok?'Correct.':EAR.res.given===null?'Here it is.':'Not this time.'}</b> ${earAnsTxt(q)}</div><div id="earNote"></div>`:''}
   <div class="earstat">Score ${s.ok} / ${s.n} · streak ${s.streak} · best ${s.best}<span class="sp"></span><button class="mini" data-earreset>Reset score</button><button class="mini" data-earjournal>Save to journal</button></div>
  </section>
