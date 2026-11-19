@@ -6248,15 +6248,17 @@ function earLoadBlind(){if(EAR.blind)return Promise.resolve(EAR.blind);return an
    // the excerpt starts three bars back and ends where the cadence chord is released (c.e in meta.json), not at the next barline
    const s=ms[Math.max(0,mi-3)],e=c.e||(mi+1<ms.length?ms[mi+1]:Math.max(...m.events.map(v=>v[0]+v[2])));out.push({score:k,lvl,key:m.key,t:m.t||k,short:m.short||k,bar:m.measures[mi][0]||String(mi),s,e,a:c.a,cat:cadCat(c.t),label:c.t,chords:c.ch})})});
  EAR.blind=out;return out}))}
-/* ---- audio: the Ear Lab transport and sounds (register 0.48: EL-1) ----
+/* ---- audio: the Ear Lab transport and sounds (register 0.48: EL-1, EL-3) ----
    Transport API (for the Play/Stop toggle and its progress ring):
      elPlay(item=EAR.q, variant='all', opts) -> info   play an item; anything sounding stops first. variant: 'all' | 'nokey' | 'bassonly' | 'first'
-                                                       | 'tap' (one ladder note, opts.midi)
+                                                       | 'beats' (metre: the same playback, with beat events reported) | 'tap' (one ladder note, opts.midi)
                                                        A second tap of the same item and variant within 300 ms is ignored (double-tap safe).
      elStop()                                         stop the Ear Lab sound (and everything else: it calls stopAll)
      elOn(fn) -> unsubscribe                          fn({type:'state', state, id, start, dur, end, lead, variant, beats, elapsed}) on every change;
+                                                       fn({type:'beat', i, t, a, bar, beat, kind}) live for each beat with the 'beats' variant
      elInfo()                                         the current state: state 'idle' | 'playing'; start = performance.now() ms at the press; t0 = audio time of the press;
                                                        dur = seconds from the press to the real scheduled end (lead-in included); lead = silent lead-in (s);
+                                                       beats = [{t (s from the press), a, bar, beat, kind}] for the 'beats' variant, else null
      elRender(item, variant, opts) -> Promise<{buf, info}>   the same playback rendered offline (for the tests)
    State follows the scheduled end of the sound itself (no fixed timer). stopAll (top-bar Stop, Esc, leaving the room, any other playback) sets idle. */
 function elEmit(ev){ELT.fns.forEach(f=>{try{f(ev)}catch(e){}})}
@@ -6271,6 +6273,7 @@ function elPlay(item=EAR.q,variant='all',opts={}){if(!item)return null;const now
  stopAll();const A=ac();SEND.v=0;MAST.gain.value=.5;
  const t0=A.currentTime,r=earSched(item,variant,t0+ELPRE,opts);const end=Math.max(r.end,SEND.v),id=++ELT.id;
  Object.assign(ELT,{st:'playing',item,variant,start:now,t0,end,dur:end-t0,lead:r.lead||0,beats:r.beats||null});PLAY.on=true;PLAY.src='ear';PLAY.guard=variant==='tap'?0:now+300;
+ if(variant==='beats'&&r.beats)r.beats.forEach((b,i)=>PLAY.timers.push(setTimeout(()=>{if(ELT.id===id)elEmit({type:'beat',i,...b})},b.t*1000)));
  const watch=()=>{if(ELT.id!==id)return;const left=ELT.end-ac().currentTime;if(left<=.005)elIdle('end');else ELT.tm=setTimeout(watch,Math.max(5,left*1000))};ELT.tm=setTimeout(watch,(end-t0)*1000);
  elEmit({type:'state',...elInfo()});return elInfo()}
 // the old entry point: buttons and tests call earPlay(variant)
@@ -6283,11 +6286,18 @@ function elRender(item,variant='all',o={}){const sr=o.sr||44100,sv=[AC,MAST,COMP
  return A.startRendering().then(buf=>({buf,info:{dur:r.end,lead:r.lead||0,beats:r.beats||null,events:r.events||null,start:r.start}}))}
 /* the sounds */
 const ELPRE=.05; // seconds from the press to the first scheduled time (times in the API are from the press)
-function earClick(t,a){const A=ac(),o=A.createOscillator(),g=A.createGain();o.type='square';o.frequency.value=a>=2?1568:a===1?1175:a===0?988:784;const pk=a>=2?.2:a===1?.13:a===0?.1:.045;
+// metre clicks. a: 2 downbeat, 1 secondary accent, 0 beat, -1 subdivision; each step 5 dB quieter than the one above (EL-3)
+function earClick(t,a){const A=ac(),o=A.createOscillator(),g=A.createGain();a=Math.max(-1,Math.min(2,a));o.type='square';o.frequency.value=a>=2?1568:a===1?1175:a===0?988:784;const pk=.2*Math.pow(10,-5*(2-a)/20);
  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(pk,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(g);g.connect(MAST);o.start(t);o.stop(t+.09);schEnd(t+.09);ACT.push(o)}
 function earKeyCue(key,t){const D=earDo(key),tn=key.mode==='maj'?D.m:D.m-3,ch=key.mode==='maj'?[tn-12,tn,tn+4,tn+7]:[tn-12,tn,tn+3,tn+7];ch.forEach(m=>c2Tone(m,t,1.3,1));return t+1.6}
 const pn=(m,t,d)=>c2Tone(m,t,d,1);
-function earSchedMetre(q,t0){q.ev.forEach(e=>{earClick(t0+e.t,e.a);if(e.a>=2)c2Tone(43,t0+e.t,.25,0)});return{end:t0+q.len+.3,lead:ELPRE}}
+/* metre (EL-3): 0.6 s of silence, then whole bars until at least 10 s have sounded, then one closing downbeat. No count-in.
+   The generated four-bar pattern repeats. Returns the beats with their times (from the press) for "hear it again with beats shown". */
+function earSchedMetre(q,t0){const barLen=q.len/4,nb=Math.max(4,Math.ceil(10/barLen-1e-9)),lead=.6,t=t0-ELPRE+lead,ev=[],beats=[],n={};
+ for(let b=0;b<nb;b++){const k=b%4;q.ev.forEach(e=>{if(e.t>=k*barLen-1e-6&&e.t<(k+1)*barLen-1e-6)ev.push({t:b*barLen+e.t-k*barLen,a:e.a,bar:b+1})})}
+ ev.push({t:nb*barLen,a:2,bar:nb+1});
+ ev.forEach(e=>{earClick(t+e.t,e.a);if(e.a>=2)c2Tone(43,t+e.t,.25,0);e.t+=lead;e.kind=['sub','beat','accent','down'][e.a+1];if(e.a>=0){n[e.bar]=(n[e.bar]||0)+1;beats.push({t:e.t,a:e.a,bar:e.bar,beat:n[e.bar],kind:e.kind})}});
+ return{end:t+nb*barLen+.25,lead,beats,events:ev}}
 // rhythm: a count-in of four clicks, then the rhythm on one note, then quiet clicks on the beat
 function earSchedRhy(q,t0){let t=t0;for(let i=0;i<4;i++)earClick(t+i*.6,i?0:2);t+=2.4;let p=0;q.a.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{if(!rest)c2Tone(67,t+p*.15,Math.max(.12,d*.15*.9),1);p+=d}));for(let i=0;i<p/4;i++)earClick(t+i*.6,-1);return{end:t+p*.15,lead:ELPRE}}
 function earSched(q,variant,t0,o={}){let t=t0,end=t0;

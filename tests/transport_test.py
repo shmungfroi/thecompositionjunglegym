@@ -9,7 +9,8 @@ Ear Lab transport (register 0.48 EL-1), every drill x rung x width (1440, 390):
   node's stop time, it is still 'playing' 150 ms before that end and 'idle' 150 ms after it (natural end checked at 1440);
   a double tap (60 ms apart) of Play leaves it playing; Play while playing, and every variant while playing, leaves exactly one
   playback sounding (no node of the old one sounds 100 ms later); and the sound stops on Next, rung change, drill change, room change,
-  answering (option or Check), Show me, a solfa-ladder tap (which plays its own note instead), Esc, the top-bar Stop and the Ear Lab Stop."""
+  answering (option or Check), Show me, a solfa-ladder tap (which plays its own note instead), Esc, the top-bar Stop and the Ear Lab Stop.
+  The 'beats' variant of a metre item reports its beats and emits them live within 60 ms of their times."""
 import sys,asyncio,json,pathlib,mimetypes,os
 from playwright.async_api import async_playwright
 REPO=pathlib.Path(sys.argv[1] if len(sys.argv)>1 else '.').resolve()
@@ -103,7 +104,7 @@ LIVE="()=>{const n=AC.currentTime;return __N.filter(x=>x.e>n+.1).length}"
 INFO="()=>({...elInfo(),now:AC?AC.currentTime:0,pnow:performance.now(),last:__N.length?Math.max(...__N.filter(x=>x.born>=ELT.start-1).map(x=>x.e)):null})"
 
 async def ear_transport(p,fails):
-    st={'items':0,'state_checks':0,'natural_end':0,'double_tap':0,'play_while_playing':0,'variants':0,'stop_events':0}
+    st={'items':0,'state_checks':0,'natural_end':0,'double_tap':0,'play_while_playing':0,'variants':0,'stop_events':0,'beats_live':0}
     worst={'end_diff_ms':0}
     def F(*a): fails.append(('ear',)+a)
     for w,h in ((1440,900),(390,844)):
@@ -200,6 +201,15 @@ async def ear_transport(p,fails):
                     await click(f'[data-eardr="{d}"]');await click(f'[data-earlv="{l}"]');await click('[data-earnew]');await pg.wait_for_timeout(250)
                     await ev('room change',lambda:pg.evaluate("location.hash='keys'"))
                     await pg.evaluate("location.hash='ear'");await pg.wait_for_timeout(300)
+        # beats reported live (metre 'beats' variant)
+        if w==1440:
+            r=await pg.evaluate("""async()=>{stopAll();const q=earGen('metre',1);const got=[];const off=elOn(e=>{if(e.type==='beat')got.push([e.i,performance.now()])});
+              const info=elPlay(q,'beats');await new Promise(r=>setTimeout(r,(info.beats[2].t+.3)*1000));off();stopAll();
+              return{beats:info.beats.slice(0,3),got:got.map(([i,t])=>[i,(t-info.start)/1000])}}""")
+            for i,t in r['got']:
+                st['beats_live']+=1
+                if abs(t-r['beats'][i]['t'])>.06: F('beats variant',f'beat {i} emitted at {t:.3f} s, scheduled {r["beats"][i]["t"]:.3f} s')
+            if len(r['got'])<3: F('beats variant',f'only {len(r["got"])} beat events in the first three beats')
         # the global toggle: a second tap on the playing ▶ button within 300 ms is ignored; after 300 ms it stops
         if w==1440:
             await pg.evaluate("stopAll()");await click('[data-eardr="cad"]');await click('[data-earlv="1"]');await click('[data-earnew]');await pg.wait_for_timeout(500)
