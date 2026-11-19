@@ -6669,7 +6669,6 @@ function earGenRhy(l,r){const bars=l===3?2:1;return{d:'rhy',bars,a:earFill(l,r,b
 function rhyOnsets(cells){let p=0;const o=[];cells.forEach(k=>RCELL[k].u.forEach(([d,rest])=>{o.push((rest?'r':'n')+p);p+=d}));return o.join(',')+'|'+p}
 const QUALS={'':'Major','m':'Minor','dim':'Diminished','aug':'Augmented','maj7':'Major 7th','7':'Dominant 7th','m7':'Minor 7th','m7b5':'Half-diminished 7th','dim7':'Diminished 7th'};
 function earQualOpts(l){return l===1?['','m']:l===2?['','m','dim','aug']:['maj7','7','m7','m7b5','dim7']}
-const QINV=['root position','1st inversion','2nd inversion','3rd inversion'];
 // EL-6: rungs 1–3 are root position only (an inversion is a separate skill, not chord quality). Augmented and diminished 7th chords are symmetrical.
 const QSYM={aug:'It is symmetrical: each note is a major 3rd above the last, so by ear it has no root position or inversion.',dim7:'It is symmetrical: each note is a minor 3rd above the last, so by ear it has no root position or inversion.'};
 function earGenQual(l,r){const q=epick(earQualOpts(l),r),root=epick(['C','D','Eb','E','F','G','Ab','A','Bb','B','Db','F#'],r),c=chordOf(root,q);
@@ -6703,13 +6702,9 @@ CADT[3]={maj:{perfect:['I IV V V7 I'],plagal:['I IV I:1 IV I','I IV vi IV I'],im
   interrupted:['I IV V V7 vi','I IV ii:1 V vi'],cad64:['I IV I:2 V I','I IV I:2 V7 I']},
  min:{perfect:['i iv V V7 i'],plagal:['i iv i:1 iv i','i iv VI iv i'],imperfect:['i iv i:1 ii°:1 V','i iv VI ii°:1 V'],
   interrupted:['i iv V V7 VI','i iv ii°:1 V VI'],phrygian:['i iv VI iv:1 V','i iv i:1 iv:1 V'],cad64:['i iv i:2 V i','i iv i:2 V7 i']}};
-const CADL3={...CADL,phrygian:'Phrygian',cad64:'Cadential 6/4'};
-// the family each Stage 6 answer belongs to, named in the feedback
 // solfa follows the app's rule, movable do with la-based minor: the dominant is so in major and mi in minor; the Phrygian bass le–so of
 // do-based minor is fa–mi (independent theory check 0.48)
 const EARSOL5=md=>md==='min'?'mi':'so';
-const CADFAM={phrygian:md=>`an imperfect cadence in a minor key: iv⁶–V, with the bass falling a semitone (${md==='min'?'fa–mi':'le–so'})`,
- cad64:md=>`the decorated approach to V in a perfect or imperfect cadence: over the bass ${EARSOL5(md)}, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect cadence`};
 const CADPARENT={phrygian:'imperfect',cad64:'perfect'};
 // an interrupted cadence reached through a cadential 6/4 (rung 3, CAD3_HELD): the 6/4 is on the way, the cadence itself is V–vi (V–VI)
 function earCad64Int(q){return!!q&&q.d==='cad'&&q.l===3&&q.a==='interrupted'&&q.rns.some(x=>/:2$/.test(x))}
@@ -7107,7 +7102,6 @@ function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===n
 function earSkip(){if(!EAR.q||EAR.done||EAR.q.plays===0)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: skipped`);return true}
 // the rung in use: an open question's own rung, else the rung chosen for this drill (shown even when it is above the Stage), else the first rung shown
 function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill];return l||earRungsShown(EAR.drill)[0]}
-function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a](q.key.mode)}`:'')+(earCad64Int(q)?`. ${CAD64INT(q.key.mode)}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
 // R4 family answers (imperfect for a Phrygian cadence, perfect for a cadential 6/4) are Nearly (EAR_NEARLY) or wrong; the result panel's
 // text for both states comes from earCadNear / earCad64IntGiven (one source, reconcile 0.48)
 function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){earMark(rhyOnsets(EAR.ans)===rhyOnsets(q.a),EAR.ans.slice())}
@@ -7263,15 +7257,17 @@ const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const ELNUM={2:'two',3:'three',4:'four',5:'five',6:'six'};
 function earMetreD(m){const M=METRES[m];return{b:M.b,S:M.sub,irr:m==='5/4'||m==='7/8',comp:M.sub===3,sp:M.sub===3?'three':'two'}}
 function earTeachMetre(q,res){const a=q.a,g=res.given,A=earMetreD(a),nm=A.irr?'Irregular':(A.comp?'Compound':'Simple')+' '+({2:'duple',3:'triple',4:'quadruple'}[A.b]);
- const irrS=a==='5/4'?`Five beats in a bar, each splitting in two. Irregular metres group their beats unevenly, often 3+2 or 2+3. Here the heaviest click is on beat 1 and a lighter one on beat 4: 3+2.`:`Seven quavers in a bar, grouped 2+2+3 here, so the beats are not all the same length. Count the quavers in each group.`,both=A.irr?irrS:`Start with the heavy click: it comes back every ${ELNUM[A.b]} beats. Then listen inside one beat: it splits in ${A.sp}.`;
+ const irrS=a==='5/4'?`Five beats in a bar, each splitting in two. Irregular metres group their beats unevenly, often 3+2 or 2+3. Here the heaviest click is on beat 1 and a lighter one on beat 4: 3+2.`:`Seven quavers in a bar, grouped 2+2+3 here, so the beats are not all the same length. Count the quavers in each group.`,both=A.irr?irrS:`Start with the heavy click: it comes back every ${ELNUM[A.b]} beats. Then listen inside the beats: where a beat splits, it splits in ${A.sp}.`;
+ // IC_EAR_048 S6: each split click sounds three times in four (earGenMetre), so no sentence says every beat or every bar was heard split;
+ // the metre's own facts ("each bar holds six quavers") and what is heard where a beat splits are said instead
  let t;
  if(g===null)t=both;else if(g===a)t=A.irr?irrS:cap1(`${ELNUM[A.b]} beats in a bar, each one splitting in ${A.sp}.`);
  else{const G=earMetreD(g);
   if(A.irr)t=irrS;else if(G.irr)t=both;
-  else if(G.b*G.S===A.b*A.S&&G.S!==A.S)t=`You heard ${ELNUM[A.b*A.S]} quavers in every bar, and that is right. In ${g} they fall in ${G.S===2?'twos':'threes'}, making ${ELNUM[G.b]} beats. Here they fall in ${A.S===2?'twos':'threes'}, so there are ${A.b===2?'only two':'three'} beats in a bar.`;
+  else if(G.b*G.S===A.b*A.S&&G.S!==A.S)t=`Each bar holds ${ELNUM[A.b*A.S]} quavers, and so does a bar of ${g}: that much is right. In ${g} they fall in ${G.S===2?'twos':'threes'}, making ${ELNUM[G.b]} beats. Here they fall in ${A.S===2?'twos':'threes'}, so there are ${A.b===2?'only two':'three'} beats in a bar.`;
   else if(A.S===G.S&&((a==='2/4'&&g==='4/4')||(a==='4/4'&&g==='2/4')))t=`You heard the beats split in two, and that is right. Here the heaviest click comes back every ${ELNUM[A.b]} beats${a==='4/4'?', with a lighter one on beat 3':''}.`;
-  else if(A.S===G.S)t=`You heard each beat split in ${A.sp}, and that is right. Now count from one heavy click to the next: ${ELNUM[A.b]} beats, not ${ELNUM[G.b]}.`;
-  else if(A.b===G.b)t=`You counted ${ELNUM[A.b]} beats in a bar, and that is right. Now listen inside one beat: it splits in ${A.sp}, not ${G.sp}, so this is ${A.comp?'compound':'simple'}.`;
+  else if(A.S===G.S)t=`You heard the beats split in ${A.sp}, and that is right. Now count from one heavy click to the next: ${ELNUM[A.b]} beats, not ${ELNUM[G.b]}.`;
+  else if(A.b===G.b)t=`You counted ${ELNUM[A.b]} beats in a bar, and that is right. Now listen inside the beats: where a beat splits, it splits in ${A.sp}, not ${G.sp}, so this is ${A.comp?'compound':'simple'}.`;
   else t=both}
  const rp=[{v:'beats',t:'Hear it again with the beats shown'}];if(g&&g!==a)rp.push({v:'given',t:`Hear ${g} at the same speed`});
  return{kind:res.kind,head:nm,small:A.irr?`${a} (${a==='5/4'?'3+2':'2+2+3'})`:a,teach:t,replays:rp,after:elBeatsSVG(a)}}
@@ -7317,14 +7313,17 @@ function earTeachQual(q,res){const a=q.a,g=res.given,A=ELQP[a],r=pretty(q.root),
    bass stays on so, whether a 6/4 is present. A generic sentence is used only where it is true of every item that can reach it. */
 function earCadFacts(q){const f={has:!!(q&&q.ch&&q.rns&&q.key&&q.ch.length===q.rns.length)};if(!f.has)return f;const ch=q.ch,k=q.key.k,n=ch.length,P=ch[n-2],N=ch[n-1],dg=m=>mod(m-k,12);
  f.dir=Math.sign(N[0]-P[0]);f.doHeld=[0,1,2,3].some(v=>dg(P[v])===0&&N[v]===P[v]);f.soHeld=ch.slice(1).some((c,i)=>c[0]===ch[i][0]&&dg(c[0])===7);
- f.pen=q.rns[n-2];f.penSD=/^(IV|iv)(:|$)/.test(f.pen);f.int64=earCad64Int(q);return f}
+ f.pen=q.rns[n-2];f.penSD=/^(IV|iv)(:|$)/.test(f.pen);f.int64=earCad64Int(q);
+ // the bass from a cadential 6/4 into V (IC_EAR_048 C1): "stays on so" only on the same pitch; otherwise the sentence says it moves an octave
+ const j=q.rns.findIndex((x,i)=>/:2$/.test(x)&&/^V/.test(q.rns[i+1]||''));f.so=EARSOL5(q.key.mode);
+ if(j>=0){const mv=ch[j+1][0]-ch[j][0];f.soStay=`stays on ${f.so}`;f.soOct=mv?`${mv<0?'dropping':'rising'} an octave into V`:''}return f}
 function earCadRight(a,q,min){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?'VI':'vi',F=earCadFacts(q);
  const S={perfect:`V to ${T}: the leading note rises to the home note and the bass lands there. A full stop.`,
   plagal:`${SD} to ${T}. No leading note; the home note ${F.has&&F.doHeld?'is held through both chords':'sounds in both chords'}. The Amen.`,
   imperfect:'It stops on V and waits there. A comma, not a full stop.',
   interrupted:`V sets up the close, then the bass steps up to ${S6} instead of going home.`+(F.int64?' '+CAD64INT(q.key.mode):''),
   phrygian:'iv⁶ to V in a minor key: the bass falls a semitone, fa to mi, and the phrase stops on V.',
-  cad64:`The bass reaches the dominant early and stays on it: ${T}⁶₄, then V, then home. A perfect cadence with a delay built in.`};
+  cad64:`The bass reaches the dominant early and ${F.soStay||'stays there'}${F.soOct?', '+F.soOct:''}: ${T}⁶₄, then V, then home. A perfect cadence with a delay built in.`};
  return S[a]}
 /* Nearly (EAR_NEARLY): the family answer for a Phrygian or cadential 6/4. on = the answer was marked Nearly; off = marked wrong (the switch is
    off), so the text must not say "that is right" about the answer, only about what was heard. */
@@ -7359,7 +7358,7 @@ function earCadWrong(a,g,q,min,res){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?
  let t;
  if(M[key])t=M[key];
  else if(a==='phrygian')t='The phrase does not close: it stops on V. In the bass, fa falls a semitone to mi. That is the Phrygian cadence, a kind of imperfect cadence.';
- else if(a==='cad64')t=`Follow the bass: it reaches the dominant and stays on it for two chords, ${T}⁶₄ then V, before moving home to ${T}.`;
+ else if(a==='cad64')t=`Follow the bass: it reaches the dominant and ${F.soStay||'stays there'} for two chords${F.soOct?` (${F.soOct})`:''}, ${T}⁶₄ then V, before moving home to ${T}.`;
  else if(g==='phrygian')t=`${M[`imperfect>${a}`]||''} A Phrygian cadence stops on V, after the bass falls a semitone into it.`.trim();
  // the spec's "There is no held dominant bass here" is untrue wherever V moves to V7 over one bass note (rung 3 perfect and interrupted)
  else if(g==='cad64')t=`${M[`perfect>${a}`]||''} ${F.has&&F.soHeld?`The bass does stay on the dominant here, but the chord over it is V all along (V, then V7): there is no ${T}⁶₄.`:`There is no ${T}⁶₄ (the home chord over the dominant bass) here.`}`.trim();
@@ -7371,13 +7370,29 @@ function earChordRowHTML(q){const n=q.rns.length,cn=q.a==='cad64'?3:2,key=q.key;
  // a cadential 6/4 is named for what it does, not given one function: its colour follows the app's numeral analysis (I in second inversion,
  // as Analysis labels it, and as Ic in the British/Australian tradition), and its title gives both readings (reconcile 0.48)
  const chip=(rn,i,cad)=>{const f=earNumFn(rn),[fnm,col]=ELFN[f],c64=/:2$/.test(rn)&&/^V/.test(q.rns[i+1]||''),T=key.mode==='min'?'i':'I';
-  const tt=c64?`Cadential 6/4: the tonic chord in second inversion (${T}⁶₄, also written ${T}c), over the dominant bass. Read by its spelling it is a tonic chord, as this app's Analysis labels it; many harmony texts hear it as part of the dominant, because its 6th and 4th fall to the 5th and 3rd of V over the same bass.`:fnm;
-  return`<div class="el-ch" style="--fc:${col}" title="${tt}">${earRnHTML(rn)}<small>${cad?'bass '+earSolOfMidi(q.ch[i][0],key):c64?'cadential 6/4':fnm}</small></div>`};
+  const tt=c64?`Cadential 6/4: the tonic chord in second inversion (${T}⁶₄, also written ${T}c), over the dominant bass (bass ${earSolOfMidi(q.ch[i][0],key)}). Read by its spelling it is a tonic chord, as this app's Analysis labels it; many harmony texts hear it as part of the dominant, because its 6th and 4th fall to the 5th and 3rd of V over the same bass.`:fnm;
+  // IC_EAR_048 S4: the 6/4 is named "cadential 6/4" inside the cadence bracket as well as before it; its bass solfa moves to the title
+  return`<div class="el-ch" style="--fc:${col}" title="${tt}">${earRnHTML(rn)}<small>${c64?'cadential 6/4':cad?'bass '+earSolOfMidi(q.ch[i][0],key):fnm}</small></div>`};
  const pre=q.rns.slice(0,n-cn).map((rn,i)=>chip(rn,i,false)).join(''),cad=q.rns.slice(n-cn).map((rn,i)=>chip(rn,n-cn+i,true)).join('');
  return`<div class="el-chords" aria-label="${q.rns.map(earRnTxt).join(', ')} in ${keyName(key)}">${pre}<div class="el-cad" data-l="the cadence">${cad}</div><span class="el-key">in ${keyName(key)}</span></div>`}
+/* Blind analysis sentences (IC_EAR_048 S5). A blind item is a real excerpt with no voicing in q, so nothing is said about single voices
+   (the leading note falls in two excerpts: chorale bar 14, Jesu bar 6). The numerals come from the excerpt's own chord label (meta.json
+   "ch"), the key it cadences in from its label ("in C major (a tonicisation)"), and the mode from the excerpt's key, so a minor V–i says
+   "V7 to i". Every perfect excerpt's bass lands on the root of its last chord (checked against the note events in earlab_items_test B). */
+const earBlindFig=t=>t.replace(/(64|65|43|42|6)(?=$|[\/\s)])/g,f=>({64:'⁶₄',65:'⁶₅',43:'⁴₃',42:'⁴₂',6:'⁶'})[f]);
+function earBlindTxt(q,g){const ch=String(q.chords||'').split(/\s*–\s*/).map(earBlindFig),n=ch.length,fin=ch[n-1],pen=ch[n-2]||'V',all=ch.join(' – '),
+  m=/cadence in ([A-G][♭♯]? (?:major|minor))/.exec(q.label||''),lk=m?m[1]:null,pic=!lk&&/minor/.test(q.key||'')&&fin==='I',a=q.a;
+ if(g===null||g===a){
+  if(a==='perfect')return lk?`${all}: for a moment the music is in ${lk} (a tonicisation). ${pen} is the dominant of that key and goes to its tonic, ${fin}; the bass lands on the root of ${fin}. A full stop in ${lk}.`
+   :`${all}: the dominant goes to the home chord${pic?', made major (a Picardy third)':''}, and the bass lands on its root. A full stop.`;
+  if(a==='imperfect')return`${all}: it stops on ${fin}${lk?`, the dominant of ${lk},`:''} and waits there. A comma, not a full stop.`;
+  return`Listen to the last chords: ${all}.`}
+ if(a==='perfect'&&g==='imperfect')return`You heard a dominant chord, and that is right. But it is not the last chord: ${pen} goes on to ${fin}, ${lk?`the tonic of ${lk}`:'the home chord'}, and the phrase closes.`;
+ if(a==='imperfect'&&g==='perfect')return`You heard a dominant chord, and that is right. But it is the last chord of the phrase: the phrase stops on ${fin}${lk?`, the dominant of ${lk}`:''}, and no tonic chord comes after it.`;
+ return`Listen to the last chords: ${all}.`}
 function earTeachCad(q,res){const a=q.a,g=res.given,min=q.key&&q.key.mode==='min',nm=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':CADL[a]||ELCADL[a]+' cadence';
  const head=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':a==='phrygian'?'Phrygian cadence':CADL[a];
- const t=g===null||g===a?earCadRight(a,q,min):earCadWrong(a,g,q,min,res);
+ const t=q.d==='blind'?earBlindTxt(q,g):g===null||g===a?earCadRight(a,q,min):earCadWrong(a,g,q,min,res);
  const last=a==='cad64'?'Hear the last three chords, slowly':'Hear the last two chords, slowly',rp=[{v:'last',t:last},{v:'bassonly',t:'Bass only'},{v:'all',t:'The whole phrase'}];
  if(q.d==='blind')return{kind:res.kind,head:CADL[a],teach:t,replays:[{v:'ending',t:'Hear the ending again'},{v:'all',t:'The whole phrase'}],
   after:`<p class="el-note" data-notm>From ${q.t||q.score}, bar ${q.bar}. <button class="el-btn sm" data-earscore="${q.score}">Open this score in Analysis</button></p>`};
