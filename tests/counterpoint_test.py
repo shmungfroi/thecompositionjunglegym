@@ -37,6 +37,13 @@ Sections:
      CP-2 florid tied unison (H4), CP-3 cantus C6 after a 5th, CP-4 three-voice M3 (outline, repeated note resets),
      CP-5 mixed-species V2 into the downbeat (and model lydhigh23), CP-6 mixed-species downbeats (S2c/S3d), C13-1
      the minor 7th at the ends of a line
+  N  Justin's answers of 19 Nov 2026 (0.48): (8) the H4 card's tag and text (a tied unison in fifth species is a Should)
+     and H4 severity over section C (tied florid unison warns, new-note florid unison is an error); (9) S3d into the
+     final bar in both checkers (two-voice: the rule book above now has no final-bar exception; fixed cases built from
+     the third-species models, two-voice and mixed; counts in both corpora; models unchanged); (10) interval names
+     spelled out with the right article in every message of the four checkers over the whole corpus (C, D, E, F and
+     the rule cards, pitch names of the exercise removed, then no abbreviation such as P5, d5, A4, M10), and c2IvA for every pair of
+     105 pitches against music21's interval name
   G  climb 13: pitches of subjects (the 4 built-in and 600 random, in all 24 keys and the 6 modes), real answers
      (exactly up a 5th; modal: up a 5th within the mode), tonal answers (so in the head answered by do), inversion
      (around the first note, and 1<->5: same rhythm, every step reversed), augmentation (every value doubled), the
@@ -349,9 +356,10 @@ def check(cf_str, sp, pos, cp_dn, br=None, open_=False):
                     already = any(x[0] in ('V1', 'V2') and x[2][1] == B['a'] for x in out)
                     if abs(w.dn - A['p'].dn) <= 2 and not already:
                         add('S2c', 'err', [A['a'], A['a'] + 1, B['a']])
-    # S3d
+    # S3d (a Should). The card has no exception for the final bar, so the step into the last downbeat counts too
+    # (0.48, Justin 19 Nov: both checkers follow the card; until 0.48 the app's two-voice checker left the final bar out)
     if sp in (3, 5):
-        D = [v for v in V if v['pos'] == 0 and v['a'] != N - 1]
+        D = [v for v in V if v['pos'] == 0]
         for A, B in zip(D, D[1:]):
             if B['bar'] != A['bar'] + 1:
                 continue
@@ -1257,6 +1265,7 @@ async def main():
                 casesm.append(dict(c, src='mutation', cps=cps))
         # the app's warnings M2, M3 and T3 are not part of this comparison (see the docstring)
         app = await pg.evaluate("(L)=>L.map(c=>c3mCheck(c2Mode(c.k),c.arr,c.spv,c.sp,c.cps).iss.filter(x=>!['M2','M3','T3'].includes(x.code)).map(x=>[x.code,x.sev,x.bars,x.voices]))", casesm)
+        appm = app
         for c, a in zip(casesm, app):
             COUNT['three-voice (mixed species) checked'] += 1
             cps = {int(k): v for k, v in c['cps'].items()}
@@ -1343,6 +1352,129 @@ async def main():
         for (what, cells, k, i, want), g in zip(c13, got):
             exp = c13_line(cells, {'modal': False, 'k': k, 'mode': 'min'})[i][0]
             reg('C13-1', what, tuple(g) == want and (LET.index(exp.step), int(exp.alter)) == want, f'app (li, acc) {g}, music21 {exp}')
+
+        # ---------------- N: Justin's answers of 19 Nov 2026 (0.48, items 8, 9 and 10) ----------------
+        # 8. H4: a tied unison in fifth species stays a warning; the card's tag and wording say so.
+        h4 = await pg.evaluate("()=>{const r=C2RB.find(x=>x[0]==='H4');return{tag:r[2],text:r[5],sp:r[3]}}")
+        reg('N-8', 'H4 card tag: Must for new notes (species 1-3, 5), Should for species 4 and tied notes in 5',
+            h4['tag'] == 'Must 1–3, 5 (new notes) · Should 4, 5 (tied notes)', f"tag {h4['tag']!r}")
+        reg('N-8', 'H4 card text: in fifth species a tied note may make a unison on the downbeat, used sparingly',
+            'fifth species a tied note may make a unison on the downbeat' in h4['text'] and 'sparingly' in h4['text']
+            and 'new note on a downbeat in second, third or fifth species' in h4['text'], h4['text'])
+        h4n = collections.Counter()
+        for c, r in zip(cases, res):
+            if c['sp'] not in (4, 5):
+                continue
+            hs = [(sv, tuple(t)) for code_, sv, t in r['app'] if code_ == 'H4']
+            if not hs:
+                continue
+            V5 = check(c['cf'], c['sp'], c['pos'], c['cp'], c['br'])[3]
+            for sv, t in hs:
+                tied = any(v['a'] == t[0] and not v['on'] and v['pos'] == 0 and v['iv'].gen == 1 for v in V5)
+                kind = f"sp{c['sp']} {'tied' if tied else 'new'} {sv}"
+                h4n[kind] += 1
+                COUNT[f'H4 messages, {kind}'] += 1
+                if (c['sp'] == 4 and sv != 'warn') or (c['sp'] == 5 and sv != ('warn' if tied else 'err')):
+                    fail('N', f"H4 {kind}: {c['k']} sp{c['sp']} {c['pos']} cp={c['cp']} br={c['br']}")
+        reg('N-8', 'H4 severity over section C: every tied unison on a florid downbeat warns, every new-note one is an error',
+            h4n['sp5 tied warn'] > 0 and h4n['sp5 new err'] > 0 and not h4n['sp5 tied err'] and not h4n['sp5 new warn'], dict(h4n))
+        # 9. S3d into the final bar: both checkers follow the card (no final-bar exception); the two-voice one warns.
+        s3n = {'two': 0, 'mixed': 0}
+        for c, r in zip(cases, res):
+            N_ = len(c['cp'])
+            for code_, sv, t in r['app']:
+                if code_ == 'S3d' and t[-1] == N_ - 1:
+                    s3n['two'] += 1
+                    if c['src'] == 'model':
+                        COUNT['two-voice models with S3d into the final bar (models were not changed)'] += 1
+                    if sv != 'warn':
+                        fail('N', f"S3d into the final bar is not a warning: {c['k']} sp{c['sp']} {c['pos']} cp={c['cp']}")
+        COUNT['S3d into the final bar, two voices (section C)'] = s3n['two']
+        got = await pg.evaluate("""()=>{const out=[];for(const M of C2M)for(const pos of ['above','below']){const m=c2Model(M,3,pos);if(!m)continue;const L=c2Layout(3,M.cf.length,[]),N=L.att.length,
+            i=L.att.findIndex(a=>a.bar===M.cf.length-2&&a.beat===0),before=c2Check(M,3,pos,m.cp,[]).iss.filter(x=>x.code==='S3d'&&x.att[1]===N-1).length;
+            for(const d of c2Rows(M,pos)){const cp=m.cp.slice();cp[i]=d;const iss=c2Check(M,3,pos,cp,[]).iss;
+              if(iss.some(x=>x.code==='S3d'&&x.att[0]===i&&x.att[1]===N-1)&&!iss.some(x=>x.sev==='err')){out.push({k:M.k,pos,cp,i,N,before,iss:iss.map(x=>[x.code,x.sev,x.att])});break}}}return out}""")
+        for g in got:
+            COUNT['S3d final-bar regression cases (two voices, third species)'] += 1
+            A = [(a, sv, tuple(t)) for a, sv, t in g['iss']]
+            mine = check(C2CF[g['k']], 3, g['pos'], g['cp'], [])[0]
+            if g['before']:
+                fail('N', f"model {g['k']}3{g['pos']} already has S3d into the final bar (models were not to change)")
+            reg('N-9', f"two voices: S3d warns into the final bar ({g['k']} {g['pos']}, attacks {g['i']} and {g['N'] - 1})",
+                ('S3d', 'warn', (g['i'], g['N'] - 1)) in A and judge('N', A, mine, f"N-9 {g['k']}3{g['pos']}") == 'pass', f'app {A}')
+        reg('N-9', 'two voices: final-bar S3d cases built from at least 4 of the 12 third-species models (ion, lyd above and below)', len(got) >= 4, f'{len(got)} found')
+        got = await pg.evaluate("""()=>{const out=[];for(const key in C3MMODELS){if(key[key.length-1]!=='3')continue;const k=key.slice(0,3),arr=key.slice(3,-2),spv=+key[key.length-2],M=c2Mode(k),n=M.cf.length,m=C3MMODELS[key];
+            const L=c2Layout(3,n,[]),i=L.att.findIndex(a=>a.bar===n-2&&a.beat===0);
+            for(const d of c3Rows(M,arr,spv)){const cps={...m,[spv]:m[spv].slice()};cps[spv][i]=d;const iss=c3mCheck(M,arr,spv,3,cps).iss;
+              if(iss.some(x=>x.code==='S3d'&&x.bars[0]===n-2&&x.bars[1]===n-1)&&!iss.some(x=>x.sev==='err')){out.push({key,k,arr,spv,cps,n,iss:iss.filter(x=>!['M2','M3','T3'].includes(x.code)).map(x=>[x.code,x.sev,x.bars,x.voices])});break}}}return out}""")
+        for g in got[:12]:
+            A = [(a, sv, tuple(b_), tuple(v)) for a, sv, b_, v in g['iss']]
+            mine = c3m_check(C2CF[g['k']], g['arr'], g['spv'], 3, {int(k_): v for k_, v in g['cps'].items()})
+            reg('N-9', f"mixed species: S3d warns into the final bar ({g['key']})",
+                any(x[0] == 'S3d' and x[1] == 'warn' and x[2] == (g['n'] - 2, g['n'] - 1) for x in A) and judge('N', A, mine, f"N-9 {g['key']}") == 'pass', f'app {A}')
+        COUNT['S3d final-bar cases found (mixed third species models)'] = len(got)
+        reg('N-9', 'mixed species: final-bar S3d cases built from at least 2 third-species models', len(got) >= 2, f'{len(got)} found')
+        # and in the section F corpus (models, solver outputs, mutations): S3d into the final bar, all agreeing with the rule book above
+        s3m = 0
+        for c, a in zip(casesm, appm):
+            n_ = len(c['cf'])
+            for code_, sv, bb, vv in a:
+                if code_ == 'S3d' and bb[-1] == n_ - 1:
+                    s3m += 1
+                    if sv != 'warn':
+                        fail('N', f"mixed S3d into the final bar is not a warning: {c['k']}{c['arr']}{c['spv']}{c['sp']}")
+        COUNT['S3d into the final bar, mixed species (section F)'] = s3m
+        reg('N-9', 'S3d into the final bar is reported (as a warning) in both corpora', s3n['two'] > 0 and s3m > 0, f"two voices {s3n['two']}, mixed {s3m}")
+        # 10. interval names spelled out in every message of the four checkers, over the whole corpus above
+        await pg.evaluate("""()=>{window.__cpStrip=(m,ps)=>{let s=m;[...new Set(ps.filter(Boolean).flatMap(p=>[p.txt,c2Pitch(p.dn-1).txt,c2Pitch(p.dn+1).txt]))].sort((a,b)=>b.length-a.length).forEach(t=>{s=s.split(t).join('♪')});return s}}""")
+        msgs = []
+        for i in range(0, len(cases), 500):
+            msgs += await pg.evaluate("(L)=>L.flatMap(c=>{const M=c.k==='own'?{k:'own',cf:c.cf}:c2Mode(c.k);const r=c2Check(M,c.sp,c.pos,c.cp,c.br);return r.iss.map(x=>['two-voice',x.msg,__cpStrip(x.msg,r.cp.concat(r.cf))])})",
+                                      [{k: c[k] for k in ('k', 'cf', 'sp', 'pos', 'cp', 'br')} for c in cases[i:i + 500]])
+        msgs += await pg.evaluate("(L)=>L.flatMap(([f,c])=>{const r=c2CantusCheck(f,c);return r.iss.map(x=>['cantus',x.msg,__cpStrip(x.msg,r.P)])})", cants)
+        msgs += await pg.evaluate("(L)=>L.flatMap(c=>{const M=c.k==='own'?{k:'own',cf:c.cf}:c2Mode(c.k);const r=c3Check(M,c.arr,c.cps);return r.iss.map(x=>['three-voice',x.msg,__cpStrip(x.msg,r.V.flat())])})", cases3)
+        msgs += await pg.evaluate("(L)=>L.flatMap(c=>{const r=c3mCheck(c2Mode(c.k),c.arr,c.spv,c.sp,c.cps);return r.iss.map(x=>['mixed',x.msg,__cpStrip(x.msg,r.cf.concat(r.W,r.SP))])})", casesm)
+        msgs += await pg.evaluate("""()=>Object.values(C2EXAMPLES).flatMap(e=>{const ps=['good','bad'].flatMap(s=>e[s].cf.concat(e[s].cp)).map(c2Parse);
+            const run=s=>c2Check({k:'ex',cf:e[s].cf,open:e.open},e.sp,e.pos,e[s].cp.map(x=>c2Parse(x.replace('#','')).dn),e.br||[]).iss.map(x=>['rule card',x.msg,__cpStrip(x.msg,ps)]);
+            return[['rule card (shown)',anA(e.msg),__cpStrip(anA(e.msg),ps)]].concat(run('good'),run('bad'))})""")
+        ABBR = re.compile(r'\b[dAPMm]\d+\b')                                  # P5, M6, m3, d5, A4, P12 ... (pitch names removed first)
+        ABBR_RAW = re.compile(r'\b(?:a|an|dissonant)\s+[dAPMm]\d+\b')          # an abbreviation after an article (pitch names never are)
+        WRONG_A = re.compile(r'\ba\s+(?:augmented|octave|11th|18th)\b')
+        WRONG_AN = re.compile(r'\ban\s+(?:perfect|major|minor|diminished|doubly|unison|double|[2-79]|1[02-7])')
+        bad_m = collections.Counter()
+        for src, raw, stripped in msgs:
+            COUNT['checker messages read for interval names'] += 1
+            COUNT[f'  messages from {src}'] += 1
+            for what, rx, txt in (('abbreviated interval', ABBR, stripped), ('abbreviated interval after an article', ABBR_RAW, raw),
+                                  ("'a' before a vowel sound", WRONG_A, raw), ("'an' before a consonant sound", WRONG_AN, raw)):
+                if rx.search(txt):
+                    bad_m[what] += 1
+                    if bad_m[what] <= 3:
+                        fail('N', f'{what} in a {src} message: {raw}')
+        COUNT['distinct checker messages'] = len({m[1] for m in msgs})
+        reg('N-10', f'interval names spelled out, articles right, in all {len(msgs)} checker messages of the corpus', not bad_m and len(msgs) > 50000, dict(bad_m))
+        # the spelled-out name of every ordered pair of section A's 105 pitches, against music21's own interval name
+        app_nm = await pg.evaluate("(P)=>{const out=[];for(const a of P)for(const b of P)out.push(typeof c2IvA==='function'?c2IvA(c2Iv(c2Pitch(a[0],a[1]),c2Pitch(b[0],b[1]))):'(no c2IvA)');return out}", pitches)
+        ORD = lambda n: f"{n}{'th' if 11 <= n % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
+        k = 0; bad_n = 0
+        for a in pitches:
+            for bb in pitches:
+                pa, pb = P(*a), P(*bb)
+                lo, hi = (pa, pb) if (pa.midi, pa.dn) <= (pb.midi, pb.dn) else (pb, pa)
+                m = m21interval.Interval(noteStart=m21pitch.Pitch(lo.m21()), noteEnd=m21pitch.Pitch(hi.m21()))
+                g = m.generic.undirected
+                ql = m.niceName.rsplit(' ', 1)[0].lower()
+                ql = 'doubly altered' if ql.startswith(('doubly', 'triply')) else ql
+                base = {1: 'unison', 8: 'octave', 15: 'double octave'}.get(g, ORD(g))
+                want = base if (ql == 'perfect' and g in (1, 8, 15)) else f'{ql} {base}'
+                want = ('an ' if re.match(r'(augmented|octave)', want) else 'a ') + want
+                COUNT['spelled-out interval names (all pitch pairs) vs music21'] += 1
+                if app_nm[k] != want:
+                    bad_n += 1
+                    if bad_n <= 3:
+                        fail('N', f'c2IvA{pa, pb}: app {app_nm[k]!r}, music21 {want!r} ({m.niceName})')
+                k += 1
+        reg('N-10', 'the spelled-out name and article of every pair of 105 pitches match music21', not bad_n, f'{bad_n} differ')
 
         # ---------------- G: climb 13 - subjects, answers, inversion, augmentation, diminution ----------------
         subs = await pg.evaluate("()=>{const o=[];for(const sys in C13SUB)for(const k in C13SUB[sys]){const s=C13SUB[sys][k];o.push({sys,id:k,cells:s.cells,key:s.key||null,mk:s.mk||null})}return o}")
