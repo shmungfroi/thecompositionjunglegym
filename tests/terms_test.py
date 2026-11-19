@@ -28,8 +28,12 @@ appears), and after every click the page is scanned:
       L1  no back-to-back brackets "(US: ...) (" and no bracket nested inside a bracket; L3 no "Perfect cadence, less final"
           with a capital mid-sentence; L4 no "= US"; L5 a hover naming "imperfect authentic" carries the note; L7 no dotted
           underline under a term whose bracket is showing.
+      L8 (0.48 merge) a hand-written bracket after a term names the full US term ("imperfect cadence (US: half)" fails);
+      C1 (0.48 merge) a short cadence answer button ("Perfect", "Imperfect", "Interrupted" beside other cadence names in one answer
+          group) carries the FULL US term on hover ("US: authentic cadence"), never a shortened one ("US: authentic").
       Targeted cases run first: the Gym reader fed I-IV-V-I, I-IV-I, I-V, V6-I and an empty progression; a page fragment
-      with the exact strings the independent check quoted; buttons whose text changes.
+      with the exact strings the independent check quoted; buttons whose text changes; every Ear Lab cadence feedback
+      sentence (right, wrong, Nearly on and off) for every answer pair; the Ear Lab rung 3 cadence buttons.
   TERMS_FAST=1 runs T1, the targeted T6 cases and every view at Stage 6 without the click sweep (about 2 minutes).
 """
 import sys, os, asyncio, json, pathlib, re, collections
@@ -101,6 +105,12 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
  const usOf=(k,w)=>{const u=RULE[k][1];if(!u)return null;const pl=/s$/i.test(w);if(/rests?$/i.test(w))return u.replace(/ note$/,' rest')+(pl?'s':'');return pl?(k==='stave'?'staffs':u+'s'):u};
  const termsIn=t=>{const o=[];for(const k in FIND){if(!RULE[k][1])continue;FIND[k].lastIndex=0;let m;while((m=FIND[k].exec(t)))o.push([k,m[0],m.index])}return o};
  const BTN='button,[role="button"],.chip,option,.pill,.fbar>small';
+ // C1: a button whose own text is just the short cadence name, in an answer group with at least one other cadence name, stands for the term
+ const SHORTCAD={perfect:'perfect',imperfect:'imperfect',interrupted:'interrupted'},CADNAMES=/^(perfect|plagal|imperfect|interrupted|phrygian|cadential\b.*)$/i;
+ // the name on the button, without a status badge the card adds after an answer ("Your answer", "Answer")
+ const nameOf=b=>{const c=b.cloneNode(true);c.querySelectorAll('.el-badge').forEach(x=>x.remove());return c.textContent.trim()};
+ const shortCad=b=>{const w=nameOf(b).toLowerCase();if(!SHORTCAD[w]||!b.parentElement)return null;
+  const sib=[...b.parentElement.children].filter(x=>x!==b&&x.matches(BTN)&&CADNAMES.test(nameOf(x)));return sib.length?SHORTCAD[w]:null};
  const usList=ti=>{const seg=(ti||'').split(' · ').filter(x=>/^US: /.test(x));return seg.length?seg[seg.length-1].slice(4).split(', '):[]};
  const ownText=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT);let t='',n;while((n=w.nextNode()))if(!n.parentElement.closest('[data-notm]')&&n.parentElement.closest(BTN)===e)t+=n.nodeValue+' ';return t};
  // a bracket follows the term, or (0.48 R6 fix) sits inside the term's own following bracket: "Perfect cadence (US: authentic cadence; V–I)"
@@ -120,6 +130,8 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
   M.querySelectorAll(BTN).forEach(b=>{const s=b.textContent;window.__TN.buttons++;if(b.closest('svg,[data-notm]'))return;
    if(/\(US/.test(s))add('T3',where+': button/chip shows a bracket: "'+s.trim().slice(0,70)+'"');
    const el=b,tl=el.getAttribute('title')||'',got=usList(tl),want=new Set(termsIn(ownText(el)).map(([k,w])=>usOf(k,w)));
+   const sc=shortCad(el);if(sc)want.add(RULE[sc][1]);
+   got.forEach(u=>{if(/^(authentic|half|deceptive)$/i.test(u))add('T6',where+': shortened US term on hover (C1) "US: '+u+'" on "'+s.trim().slice(0,60)+'"; expected the full term')});
    // T3 / T6 M3: every term on the button has its hover, in the right form (plural, rest)
    want.forEach(u=>{if(!got.includes(u))add('T3',where+': "'+s.trim().slice(0,60)+'" has no hover "US: '+u+'" (title "'+tl+'")')});
    // T6 H1/H2: no hover names a US term the current text does not contain (stale, piled up, or a wrong N-bar pairing)
@@ -149,6 +161,11 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
   if(/half[–-]whole/i.test(t))add('T6',where+': "half–whole" stands on its own');
   {const mm=/[a-z,;:] Perfect cadence, less final/.exec(txt);if(mm)add('T6',where+': capital mid-sentence (L3): "'+txt.slice(Math.max(0,mm.index-40),mm.index+40)+'"')}
   if(/= US /.test(txt))add('T6',where+': "= US" (US twice in the climb 3 row)');
+  // T6 L8: a hand-written bracket after a term names the full US term, in the right form
+  M.querySelectorAll('abbr.tm').forEach(a=>{if(a.dataset.lit!=='1'||a.closest('[data-notm]'))return;const k=a.dataset.k;if(!RULE[k]||!RULE[k][1])return;
+   let h=a,m=a.nextSibling;while(!m&&h.parentElement&&/^(B|I|EM|STRONG)$/.test(h.parentElement.nodeName)){h=h.parentElement;m=h.nextSibling}
+   const nx=m&&m.nodeType===3?m.nodeValue:'',c=/^\s*[(\[]US:\s*([^);\]]*)/.exec(nx);if(!c)return;const want=usOf(k,a.textContent),gotU=c[1].split(',')[0].trim();
+   if(gotU!==want)add('T6',where+': hand-written bracket after "'+a.textContent+'" reads "US: '+c[1]+'", expected "US: '+want+'" (L8): "'+(a.parentElement.textContent||'').trim().slice(0,80)+'"')});
   // T6 L7: no dotted underline where the bracket shows
   M.querySelectorAll('abbr.tm').forEach(a=>{if(a.offsetParent&&bracketed(a)&&!a.closest('[data-notm]')&&getComputedStyle(a).textDecorationLine!=='none')add('T6',where+': "'+a.textContent+'" is underlined although its bracket shows (L7)')});
   // T3 headings: the first mention of a term in a heading carries both
@@ -234,6 +251,41 @@ async def targeted(pg):
             ok('T6', lab)
     await pg.evaluate("__chk('T6 fragment')")
     await pg.evaluate("$('tmfrag').remove()")
+    # every Ear Lab cadence feedback sentence (right; wrong; Nearly on and off), every answer x given pair, as feedback in a room
+    n = await pg.evaluate("""async()=>{const SIX=['perfect','plagal','imperfect','interrupted','phrygian','cad64'],o=[];
+        for(const a of SIX){let q=null;for(let i=0;i<4000&&!q;i++){const x=earGen('cad',3);if(x&&x.a===a)q=x}if(!q)continue;const min=q.key.mode==='min';
+          o.push(earCadRight(a,q,min));for(const g of SIX)if(g!==a){o.push(earCadWrong(a,g,q,min,null));o.push(earCadWrong(a,g,q,min,{kind:'nearly'}))}}
+        const d=document.createElement('div');d.className='room';d.id='tmear';d.innerHTML=o.map(t=>'<div class="el-teach"><p>'+t+'</p></div>').join('');
+        document.querySelector('main').appendChild(d);termPass();return o.length}""")
+    COUNT['T6 Ear Lab cadence feedback sentences checked'] = n
+    if n < 60:
+        fail('T6', f'Ear Lab cadence feedback: only {n} sentences built')
+    short = await pg.evaluate(r"()=>[...document.querySelectorAll('#tmear p')].map(p=>p.textContent).filter(t=>/[(\[]US: (half|authentic|deceptive)[)\]]/.test(t))")
+    if short:
+        fail('T6', f'L8 Ear Lab feedback with a shortened US bracket: {short[:2]}')
+    else:
+        ok('T6', 'L8 Ear Lab cadence feedback: no shortened US bracket')
+    await pg.evaluate("__chk('T6 Ear Lab cadence feedback')")
+    await pg.evaluate("$('tmear').remove()")
+    # C1: the Ear Lab rung 3 cadence buttons: short Australian names, the full US term on hover
+    eb = await pg.evaluate("""()=>new Promise(res=>{const L0=EAR.lvl.cad;location.hash='ear';EAR.drill='cad';EAR.lvl.cad=3;room('ear');
+        setTimeout(()=>{const r=[...document.querySelectorAll('#earMain [data-earans]')].map(b=>[b.textContent.trim(),b.getAttribute('title')]);EAR.lvl.cad=L0;room('ear');res(r)},400)})""")
+    want_eb = [['Perfect', 'US: authentic cadence'], ['Plagal', None], ['Imperfect', 'US: half cadence'], ['Interrupted', 'US: deceptive cadence'],
+               ['Phrygian', None], ['Cadential 64', None]]
+    if eb != want_eb:
+        fail('T6', f'C1 Ear Lab rung 3 cadence buttons: got {eb}, expected {want_eb}')
+    else:
+        ok('T6', 'C1 Ear Lab cadence buttons carry the full US term on hover')
+    # ... and still after an answer, when the card adds its "Your answer" / "Answer" badges to the buttons
+    ea = await pg.evaluate("""()=>new Promise(res=>{const L0=EAR.lvl.cad;EAR.drill='cad';EAR.lvl.cad=3;let q;do{q=earGen('cad',3)}while(q.a!=='perfect');
+        EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();document.querySelector('#earMain [data-earans="imperfect"]').click();
+        setTimeout(()=>{const r=Object.fromEntries([...document.querySelectorAll('#earMain [data-earans]')].map(b=>[b.dataset.earans,b.getAttribute('title')]));
+          __chk('T6 Ear Lab cadence answered');EAR.lvl.cad=L0;EAR.q=null;EAR.done=false;EAR.res=null;room('ear');res(r)},400)})""")
+    want_ea = {'perfect': 'US: authentic cadence', 'plagal': None, 'imperfect': 'US: half cadence', 'interrupted': 'US: deceptive cadence', 'phrygian': None, 'cad64': None}
+    if ea != want_ea:
+        fail('T6', f'C1 Ear Lab cadence buttons after an answer: got {ea}, expected {want_ea}')
+    else:
+        ok('T6', 'C1 Ear Lab cadence buttons keep the full US hover after an answer (badges shown)')
     # the Gym cadence reader (#cad) is answer feedback: brackets, and no hover that piles up
     await pg.evaluate("location.hash='gym'")
     await pg.wait_for_timeout(500)
