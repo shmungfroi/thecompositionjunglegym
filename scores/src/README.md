@@ -27,6 +27,8 @@ Verovio names notes and bars after their line in the Humdrum file (`note-L23F1`,
 
 `engrave.py` repeats the bar, anchor and note check every time it runs and stops on any difference.
 
+**Unisons (0.48 fix R17).** Where tenor and bass (or any two voices) sound the same note together, onset, pitch and length cannot tell the two notes apart, and the 0.47 engraving gave six tenor–bass unisons each other's ids (BWV 269 bar 2; O Haupt bars 1, 8, 9, 11; Jesu bar 4). `engrave.py` now takes the voice from the grand-staff note's staff and layer (upper staff: soprano, alto; lower staff: tenor, bass) and gives it the id of the same voice. `tests/score_ids_test.py` checks every chorale note's id against its staff and layer, and every cadence anchor's onset against the cadence's arrival.
+
 **BWV 269 line numbers.** An earlier mock-up found this file's line numbers two lower than the app's ids. The repository history explains it: the app's ids (`measure-L24` for bar 1) match every revision of `chor001.krn` from 6b90020 (20 Nov 2023, "Dual source encoding test for IIIF bounding boxes") to the current HEAD. Revisions 8036aea, 2016968 and f91f6cc (also 20 Nov and 19 Nov 2023) give bar 1 as `measure-L23`, and afea806 and earlier (18 Nov 2023 back to 2022) as `measure-L22`: two lower. Those revisions lack the `!!xywh` IIIF bounding-box lines added in November 2023; the music is the same. So the app was built from a revision at or after 6b90020, and the mock-up used an older copy. The file here is the current HEAD, whose ids match.
 
 ## Engraving notes
