@@ -33,4 +33,4 @@ Removed the guitartabs.cc source and the "capo 5, shapes Am G F, sound Dm C B-fl
 ## Tests (self-run in /home/claude/wt-lic)
 - content_lint: passed (56 entries, no failures).
 - unit_test: 637 checks, 0 failures.
-- pageerrors_test: see the final line below.
+- pageerrors_test: passed (0 errors; 881 seeded random clicks, 0 errors). No browser crash, no retry needed.
