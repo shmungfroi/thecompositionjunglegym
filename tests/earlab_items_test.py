@@ -390,6 +390,68 @@ async def main():
             return{labels,fb,near}}""", RNG)
         sec_S(k3, k3r, ui)
 
+        # ---------------- M: EL-10 stats model and scoring flow ----------------
+        unit = await pg.evaluate("""()=>{const Z=EARST0,o=[];const run=ks=>ks.reduce((s,k)=>earStatNext(s,k),Z);
+            const cases=[[[],{n:0,ok:0,streak:0,best:0,shown:0,skipped:0}],[['ok'],{n:1,ok:1,streak:1,best:1,shown:0,skipped:0}],
+             [['ok','ok','shown'],{n:2,ok:2,streak:2,best:2,shown:1,skipped:0}],[['ok','skipped','ok'],{n:2,ok:2,streak:2,best:2,shown:0,skipped:1}],
+             [['ok','ok','miss','ok'],{n:4,ok:3,streak:1,best:2,shown:0,skipped:0}],[['shown','shown','skipped'],{n:0,ok:0,streak:0,best:0,shown:2,skipped:1}],
+             [['miss','shown','ok','skipped','ok','ok'],{n:4,ok:3,streak:3,best:3,shown:1,skipped:1}]];
+            for(const [ks,want] of cases)o.push({ks,got:run(ks),want});
+            // old saved records (no shown/skipped) are read with zeros, and the input is never changed
+            const old={n:3,ok:2,streak:1,best:2},nx=earStatNext(old,'skipped');o.push({ks:['legacy+skipped'],got:nx,want:{n:3,ok:2,streak:1,best:2,shown:0,skipped:1}});
+            o.push({ks:['input unchanged'],got:old,want:{n:3,ok:2,streak:1,best:2}});return o}""")
+        for c in unit:
+            COUNT['EL-10 stats model unit cases'] += 1
+            if c['got'] != c['want']:
+                fail('M', f"earStatNext {c['ks']}: {c['got']} != {c['want']}")
+        dialogs = []
+        pg.on('dialog', lambda d: (dialogs.append(d.message), asyncio.ensure_future(d.dismiss())))
+        flow = await pg.evaluate("""async()=>{const o={};const st=()=>({...earSt()}),strip=()=>(document.querySelector('#earMain .earstat')||{}).textContent||'';
+            const click=sel=>{const b=document.querySelector('#earMain '+sel);if(!b)throw new Error('no '+sel);b.click()};
+            window.earPlay=()=>{};EAR.drill='cad';EAR.lvl.cad=2;EAR.st.cad={...EARST0};EAR.q=null;EAR.done=false;renderEar();
+            click('[data-earnew]');o.start=st();
+            click('[data-earans="'+EAR.q.a+'"]');o.right1=st();click('[data-earnew]');
+            click('[data-earans="'+EAR.q.a+'"]');o.right2=st();click('[data-earnew]');
+            click('[data-earshow]');o.shown=st();o.shownStrip=strip();o.shownRes=document.querySelector('#earMain .earres').textContent;click('[data-earnew]');
+            click('[data-earnew]');o.skipped=st();o.skipStrip=strip();o.toast=document.getElementById('toast').textContent;
+            const wrong=EAR.q.opts.find(x=>x!==EAR.q.a);click('[data-earans="'+wrong+'"]');o.miss=st();
+            // melody: undo and redo end once the answer is marked (buttons gone, Ctrl+Z does nothing)
+            EAR.drill='mel';EAR.lvl.mel=1;EAR.q=null;renderEar();click('[data-earnew]');const q=EAR.q;
+            for(const x of q.a.slice(1))click('.earstep[data-earsol="'+x+'"]');o.undoBefore=!!document.querySelector('#earMain [data-hist="ear:u"]:not([disabled])');
+            click('[data-earchk]');const ans=JSON.stringify(EAR.ans);
+            o.undoAfter=document.querySelectorAll('#earMain [data-hist]').length;o.histActive=histActive();o.histLen=HIST.ear.u.length+HIST.ear.r.length;
+            document.dispatchEvent(new KeyboardEvent('keydown',{key:'z',ctrlKey:true,bubbles:true}));document.dispatchEvent(new KeyboardEvent('keydown',{key:'y',ctrlKey:true,bubbles:true}));
+            o.ansKept=JSON.stringify(EAR.ans)===ans&&EAR.done;
+            // reset: inline confirm, keep, reset, undo
+            EAR.drill='cad';EAR.q=null;EAR.done=false;renderEar();const before=st();
+            click('[data-earreset]');o.ask=!!document.querySelector('#earMain [data-earresetyes]')&&!!document.querySelector('#earMain [data-earresetno]');o.askText=strip();
+            click('[data-earresetno]');o.kept=JSON.stringify(st())===JSON.stringify(before)&&!!document.querySelector('#earMain [data-earreset]');
+            click('[data-earreset]');click('[data-earresetyes]');o.zero=st();o.undoBtn=!!document.querySelector('#earMain [data-earresetundo]');
+            click('[data-earresetundo]');o.restored=JSON.stringify(st())===JSON.stringify(before);o.saved=JSON.stringify(LS.get('cjg_ear').st.cad)===JSON.stringify(before);
+            return o}""")
+        exp = {'start': (0, 0, 0, 0, 0, 0), 'right1': (1, 1, 1, 1, 0, 0), 'right2': (2, 2, 2, 2, 0, 0), 'shown': (2, 2, 2, 2, 1, 0),
+               'skipped': (2, 2, 2, 2, 1, 1), 'miss': (3, 2, 0, 2, 1, 1)}
+        for k, v in exp.items():
+            got = tuple(flow[k][x] for x in ('n', 'ok', 'streak', 'best', 'shown', 'skipped'))
+            COUNT['EL-10 flow checks'] += 1
+            if got != v:
+                fail('M', f'flow after {k}: (n, ok, streak, best, shown, skipped) = {got}, expected {v}')
+        if 'shown 1' not in flow['shownStrip'] or not flow['shownRes'].startswith('Here it is.'):
+            fail('M', f"Show me: stats line '{flow['shownStrip']}', result '{flow['shownRes'][:40]}'")
+        if 'skipped 1' not in flow['skipStrip'] or 'skipped' not in flow['toast'].lower():
+            fail('M', f"Next before answering: stats line '{flow['skipStrip']}', toast '{flow['toast']}'")
+        if not flow['undoBefore'] or flow['undoAfter'] or flow['histActive'] is not None or flow['histLen'] or not flow['ansKept']:
+            fail('M', f"undo/redo after marking: before {flow['undoBefore']}, buttons after {flow['undoAfter']}, histActive {flow['histActive']}, stack {flow['histLen']}, answer kept {flow['ansKept']}")
+        if not (flow['ask'] and 'Reset the cadences score to zero?' in flow['askText'] and flow['kept']):
+            fail('M', f"reset does not ask inline first: {flow['askText']}")
+        if tuple(flow['zero'][x] for x in ('n', 'ok', 'streak', 'best', 'shown', 'skipped')) != (0,) * 6 or not flow['undoBtn']:
+            fail('M', f"reset: {flow['zero']}, undo offered {flow['undoBtn']}")
+        if not (flow['restored'] and flow['saved']):
+            fail('M', 'reset undo does not restore (and save) the score')
+        COUNT['EL-10 flow checks'] += 6
+        if dialogs:
+            fail('M', f'browser dialogs opened: {dialogs}')
+
         if errs:
             fail('page', f'page errors: {errs[:5]}')
         await b.close()
