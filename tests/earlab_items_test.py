@@ -417,8 +417,10 @@ def sec_S(items, real, ui):
     # 0.48 logic + card: a family answer is Nearly (EAR_NEARLY on: gold panel, "Nearly", the spec 9.5 sentence, the button marked is-near);
     # with the switch off it is a wrong answer whose text names the family without calling the answer right (reconcile 0.48)
     for a, r in ui['near'].items():
-        say = {'phrygian': 'and that is right: this is an imperfect cadence (US: half). It is the special kind.', 'cad64': 'and that is right. Listen just before V'}[a]
-        if not r or 'near' not in r['cls'].split() or r['verdict'] != 'Nearly' or say not in r['teach'] or r['opt'] is None:
+        # 0.48 terms merge: the cadence bracket is the term pass's full "(US: half cadence)", never a hand-written "(US: half)"
+        say = {'phrygian': r'and that is right: this is an imperfect cadence( \(US: half cadence\))?\. It is the special kind\.', 'cad64': r'and that is right\. Listen just before V'}[a]
+        if not r or 'near' not in r['cls'].split() or r['verdict'] != 'Nearly' or not re.search(say, r['teach']) or r['opt'] is None \
+                or re.search(r'\(US: (half|authentic|deceptive)\)', r['teach']):
             fail('S', f'{a} answered with its family (Nearly on): {r}')
     for a, r in ui['nearOff'].items():
         if not r or 'bad' not in r['cls'].split() or r['verdict'] != 'Not this time' or 'that is the right family' not in r['teach'] \

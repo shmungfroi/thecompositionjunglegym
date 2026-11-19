@@ -1599,11 +1599,13 @@ function termWrapIn(root){
  if(root.nodeType===3){termWrapNode(root);return}
  const tw=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT,{acceptNode:x=>x.nodeType===1?(/^(SVG|SCRIPT|STYLE|TEXTAREA)$/i.test(x.nodeName)||x.classList.contains('tm')||x.hasAttribute('data-notm')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_SKIP):NodeFilter.FILTER_ACCEPT});
  const nodes=[];let x;while((x=tw.nextNode()))nodes.push(x);nodes.forEach(termWrapNode)}
-/* the hover on a button or chip is rebuilt from its CURRENT text on every pass (never added to), after any title the app gave it */
+/* the hover on a button or chip is rebuilt from its CURRENT text on every pass (never added to), after any title the app gave it.
+ A short label that stands for a term without naming it in full ("Perfect" on a cadence answer button) declares the term in data-tk
+ (one or more keys, comma-separated); its hover gives the full US term from TERMS (the whole term, "cadence" included), never a shortened one. */
 function termBtnSync(b){
  if(!b.isConnected||b.closest('svg,[data-notm]'))return;
  const tw=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);let txt='',n,m;while((n=tw.nextNode()))if(!n.parentElement.closest('[data-notm]'))txt+=n.nodeValue+' ';
- const L=[];TM_RX.lastIndex=0;while((m=TM_RX.exec(txt))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUSw(k,m[0]);if(u&&!L.includes(u))L.push(u)}
+ const L=(b.dataset.tk||'').split(',').map(k=>termUS(k.trim())).filter(Boolean);TM_RX.lastIndex=0;while((m=TM_RX.exec(txt))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUSw(k,m[0]);if(u&&!L.includes(u))L.push(u)}
  if(!L.length&&b.dataset.tset===undefined)return;
  const cur=b.getAttribute('title')||'';if(b.dataset.tset===undefined||cur!==b.dataset.tset)b.dataset.t0=cur;   // the app's own title (kept, and refreshed if the app changed it)
  const t0=b.dataset.t0,nt=L.length?(t0?t0+' · ':'')+'US: '+L.join(', ')+(L.includes(TERMSBY.iac.us)?' · '+TERM_NOTE:''):t0;
@@ -1633,7 +1635,8 @@ function termBrackets(){
   a.classList.toggle('tmb',want||lit);   // no dotted underline where the bracket already shows the US term
   if(want||lit){bs.add(t.k);rs.add(t.k)}})}
 function termPass(roots){const R=(roots&&roots.length?roots:[document.body]).filter(r=>r&&r.isConnected);
- R.forEach(r=>{termWrapIn(r);const e=r.nodeType===1?r:r.parentElement,bt=e&&e.closest(TM_BTN);if(bt)TM_BQ.add(bt);if(r===document.body)document.querySelectorAll('[data-tset]').forEach(x=>TM_BQ.add(x))});
+ R.forEach(r=>{termWrapIn(r);const e=r.nodeType===1?r:r.parentElement,bt=e&&e.closest(TM_BTN);if(bt)TM_BQ.add(bt);
+  if(r.nodeType===1){if(r.matches('[data-tk]'))TM_BQ.add(r);r.querySelectorAll('[data-tk]').forEach(x=>TM_BQ.add(x))}if(r===document.body)document.querySelectorAll('[data-tset]').forEach(x=>TM_BQ.add(x))});
  TM_BQ.forEach(termBtnSync);TM_BQ.clear();termBrackets()}
 let TM_T=0,TM_OBS=null;const TM_Q=new Set();
 function termInit(){
@@ -7198,7 +7201,7 @@ const ELTIPS={
  mel:[['Sing it back in solfa before you answer.','The key chord plays first and the first note is always given.'],['Movable do.','Do is home in a major key; in a minor key the home is la, and si is the raised 7th that leads up to la.'],['Mind the octave marks.','A comma marks the octave below (s, l, t,), an apostrophe the octave above (d\').']],
  blind:[['Hear the tonic chord first.','It sets the key, then the phrase plays with the score hidden.'],['Name the cadence at the end.','Listen to the last chord, then the one before it.'],['Check it against the score.','Open the same phrase in the Analysis room and compare.']]};
 const ELTIPNOTE={metre:'The speed changes every time (60–120 beats a minute), so fast or slow is never a clue. 6/8 is two beats of three quavers, not six beats. Irregular metres mix groups of 2 and 3: 5/4 here is felt 3+2, 7/8 as 2+2+3.',
- rhy:'The strip under the notes shows how long each sound lasts. A dashed gap is a rest. A dotted crotchet and a quaver is long-short across two beats; quaver, crotchet, quaver is short-long-short. Rung 1 is clapped; from rung 2 it is on one note, so you can hear how long each note lasts.',
+ rhy:'The strip under the notes shows how long each sound lasts. A dashed gap is a rest. A dotted crotchet and a quaver is long-short across two beats; <span data-notm>quaver, crotchet, quaver</span> is short-long-short. Rung 1 is clapped; from rung 2 it is on one note, so you can hear how long each note lasts.',
  qual:'Every chord is in root position, played high or low.',
  cad:'Australian names are used here: perfect cadence (US: authentic cadence), imperfect cadence (US: half cadence), interrupted cadence (US: deceptive cadence). Rung 3 (Stage 6) adds the Phrygian cadence, an imperfect cadence in a minor key (iv⁶–V), and the cadential 6/4, the decorated approach to V.',
  bass:'The key chord plays first, and chord 1 is always I. "Bass only" plays just the bottom notes.',
@@ -7207,7 +7210,8 @@ const ELTIPNOTE={metre:'The speed changes every time (60–120 beats a minute), 
 const ELCADL={perfect:'Perfect',plagal:'Plagal',imperfect:'Imperfect',interrupted:'Interrupted',phrygian:'Phrygian',cad64:'Cadential <span class="fig"><i>6</i><i>4</i></span>'};
 // the US words come from the shared term list (R6), without the word "cadence"
 const elUS=k=>{const u=termUS(k);return u?u.replace(/ cadence$/,''):''};
-const ELCADUS=new Proxy({},{get:(o,k)=>({perfect:'perfect',imperfect:'imperfect',interrupted:'interrupted'})[k]?'US: '+elUS(k):''});
+// the cadence answer buttons show the short Australian name and declare the term (data-tk): the term pass gives them the full US hover
+const elTk=k=>['perfect','imperfect','interrupted'].includes(k)?k:'';
 // the key line under the cadence answer buttons (Justin 19 Nov, 7): only for the names on offer; each pair stays unbroken; Fable FR-9: no Plagal line
 function elCadKeyHTML(list){const m=['perfect','imperfect','interrupted'].filter(k=>list.includes(k));if(!m.length)return'';
  const t=m.map(k=>`<span style="white-space:nowrap">${ELCADL[k]} = US ${elUS(k)}</span>`);
@@ -7325,8 +7329,8 @@ function earCadRight(a,q,min){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?'VI':'
 /* Nearly (EAR_NEARLY): the family answer for a Phrygian or cadential 6/4. on = the answer was marked Nearly; off = marked wrong (the switch is
    off), so the text must not say "that is right" about the answer, only about what was heard. */
 function earCadNear(a,min,on){const T=min?'i':'I';
- if(a==='phrygian')return on?'You heard it stop on V, and that is right: this is an imperfect cadence (US: half). It is the special kind. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.'
-  :'You heard it stop on V, and that is the right family: a Phrygian cadence is a kind of imperfect cadence (US: half). The answer here is the more exact name. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.';
+ if(a==='phrygian')return on?'You heard it stop on V, and that is right: this is an imperfect cadence. It is the special kind. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.'
+  :'You heard it stop on V, and that is the right family: a Phrygian cadence is a kind of imperfect cadence. The answer here is the more exact name. In a minor key the bass steps down a semitone, fa to mi (iv⁶ to V), and that is called a Phrygian cadence.';
  return on?`You heard V to ${T} close the phrase, and that is right. Listen just before V: the bass is already on the dominant, with the tonic chord sitting on top of it (${T}⁶₄). That delay is the cadential 6/4.`
   :`You heard V to ${T} close the phrase, and that is the right family: a cadential 6/4 decorates a perfect cadence. The answer here is the more exact name. Listen just before V: the bass is already on the dominant, with the tonic chord sitting on top of it (${T}⁶₄). That delay is the cadential 6/4.`}
 // "Cadential 6/4" for an interrupted cadence reached through one (CAD64_INT_NEARLY: on = Nearly, off = wrong)
@@ -7349,12 +7353,12 @@ function earCadWrong(a,g,q,min,res){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?
  'plagal>imperfect':F.has&&!F.penSD?`The last chord is V, not ${T}, so the phrase is left open. The chord before it is ${earRnTxt(F.pen)}, not ${SD}.`
   :`You heard ${SD} near the end, and that is right. But the last chord is V, not ${T}, so the phrase is left open.`,
  'imperfect>plagal':`You heard ${SD} near the end, and that is right. It moves to ${T}, not V: the phrase comes home.`,
- 'plagal>phrygian':`You heard the subdominant, and it is there: iv is the chord before the end. But the phrase does not come home to i. It stops on V, with the bass stepping down a semitone, fa to mi. That falling semitone is the Phrygian cadence, a kind of imperfect cadence (US: half).`,
- 'phrygian>imperfect':'You heard it stop on V, and that is right. But the bass does not fall a semitone into V here, so it is a plain imperfect cadence (US: half).',
+ 'plagal>phrygian':`You heard the subdominant, and it is there: iv is the chord before the end. But the phrase does not come home to i. It stops on V, with the bass stepping down a semitone, fa to mi. That falling semitone is the Phrygian cadence, a kind of imperfect cadence.`,
+ 'phrygian>imperfect':'You heard it stop on V, and that is right. But the bass does not fall a semitone into V here, so it is a plain imperfect cadence.',
  'cad64>perfect':`You heard V to ${T}, and that is right. Here V arrives directly: there is no ${T}⁶₄ held over the dominant bass before it.`+(F.soHeld?` (The bass does stay on ${EARSOL5(q.key.mode)}, but the chord over it is V, then V7.)`:'')};
  let t;
  if(M[key])t=M[key];
- else if(a==='phrygian')t='The phrase does not close: it stops on V. In the bass, fa falls a semitone to mi. That is the Phrygian cadence, a kind of imperfect cadence (US: half).';
+ else if(a==='phrygian')t='The phrase does not close: it stops on V. In the bass, fa falls a semitone to mi. That is the Phrygian cadence, a kind of imperfect cadence.';
  else if(a==='cad64')t=`Follow the bass: it reaches the dominant and stays on it for two chords, ${T}⁶₄ then V, before moving home to ${T}.`;
  else if(g==='phrygian')t=`${M[`imperfect>${a}`]||''} A Phrygian cadence stops on V, after the bass falls a semitone into it.`.trim();
  // the spec's "There is no held dominant bass here" is untrue wherever V moves to V7 over one bass note (rung 3 perfect and interrupted)
@@ -7413,7 +7417,7 @@ function earOptCls(v,q,pre=''){if(!EAR.done)return'';const res=EAR.res,g=res&&re
 function earBadge(v,q){if(!EAR.done)return'';const g=EAR.res&&EAR.res.given;
  if(v===q.a)return`<span class="el-badge">${ELICON.tick}<span>${g===v?'Your answer':'Answer'}</span></span>`;
  if(g===v)return EAR.res.nearly?`<span class="el-badge">${ELICON.near}<span>Your answer</span></span>`:`<span class="el-badge">${ELICON.cross}<span>Your answer</span></span>`;return''}
-function earOptBtn(v,lab,q,o={}){const lock=EAR.done||!q;return`<button class="el-opt ${o.cls||''} ${q?earOptCls(v,q):''}" data-earans="${v}" ${lock?'disabled':''}${o.title?` title="${o.title}"`:''}${o.aria?` aria-label="${o.aria}"`:''}>${q?earBadge(v,q):''}${lab}</button>`}
+function earOptBtn(v,lab,q,o={}){const lock=EAR.done||!q;return`<button class="el-opt ${o.cls||''} ${q?earOptCls(v,q):''}" data-earans="${v}" ${lock?'disabled':''}${o.title?` title="${o.title}"`:''}${o.tk?` data-tk="${o.tk}"`:''}${o.aria?` aria-label="${o.aria}"`:''}>${q?earBadge(v,q):''}${lab}</button>`}
 function earMetreGridHTML(q,l){const wait=!q,rows=[['Simple','each beat splits in two',['2/4','3/4','4/4']],['Compound','each beat splits in three',['6/8','9/8','12/8']]];
  if(l>=3)rows.push(['Irregular','uneven groupings',['5/4','7/8']]);
  const cell=m=>{const[n,d]=m.split('/');return earOptBtn(m,elSigSVG(n,d)+elPicSVG(ELGRP[m],ELGAP[m]),q,{cls:'el-mcell',aria:`${ELMETN[m]}, ${n} ${d}`})};
@@ -7422,8 +7426,8 @@ function earMetreGridHTML(q,l){const wait=!q,rows=[['Simple','each beat splits i
  return`<div class="el-lbl" data-notm>Your answer</div><div class="el-mgrid el-opts${wait?' wait':''}" role="group" aria-label="Metre">${h}</div>`}
 function earOptsAreaHTML(q,l){const d=EAR.drill;if(d==='metre')return earMetreGridHTML(q,l);
  const list=d==='qual'?earQualOpts(l):d==='cad'?(q&&q.opts||earCadOpts(l)):earBlindCats(l).length?earBlindCats(l):Object.keys(CADL);
- const lab=k=>d==='qual'?QUALS[k]:d==='cad'?ELCADL[k]:ELCADL[k],ttl=k=>d!=='qual'?ELCADUS[k]:'',cls=d==='qual'&&list.length===2?' c2':d==='qual'&&list.length===4?' q4':'';
- return`<div class="el-lbl" data-notm>Your answer</div><div class="el-opts${cls}${q?'':' wait'}" role="group" aria-label="Answer">${list.map(k=>earOptBtn(k,`<span>${lab(k)}</span>`,q,{title:ttl(k)||''})).join('')}</div>${d==='cad'||d==='blind'?elCadKeyHTML(list):''}`}
+ const lab=k=>d==='qual'?QUALS[k]:d==='cad'?ELCADL[k]:ELCADL[k],tk=k=>d!=='qual'?elTk(k):'',cls=d==='qual'&&list.length===2?' c2':d==='qual'&&list.length===4?' q4':'';
+ return`<div class="el-lbl" data-notm>Your answer</div><div class="el-opts${cls}${q?'':' wait'}" role="group" aria-label="Answer">${list.map(k=>earOptBtn(k,`<span>${lab(k)}</span>`,q,{tk:tk(k)})).join('')}</div>${d==='cad'||d==='blind'?elCadKeyHTML(list):''}`}
 function earBassAreaHTML(q){const lock=EAR.done,A=lock&&EAR.res&&EAR.res.given?EAR.res.given:EAR.ans,col=rn=>ELFN[earNumFn(rn)][1];
  const slots=[0,1,2,3].map(i=>{const rn=i===0?'I':A[i-1],ok=lock&&i>0&&A[i-1]===q.a[i];return`<div class="el-slot${i===A.length+1&&!lock?' cur':''}${lock&&i>0?(ok?' okk':' badk'):''}" style="--fc:${rn?col(rn):'var(--muted)'}"${lock&&i>0?` aria-label="Chord ${i+1}: ${ok?'right':'wrong, it is '+q.a[i]}"`:''}>${rn?earRnHTML(rn):'?'}${lock&&i>0?`<span class="st">${ok?ELICON.tick:ELICON.cross}</span>${ok?'':`<small style="color:${col(q.a[i])}">${earRnHTML(q.a[i])}</small>`}`:''}</div>`}).join('');
  return`<div class="el-lbl" data-notm>Name chords 2–4 in ${keyName(q.key)}</div><div class="el-slots${lock?' lock':''}">${slots}</div>
