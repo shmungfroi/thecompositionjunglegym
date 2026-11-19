@@ -30,7 +30,7 @@ EARQ="""(()=>{const out=[];const W=innerWidth;const tb=document.querySelector('.
 const dk=document.querySelector('.el-dock');const dkr=dk&&dk.offsetParent!==null?dk.getBoundingClientRect():null;
 const m=document.getElementById('earMain');if(!m)return{small:['no earMain'],covered:[]};
 const small=[],covered=[];
-for(const e of m.querySelectorAll('button,[role=button],[role=radio],[data-earopt],input,select')){const r=e.getBoundingClientRect();if(!r.width||!r.height||e.offsetParent===null)continue;
+for(const e of m.querySelectorAll('button,[role=button],[role=radio],[data-earopt],input,select')){const r=(e.tagName==='INPUT'&&e.closest('label')?e.closest('label'):e).getBoundingClientRect();if(!r.width||!r.height||e.offsetParent===null)continue;
  if(W<=500&&(r.height<43.5||r.width<43.5)&&!e.closest('.earladder'))small.push((e.className||e.tagName)+' '+(e.textContent||'').trim().slice(0,18)+' '+Math.round(r.width)+'x'+Math.round(r.height));
  if(W<=500&&e.closest('.earladder')&&r.height<43.5&&r.width<43.5)small.push('ladder '+(e.textContent||'').trim().slice(0,10)+' '+Math.round(r.width)+'x'+Math.round(r.height));}
 return{small,covered}})()"""

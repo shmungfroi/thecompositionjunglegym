@@ -135,7 +135,7 @@ async def ear_transport(p,fails):
                 if abs(t['dur']-t['idur'])>.05: F(tag,'ring duration differs from elInfo().dur',t['dur'],t['idur'])
                 if not (t['txt'].startswith('StopPlaying')or t['txt'].startswith('StopCount-in')): F(tag,'toggle text while playing',t['txt'])
             else:
-                if t['pl'] or t['ap']!='false' or t['lab']!='Play again' or 'Ready' not in t['txt']: F(tag,'toggle did not return to Ready by itself',t)
+                if t['pl'] or t['ap']!='false' or t['lab']!='Play' or 'Play again' not in t['txt'] or 'Ready' not in t['txt']: F(tag,'toggle did not return to Ready by itself',t)
         for d in ['metre','rhy','qual','cad','bass','mel','blind']:
             for l in (1,2,3):
                 tag=f'{w}px {d} rung {l}'

@@ -880,6 +880,7 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-seg button{min-width:44px}
 .el-gold{color:var(--goldhi)}
 .el-note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.melacts label.note{display:inline-flex;align-items:center;gap:10px;min-height:44px;cursor:pointer}.melacts label.note input{width:20px;height:20px;margin:0;accent-color:var(--gold)}
 .el-rhy .tag{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
 .el-count{font-variant-numeric:tabular-nums}
 .el-bf{display:grid;grid-template-columns:repeat(4,minmax(0,max-content))}
@@ -7361,7 +7362,7 @@ function earRhyCaret(u){document.querySelectorAll('#earMain .el-cmp:not([style*=
 function earDockShow(on){const dk=$('earDock');if(!dk)return;dk.classList.toggle('show',!!on&&ROOM==='ear'&&!!EAR.q);document.body.classList.toggle('ear-docked',dk.classList.contains('show'))}
 function earObserve(){if(EAR.io){EAR.io.disconnect();EAR.io=null}earDockShow(false);const dk=$('earDock');if(!dk||!window.IntersectionObserver||ROOM!=='ear')return;
  const t=$('earStage')||document.querySelector('#earResult .el-replay')||$('earResult');if(!t)return;const top=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top'))||58;
- EAR.io=new IntersectionObserver(es=>{earDockShow(!es[es.length-1].isIntersecting)},{rootMargin:`-${top}px 0px -61px 0px`});EAR.io.observe(t)}
+ EAR.io=new IntersectionObserver(es=>{const e=es[es.length-1];earDockShow(!e.isIntersecting&&e.boundingClientRect.bottom<=(e.rootBounds?e.rootBounds.top+2:top+2))},{rootMargin:`-${top}px 0px -61px 0px`});EAR.io.observe(t)}
 function earTeardown(){if(EAR.io){EAR.io.disconnect();EAR.io=null}document.body.classList.remove('ear-docked','ear-sounding');if(EAR.tick){clearInterval(EAR.tick);EAR.tick=null}}
 elOn(ev=>{if(ev.type==='beat'){earLane(ev);return}if(ev.type!=='state')return;const q=EAR.q;
  if(ev.state==='playing'&&q&&ELT.item===q&&ELT.variant!=='tap'&&EAR.lastPid!==ev.id){EAR.lastPid=ev.id;q.plays=(q.plays||0)+1}

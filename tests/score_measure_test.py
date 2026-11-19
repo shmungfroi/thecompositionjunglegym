@@ -58,7 +58,11 @@ RHY = r"""()=>{const out=[];document.querySelectorAll('#earMain .el-rhy').forEac
  const sr=svg.getBoundingClientRect(),br=box.getBoundingClientRect();if(sr.right>br.right+1||sr.left<br.left-1)f.push(`W svg ${Math.round(sr.width)} px wider than frame ${Math.round(br.width)}`);
  if(box.scrollWidth>box.clientWidth+1)f.push('O scrolls sideways');
  const ys=new Set([...svg.querySelectorAll('line,path')].filter(e=>{const b=e.getBoundingClientRect();return b.height<1.5&&b.width>60}).map(e=>Math.round(e.getBoundingClientRect().top)));
- if(ys.size<1)f.push('S no stave line');
+ const stick=+(document.querySelector('#earMain [data-earlv].on')?.dataset.earlv||0)===1;
+ const bars=[...svg.querySelectorAll('line')].filter(e=>{const b=e.getBoundingClientRect();return b.height>20&&b.width<1.5});
+ // rung 1 is stick notation (no stave line, by spec); every other rung needs the one-line stave. Both end in a barline pair.
+ if(ys.size<1&&!stick)f.push('S no stave line');
+ if(bars.length<2)f.push('F no final barline');
  const T=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim()).map(t=>({t:t.textContent.slice(0,8),r:t.getBoundingClientRect()}));
  for(let i=0;i<T.length;i++)for(let j=i+1;j<T.length;j++){const a=T[i].r,b=T[j].r,ix=Math.min(a.right,b.right)-Math.max(a.left,b.left),iy=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);if(ix>1&&iy>1&&ix*iy>0.2*Math.min(a.width*a.height,b.width*b.height))f.push(`X "${T[i].t}" over "${T[j].t}"`)}
  out.push({id:'el-rhy '+(box.className||''),task:'rhy',n:1,f:[...new Set(f)].slice(0,6),resp:''})});return out}"""
