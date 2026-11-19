@@ -1,0 +1,511 @@
+--- content_lint
+{
+ "censor_terms": {
+  "failures": []
+ },
+ "sources": {
+  "failures": [],
+  "known_exceptions_count": 0,
+  "known_exceptions_listed": 0,
+  "known_exceptions_now_sourced": []
+ },
+ "source_links": {
+  "failures": [],
+  "rendered": 172
+ },
+ "credits": {
+  "failures": []
+ },
+ "us_terms": {
+  "failures": [],
+  "cases_checked": 27
+ },
+ "song_entries": 56,
+ "lyric_words": {
+  "failures": []
+ },
+ "passed": true
+}
+--- content_lint: pass (1s)
+--- unit_test
+{
+ "checks": 640,
+ "failures": [],
+ "n_failures": 0
+}
+--- unit_test: pass (4s)
+--- score_ids_test
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-B
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-B
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-B
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-B
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-B
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-A
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-B
+[Warning] ExpansionMap::Expand: Element referenced in @plist not found: label-B
+{
+ "counts": {
+  "note ids checked": 1836,
+  "cadence anchors checked": 31
+ },
+ "failures": 0
+}
+--- score_ids_test: pass (3s)
+--- sound_test
+   "36": [
+    3.5,
+    0.3
+   ],
+   "48": [
+    5.5,
+    0.3
+   ],
+   "60": [
+    6.1,
+    0.4
+   ],
+   "72": [
+    1.9,
+    1.6
+   ],
+   "84": [
+    8.8,
+    0.2
+   ],
+   "92": [
+    8.5,
+    0.2
+   ]
+  },
+  "Analysis chorale: notes over 2.6 s at 0.75": 0,
+  "Analysis k545: notes over 2.6 s at 0.75": 4,
+  "Analysis maple: notes over 2.6 s at 0.75": 0,
+  "Analysis ohaupt: notes over 2.6 s at 0.75": 0,
+  "Analysis jesu: notes over 2.6 s at 0.75": 8,
+  "Analysis k331a: notes over 2.6 s at 0.75": 0,
+  "Analysis k331d: notes over 2.6 s at 0.75": 0,
+  "Analysis entertainer: notes over 2.6 s at 0.75": 0,
+  "Analysis chopin7: notes over 2.6 s at 0.75": 0,
+  "Analysis chopin20: notes over 2.6 s at 0.75": 6,
+  "Analysis notes timed (3 speeds)": 19104
+ },
+ "failures": [],
+ "n_failures": 0
+}
+--- sound_test: pass (143s)
+--- earlab_test
+{
+ "counts": {
+  "cad realisations": 3060,
+  "cad distinct template x key": 597,
+  "bass realisations": 1980,
+  "bass questions (allow-list)": 6000,
+  "cadence questions (allow-list)": 6000,
+  "tell checks": 31,
+  "info: rung 3 refined answers, mode: accuracy vs chance": "18% vs 19%",
+  "info: rung 3 refined answers, number of chords: accuracy vs chance": "18% vs 19%",
+  "info: rung 3 refined answers, mode and number of chords: accuracy vs chance": "18% vs 19%",
+  "merge checks (earCadReg path, Nearly on, CAD64_INT_NEARLY off, held models in)": 4,
+  "L1 pool: melodic dictation (solfa sequences)": 274,
+  "L1 pool: chord quality (distinct voicings)": 48,
+  "L1 pool: bass (progression x key)": 140,
+  "blind items checked": 30,
+  "blind note nodes timed": 1823,
+  "drill x level rendered": 21,
+  "fixture rows (blind)": 30,
+  "fixture rows (chords)": 597,
+  "fixture coverage (model x key)": "597 of 597"
+ },
+ "failures": {
+  "C": [
+   "cadences L1: lowest and highest note (6-semitone bands) predicts the answer 32% of the time (chance 26%)"
+  ]
+ },
+ "n_failures": 1
+}
+--- earlab_test: FAIL (94s)
+--- earlab_r2_test
+1666 checks, 0 failed
+--- earlab_r2_test: pass (70s)
+--- earlab_items_test
+  "I interrupted-after-6/4 items (of 12,000)": 759,
+  "I bass-line checks": 759,
+  "I distinct interrupted-after-6/4 items, maj": 50,
+  "I distinct interrupted-after-6/4 items, min": 54,
+  "I share of interrupted items that pass through a 6/4": "759/2233",
+  "I answers of items containing a 6/4": "{\"cad64\": 2202, \"interrupted\": 759}",
+  "I feedback checks": 4,
+  "I CAD64_INT_NEARLY checks": 4,
+  "T answer grid per rung": 3,
+  "T fixture rows": 8,
+  "T rung 1 answers": "{\"2/4\": 1916, \"3/4\": 1993, \"4/4\": 2091}",
+  "T rung 2 answers": "{\"12/8\": 1012, \"2/4\": 1004, \"3/4\": 1022, \"4/4\": 992, \"6/8\": 994, \"9/8\": 976}",
+  "T rung 3 answers": "{\"12/8\": 776, \"2/4\": 704, \"3/4\": 723, \"4/4\": 778, \"5/4\": 712, \"6/8\": 767, \"7/8\": 744, \"9/8\": 796}",
+  "T metre items checked (bars against the fixture)": 18000,
+  "T scheduler checks": 300,
+  "info: metre rung 1, tempo and playing time together (10 bpm, whole seconds): accuracy vs chance": "44% vs 35%",
+  "info: metre rung 1, fastest click (25 ms bands): metre / simple-compound accuracy vs chance": "35% vs 35%",
+  "info: metre rung 1, number of clicks (5s): metre / simple-compound accuracy vs chance": "40% vs 35%",
+  "info: metre rung 2, tempo and playing time together (10 bpm, whole seconds): accuracy vs chance": "21% vs 17%",
+  "info: metre rung 2, fastest click (25 ms bands): metre / simple-compound accuracy vs chance": "28% vs 17% / 81% vs 50%",
+  "info: metre rung 2, number of clicks (5s): metre / simple-compound accuracy vs chance": "28% vs 17% / 74% vs 50%",
+  "info: metre rung 3, tempo and playing time together (10 bpm, whole seconds): accuracy vs chance": "22% vs 13%",
+  "info: metre rung 3, fastest click (25 ms bands): metre / simple-compound accuracy vs chance": "20% vs 13% / 61% vs 39%",
+  "info: metre rung 3, number of clicks (5s): metre / simple-compound accuracy vs chance": "25% vs 13% / 56% vs 39%",
+  "P panel sentences checked": 76506,
+  "P 6/4-into-V bass sentences checked (of them, an octave move)": 8292,
+  "P 6/4-into-V bass sentences: octave move said": 96,
+  "P cadential 6/4 chips checked": 944,
+  "P panel items": 8000,
+  "B blind excerpts": 30,
+  "B blind sentences checked": 90,
+  "B blind bass-on-root checks": 18,
+  "T2 metre sentences checked": 12000,
+  "EL-11 drill x Stage rendered": 18,
+  "EL-11 Stages checked": 3,
+  "EL-11 rung-change checks": 3
+ },
+ "failures": {},
+ "n_failures": 0
+}
+--- earlab_items_test: pass (183s)
+--- earlab_ui_test
+469 checks, 0 failed
+--- earlab_ui_test: pass (61s)
+--- chordshape_test
+   "Cdim7 inv1 uke shape 2 5656: dot labels ['1', '♭5', '𝄫7', '♭3'] vs degrees ['1', '♭5', '♭♭7', '♭3']",
+   "Cdim7 inv1 uke shape 3 8989: dot labels ['♭3', '𝄫7', '1', '♭5'] vs degrees ['♭3', '♭♭7', '1', '♭5']",
+   "Cdim7 inv1 uke shape 4 (11)(12)(11)(12): dot labels ['♭5', '1', '♭3', '𝄫7'] vs degrees ['♭5', '1', '♭3', '♭♭7']",
+   "Cdim7 inv2 guitar shape 1 201212: dot labels ['♭5', '♭3', '𝄫7', '1', '♭5'] vs degrees ['♭5', '♭3', '♭♭7', '1', '♭5']",
+   "Cdim7 inv2 guitar shape 2 xx4545: dot labels ['♭5', '1', '♭3', '𝄫7'] vs degrees ['♭5', '1', '♭3', '♭♭7']",
+   "Cdim7 inv2 guitar shape 3 x97878: dot labels ['♭5', '𝄫7', '♭3', '♭5', '1'] vs degrees ['♭5', '♭♭7', '♭3', '♭5', '1']",
+   "Cdim7 inv2 guitar shape 4 x9(10)x(10)(11): dot labels ['♭5', '1', '𝄫7', '♭3'] vs degrees ['♭5', '1', '♭♭7', '♭3']",
+   "Cdim7 inv2 guitar shape 5 (14)x(13)(14)(13)(14): dot labels ['♭5', '♭3', '𝄫7', '1', '♭5'] vs degrees ['♭5', '♭3', '♭♭7', '1', '♭5']",
+   "Cdim7 inv2 uke shape 1 2323: dot labels ['𝄫7', '♭3', '♭5', '1'] vs degrees ['♭♭7', '♭3', '♭5', '1']"
+  ],
+  "E": [
+   "Cdim7 inv0 bass pattern 2 (Arpeggio · two positions): dot labels ['1', '♭3', '♭5', '𝄫7', '1'] vs ['1', '♭3', '♭5', '♭♭7', '1']",
+   "Cdim7 inv0 bass pattern 4 (Arpeggio · two positions): dot labels ['1', '♭3', '♭5', '𝄫7', '1'] vs ['1', '♭3', '♭5', '♭♭7', '1']",
+   "Cdim7 inv1 bass pattern 1 (Arpeggio · two positions): dot labels ['♭3', '♭5', '𝄫7', '1', '♭3'] vs ['♭3', '♭5', '♭♭7', '1', '♭3']",
+   "Cdim7 inv1 bass pattern 2 (Arpeggio · two positions): dot labels ['♭3', '♭5', '𝄫7', '1', '♭3'] vs ['♭3', '♭5', '♭♭7', '1', '♭3']",
+   "Cdim7 inv2 bass pattern 2 (Arpeggio · two positions): dot labels ['♭5', '𝄫7', '1', '♭3', '♭5'] vs ['♭5', '♭♭7', '1', '♭3', '♭5']",
+   "Cdim7 inv3 bass pattern 1 (Arpeggio · two positions): dot labels ['𝄫7', '1', '♭3', '♭5', '𝄫7'] vs ['♭♭7', '1', '♭3', '♭5', '♭♭7']",
+   "Cdim7 inv3 bass pattern 2 (Arpeggio · two positions): dot labels ['1', '♭3', '♭5', '𝄫7'] vs ['1', '♭3', '♭5', '♭♭7']",
+   "C#dim7 inv0 bass pattern 2 (Arpeggio · two positions): dot labels ['1', '♭3', '♭5', '𝄫7', '1'] vs ['1', '♭3', '♭5', '♭♭7', '1']",
+   "C#dim7 inv0 bass pattern 4 (Arpeggio · two positions): dot labels ['1', '♭3', '♭5', '𝄫7', '1'] vs ['1', '♭3', '♭5', '♭♭7', '1']",
+   "C#dim7 inv1 bass pattern 1 (Arpeggio · two positions): dot labels ['♭5', '𝄫7', '1', '♭3'] vs ['♭5', '♭♭7', '1', '♭3']",
+   "C#dim7 inv1 bass pattern 2 (Arpeggio · two positions): dot labels ['♭3', '♭5', '𝄫7', '1', '♭3'] vs ['♭3', '♭5', '♭♭7', '1', '♭3']",
+   "C#dim7 inv2 bass pattern 1 (Arpeggio · one position): dot labels ['♭5', '𝄫7', '1', '♭3'] vs ['♭5', '♭♭7', '1', '♭3']",
+   "C#dim7 inv2 bass pattern 2 (Arpeggio · two positions): dot labels ['♭5', '𝄫7', '1', '♭3', '♭5'] vs ['♭5', '♭♭7', '1', '♭3', '♭5']",
+   "C#dim7 inv3 bass pattern 1 (Arpeggio · two positions): dot labels ['𝄫7', '1', '♭3', '♭5', '𝄫7'] vs ['♭♭7', '1', '♭3', '♭5', '♭♭7']",
+   "C#dim7 inv3 bass pattern 2 (Arpeggio · one position): dot labels ['𝄫7', '1', '♭3', '𝄫7'] vs ['♭♭7', '1', '♭3', '♭♭7']",
+   "Dbdim7 inv0 bass pattern 2 (Arpeggio · two positions): dot labels ['1', '♭3', '♭5', '𝄫7', '1'] vs ['1', '♭3', '♭5', '♭♭7', '1']",
+   "Dbdim7 inv0 bass pattern 4 (Arpeggio · two positions): dot labels ['1', '♭3', '♭5', '𝄫7', '1'] vs ['1', '♭3', '♭5', '♭♭7', '1']",
+   "Dbdim7 inv1 bass pattern 1 (Arpeggio · two positions): dot labels ['♭5', '𝄫7', '1', '♭3'] vs ['♭5', '♭♭7', '1', '♭3']",
+   "Dbdim7 inv1 bass pattern 2 (Arpeggio · two positions): dot labels ['♭3', '♭5', '𝄫7', '1', '♭3'] vs ['♭3', '♭5', '♭♭7', '1', '♭3']",
+   "Dbdim7 inv2 bass pattern 1 (Arpeggio · one position): dot labels ['♭5', '𝄫7', '1', '♭3'] vs ['♭5', '♭♭7', '1', '♭3']",
+   "Dbdim7 inv2 bass pattern 2 (Arpeggio · two positions): dot labels ['♭5', '𝄫7', '1', '♭3', '♭5'] vs ['♭5', '♭♭7', '1', '♭3', '♭5']",
+   "Dbdim7 inv3 bass pattern 1 (Arpeggio · two positions): dot labels ['𝄫7', '1', '♭3', '♭5', '𝄫7'] vs ['♭♭7', '1', '♭3', '♭5', '♭♭7']",
+   "Dbdim7 inv3 bass pattern 2 (Arpeggio · one position): dot labels ['𝄫7', '1', '♭3', '𝄫7'] vs ['♭♭7', '1', '♭3', '♭♭7']",
+   "Ddim7 inv0 bass pattern 2 (Arpeggio · two positions): dot labels ['1', '♭3', '♭5', '𝄫7', '1'] vs ['1', '♭3', '♭5', '♭♭7', '1']",
+   "Ddim7 inv0 bass pattern 4 (Arpeggio · two positions): dot labels ['1', '♭3', '♭5', '𝄫7', '1'] vs ['1', '♭3', '♭5', '♭♭7', '1']"
+  ]
+ },
+ "n_failures": 981
+}
+--- chordshape_test: FAIL (44s)
+--- spelling_test
+  "I: inversions": 578,
+  "I: semitone counts": 578,
+  "I: triple accidental respelled and flagged": 2,
+  "J: chords vs music21 (symbol)": 1189,
+  "J: jazz voicings vs chord symbols": 2469,
+  "J: piano voicings (chord tones over the right bass)": 160,
+  "K: chords of the key": 5544,
+  "K: degree labels": 612,
+  "K: key signatures": 508,
+  "K: pitch classes": 612,
+  "K: scale spellings": 612,
+  "K: solfa": 612,
+  "K: staff key signatures": 436,
+  "K: step patterns": 612,
+  "K: theoretical keys flagged with the enharmonic": 104,
+  "K: triple accidental respelled and flagged": 5,
+  "M: chords vs music21 (symbol)": 60,
+  "M: chromatic mediant roots": 726,
+  "M: modal character notes": 30,
+  "M: piano voicings (chord tones over the right bass)": 1044,
+  "M: planing spellings": 240,
+  "M: tintinnabuli T-voice": 72,
+  "M: vamp voicings": 120,
+  "R3: stave views that reach a triple accidental": 113,
+  "R: Chords room staves drawn": 805,
+  "R: SATB chords (chord tones, bass, root+3rd, order)": 6117,
+  "R: chords vs music21 (classical)": 6117,
+  "R: chords vs music21 (symbol)": 1924,
+  "R: piano voicings (chord tones over the right bass)": 1560,
+  "R: triple accidental respelled and flagged": 164,
+  "climb progressions captured": 1625,
+  "climb renders": 2007,
+  "seconds": 162,
+  "tonics offered in the Scales tab": 18
+ },
+ "n_checks": 49166,
+ "failures": {},
+ "n_failures": 0,
+ "known_failures": {}
+}
+--- spelling_test: pass (163s)
+--- terms_test
+  "T6: C1 Ear Lab cadence buttons keep the full US hover after an answer (badges shown)": 1,
+  "T6: H1 Gym cadence reader brackets its feedback (no stale hover)": 6,
+  "T6: H1 hover follows a title the app changes": 1,
+  "T6: H1 hover rebuilt when the text changes term, keeping the app title": 1,
+  "T6: H1 hover rebuilt when the text loses its term": 1,
+  "T6: H2 \"Twelve-bar blues\" button has no measure hover": 1,
+  "T6: H2 heading \"12-bar blues\" has no bracket": 1,
+  "T6: H2 plain \"Twelve bars\" keeps its bracket": 1,
+  "T6: H2/L2 \"8- to 16-bar\", \"bar by bar\", \"8-bar\" have no bracket": 1,
+  "T6: L1 a bracket inside a bracket is square": 1,
+  "T6: L1 back-to-back brackets merge": 1,
+  "T6: L5 IAC chip hover carries the note": 1,
+  "T6: L7 no underline under a bracketed term": 1,
+  "T6: L8 Ear Lab cadence feedback: no shortened US bracket": 1,
+  "T6: M1 bare interval \"a tone\" pairs once per block; chord tone, tone colour, common tone and a pitched tone do not": 1,
+  "T6: M1 every interval \"a tone\" is marked": 1,
+  "T6: M1 heading \"down a tone\" pairs": 1,
+  "T6: M1i every Ear Lab cadence/blind panel names the cadence with its US term": 1,
+  "T6: M3 a button whose own title names a term (data-tt) gets the US hover": 1,
+  "T6: M3 plural button hover": 1,
+  "T6: M3 rest button hover": 1,
+  "T6: M3i rhythm tiles carry the US term on hover (9 cells)": 1,
+  "T6: M4 one bracket per checker list": 1,
+  "T6: M4i circle neighbours read as the right mode (24 keys)": 1,
+  "T6: S2/S1 dotted value pairs dotted; \"a tone under\" pairs": 1,
+  "T6: answer 6: bar locators are still marked (tap hover)": 1,
+  "T6: answer 6: bar locators in feedback after the first mention in the room carry no bracket": 1,
+  "clicks scanned": 2331,
+  "page scan: abbr": 100439,
+  "page scan: buttons": 2269416,
+  "page scan: headings": 7912,
+  "page scan: notmHeads": 1453,
+  "page scan: scans": 2494,
+  "page scan: scopes": 45513,
+  "page scan: svg": 57920,
+  "views scanned": 153
+ },
+ "failures": {},
+ "n_failures": 0
+}
+--- terms_test: pass (680s)
+--- counterpoint_test
+   "what": "two voices: S3d warns into the final bar (lyd below, attacks 35 and 39)",
+   "pass": true
+  },
+  {
+   "id": "N-9",
+   "what": "two voices: final-bar S3d cases built from at least 4 of the 12 third-species models (ion, lyd above and below)",
+   "pass": true
+  },
+  {
+   "id": "N-9",
+   "what": "mixed species: S3d warns into the final bar (dormid23)",
+   "pass": true
+  },
+  {
+   "id": "N-9",
+   "what": "mixed species: S3d warns into the final bar (dorhigh13)",
+   "pass": true
+  },
+  {
+   "id": "N-9",
+   "what": "mixed species: final-bar S3d cases built from at least 2 third-species models",
+   "pass": true
+  },
+  {
+   "id": "N-9",
+   "what": "S3d into the final bar is reported (as a warning) in both corpora",
+   "pass": true
+  },
+  {
+   "id": "N-10",
+   "what": "interval names spelled out, articles right, in all 205663 checker messages of the corpus",
+   "pass": true
+  },
+  {
+   "id": "N-10",
+   "what": "the spelled-out name and article of every pair of 105 pitches match music21",
+   "pass": true
+  }
+ ]
+}
+--- counterpoint_test: pass (139s)
+--- pageerrors_test
+{
+ "views": 153,
+ "clicks": 4196,
+ "errors": [],
+ "p2_5": {
+  "audit_sequence_errors": [],
+  "random_clicks": 881,
+  "random_run_errors": []
+ },
+ "n_errors": 0
+}
+--- pageerrors_test: pass (520s)
+--- layout_test
+{
+ "views": 162,
+ "views_with_findings": 0,
+ "findings": {},
+ "page_errors": {}
+}
+--- layout_test: pass (122s)
+--- transport_test
+   "Back from climb → list",
+   "#climbs",
+   "ok"
+  ],
+  [
+   "Forward → climb 3",
+   "#climbs/3",
+   "ok"
+  ],
+  [
+   "reload keeps climb 3",
+   "#climbs/3",
+   "ok"
+  ],
+  [
+   "open a form",
+   "#forms/phrase",
+   "ok"
+  ],
+  [
+   "Back from form → forms list",
+   "#forms",
+   "ok"
+  ]
+ ],
+ "ear": {
+  "items": 42,
+  "state_checks": 112,
+  "natural_end": 21,
+  "double_tap": 42,
+  "play_while_playing": 42,
+  "variants": 28,
+  "stop_events": 256,
+  "beats_live": 3,
+  "end_diff_ms": 0
+ },
+ "fails": [],
+ "n_fails": 0,
+ "page_errors": []
+}
+--- transport_test: pass (753s)
+--- score_measure_test
+{
+ "scores_measured": 294,
+ "scores_with_findings": 0,
+ "findings": {},
+ "page_errors": {}
+}
+--- score_measure_test: pass (81s)
+--- analysis_engrave_test
+{
+ "counts": {
+  "engraving files checked": 30,
+  "views": 70,
+  "staff-spaces measured": 70,
+  "time signatures checked": 70,
+  "systems in view checked": 40,
+  "overlay labels": 1848,
+  "cadence tags": 210,
+  "text-notehead pairs checked": 2346684,
+  "index jumps": 70,
+  "R1 notes timed": 6368,
+  "D known short (2 full systems)": 9
+ },
+ "failures": 0
+}
+--- analysis_engrave_test: pass (212s)
+{
+    "content_lint": {
+        "result": "pass",
+        "seconds": 1
+    },
+    "unit_test": {
+        "result": "pass",
+        "seconds": 4
+    },
+    "score_ids_test": {
+        "result": "pass",
+        "seconds": 3
+    },
+    "sound_test": {
+        "result": "pass",
+        "seconds": 143
+    },
+    "earlab_test": {
+        "result": "FAIL",
+        "seconds": 94
+    },
+    "earlab_r2_test": {
+        "result": "pass",
+        "seconds": 70
+    },
+    "earlab_items_test": {
+        "result": "pass",
+        "seconds": 183
+    },
+    "earlab_ui_test": {
+        "result": "pass",
+        "seconds": 61
+    },
+    "chordshape_test": {
+        "result": "FAIL",
+        "seconds": 44
+    },
+    "spelling_test": {
+        "result": "pass",
+        "seconds": 163
+    },
+    "terms_test": {
+        "result": "pass",
+        "seconds": 680
+    },
+    "counterpoint_test": {
+        "result": "pass",
+        "seconds": 139
+    },
+    "pageerrors_test": {
+        "result": "pass",
+        "seconds": 520
+    },
+    "layout_test": {
+        "result": "pass",
+        "seconds": 122
+    },
+    "transport_test": {
+        "result": "pass",
+        "seconds": 753
+    },
+    "score_measure_test": {
+        "result": "pass",
+        "seconds": 81
+    },
+    "analysis_engrave_test": {
+        "result": "pass",
+        "seconds": 212
+    }
+}
+exit 1
