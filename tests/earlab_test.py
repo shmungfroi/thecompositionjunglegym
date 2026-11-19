@@ -123,13 +123,18 @@ def cad_category_ok(cat, toks, k, mode):
     sd = [x['scale_degree'] for x in f]
     root_pos = toks[-1].find(':') < 0
     if cat == 'perfect':
-        return sd == [5, 1] and root_pos
+        return sd == [5, 1] and root_pos and not (len(toks) >= 3 and toks[-3] in ('I:2', 'i:2'))
     if cat == 'plagal':
         return sd == [4, 1] and root_pos
     if cat == 'imperfect':
-        return sd[1] == 5 and not f[1]['secondary']
+        return sd[1] == 5 and not f[1]['secondary'] and not (mode == 'min' and toks[-2] == 'iv:1')
     if cat == 'interrupted':
         return sd == [5, 6]
+    # R4 (0.48): rung 3 answers of their own
+    if cat == 'phrygian':
+        return mode == 'min' and toks[-2] == 'iv:1' and sd[1] == 5 and root_pos
+    if cat == 'cad64':
+        return len(toks) >= 3 and toks[-3] in ('I:2', 'i:2') and sd == [5, 1] and root_pos
     return False
 
 

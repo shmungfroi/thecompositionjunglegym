@@ -6170,9 +6170,10 @@ function earGenQual(l,r){const q=epick(earQualOpts(l),r),root=epick(['C','D','Eb
  return{d:'qual',l,a:q,root,inv,reg,notes:m,names}}
 const CADL={perfect:'Perfect (authentic)',plagal:'Plagal',imperfect:'Imperfect (half)',interrupted:'Interrupted (deceptive)'};
 /* Cadence models for the common-practice drill (tradition: Tonal/common practice). Only common-practice successions: no V–IV, no ii–I.
-   Every category has models of the same lengths at each level, and the length is drawn first, so the number of chords never gives the answer away.
-   Level 1: major, triads (root position and 1st inversion), 4 chords. Level 2: adds minor, 7ths and 5-chord models. Level 3 (Stage 6): adds the cadential 6/4 and the Phrygian cadence. */
-/* The second chord is drawn from the same set in every category (at each level, mode and length), so it never hints at the answer;
+   Every category has models of the same lengths at each rung, and the length is drawn first, so the number of chords never gives the answer away.
+   Rung 1 (EL-7): the four basic cadences in major, the key chord then two chords, open voicing. Rung 2: major and minor, 7ths, 4- and 5-chord models.
+   Rung 3 (R4, Stage 6): six answers, adding the Phrygian cadence and the cadential 6/4 as answers of their own. */
+/* The second chord is drawn from the same set in every category (at each rung, mode and length), so it never hints at the answer;
    only the last chords (the cadence itself) differ. */
 /* EL-7 (0.48): rung 1 is the four basic cadences only, in major keys: the key chord plays, then exactly two chords (the cadence itself),
    in open voicing (soprano more than an octave above the tenor). */
@@ -6181,15 +6182,27 @@ const CADT={1:{maj:{perfect:['V I'],plagal:['IV I'],imperfect:['I V','IV V'],int
    imperfect:['I vi IV V','I ii:1 IV V','I I:1 IV V','I vi IV ii:1 V','I iii vi ii V','I I:1 vi IV V'],interrupted:['I vi V7 vi','I ii:1 V vi','I I:1 V7 vi','I vi ii:1 V vi','I iii IV V7 vi','I I:1 IV V vi']},
   min:{perfect:['i VI V i','i ii°:1 V7 i','i i:1 V i','i III iv V i','i VI ii°:1 V7 i','i iv ii°:1 V i'],plagal:['i VI iv i','i ii°:1 iv i','i i:1 iv i','i III VI iv i','i VI ii°:1 iv i','i iv i:1 iv i'],
    imperfect:['i VI iv V','i ii°:1 iv V','i i:1 iv V','i III VI iv V','i VI iv ii°:1 V','i iv VI ii°:1 V'],interrupted:['i VI V VI','i ii°:1 V7 VI','i i:1 V VI','i III iv V VI','i VI ii°:1 V7 VI','i iv ii°:1 V VI']}}};
-CADT[3]={maj:{},min:{}};
-// Stage 6 additions: one per category for each length and mode, with the same second chord across categories
-const CAD3={maj:{perfect:['I IV I:2 V I'],plagal:['I IV vi IV I'],imperfect:['I IV ii:1 I:2 V'],interrupted:['I IV I:2 V vi']},
- min:{perfect:['i III V i','i VI i:2 V i'],plagal:['i III iv i','i VI III iv i'],imperfect:['i III iv:1 V','i VI i:1 iv:1 V'],interrupted:['i III V VI','i VI i:2 V VI']}};
-['maj','min'].forEach(md=>Object.keys(CADL).forEach(c=>CADT[3][md][c]=CADT[2][md][c].concat((CAD3[md][c]||[]))));
+/* R4 (0.48): rung 3 (Stage 6 only) has six answers. Every model is five chords and opens I–IV (i–iv in minor), so neither the length nor the
+   second chord hints at the answer. The Phrygian cadence (iv⁶–V) is minor only; every other answer occurs in both modes, and the mode is drawn
+   before the answer, so the mode never raises the best guess above chance. The cadential 6/4 here decorates a perfect cadence (I⁶₄–V–I);
+   its bass line (do fa so so do) is the same as the perfect cadence's I–IV–V–V7–I (the only perfect model here, so the whole bass line is
+   shared), and the interrupted V–V7–vi holds the bass on so too, so the bass alone never gives the 6/4 away. Perfect and imperfect models never contain a 6/4, so every question has one right answer. */
+CADT[3]={maj:{perfect:['I IV V V7 I'],plagal:['I IV I:1 IV I','I IV vi IV I'],imperfect:['I IV I:1 ii:1 V','I IV ii:1 V7/V V'],
+  interrupted:['I IV V V7 vi','I IV ii:1 V vi'],cad64:['I IV I:2 V I','I IV I:2 V7 I']},
+ min:{perfect:['i iv V V7 i'],plagal:['i iv i:1 iv i','i iv VI iv i'],imperfect:['i iv i:1 ii°:1 V','i iv VI ii°:1 V'],
+  interrupted:['i iv V V7 VI','i iv ii°:1 V VI'],phrygian:['i iv VI iv:1 V','i iv i:1 iv:1 V'],cad64:['i iv i:2 V i','i iv i:2 V7 i']}};
+const CADL3={...CADL,phrygian:'Phrygian',cad64:'Cadential 6/4'};
+// the family each Stage 6 answer belongs to, named in the feedback
+const CADFAM={phrygian:'an imperfect (half) cadence in a minor key: iv⁶–V, with the bass falling a semitone (le–so)',
+ cad64:'the decorated approach to V in a perfect or imperfect cadence: over the bass so, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect (authentic) cadence'};
+const CADPARENT={phrygian:'imperfect',cad64:'perfect'};
+function earCadOpts(l){return l===3?['perfect','plagal','imperfect','interrupted','phrygian','cad64']:Object.keys(CADL)}
 const CKEYS2={maj:[0,2,5,7,10,3,9],min:[9,4,2,7,0]};
 // rung 1 draws from all twelve major keys: with only two chords, a small set of keys would let the absolute pitch of the last chord hint at the answer
 const CKEYS1=[0,1,2,3,4,5,6,7,8,9,10,11];
-function earCadKeys(l,mode){return l===1?CKEYS1:CKEYS2[mode]}
+// rung 3: all twelve major and minor keys, so every answer, the minor-only Phrygian included, has well over 100 distinct questions
+const CKEYS3={maj:CKEYS1,min:CKEYS1};
+function earCadKeys(l,mode){return l===1?CKEYS1:l===3?CKEYS3[mode]:CKEYS2[mode]}
 function cadSub(rns){const s=rns.join(' ');return/(^| )(iv|IV):1 V$/.test(s)?'Phrygian cadence (iv⁶–V)':/:2 V7? (I|i|vi|VI)?$/.test(s)?'with a cadential 6/4':''}
 /* strict SATB voicing for Ear Lab: the app's SATB candidates, searched with hard rules.
    Rejected outright: any part-writing error from the checker (parallel or consecutive 5ths and 8ves, a 7th that doesn't fall,
@@ -6222,10 +6235,11 @@ function earSATBPair(L,key,reg){reg={b:46,s:72,fb:48,ls:72,...(reg||{})};return 
 function earProg(rns,key,reg,opt){if(opt&&opt.pair){const L=cadList(rns.join(' '),key),V=earSATBPair(L,key,reg);return{L,V,ch:V?V.map(v=>v.slice()):null}}const L=cadList(rns.join(' '),key),V=earSATB(L,key,reg,opt);return{L,V,ch:V?V.map(v=>v.slice()):null}}
 // the realisation a cadence question at rung l uses
 function earCadProg(l,rns,key,reg){return earProg(rns,key,reg,l===1?{pair:true}:undefined)}
-function earGenCad(l,r){const mode=l===1?'maj':epick(['maj','maj','min'],r),key={k:epick(earCadKeys(l,mode),r),mode},ts=CADT[l][mode];
- const a=epick(Object.keys(CADL),r),lens=[...new Set(Object.values(ts).flat().map(x=>x.split(' ').length))],n=epick(lens,r);
+function earGenCad(l,r){const mode=l===1?'maj':l===3?epick(['maj','min'],r):epick(['maj','maj','min'],r),key={k:epick(earCadKeys(l,mode),r),mode},ts=CADT[l][mode];
+ // the mode is drawn first, then the answer from those the mode has (at rung 3 minor has all six, major all but the Phrygian)
+ const a=epick(Object.keys(ts),r),lens=[...new Set(Object.values(ts).flat().map(x=>x.split(' ').length))],n=epick(lens,r);
  const rns=epick(ts[a].filter(x=>x.split(' ').length===n),r).split(' ');
- const reg=l===1?{b:41+Math.floor(r()*12),s:67+Math.floor(r()*11),fb:41+Math.floor(r()*16),ls:67+Math.floor(r()*11)}:{b:42+Math.floor(r()*11),s:66+Math.floor(r()*9)},P=earCadProg(l,rns,key,reg);return{d:'cad',l,a,key,rns,sub:cadSub(rns),reg,ch:P.ch}}
+ const reg=l===1?{b:41+Math.floor(r()*12),s:67+Math.floor(r()*11),fb:41+Math.floor(r()*16),ls:67+Math.floor(r()*11)}:l===3?{b:41+Math.floor(r()*13),s:64+Math.floor(r()*13)}:{b:42+Math.floor(r()*11),s:66+Math.floor(r()*9)},P=earCadProg(l,rns,key,reg);return{d:'cad',l,a,key,rns,sub:l===3?'':cadSub(rns),reg,ch:P.ch,opts:earCadOpts(l)}}
 function earBassPool(l){return l===1?['I','IV','V','vi']:l===2?['I','ii','IV','V','vi']:['I','ii','IV','V','vi','V7/V','V7/vi']}
 // common-practice successions only (tradition: Tonal/common practice). V–IV and ii–I belong to the later popular-music track.
 const EBALLOW={I:['ii','IV','V','vi','V7/V','V7/vi'],ii:['V','V7/V'],IV:['I','ii','V','V7/V'],V:['I','vi'],vi:['ii','IV','V','V7/V'],'V7/V':['V'],'V7/vi':['vi']};
@@ -6303,7 +6317,9 @@ function earSt(){return EAR.st[EAR.drill]||(EAR.st[EAR.drill]={n:0,ok:0,streak:0
 function earMark(ok,given){if(EAR.done)return;EAR.done=true;const s=earSt();s.n++;if(ok){s.ok++;s.streak++;s.best=Math.max(s.best,s.streak)}else s.streak=0;EAR.res={ok,given};earSave();
  logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} L${earLvl()}: ${ok?'correct':'missed'}`)}
 function earLvl(){return EAR.lvl[EAR.drill]||1}
-function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL[q.a]+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
+function earAnsTxt(q){return q.d==='metre'?METL[q.a]:q.d==='rhy'?q.a.map(k=>RCELL[k].l).join(' · '):q.d==='qual'?QUALS[q.a]+(QSYM[q.a]?`, spelled from ${pretty(q.root)}: ${q.names.map(pretty).join(' ')}. ${QSYM[q.a]}`:` (on ${pretty(q.root)}, ${QINV[q.inv||0]})`):q.d==='cad'?CADL3[q.a]+(CADFAM[q.a]?`: ${CADFAM[q.a]}`:'')+(q.sub?` · ${q.sub}`:'')+` · ${q.rns.map(x=>x.replace(':2','⁶₄').replace(':1','⁶')).join(' – ')} in ${keyName(q.key)}`:q.d==='bass'?q.a.join(' – ')+` in ${keyName(q.key)}`:q.d==='mel'?q.a.join(' '):CADL[q.a]+` · ${q.label} (${q.chords}) · bar ${q.bar}`}
+// R4: an answer that names the family of a Stage 6 answer (imperfect for a Phrygian cadence, perfect for a cadential 6/4) is still marked wrong, and the feedback says why
+function earNearTxt(q,res){return q.d==='cad'&&res&&!res.ok&&res.given&&CADPARENT[q.a]===res.given?` ${CADL[res.given]} is its family, so you heard the right kind of ending; the answer here is the more exact name.`:''}
 function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){earMark(rhyOnsets(EAR.ans)===rhyOnsets(q.a),EAR.ans.slice())}
  else if(q.d==='bass'){earMark(EAR.ans.length===3&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
  else if(q.d==='mel'){earMark(EAR.ans.length===q.a.length-1&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
@@ -6382,14 +6398,14 @@ function earMelFollow(q,first,count,t0){const A=ac();earMelNowClear();for(let i=
 const EARHOW={metre:'Count along. Where does the strongest click fall, and how many beats come before it returns? Then listen inside each beat: does it split in two (simple) or in three (compound)? The speed changes each time (60–120 bpm), so do not use tempo as a clue.',
  rhy:'You hear a count-in of four clicks, then the rhythm on one note. Tap it back on your knee before you answer, then build it beat by beat.',
  qual:'Each chord is played together, then up as an arpeggio, then together again. Every chord is in root position, played high or low. Listen to the 3rd first (major or minor), then the 5th (perfect, diminished or augmented), then the 7th.',
- cad:'The tonic chord plays first, to set the key. Then a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? At level 3 a perfect cadence may be decorated by a cadential 6/4, and an imperfect (half) cadence may be a Phrygian cadence.',
+ cad:'The tonic chord plays first, to set the key. At level 1 you then hear just two chords, the cadence itself; at levels 2 and 3, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Level 3 adds two answers: the Phrygian cadence (an imperfect cadence in minor, iv⁶–V) and the cadential 6/4 (the decorated approach to V).',
  bass:'The tonic chord plays first. The first chord of the progression is always I. Sing the bass line back, then name chords 2–4. "Bass only" plays just the bottom notes.',
  mel:'The key chord plays first, and the first note is always given (at level 1 it may be do, mi or so). Sing it back in solfa before you answer. Movable do: in a minor key (level 3) the home note is la.',
  blind:'A phrase from a real score in the Analysis room, with the score hidden. The tonic chord plays first. Name the cadence at the end of the phrase, then check it against the score in Analysis.'};
 function earOptsHTML(q){const res=EAR.res,lock=EAR.done;const btn=(v,l)=>{const cls=lock?(v===q.a?'ok':res&&res.given===v?'bad':''):'';return`<button class="earopt ${cls}" data-earans="${v}" ${lock?'disabled':''}>${l}</button>`};
  if(q.d==='metre')return earMetreOpts(earLvl()).map(m=>btn(m,METL[m])).join('');
  if(q.d==='qual')return earQualOpts(earLvl()).map(k=>btn(k,QUALS[k])).join('');
- if(q.d==='cad')return Object.keys(CADL).map(k=>btn(k,CADL[k])).join('');
+ if(q.d==='cad')return(q.opts||earCadOpts(q.l||earLvl())).map(k=>btn(k,CADL3[k])).join('');
  if(q.d==='blind')return earBlindCats(earLvl()).map(k=>btn(k,CADL[k])).join('');return''}
 function earBlindCats(l){const P=earBlindPool(l);return Object.keys(CADL).filter(k=>P.some(x=>x.cat===k))}
 function earBuildHTML(q){const lock=EAR.done,A=EAR.ans;
@@ -6411,7 +6427,7 @@ function renderEar(){const el=$('earMain');if(!el)return;const q=EAR.q,l=earLvl(
    ${q&&q.d==='bass'?`<button class="mini" data-earplay="bassonly">Bass only</button>`:''}${q&&q.d==='mel'?`<button class="mini" data-earplay="first">First note</button>`:''}
    <button class="mini" data-earstop>■ Stop</button><span class="sp"></span>${q&&!EAR.done?`<button class="mini" data-earshow>Show me</button>`:''}<button class="mini ${EAR.done||!q?'gold':''}" data-earnew>${q?'Next question →':'Start →'}</button></div>
   <div class="earq">${q?earOptsHTML(q)+earBuildHTML(q):`<p class="note">${EAR.drill==='blind'&&!EAR.blind?'Press Start to load the scores.':'Press Start to hear the first question.'}</p>`}</div>
-  ${EAR.done&&q&&q.d!=='mel'?`<div class="earres ${EAR.res.ok?'ok':'bad'}"><b>${EAR.res.ok?'Correct.':EAR.res.given===null?'Here it is.':'Not this time.'}</b> ${earAnsTxt(q)}</div><div id="earNote"></div>`:''}
+  ${EAR.done&&q&&q.d!=='mel'?`<div class="earres ${EAR.res.ok?'ok':'bad'}"><b>${EAR.res.ok?'Correct.':EAR.res.given===null?'Here it is.':'Not this time.'}</b> ${earAnsTxt(q)}${earNearTxt(q,EAR.res)}</div><div id="earNote"></div>`:''}
   <div class="earstat">Score ${s.ok} / ${s.n} · streak ${s.streak} · best ${s.best}<span class="sp"></span><button class="mini" data-earreset>Reset score</button><button class="mini" data-earjournal>Save to journal</button></div>
  </section>
  <section class="card"><h3>Listening for it</h3>${earTips(EAR.drill)}</section>`;

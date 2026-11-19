@@ -254,6 +254,100 @@ def sec_K(items, real):
     tell('K', items, 'key', lambda r: r['k'], A, W)
 
 
+SIX = ['perfect', 'plagal', 'imperfect', 'interrupted', 'phrygian', 'cad64']
+
+
+def bass_degrees(q):
+    return tuple((c[0] - q['k']) % 12 for c in q['ch'])
+
+
+def sec_S(items, real, ui):
+    COUNT['R4 rung 3 items'] = len(items)
+    # every model x key x register: app checker, independent rules, cadence type
+    for q in real:
+        where = f"rung 3 {q['md']} {q['a']} [{' '.join(q['rns'])}] key {NM[q['k']]} reg {q['reg']}"
+        COUNT['R4 rung 3 model x key x register realisations'] += 1
+        if not q['ch']:
+            fail('S', f'{where}: no realisation')
+            continue
+        if q['app']:
+            fail('S', f'{where}: app SATB checker reports {q["app"]}')
+        for e in vl_errors(q['ch'], q['rns'], q['k'], q['md']):
+            fail('S', f'{where}: {e}')
+        if not cad_ok(q['a'], q['rns'], q['k'], q['md']):
+            fail('S', f'{where}: does not end with a {q["a"]} cadence')
+        # one right answer: no other category's ending fits too
+        others = [c for c in SIX if c != q['a'] and cad_ok(c, q['rns'], q['k'], q['md'])]
+        if others:
+            fail('S', f'{where}: also fits {others}')
+    for q in items:
+        if q['opts'] != SIX:
+            fail('S', f"rung 3 question offers {q['opts']}, not the six answers")
+            break
+    # balance and the mode tell
+    by_mode = collections.defaultdict(collections.Counter)
+    for q in items:
+        by_mode[q['md']][q['a']] += 1
+    for md, c in by_mode.items():
+        COUNT[f'R4 rung 3 {md} answers'] = json.dumps(dict(sorted(c.items())))
+    if set(by_mode['min']) != set(SIX):
+        fail('S', f"minor items draw {sorted(by_mode['min'])}, not all six")
+    if set(by_mode['maj']) != set(SIX) - {'phrygian'}:
+        fail('S', f"major items draw {sorted(by_mode['maj'])}")
+    tot = collections.Counter(q['a'] for q in items)
+    chance = tot.most_common(1)[0][1] / len(items)
+    for md, c in by_mode.items():
+        n = sum(c.values())
+        for a, k in c.items():
+            if k / n > chance + MARGIN:
+                fail('S', f'mode tell: in {md} the answer {a} comes {k/n:.0%} of the time (chance {chance:.0%})')
+    W = 'cadences rung 3'
+    A = lambda r: r['a']
+    tell('S', items, 'mode', lambda r: r['md'], A, W)
+    tell('S', items, 'key and mode', lambda r: (r['k'], r['md']), A, W)
+    tell('S', items, 'number of chords', lambda r: len(r['rns']), A, W)
+    tell('S', items, 'second chord', lambda r: r['rns'][1], A, W)
+    tell('S', items, 'opening voicing', lambda r: tuple(r['ch'][0]), A, W)
+    tell('S', items, 'lowest note (6-semitone bands)', lambda r: min(map(min, r['ch'])) // 6, A, W)
+    tell('S', items, 'highest note (6-semitone bands)', lambda r: max(map(max, r['ch'])) // 6, A, W)
+    # the cadential 6/4's bass motion (so held while the chord changes, then do) is not unique to its button
+    so = lambda q: (q['k'] + 7) % 12
+    def holds_so(q):
+        return any(a[0] == b[0] and a[0] % 12 == so(q) for a, b in zip(q['ch'], q['ch'][1:]))
+    hold = collections.Counter(q['a'] for q in items if holds_so(q))
+    COUNT['R4 items with the bass held on so, by answer'] = json.dumps(dict(sorted(hold.items())))
+    if len([a for a in hold if a != 'cad64']) < 2:
+        fail('S', f'the bass held on so occurs only in {sorted(hold)}')
+    if hold['cad64'] / max(1, sum(hold.values())) > .55:
+        fail('S', f"the bass held on so is a cadential 6/4 {hold['cad64']/sum(hold.values()):.0%} of the time")
+    perf_lines = {(q['md'], bass_degrees(q)[-3:]) for q in items if q['a'] == 'perfect'}
+    lone = {bass_degrees(q)[-3:] for q in items if q['a'] == 'cad64' and (q['md'], bass_degrees(q)[-3:]) not in perf_lines}
+    if lone:
+        fail('S', f'cadential 6/4 bass endings never heard in a perfect cadence: {sorted(lone)[:5]}')
+    pc = [q for q in items if q['a'] in ('cad64', 'perfect')]
+    tell('S', pc, 'bass line in scale degrees (6/4 vs perfect)', lambda r: (r['md'], tuple(m % 12 for m in bass_degrees(r))), A, W)
+    # >= 100 distinct items per button
+    dist = collections.defaultdict(set)
+    for q in items:
+        dist[q['a']].add((q['md'], q['k'], tuple(q['rns']), json.dumps(q['ch'])))
+    for a in SIX:
+        COUNT[f'R4 rung 3 distinct items {a}'] = len(dist[a])
+        if len(dist[a]) < 100:
+            fail('S', f'{a}: only {len(dist[a])} distinct items')
+    # the buttons and the feedback, as rendered
+    if ui['labels'] != ['Perfect (authentic)', 'Plagal', 'Imperfect (half)', 'Interrupted (deceptive)', 'Phrygian', 'Cadential 6/4']:
+        fail('S', f"rung 3 buttons: {ui['labels']}")
+    for a, txt in ui['fb'].items():
+        if a == 'phrygian' and not ('imperfect (half) cadence in a minor key' in txt and 'iv⁶–V' in txt):
+            fail('S', f'Phrygian feedback does not name its family: {txt}')
+        if a == 'cad64' and not ('decorated approach to V in a perfect or imperfect cadence' in txt and 'perfect (authentic)' in txt):
+            fail('S', f'cadential 6/4 feedback does not name its family: {txt}')
+    for a, txt in ui['near'].items():
+        fam = {'phrygian': 'Imperfect (half) is its family', 'cad64': 'Perfect (authentic) is its family'}[a]
+        if fam not in txt or not txt.startswith('Not this time.'):
+            fail('S', f'{a} answered with its family: strip "{txt}"')
+
+
 async def main():
     async with async_playwright() as p:
         b = await cjg.launch(p)
@@ -283,6 +377,18 @@ async def main():
         if any(n != 3 for n in cue):
             fail('K', f'rung 1 playback is not key chord + two chords: onsets {collections.Counter(cue)}')
         sec_K(k1, k1r)
+
+        # ---------------- S: R4 cadences rung 3 ----------------
+        k3 = await pg.evaluate("""(mk)=>{const R=eval(mk)(43),o=[];for(let i=0;i<12000;i++){const q=earGen('cad',3,R);o.push({a:q.a,md:q.key.mode,k:q.key.k,rns:q.rns,ch:q.ch,opts:q.opts})}return o}""", RNG)
+        k3r = await pg.evaluate("""()=>{const o=[];for(const md of ['maj','min'])for(const c in CADT[3][md])for(const t of CADT[3][md][c])for(const k of earCadKeys(3,md))
+            for(const reg of [{b:41,s:64},{b:53,s:76},{b:41,s:76},{b:53,s:64},{b:47,s:70}]){const key={k,mode:md},rns=t.split(' '),P=earCadProg(3,rns,key,reg);
+            o.push({a:c,md,k,rns,reg,ch:P.ch,app:P.ch?withKey(key,()=>checkSATB(P.ch,P.L)).filter(e=>e.sev==='error').map(e=>e.rule):['no realisation']})}return o}""")
+        ui = await pg.evaluate("""async(mk)=>{const R=eval(mk)(47);EAR.drill='cad';EAR.lvl.cad=3;const fb={},near={};let labels=null;
+            for(const a of ['phrygian','cad64']){let q;do{q=earGen('cad',3,R)}while(q.a!==a);fb[a]=earAnsTxt(q);
+              EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();labels=[...document.querySelectorAll('#earMain [data-earans]')].map(b=>b.textContent);
+              document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();near[a]=(document.querySelector('#earMain .earres')||{}).textContent||''}
+            return{labels,fb,near}}""", RNG)
+        sec_S(k3, k3r, ui)
 
         if errs:
             fail('page', f'page errors: {errs[:5]}')
