@@ -175,7 +175,7 @@ async def main():
 
         # ---------------- A: every cadence model x key x level ----------------
         cad = await pg.evaluate("""()=>{const out=[];for(const l of [1,2,3])for(const md of ['maj','min']){const ts=CADT[l][md];if(!ts)continue;
-          for(const c in ts)for(const t of ts[c])for(const k of CKEYS2[md])for(const reg of [{b:42,s:66},{b:52,s:74},{b:42,s:74},{b:52,s:66},undefined]){const key={k,mode:md},rns=t.split(' '),P=earProg(rns,key,reg);
+          for(const c in ts)for(const t of ts[c])for(const k of earCadKeys(l,md))for(const reg of [{b:42,s:66},{b:52,s:74},{b:42,s:74},{b:52,s:66},undefined]){const key={k,mode:md},rns=t.split(' '),P=earCadProg(l,rns,key,reg);
             const app=P.ch?withKey(key,()=>checkSATB(P.ch,P.L)).filter(e=>e.sev==='error').map(e=>e.rule):['no realisation'];
             out.push({l,md,cat:c,t,k,ch:P.ch,app,sub:cadSub(rns)})}}return out}""")
         seen = set()
@@ -203,9 +203,11 @@ async def main():
                 sets = {c: set(v) for kk, v in lens.items() for c in [kk.split('|')[2]] if kk.startswith(f'{l}|{md}|')}
                 if sets and len({frozenset(s) for s in sets.values()}) != 1:
                     fail('C', f'L{l} {md}: model lengths differ by category {sets}')
-        for kk, v in lens.items():
-            if kk.startswith('1|') and len(v) < 3:
-                fail('C', f'{kk}: only {len(v)} models at level 1')
+        # EL-7 (0.48): rung 1 is exactly the four basic cadences, two chords each (checked in full in earlab_items_test section K)
+        want1 = {'1|maj|perfect': 1, '1|maj|plagal': 1, '1|maj|imperfect': 2, '1|maj|interrupted': 1}
+        got1 = {kk: len(v) for kk, v in lens.items() if kk.startswith('1|')}
+        if got1 != want1 or any(n != 2 for kk, v in lens.items() if kk.startswith('1|') for n in v):
+            fail('C', f'rung 1 models are not the four basic two-chord cadences: {got1}')
         if await pg.evaluate("JSON.stringify(CADT[2])===JSON.stringify(CADT[3])"):
             fail('C', 'levels 2 and 3 have the same cadence models')
         l3 = await pg.evaluate("Object.values(CADT[3]).flatMap(o=>Object.values(o).flat()).join('|')")
@@ -253,8 +255,8 @@ async def main():
               const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
               const q=earGen('qual',l,R);o.qual.push({l,a:q.a,lo:q.notes[0],hi:q.notes[q.notes.length-1]})}return o}""")
         MARGIN = 0.05
-        def tell(sec, rows, name, feat, ans):
-            for l in (1, 2, 3):
+        def tell(sec, rows, name, feat, ans, levels=(1, 2, 3)):
+            for l in levels:
                 rr = [r for r in rows if r['l'] == l]
                 acc, ch = predict_acc(rr, feat, ans)
                 COUNT['tell checks'] += 1
@@ -263,8 +265,10 @@ async def main():
         tell('cadences', tells['cad'], 'number of chords', lambda r: r['n'], lambda r: r['a'])
         tell('cadences', tells['cad'], 'lowest note (6-semitone bands)', lambda r: r['lo'] // 6, lambda r: r['a'])
         tell('cadences', tells['cad'], 'highest note (6-semitone bands)', lambda r: r['hi'] // 6, lambda r: r['a'])
-        tell('cadences', tells['cad'], 'second chord', lambda r: r['s2'], lambda r: r['a'])
-        tell('cadences', tells['cad'], 'opening voicing', lambda r: r['open'], lambda r: r['a'])
+        # at rung 1 the two chords are the cadence itself, so the second and opening chords are the answer, not a tell;
+        # rung 1's register, top-note, bass-note and key tells are in earlab_items_test section K
+        tell('cadences', tells['cad'], 'second chord', lambda r: r['s2'], lambda r: r['a'], (2, 3))
+        tell('cadences', tells['cad'], 'opening voicing', lambda r: r['open'], lambda r: r['a'], (2, 3))
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['comp'])
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['a'])
         tell('chord quality', tells['qual'], 'lowest note (6-semitone bands)', lambda r: r['lo'] // 6, lambda r: r['a'])
@@ -273,7 +277,7 @@ async def main():
             if min(bp) < 60 or max(bp) > 120 or max(bp) - min(bp) < 50:
                 fail('C', f'metre L{l}: tempo range {min(bp)}-{max(bp)} is not 60-120')
         # the second chord must not give the category away (the old level-1 plagal tell)
-        for l in (1, 2, 3):
+        for l in (2, 3):
             rr = [r for r in tells['cad'] if r['l'] == l]
             by = collections.defaultdict(set)
             for r in rr:
