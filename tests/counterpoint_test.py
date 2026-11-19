@@ -3,20 +3,21 @@
 
 Run:  python3 tests/counterpoint_test.py <repo dir>
       (needs playwright + Chrome and music21; tests/run_all installs the offline harness in tests/harness)
-Prints a JSON report (counts, the first 25 failures, known failures) and exits 1 on any failure.
+Prints a JSON report (counts, the first 25 failures, the regression cases) and exits 1 on any failure.
 
 The app's climb 2 engine (c2Check, c2CantusCheck, c3Check, c3mCheck; solvers c2Solve, c3Solve, c3mSolve; models
 C2MODELS, C3MODELS, C3MMODELS) and climb 13 (c13Line, c13Answer, c13Inv, c13Aug, c13TLine and the playback buttons)
 are driven in a headless page. Everything is judged by this file's OWN implementation: music21 for interval names
 and qualities, and a Python rule checker written from the rule-book texts (C2RB, C3RB, C3MRB; Fux, Gradus ad
 Parnassum), never by the app's checker. Where the app's code departs from its own rule book, this file follows the
-rule book and the departure is a known failure (CP-1..CP-6, C13-1): reported with counts and examples, but it does
-not fail the run. Every other disagreement fails. A known failure that stops appearing (fixed?) is listed under
-known_failures_not_seen_this_run.
+rule book. Any disagreement fails. The seven defects this suite found in 0.47 (CP-1..CP-6, C13-1) were fixed in 0.48
+(item R12); each is now a fixed regression case in section R, and the sweep holds the app to the rule book with no
+known-failure allowances.
 
 Size of the 18 Nov 2026 run (about 100 s): 10,980 two-voice counterpoints, 1,845 three-voice first-species and
 3,276 mixed-species counterpoints, 4,006 cantus lines, 283,694 interval names (11,025 pairs + 272,669 verticals),
-1,815 climb-13 lines (about 21,700 pitches), 1,210 inversions, 605 augmentations, 20 playback checks.
+1,812 climb-13 lines (about 21,700 pitches), 1,208 inversions, 604 augmentations, 20 playback checks; 15 regression
+checks (section R, 0.48).
 
 Sections:
   A  c2Iv names and classes for every ordered pair of 105 pitches (C2..B6, flat/natural/sharp) against music21
@@ -32,6 +33,10 @@ Sections:
   E  three voices, first species (T1-T9, V1-V2, M1-M7): 18 models, solver outputs, 40 mutations each
   F  three voices, mixed species (MX1-MX3, T and V rules, M1, M4, M7; the app's M2, M3 and T3 warnings are not
      compared): the 108 models, solver outputs, 25 mutations each
+  R  regression cases for the seven 0.47 defects fixed in 0.48 (R12): CP-1 third-species cambiata (four notes),
+     CP-2 florid tied unison (H4), CP-3 cantus C6 after a 5th, CP-4 three-voice M3 (outline, repeated note resets),
+     CP-5 mixed-species V2 into the downbeat (and model lydhigh23), CP-6 mixed-species downbeats (S2c/S3d), C13-1
+     the minor 7th at the ends of a line
   G  climb 13: pitches of subjects (the 4 built-in and 600 random, in all 24 keys and the 6 modes), real answers
      (exactly up a 5th; modal: up a 5th within the mode), tonal answers (so in the head answered by do), inversion
      (around the first note, and 1<->5: same rhythm, every step reversed), augmentation (every value doubled), the
@@ -190,7 +195,7 @@ def verticals(att, n):
 
 
 # ---------------- the checker ----------------
-def check(cf_str, sp, pos, cp_dn, br=None, open_=False, quirks=frozenset()):
+def check(cf_str, sp, pos, cp_dn, br=None, open_=False):
     """Returns list of (code, sev, tuple(attack indices)). Rules from the app's rule book (C2RB) and Fux."""
     br = br or []
     above = pos == 'above'
@@ -257,8 +262,8 @@ def check(cf_str, sp, pos, cp_dn, br=None, open_=False, quirks=frozenset()):
                         add('S4b', 'err', [a, a + 1])
                     else:
                         sus_kind(add, above, I, a)
-                elif I.gen == 1 and 'CP-2' not in quirks:
-                    add('H4', 'warn', [a])  # H4: unison on a downbeat (tied); fourth species warns, so must florid
+                elif I.gen == 1:
+                    add('H4', 'warn', [a])  # H4: unison on a downbeat (tied); fourth species warns, so does florid (CP-2)
             elif v['pos'] == 0:
                 if diss:
                     add('S5a', 'err', [a])
@@ -269,7 +274,7 @@ def check(cf_str, sp, pos, cp_dn, br=None, open_=False, quirks=frozenset()):
                     d1, d2 = p.dn - prv.dn, nxt.dn - p.dn
                     ok = abs(d1) == 1 and d1 == d2
                     if t['dur'] == 2:
-                        ok = ok or (abs(d1) == 1 and d2 == -d1) or cambiata(d1, d2, nxt, n2, None)
+                        ok = ok or (abs(d1) == 1 and d2 == -d1) or cambiata(d1, d2, nxt, n2)
                     if not ok:
                         add('S5b', 'err', [a - 1, a, a + 1])
             if v['on'] and t['dur'] == 1 and prv is not None and nxt is not None:
@@ -284,8 +289,7 @@ def check(cf_str, sp, pos, cp_dn, br=None, open_=False, quirks=frozenset()):
                     add('H4', 'err', [a])
             elif diss and prv is not None and nxt is not None:
                 d1, d2 = p.dn - prv.dn, nxt.dn - p.dn
-                n3 = cp[a + 3] if a + 3 < N else None
-                ok = (abs(d1) == 1 and d1 == d2) or (abs(d1) == 1 and d2 == -d1) or cambiata(d1, d2, nxt, n2, n3, five='CP-1' in quirks)
+                ok = (abs(d1) == 1 and d1 == d2) or (abs(d1) == 1 and d2 == -d1) or cambiata(d1, d2, nxt, n2)
                 if not ok:
                     add('S3b', 'err', [a - 1, a, a + 1])
             continue
@@ -463,14 +467,11 @@ def check(cf_str, sp, pos, cp_dn, br=None, open_=False, quirks=frozenset()):
     return sorted(out), cp, cf, V
 
 
-def cambiata(d1, d2, nx, n2, n3, five=False):
-    """S3c: step down to the dissonance, leap down a 3rd, then step back up. five: the app's reading in third
-    species, which also demands that the note after that steps up again (known failure CP-1)."""
+def cambiata(d1, d2, nx, n2):
+    """S3c: step down to the dissonance, leap down a 3rd, then step back up (the four-note figure; CP-1)."""
     if not (d1 == -1 and d2 == -2):
         return False
     if n2 is not None and n2.dn - nx.dn != 1:
-        return False
-    if five and n2 is not None and n3 is not None and n3.dn - n2.dn != 1:
         return False
     return True
 
@@ -485,9 +486,8 @@ def sus_kind(add, above, I, a, pair=False):
 
 
 # ---------------- cantus checker (C1-C15) ----------------
-def cantus_check(fin, cfs, quirks=frozenset()):
-    strict_c6 = 'CP-3' not in quirks
-    """Rules C1-C15 from the rule book. strict_c6: the rule book says 'after a 5th, 6th or octave, turn back by step'."""
+def cantus_check(fin, cfs):
+    """Rules C1-C15 from the rule book. C6: 'after a 5th, 6th or octave, turn back by step' (CP-3)."""
     out = []
     add = lambda code, sev, a: out.append((code, sev, tuple(a)))
     P_ = [parse(s) for s in cfs]
@@ -521,7 +521,7 @@ def cantus_check(fin, cfs, quirks=frozenset()):
         if c is not None and I.gen >= 5 and c.midi != b.midi:
             same_dir = (c.midi > b.midi) == up
             not_step = abs(c.dn - b.dn) != 1
-            if same_dir or ((I.gen >= 6 or strict_c6) and not_step):
+            if same_dir or not_step:
                 add('C6', 'warn', [i - 1, i, i + 1])
         if c is not None and c.midi != b.midi:
             I2 = iv(b, c)
@@ -568,8 +568,7 @@ def cantus_check(fin, cfs, quirks=frozenset()):
 CI = {'low': 2, 'mid': 1, 'high': 0}
 
 
-def c3_check(cf_str, arr, cps, quirks=frozenset()):
-    m3_text = 'CP-4' not in quirks
+def c3_check(cf_str, arr, cps):
     """cps: {voice: [dn,...]} for the two counterpoint voices. Voices: 0 top, 1 middle, 2 bottom.
     Returns list of (code, sev, bars tuple, voices tuple)."""
     n = len(cf_str)
@@ -672,8 +671,7 @@ def c3_check(cf_str, arr, cps, quirks=frozenset()):
             up = b.midi > a.midi
             if a.midi == b.midi:
                 add('M7', 'warn', [i - 1, i], [v])
-                if m3_text:
-                    prev_leap = None
+                prev_leap = None  # a repeated note ends the pair of leaps (CP-4)
                 continue
             if not (I.name in ('m2', 'M2', 'm3', 'M3', 'P4', 'P5', 'P8') or (I.name == 'm6' and up)):
                 add('M1', 'err', [i - 1, i], [v])
@@ -681,14 +679,10 @@ def c3_check(cf_str, arr, cps, quirks=frozenset()):
                 nx = Ls[i + 1].midi - b.midi
                 if not nx or (nx > 0) == (b.midi - a.midi > 0):
                     add('M2', 'warn', [i, i + 1], [v])
-            if m3_text:
-                # rule book M3: two leaps the same way must outline a 5th, 6th or octave (not a 7th, a tritone or more than an octave)
-                if prev_leap and I.gen >= 3 and prev_leap[1] == up:
-                    o = iv(Ls[i - 2], b)
-                    if (o.cls == 'D' and not (o.g7 == 4 and o.q == 'P')) or o.gen > 8:
-                        add('M3', 'warn', [i - 2, i], [v])
-            else:
-                if prev_leap and I.gen >= 3 and prev_leap[1] == up and I.gen + prev_leap[0] > 7:
+            # rule book M3: two leaps the same way must outline a 5th, 6th or octave (not a 7th, a tritone or more than an octave)
+            if prev_leap and I.gen >= 3 and prev_leap[1] == up:
+                o = iv(Ls[i - 2], b)
+                if (o.cls == 'D' and not (o.g7 == 4 and o.q == 'P')) or o.gen > 8:
                     add('M3', 'warn', [i - 2, i], [v])
             prev_leap = (I.gen, up) if I.gen >= 3 else None
         ds = [p.dn for p in Ls]
@@ -698,13 +692,13 @@ def c3_check(cf_str, arr, cps, quirks=frozenset()):
 
 
 # ---------------- three voices, mixed species (MX1-MX3, T rules, V1, V2) ----------------
-def c3m_check(cf_str, arr, spv, sp, cps, quirks=frozenset()):
+def c3m_check(cf_str, arr, spv, sp, cps):
     """One voice (spv) in species sp (2, 3 or 4) and one in whole notes. Errors only, plus the T2/T4/T6/T5 warnings.
-    text=True applies the rule book where the app's implementation departs from it:
+    From the rule book (the app follows it since 0.48, R12):
       - V2: consecutive perfect intervals by contrary motion are checked from the last note of a bar into the
-        next downbeat too (the app checks only similar motion there);
+        next downbeat too, not only similar motion (CP-5);
       - between the species voice and another voice, perfect intervals on successive DOWNBEATS follow the
-        two-voice rules the MX rule book points to (S2c in second species, S3d (a Should) in third), not V1/V2."""
+        two-voice rules the MX rule book points to (S2c in second species, S3d (a Should) in third), not V1/V2 (CP-6)."""
     n = len(cf_str)
     ci = CI[arr]
     wv = [v for v in range(3) if v != ci and v != spv][0]
@@ -782,7 +776,7 @@ def c3m_check(cf_str, arr, spv, sp, cps, quirks=frozenset()):
                     d1, d2 = p.dn - pr.dn, nx.dn - p.dn
                     ok = abs(d1) == 1 and d1 == d2
                     if sp == 3:
-                        ok = ok or (abs(d1) == 1 and d2 == -d1) or cambiata(d1, d2, nx, n2, None)
+                        ok = ok or (abs(d1) == 1 and d2 == -d1) or cambiata(d1, d2, nx, n2)
                     if not ok:
                         add('MX2', 'err', [b], [spv])
         if down and 0 < b < n - 1:
@@ -805,7 +799,7 @@ def c3m_check(cf_str, arr, spv, sp, cps, quirks=frozenset()):
             mx, my = CB[x].midi - CA[x].midi, CB[y].midi - CA[y].midi
             if i0.cls == 'P' and i1.cls == 'P' and i0.pc == i1.pc and mx and my:
                 code = 'V1' if (mx > 0) == (my > 0) else 'V2'
-                if 'CP-6' not in quirks and spv in (x, y) and sp in (2, 3) and A['bar'] + 1 == B['bar'] and A['pos'] == 0:
+                if spv in (x, y) and sp in (2, 3) and A['bar'] + 1 == B['bar'] and A['pos'] == 0:
                     # two-voice rules: S2c (second species) / S3d (third species, a Should)
                     if sp == 3:
                         add('S3d', 'warn', [A['bar'], B['bar']], [x, y]); continue
@@ -828,7 +822,7 @@ def c3m_check(cf_str, arr, spv, sp, cps, quirks=frozenset()):
             if i0.cls == 'P' and i1.cls == 'P' and i0.pc == i1.pc and m1 and m2:
                 if (m1 > 0) == (m2 > 0):
                     add('V1', 'err', [b, b + 1], [spv, o])
-                elif 'CP-5' not in quirks:
+                else:
                     add('V2', 'err', [b, b + 1], [spv, o])
     # start, end, cadence
     ch = [SP[0] if v == spv else at(v, 0, None) for v in range(3)]
@@ -885,7 +879,7 @@ KEYN = {'maj': ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
         'min': ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B']}
 
 
-def tonal_pitch(k, mode, d, prev, nxt, quirks=frozenset()):
+def tonal_pitch(k, mode, d, prev, nxt):
     """music21 pitch for scale degree d (0 = tonic, may be negative or > 6) in key k/mode. Minor: natural minor,
     with the 7th raised when the line moves to or from the tonic (the leading note)."""
     tn = KEYN[mode][k].replace('b', '-')
@@ -894,9 +888,7 @@ def tonal_pitch(k, mode, d, prev, nxt, quirks=frozenset()):
     deg = d % 7
     p = K.pitchFromDegree(deg + 1)
     p = m21pitch.Pitch(p.name)
-    if 'C13-1' in quirks:  # the app's reading: a missing neighbour counts as the tonic
-        prev = 0 if prev is None else prev
-        nxt = 0 if nxt is None else nxt
+    # a missing neighbour (first or last note of a line) is not the tonic (C13-1)
     if mode == 'min' and deg == 6 and ((prev is not None and prev % 7 == 0) or (nxt is not None and nxt % 7 == 0)):
         p = p.transpose('A1')
     midi = base_midi + (p.pitchClass - base_midi % 12) % 12 + 12 * (d // 7)
@@ -908,7 +900,7 @@ def tonal_pitch(k, mode, d, prev, nxt, quirks=frozenset()):
     raise ValueError((k, mode, d, p.name, midi))
 
 
-def c13_line(cells, ctx, quirks=frozenset()):
+def c13_line(cells, ctx):
     """[(m21 Pitch or None, on)] per cell, like the app's c13Line, computed independently."""
     ds = [c if isinstance(c, int) else None for c in cells]
     out, last = [], None
@@ -923,7 +915,7 @@ def c13_line(cells, ctx, quirks=frozenset()):
             p = P(ctx['fin_dn'] + c)
             q = m21pitch.Pitch(p.m21())
         else:
-            q = tonal_pitch(ctx['k'], ctx['mode'], c, prev, nxt, quirks)
+            q = tonal_pitch(ctx['k'], ctx['mode'], c, prev, nxt)
         last = (q, True)
         out.append(last)
     return out
@@ -942,10 +934,10 @@ def head_len(cells):
     return h
 
 
-def c13_answer(cells, ctx, typ, quirks=frozenset()):
+def c13_answer(cells, ctx, typ):
     """real: every note up a perfect 5th (modal: up a 5th within the mode, no new accidentals).
     tonal: in the head, so (the co-final) is answered by do (the final): up a 4th instead."""
-    L = c13_line(cells, ctx, quirks)
+    L = c13_line(cells, ctx)
     hn = head_len(cells) if typ == 'tonal' else 0
     out, k = [], -1
     for x, c in zip(L, cells):
@@ -980,56 +972,18 @@ from playwright.async_api import async_playwright
 
 COUNT = collections.Counter()
 FAIL = []
-KNOWN = {
-    'CP-1': 'Third species (S3b/S3c): the app accepts the cambiata only if the note AFTER the figure also steps up '
-            '(a fifth note). The rule book (S3c: "step down to a dissonant quarter, leap down a 3rd to a consonance, then '
-            'step back up"), Fux\'s nota cambiata and the app\'s own fifth-species check (S5b) use the four-note figure.',
-    'CP-2': 'Fifth species (H4): a tied note that makes a unison on the downbeat is not reported at all; H4 is tagged '
-            'Must for species 5 and the same tie in fourth species gets a warning.',
-    'CP-3': 'Cantus checker (C6): the rule book says "After a 5th, 6th or octave, turn back by step"; the checker '
-            'accepts a 5th followed by a leap back (it only demands a step after a 6th or octave).',
-    'CP-4': 'Three voices (c3Check, M3): "two leaps the same way" is judged by adding the two generic sizes (> 7), so '
-            'leaps outlining an octave (3rd+6th, 4th+5th) are warned and leaps outlining a tritone (3rd+3rd, e.g. B-D-F) '
-            'are not; the rule book (M3) and the two-voice checker say a 5th, 6th or octave is fine and a 7th, a tritone '
-            'or more than an octave is not. A repeated note between two leaps also does not reset the count.',
-    'CP-5': 'Three voices, mixed species (c3mCheck, V2): from the species voice\'s last note of a bar into the next '
-            'downbeat only parallel (similar-motion) 5ths/octaves are checked; consecutive ones by contrary motion '
-            '(e.g. unison to octave) pass, though V2 applies "between every pair of voices". Built-in model lydhigh23 has one.',
-    'CP-6': 'Three voices, mixed species (c3mCheck): perfect intervals of the same kind on successive downbeats between '
-            'the species voice and another voice are always errors (V1/V2). The rule book (MX2: "the same rules as '
-            'two-voice species") points to S2c (second species: allowed when the weak beat leaps more than a 3rd) and '
-            'S3d (third species: a Should, not a Must).',
-    'C13-1': 'Climb 13 (c13P): in minor the 7th degree is raised when a NEIGHBOUR is the tonic, but a missing neighbour '
-             '(first or last note of a line) counts as the tonic (JS mod(null,7)===0), so the A-minor line '
-             'C B G (cells [2,1,-1]) is spelled C4 B3 G#3: a diminished 4th the leading-note rule does not call for.',
-}
-KF = collections.defaultdict(lambda: {'count': 0, 'examples': []})
-FIXED = collections.Counter()
+REG = []
 
 
 def fail(sec, msg):
     FAIL.append(f'{sec}: {msg}')
 
 
-def known(ids, msg):
-    for i in ids:
-        KF[i]['count'] += 1
-        if len(KF[i]['examples']) < 3:
-            KF[i]['examples'].append(msg)
-
-
-def judge(sec, app, run, quirks, desc):
-    """app: list of issues from the app. run(q): my issues under a set of app-readings q (empty = the rule book).
-    Pass if the app agrees with the rule book; known failure if it agrees with the app's documented reading."""
-    A = collections.Counter(app)
-    T = collections.Counter(run(frozenset()))
+def judge(sec, app, mine, desc):
+    """app and mine: lists of issues. Pass if the app reports exactly what the rule book gives."""
+    A, T = collections.Counter(app), collections.Counter(mine)
     if A == T:
         return 'pass'
-    for combo in [frozenset([q]) for q in quirks] + ([frozenset(quirks)] if len(quirks) > 1 else []):
-        R = collections.Counter(run(combo))
-        if A == R:
-            known(sorted(combo), f'{desc}: app {sorted((R - T).elements())} rule book {sorted((T - R).elements())}')
-            return 'known'
     fail(sec, f'{desc}: app only {sorted((A - T).elements())[:4]}, rule book only {sorted((T - A).elements())[:4]}')
     return 'fail'
 
@@ -1194,10 +1148,9 @@ async def main():
                 fail('C', f"interval names {c['k']} sp{c['sp']} {c['pos']} {c['cp']}: app {r['names']} music21 {names}")
             app = [(a, s, tuple(t)) for a, s, t in r['app']]
             desc = f"{c['src']} {c['k']}{'' if c['k'] != 'own' else ' ' + ' '.join(c['cf'])} sp{c['sp']} {c['pos']} cp={c['cp']} br={c['br']}"
-            if judge('C', app, lambda q: check(c['cf'], c['sp'], c['pos'], c['cp'], c['br'], quirks=q)[0], ['CP-1', 'CP-2'], desc) == 'known' and c['src'] in ('model', 'solver'):
-                COUNT[f"two-voice {c['src']}s touched by a known failure"] += 1
+            judge('C', app, mine, desc)
             if c['src'] in ('model', 'solver'):
-                e = [x for x in app + check(c['cf'], c['sp'], c['pos'], c['cp'], c['br'], quirks=frozenset(['CP-1', 'CP-2']))[0] if x[1] == 'err']
+                e = [x for x in app + mine if x[1] == 'err']
                 if e:
                     fail('C', f'{c["src"]} has errors: {desc}: {e}')
         # rule-card examples: the bad version shows its rule, the good one does not
@@ -1249,7 +1202,7 @@ async def main():
         app = await pg.evaluate("(L)=>L.map(([f,c])=>c2CantusCheck(f,c).iss.map(x=>[x.code,x.sev,x.att]))", cants)
         for (f, c), a in zip(cants, app):
             COUNT['cantus lines checked'] += 1
-            judge('D', [(x, s, tuple(t)) for x, s, t in a], lambda q: cantus_check(f, c, quirks=q), ['CP-3'], f'cantus on {f}: {" ".join(c)}')
+            judge('D', [(x, s, tuple(t)) for x, s, t in a], cantus_check(f, c), f'cantus on {f}: {" ".join(c)}')
         for f, c in builtin:
             if any(x[1] == 'err' for x in cantus_check(f, c)):
                 fail('D', f'built-in cantus {c} breaks a Must rule: {cantus_check(f, c)}')
@@ -1278,8 +1231,9 @@ async def main():
             cps = {int(k): v for k, v in c['cps'].items()}
             A = [(x, s, tuple(bb), tuple(v)) for x, s, bb, v in a]
             desc = f"3v {c['src']} {c['k']} {c['arr']} {c['cps']}"
-            judge('E', A, lambda q: c3_check(c['cf'], c['arr'], cps, quirks=q)[0], ['CP-4'], desc)
-            if c['src'] != 'mutation' and any(x[1] == 'err' for x in c3_check(c['cf'], c['arr'], cps, quirks=frozenset(['CP-4']))[0] + A):
+            mine3 = c3_check(c['cf'], c['arr'], cps)[0]
+            judge('E', A, mine3, desc)
+            if c['src'] != 'mutation' and any(x[1] == 'err' for x in mine3 + A):
                 fail('E', f'{desc} has errors')
 
         # ---------------- F: three voices, mixed species ----------------
@@ -1308,14 +1262,87 @@ async def main():
             cps = {int(k): v for k, v in c['cps'].items()}
             A = [(x, s, tuple(bb), tuple(v)) for x, s, bb, v in a]
             desc = f"mixed {c['src']} {c['k']}{c['arr']}{c['spv']}{c['sp']} {c['cps']}"
-            r = judge('F', A, lambda q: c3m_check(c['cf'], c['arr'], c['spv'], c['sp'], cps, quirks=q), ['CP-5', 'CP-6'], desc)
-            if r == 'known' and c['src'] != 'mutation':
-                COUNT[f"mixed-species {c['src']}s touched by a known failure"] += 1
-                known(['models'], desc)
+            minem = c3m_check(c['cf'], c['arr'], c['spv'], c['sp'], cps)
+            judge('F', A, minem, desc)
             if c['src'] != 'mutation':
-                e = [x for x in c3m_check(c['cf'], c['arr'], c['spv'], c['sp'], cps, quirks=frozenset(['CP-5', 'CP-6'])) + A if x[1] == 'err']
+                e = [x for x in minem + A if x[1] == 'err']
                 if e:
                     fail('F', f'{desc} has errors {e}')
+
+        # ---------------- R: regression cases for the seven defects fixed in 0.48 (R12) ----------------
+        # Each case must agree with the rule book (the checker above) AND show the specific behaviour the fix is about.
+        def reg(rid, what, ok, detail=''):
+            REG.append({'id': rid, 'what': what, 'pass': bool(ok)})
+            COUNT['regression cases'] += 1
+            if not ok:
+                fail('R', f'{rid} {what}: {detail}')
+
+        C2CF = await pg.evaluate("()=>Object.fromEntries(C2M.map(M=>[M.k,M.cf]))")
+        two = [
+            # CP-1: Dorian, third species above. Attacks 28-31 are D4 C4 A3 B3: step down to the dissonant C, leap down a
+            # 3rd, step back up (the four-note cambiata, S3c); the line then falls to A3. 0.47 gave S3b at 29-31.
+            ('CP-1', 'four-note cambiata accepted in third species', 'dor', 3, 'above', [],
+             [40, 38, 37, 36, 35, 33, 34, 35, 36, 37, 39, 40, 39, 38, 37, 36, 37, 38, 39, 40, 39, 38, 36, 35, 34, 33, 32, 29, 31, 32, 31, 29, 30, 29, 33, 32, 33, 34, 35, 36],
+             lambda A: ('S3b', 'err', (29, 30, 31)) not in A),
+            # CP-2: Aeolian, florid above (a solver output). The tie into a downbeat makes a unison there (attack 11):
+            # H4 warns, as it does for the same tie in fourth species. 0.47 reported nothing.
+            ('CP-2', 'tied unison on a florid downbeat warned (H4)', 'aeo', 5, 'above', ['rh~', 'hh~', 'hqee', 'hqq', 'qqh~', 'hh~', 'hqq', 'qqqee', 'qqh~', 'hqee', 'w'],
+             [30, 32, 33, 32, 31, 30, 29, 30, 31, 30, 31, 30, 31, 30, 31, 32, 33, 32, 31, 30, 32, 33, 32, 33, 32, 33],
+             lambda A: ('H4', 'warn', (11,)) in A),
+        ]
+        got = await pg.evaluate("(L)=>L.map(c=>c2Check(c2Mode(c[0]),c[1],c[2],c[4],c[3]).iss.map(x=>[x.code,x.sev,x.att]))", [[k, sp, pos, br, cp] for _, _, k, sp, pos, br, cp, _ in two])
+        for (rid, what, k, sp, pos, br, cp, cond), g in zip(two, got):
+            A = [(a, sv, tuple(t)) for a, sv, t in g]
+            mine = check(C2CF[k], sp, pos, cp, br)[0]
+            reg(rid, what, cond(A) and judge('R', A, mine, f'{rid} {k} sp{sp} {pos}') == 'pass', f'app {A}')
+        # CP-3: cantus on F, ... C4 G4 D4 ...: a 5th up, then a leap back down (a 4th). C6: turn back by step.
+        cf3 = ['C4', 'B4', 'A4', 'F4', 'A3', 'C4', 'E4', 'D5', 'C4', 'G4', 'D4', 'F4']
+        A = [(a, sv, tuple(t)) for a, sv, t in await pg.evaluate("(c)=>c2CantusCheck('F',c).iss.map(x=>[x.code,x.sev,x.att])", cf3)]
+        reg('CP-3', 'cantus C6 warns a leap back after a 5th', ('C6', 'warn', (8, 9, 10)) in A and judge('R', A, cantus_check('F', cf3), 'CP-3') == 'pass', f'app {A}')
+        # CP-4: three voices, Dorian, cantus low. (a) the middle voice D4 F4 C5 (bars 9-11: a 3rd then a 5th up, an
+        # octave in all: fine, 0.47 warned); (b) B3 D4 F4 (two 3rds up outlining a diminished 5th: warned, 0.47 missed
+        # it); (c) A3 D4 D4 A4 (a 4th, a repeated note, a 5th: the repeat ends the pair, 0.47 warned)
+        base4 = {'0': [38, 36, 39, 40, 39, 40, 38, 37, 38, 42, 40], '1': [38, 36, 37, 38, 37, 36, 35, 34, 33, 35, 40]}
+        c4 = [('octave outline not warned', base4, lambda A: not any(x[0] == 'M3' for x in A)),
+              ('tritone outline warned', dict(base4, **{'1': [38, 36, 37, 27, 29, 31, 35, 34, 33, 35, 36]}), lambda A: ('M3', 'warn', (3, 5), (1,)) in A),
+              ('a repeated note ends the pair of leaps', dict(base4, **{'1': [38, 36, 37, 26, 29, 29, 33, 34, 33, 35, 36]}), lambda A: not any(x[0] == 'M3' and x[3] == (1,) for x in A))]
+        got = await pg.evaluate("(L)=>L.map(c=>c3Check(c2Mode('dor'),'low',c).iss.map(x=>[x.code,x.sev,x.bars,x.voices]))", [x[1] for x in c4])
+        for (what, cps, cond), g in zip(c4, got):
+            A = [(a, sv, tuple(b_), tuple(v)) for a, sv, b_, v in g]
+            mine = c3_check(C2CF['dor'], 'low', {int(k_): v for k_, v in cps.items()})[0]
+            reg('CP-4', f'three-voice M3: {what}', cond(A) and judge('R', A, mine, f'CP-4 {what}') == 'pass', f'app {[x for x in A if x[0] == "M3"]}')
+        # CP-5 and CP-6: mixed species
+        mx = [
+            ('CP-5', 'V2 by contrary motion into the downbeat (Phrygian, cantus low, top voice in second species)', 'phr', 'low', 0, 2,
+             {'0': [41, 39, 41, 40, 41, 42, 41, 40, 38, 37, 36, 37, 38, 39, 38, 37, 38, 39, 37, 40, 36, 37], '1': [39, 37, 38, 39, 38, 39, 40, 38, 40, 37, 33, 34]},
+             lambda A: ('V2', 'err', (9, 10), (0, 1)) in A),
+            ('CP-5', 'the 0.47 model lydhigh23 shows its V2 (unison to octave, bars 1-2)', 'lyd', 'high', 2, 3,
+             {'1': [24, 28, 30, 29, 30, 28, 29, 30, 28, 29, 28], '2': [22, 23, 24, 21, 20, 19, 20, 21, 20, 21, 23, 25, 24, 23, 22, 21, 22, 21, 20, 21, 22, 23, 22, 20, 21, 20, 22, 19, 20, 21, 22, 21, 22, 23, 22, 20, 21, 22, 23, 24]},
+             lambda A: ('V2', 'err', (0, 1), (2, 1)) in A),
+            ('CP-6', 'second species: octaves on successive downbeats with a small weak-beat move are S2c, not V1/V2', 'phr', 'low', 0, 2,
+             {'0': [41, 39, 41, 40, 41, 42, 41, 40, 38, 37, 36, 37, 38, 39, 38, 37, 38, 43, 37, 40, 36, 37], '1': [39, 37, 38, 39, 38, 39, 40, 39, 40, 39, 36, 34]},
+             lambda A: ('S2c', 'err', (8, 9), (0, 2)) in A and not any(x[0] in ('V1', 'V2') and x[2:] == ((8, 9), (0, 2)) for x in A)),
+            ('CP-6', 'third species: perfect intervals on successive downbeats are S3d (a Should), not V1', 'phr', 'low', 0, 3,
+             {'0': [41, 42, 41, 39, 40, 39, 38, 36, 37, 38, 37, 35, 36, 37, 38, 37, 38, 37, 40, 41, 42, 43, 42, 40, 41, 40, 39, 41, 42, 41, 40, 38, 39, 38, 37, 39, 40, 39, 38, 36, 37, 38, 36, 37], '1': [39, 37, 38, 39, 40, 37, 36, 36, 35, 34, 33, 34]},
+             lambda A: ('S3d', 'warn', (5, 6), (0, 1)) in A and not any(x[0] in ('V1', 'V2') and x[2:] == ((5, 6), (0, 1)) for x in A)),
+        ]
+        got = await pg.evaluate("(L)=>L.map(c=>c3mCheck(c2Mode(c[0]),c[1],c[2],c[3],c[4]).iss.filter(x=>!['M2','M3','T3'].includes(x.code)).map(x=>[x.code,x.sev,x.bars,x.voices]))", [[k, arr, spv, sp, cps] for _, _, k, arr, spv, sp, cps, _ in mx])
+        for (rid, what, k, arr, spv, sp, cps, cond), g in zip(mx, got):
+            A = [(a, sv, tuple(b_), tuple(v)) for a, sv, b_, v in g]
+            mine = c3m_check(C2CF[k], arr, spv, sp, {int(k_): v for k_, v in cps.items()})
+            reg(rid, what, cond(A) and judge('R', A, mine, f'{rid} {what}') == 'pass', f'app {A}')
+        nm = await pg.evaluate("()=>{const m=C3MMODELS.lydhigh23;return{m,iss:c3mCheck(c2Mode('lyd'),'high',2,3,m).iss.map(x=>[x.code,x.sev,x.bars,x.voices])}}")
+        e = [x for x in nm['iss'] if x[1] == 'err'] + [x for x in c3m_check(C2CF['lyd'], 'high', 2, 3, {int(k_): v for k_, v in nm['m'].items()}) if x[1] == 'err']
+        reg('CP-5', 'the replacement model lydhigh23 has no errors and the bass begins on the final', not e and nm['m']['2'][0] % 7 == 3, f'errors {e}, first bass note dn {nm["m"]["2"][0]}')
+        # C13-1: minor 7th at the ends of a line (no neighbour there is not the tonic); the leading note is still raised
+        c13 = [('A minor C B G: the last note G stays natural', [2, 1, -1], 9, 2, (4, 0)),
+               ('A minor G E A: the first note G stays natural', [-1, -3, 0], 9, 0, (4, 0)),
+               ('C sharp minor, the B at the end of the line stays natural', [7, 'h', 4, 1, 'h', 2, 6, 'h'], 1, 6, (6, 0)),
+               ('A minor A G A: the leading note is raised (G sharp)', [0, -1, 0], 9, 1, (4, 1))]
+        got = await pg.evaluate("(L)=>L.map(([c,k,i])=>{const p=c13Line(c,{modal:false,key:{k,mode:'min'}})[i];return[p.li,p.acc]})", [[c, k, i] for _, c, k, i, _ in c13])
+        for (what, cells, k, i, want), g in zip(c13, got):
+            exp = c13_line(cells, {'modal': False, 'k': k, 'mode': 'min'})[i][0]
+            reg('C13-1', what, tuple(g) == want and (LET.index(exp.step), int(exp.alter)) == want, f'app (li, acc) {g}, music21 {exp}')
 
         # ---------------- G: climb 13 - subjects, answers, inversion, augmentation, diminution ----------------
         subs = await pg.evaluate("()=>{const o=[];for(const sys in C13SUB)for(const k in C13SUB[sys]){const s=C13SUB[sys][k];o.push({sys,id:k,cells:s.cells,key:s.key||null,mk:s.mk||null})}return o}")
@@ -1326,7 +1353,6 @@ async def main():
             ctx = ({'modal': False, 'k': rng.randrange(12), 'mode': rng.choice(['maj', 'min'])} if rng.random() < .7
                    else {'modal': True, 'mk': rng.choice(['dor', 'aeo', 'ion', 'mix', 'phr', 'lyd'])})
             jobs.append((rand_subject(rng), ctx))
-        jobs.append(([2, 1, -1], {'modal': False, 'k': 9, 'mode': 'min'}))  # the C13-1 reproduction
         res = await pg.evaluate("""(jobs)=>jobs.map(([cells,c])=>{const ctx=c.modal?{modal:true,M:c2Mode(c.mk),fin:c2Fin(c2Mode(c.mk))}:{modal:false,key:{k:c.k,mode:c.mode}};
           const P=L=>L.map(p=>p?{li:p.li,acc:p.acc,oct:p.oct,midi:p.midi,on:p.on,mut:!!p.mut}:null);
           const o={fin:ctx.modal?ctx.fin.dn:null,line:P(c13Line(cells,ctx)),real:P(c13Answer(cells,ctx,'real')),tonal:P(c13Answer(cells,ctx,'tonal')),inv1:c13Inv(cells,'first'),inv15:c13Inv(cells,'15'),aug:c13Aug(cells)};
@@ -1348,18 +1374,15 @@ async def main():
                 ctx = dict(ctx, fin_dn=r['fin'])
             where = f"{'modal ' + ctx['mk'] if ctx['modal'] else KEYN[ctx['mode']][ctx['k']] + ' ' + ctx['mode']} {cells}"
             # pitches of the subject, then the real and tonal answers
-            for nm, fn, mut in (('subject', lambda q: c13_line(cells, ctx, q), False),
-                                ('real answer', lambda q: c13_answer(cells, ctx, 'real', q), True),
-                                ('tonal answer', lambda q: c13_answer(cells, ctx, 'tonal', q), True)):
+            for nm, fn, mut in (('subject', lambda: c13_line(cells, ctx), False),
+                                ('real answer', lambda: c13_answer(cells, ctx, 'real'), True),
+                                ('tonal answer', lambda: c13_answer(cells, ctx, 'tonal'), True)):
                 COUNT['climb 13 lines (subject/answers)'] += 1
                 COUNT['climb 13 pitches'] += sum(1 for x in cells if x is not None)
                 got = r[{'subject': 'line', 'real answer': 'real', 'tonal answer': 'tonal'}[nm]]
-                e = cmp_line(fn(frozenset()), got, mut)
+                e = cmp_line(fn(), got, mut)
                 if e:
-                    if ctx['modal'] or cmp_line(fn(frozenset(['C13-1'])), got, mut):
-                        fail('G', f'{nm} {where}: {e}')
-                    else:
-                        known(['C13-1'], f'{nm} {where}: {e}')
+                    fail('G', f'{nm} {where}: {e}')
             # inversion: the same rhythm, every diatonic step reversed; around the first note, or 1 <-> 5
             nums = [c for c in cells if isinstance(c, int)]
             for ax, inv in (('first', r['inv1']), ('15', r['inv15'])):
@@ -1426,9 +1449,8 @@ async def main():
                 else:
                     kk = await pg.evaluate("c13Ctx().key")
                     ctx = {'modal': False, 'k': kk['k'], 'mode': kk['mode']}
-                q = frozenset(['C13-1'])
-                L = [x for x in c13_line(out['invcells'], ctx, q) if x and x[1]]
-                s0m = next(x for x in c13_line(out['cells'], ctx, q) if x)[0].midi
+                L = [x for x in c13_line(out['invcells'], ctx) if x and x[1]]
+                s0m = next(x for x in c13_line(out['cells'], ctx) if x)[0].midi
                 o = 0
                 while L[0][0].midi + o - s0m > 6: o -= 12
                 while s0m - (L[0][0].midi + o) > 6: o += 12
@@ -1440,18 +1462,13 @@ async def main():
     COUNT['page errors'] = len(errs)
     for e in errs[:5]:
         fail('page', e)
-    KNOWN['models'] = 'Built-in models or solver outputs that break the rule book through one of the known failures above (listed for the record).'
-    for i in KNOWN:
-        if i not in KF and i != 'models':
-            FIXED[i] += 1
     report = {
         'suite': 'counterpoint_test (charter suite 6: species and fugue, independent counterpoint checker)',
         'counts': dict(COUNT),
         'runtime_s': round(time.time() - t_start, 1),
         'n_failures': len(FAIL),
         'failures': FAIL[:25],
-        'known_failures': {i: {'what': KNOWN[i], 'cases': KF[i]['count'], 'examples': KF[i]['examples']} for i in KNOWN if i in KF},
-        'known_failures_not_seen_this_run': sorted(FIXED),
+        'regression_cases': REG,
     }
     print(json.dumps(report, indent=1, ensure_ascii=False))
     sys.exit(1 if FAIL else 0)
