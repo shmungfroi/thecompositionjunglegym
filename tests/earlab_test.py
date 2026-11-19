@@ -288,8 +288,11 @@ async def main():
             return{'melodic dictation (solfa sequences)':d('mel',q=>q.a.join(' ')),'chord quality (distinct voicings)':d('qual',q=>q.notes.join(',')),'bass (progression x key)':d('bass',q=>q.a.join(' ')+'|'+q.key.k)}}""")
         for k, v in pools.items():
             COUNT[f'L1 pool: {k}'] = v
-            if v < 100:
-                fail('D', f'level 1 {k}: {v} distinct items (floor 100)')
+            # EL-6 (0.48): chord quality is root position only, close spacing, two registers, so rung 1 (major, minor) has
+            # 2 x 12 roots x 2 registers = 48 voicings; the floor there is all 48, not 100
+            floor = 48 if k.startswith('chord quality') else 100
+            if v < floor:
+                fail('D', f'level 1 {k}: {v} distinct items (floor {floor})')
 
         # ---------------- E: blind analysis ----------------
         blind = await pg.evaluate("""async()=>{await earLoadBlind();return{items:EAR.blind.map(x=>({...x})),cats:[1,2,3].map(l=>earBlindCats(l)),meta:AN.meta}}""")
