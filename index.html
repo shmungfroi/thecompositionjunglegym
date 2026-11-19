@@ -6317,8 +6317,8 @@ const CADL3={...CADL,phrygian:'Phrygian',cad64:'Cadential 6/4'};
 // solfa follows the app's rule, movable do with la-based minor: the dominant is so in major and mi in minor; the Phrygian bass le–so of
 // do-based minor is fa–mi (independent theory check 0.48)
 const EARSOL5=md=>md==='min'?'mi':'so';
-const CADFAM={phrygian:md=>`an imperfect (half) cadence in a minor key: iv⁶–V, with the bass falling a semitone (${md==='min'?'fa–mi':'le–so'})`,
- cad64:md=>`the decorated approach to V in a perfect or imperfect cadence: over the bass ${EARSOL5(md)}, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect (authentic) cadence`};
+const CADFAM={phrygian:md=>`an imperfect cadence in a minor key: iv⁶–V, with the bass falling a semitone (${md==='min'?'fa–mi':'le–so'})`,
+ cad64:md=>`the decorated approach to V in a perfect or imperfect cadence: over the bass ${EARSOL5(md)}, a 6/4 chord falls to 5/3 as it becomes V. Here it decorates a perfect cadence`};
 const CADPARENT={phrygian:'imperfect',cad64:'perfect'};
 function earCadOpts(l){return l===3?['perfect','plagal','imperfect','interrupted','phrygian','cad64']:Object.keys(CADL)}
 /* Held out of rung 3 pending Justin's ruling (0.48 design spec, open question 2): interrupted after a cadential 6/4, where both "Interrupted"
