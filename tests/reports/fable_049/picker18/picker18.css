@@ -1,0 +1,77 @@
+/* Ear Lab 0.50 preview: an 18-rung picker, two options. Fable, 21 Nov 2026 (decision log L103).
+   Sits on top of ladder049.css; existing tokens only. Nothing here is in index.html. */
+
+/* ============ Option A · one row, all rungs ============
+   The Stage label leaves the pill and sits as a caption above it, so every pixel of the row is rungs.
+   Bands share the card width equally (796 px inside at 1366 and 1440, 834 at 1024). */
+.el-rp.r18{flex-wrap:nowrap;align-items:stretch;gap:10px;padding-top:19px}
+.el-rp.r18 .el-stagetabs{display:none}
+.el-rp.r18 .el-band{position:relative;flex:1 1 0;min-width:0;display:flex;overflow:visible}
+.el-rp.r18 .el-bandlab{position:absolute;left:16px;top:-19px;height:15px;padding:0;border:0;background:none;font-size:11px;line-height:15px;letter-spacing:1.6px}
+.el-rp.r18 .el-band button{flex:1 1 0;min-width:38px;height:34px;padding:0}
+.el-rp.r18 .el-band button:first-of-type{border-radius:var(--r-pill) 0 0 var(--r-pill)}
+.el-rp.r18 .el-band button.done::after{bottom:4px}
+/* the suggested ring, drawn inside the cell with soft corners so it does not read as a second selection */
+.el-rp.r18 .el-band button.sug{box-shadow:none}
+.el-rp.r18 .el-band button.sug::before{content:"";position:absolute;inset:3px;border:1.5px solid var(--goldhi);border-radius:9px;pointer-events:none}
+
+/* ============ Option B · Stage menus ============ */
+.el-sm{position:relative;display:flex;gap:10px;align-items:stretch}
+.el-smb{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:10px;height:40px;padding:0 13px 0 16px;border:1px solid var(--line);border-radius:var(--r-pill);background:none;color:var(--muted);cursor:pointer;text-align:left;font-variant-numeric:lining-nums tabular-nums}
+.el-smb .st{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;white-space:nowrap}
+.el-smb .v{font-size:14px;color:var(--ivory);white-space:nowrap}
+.el-smb .pips{display:flex;align-items:center;gap:4px;margin-left:auto}
+.el-smb .pips i{box-sizing:border-box;width:6px;height:6px;border-radius:50%;border:1px solid rgba(156,146,124,.7)}        /* not reached: a small ring */
+.el-smb .pips i.done{background:var(--gold);border-color:var(--gold)}                                                    /* reached: a filled disc */
+.el-smb .pips i.on{width:13px;border-radius:3px;background:var(--goldhi);border-color:var(--goldhi)}                     /* the rung in use: a bar */
+.el-smb .pips i.sug{width:9px;height:9px;border:1.5px solid var(--goldhi);background:none}                               /* suggested: a larger ring */
+.el-smb .chev{flex:none;width:10px;height:10px;color:var(--muted);transition:transform .15s}
+.el-smb:hover{border-color:rgba(201,162,74,.6)}.el-smb:hover .chev{color:var(--goldhi)}
+.el-smb.cur{border-color:var(--gold)}
+.el-smb.cur .st{color:var(--gold)}.el-smb.cur .v{color:var(--goldhi)}
+.el-smb[aria-expanded=true]{background:rgba(201,162,74,.13);border-color:var(--gold)}
+.el-smb[aria-expanded=true] .chev{transform:rotate(180deg);color:var(--goldhi)}
+.el-smb:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
+.el-smm{position:absolute;top:calc(100% + 8px);z-index:8;width:392px;max-width:100%;padding:6px;border:1px solid rgba(201,162,74,.55);border-radius:var(--r-m);background:var(--panel2);box-shadow:0 22px 44px -14px rgba(0,0,0,.95),0 0 0 1px rgba(0,0,0,.4)}
+.el-smm[hidden]{display:none}
+.el-smm .hd{display:flex;justify-content:space-between;gap:12px;padding:7px 10px 8px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted)}
+.el-smi{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:0 12px;width:100%;min-height:44px;padding:5px 12px 5px 8px;border:0;border-radius:var(--r-s);background:none;text-align:left;color:var(--ivory);cursor:pointer}
+.el-smi+.el-smi{margin-top:1px}
+.el-smi .n{position:relative;justify-self:center;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font-family:"Poiret One",Outfit,sans-serif;font-size:21px;line-height:1;color:var(--muted);font-variant-numeric:lining-nums}
+.el-smi .d{font-size:13.5px;line-height:1.3}
+.el-smi .m{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.el-smi.done .n::after{content:"";position:absolute;left:50%;bottom:-3px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--gold)}   /* the same dot as option A */
+.el-smi.sug .n{box-shadow:inset 0 0 0 1.5px var(--goldhi);color:var(--goldhi)}                                             /* the same ring */
+.el-smi.sug .m{color:var(--goldhi)}
+.el-smi[aria-checked=true]{background:rgba(201,162,74,.13)}
+.el-smi[aria-checked=true] .n{background:var(--gold);color:var(--ink);font-family:Outfit,sans-serif;font-size:13.5px;font-weight:600;padding-bottom:5px}
+.el-smi[aria-checked=true].done .n::after{background:var(--ink);bottom:3.5px;width:3.5px;height:3.5px}
+.el-smi[aria-checked=true] .d,.el-smi[aria-checked=true] .m{color:var(--goldhi)}
+.el-smi:hover{background:rgba(236,226,200,.06)}
+.el-smi:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+
+@media (max-width:760px){
+ /* A on phones: the 0.49 fold cannot hold six 44 px rungs beside two tabs (33 px each), so the tabs take a row of their own */
+ .el-rp.r18{display:block;padding-top:0}
+ .el-rp.r18 .el-stagetabs{display:flex;margin-bottom:8px;border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden}
+ .el-rp.r18 .el-bandtab{flex:1 1 0;display:grid;width:auto;height:44px;border:0;border-radius:0}
+ .el-rp.r18 .el-bandtab+.el-bandtab{border-left:1px solid var(--line)}
+ .el-rp.r18 .el-bandtab.open{display:grid;background:rgba(201,162,74,.13);box-shadow:inset 0 -2px 0 var(--gold)}
+ .el-rp.r18 .el-bandtab.open small{color:var(--gold)}.el-rp.r18 .el-bandtab.open b{color:var(--goldhi)}
+ .el-rp.r18 .el-bandtab{position:relative}
+ .el-rp.r18 .el-bandtab.cur small{color:var(--gold)}
+ .el-rp.r18 .el-bandtab.sug{box-shadow:none}
+ .el-rp.r18 .el-bandtab.sug::before{content:"";position:absolute;inset:3px;border:1.5px solid var(--goldhi);border-radius:9px;pointer-events:none}
+ .el-rp.r18 .el-bandtab:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+ .el-rp.r18 .el-band{display:none}.el-rp.r18 .el-band.open{display:flex}
+ .el-rp.r18 .el-band button{min-width:44px;height:44px}
+ .el-rp.r18 .el-band button.done::after{bottom:6px}
+ /* B on phones: three stacked-label buttons; the list spans the card */
+ .el-sm{gap:6px}
+ .el-smb{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1px 4px;align-content:center;height:60px;padding:0 9px 0 11px;border-radius:var(--r-m)}
+ .el-smb .st{grid-column:1 / -1;letter-spacing:.8px}.el-smb .v{font-size:14px}
+ .el-smb .chev{grid-row:2;grid-column:2;align-self:center}
+ .el-smb .pips{grid-column:1 / -1;margin:3px 0 0;gap:3px}
+ .el-smm{left:0!important;right:0!important;width:auto}
+ .el-smi{min-height:50px}
+}

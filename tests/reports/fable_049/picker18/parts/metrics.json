@@ -1,0 +1,710 @@
+{
+ "a_1440": {
+  "card_inner": 796,
+  "head": [
+   796,
+   145.3
+  ],
+  "picker": [
+   796,
+   55
+  ],
+  "rungline": [
+   796,
+   17.5
+  ],
+  "rung_btn": [
+   "41.9x34",
+   "43x34",
+   "42.9x34"
+  ],
+  "tab": [],
+  "stage_btn": [],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   1440,
+   900
+  ],
+  "over": 0,
+  "under_44": [
+   ":1:42x34",
+   ":2:43x34",
+   ":3:43x34",
+   ":4:43x34",
+   ":5:43x34",
+   ":6:43x34",
+   " done:7:42x34",
+   " done:8:43x34",
+   " done:9:43x34",
+   " done:10:43x34",
+   ":11:43x34",
+   " done:12:43x34",
+   " done:13:42x34",
+   "on done:14:43x34",
+   " sug:15:43x34",
+   ":16:43x34",
+   ":17:43x34",
+   ":18:43x34"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "a_1366": {
+  "card_inner": 796,
+  "head": [
+   796,
+   145.3
+  ],
+  "picker": [
+   796,
+   55
+  ],
+  "rungline": [
+   796,
+   17.5
+  ],
+  "rung_btn": [
+   "41.9x34",
+   "43x34",
+   "42.9x34"
+  ],
+  "tab": [],
+  "stage_btn": [],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   1366,
+   768
+  ],
+  "over": 0,
+  "under_44": [
+   ":1:42x34",
+   ":2:43x34",
+   ":3:43x34",
+   ":4:43x34",
+   ":5:43x34",
+   ":6:43x34",
+   " done:7:42x34",
+   " done:8:43x34",
+   " done:9:43x34",
+   " done:10:43x34",
+   ":11:43x34",
+   " done:12:43x34",
+   " done:13:42x34",
+   "on done:14:43x34",
+   " sug:15:43x34",
+   ":16:43x34",
+   ":17:43x34",
+   ":18:43x34"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "a_1024": {
+  "card_inner": 834,
+  "head": [
+   834,
+   145.3
+  ],
+  "picker": [
+   834,
+   55
+  ],
+  "rungline": [
+   834,
+   17.5
+  ],
+  "rung_btn": [
+   "44x34",
+   "45.1x34",
+   "45x34"
+  ],
+  "tab": [],
+  "stage_btn": [],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   1024,
+   768
+  ],
+  "over": 0,
+  "under_44": [
+   ":1:44x34",
+   ":2:45x34",
+   ":3:45x34",
+   ":4:45x34",
+   ":5:45x34",
+   ":6:45x34",
+   " done:7:44x34",
+   " done:8:45x34",
+   " done:9:45x34",
+   " done:10:45x34",
+   ":11:45x34",
+   " done:12:45x34",
+   " done:13:44x34",
+   "on done:14:45x34",
+   " sug:15:45x34",
+   ":16:45x34",
+   ":17:45x34",
+   ":18:45x34"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "a_390": {
+  "card_inner": 328,
+  "head": [
+   328,
+   242.4
+  ],
+  "picker": [
+   328,
+   100
+  ],
+  "rungline": [
+   328,
+   56.4
+  ],
+  "rung_btn": [
+   "53.5x44",
+   "54.5x44"
+  ],
+  "tab": [
+   "108x44",
+   "109x44"
+  ],
+  "stage_btn": [],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   390,
+   844
+  ],
+  "over": 0,
+  "under_44": [],
+  "tiny": [],
+  "errors": []
+ },
+ "a_open5_1440": {
+  "card_inner": 796,
+  "head": [
+   796,
+   145.3
+  ],
+  "picker": [
+   796,
+   55
+  ],
+  "rungline": [
+   796,
+   17.5
+  ],
+  "rung_btn": [
+   "41.9x34",
+   "43x34",
+   "42.9x34"
+  ],
+  "tab": [],
+  "stage_btn": [],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   1440,
+   900
+  ],
+  "over": 0,
+  "under_44": [
+   ":1:42x34",
+   ":2:43x34",
+   ":3:43x34",
+   ":4:43x34",
+   ":5:43x34",
+   ":6:43x34",
+   " done:7:42x34",
+   " done:8:43x34",
+   " done:9:43x34",
+   " done:10:43x34",
+   ":11:43x34",
+   " done:12:43x34",
+   " done:13:42x34",
+   "on done:14:43x34",
+   " sug:15:43x34",
+   ":16:43x34",
+   ":17:43x34",
+   ":18:43x34"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "a_open5_1366": {
+  "card_inner": 796,
+  "head": [
+   796,
+   145.3
+  ],
+  "picker": [
+   796,
+   55
+  ],
+  "rungline": [
+   796,
+   17.5
+  ],
+  "rung_btn": [
+   "41.9x34",
+   "43x34",
+   "42.9x34"
+  ],
+  "tab": [],
+  "stage_btn": [],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   1366,
+   768
+  ],
+  "over": 0,
+  "under_44": [
+   ":1:42x34",
+   ":2:43x34",
+   ":3:43x34",
+   ":4:43x34",
+   ":5:43x34",
+   ":6:43x34",
+   " done:7:42x34",
+   " done:8:43x34",
+   " done:9:43x34",
+   " done:10:43x34",
+   ":11:43x34",
+   " done:12:43x34",
+   " done:13:42x34",
+   "on done:14:43x34",
+   " sug:15:43x34",
+   ":16:43x34",
+   ":17:43x34",
+   ":18:43x34"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "a_open5_1024": {
+  "card_inner": 834,
+  "head": [
+   834,
+   145.3
+  ],
+  "picker": [
+   834,
+   55
+  ],
+  "rungline": [
+   834,
+   17.5
+  ],
+  "rung_btn": [
+   "44x34",
+   "45.1x34",
+   "45x34"
+  ],
+  "tab": [],
+  "stage_btn": [],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   1024,
+   768
+  ],
+  "over": 0,
+  "under_44": [
+   ":1:44x34",
+   ":2:45x34",
+   ":3:45x34",
+   ":4:45x34",
+   ":5:45x34",
+   ":6:45x34",
+   " done:7:44x34",
+   " done:8:45x34",
+   " done:9:45x34",
+   " done:10:45x34",
+   ":11:45x34",
+   " done:12:45x34",
+   " done:13:44x34",
+   "on done:14:45x34",
+   " sug:15:45x34",
+   ":16:45x34",
+   ":17:45x34",
+   ":18:45x34"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "a_open5_390": {
+  "card_inner": 328,
+  "head": [
+   328,
+   242.4
+  ],
+  "picker": [
+   328,
+   100
+  ],
+  "rungline": [
+   328,
+   56.4
+  ],
+  "rung_btn": [
+   "53.5x44",
+   "54.5x44"
+  ],
+  "tab": [
+   "108x44",
+   "109x44"
+  ],
+  "stage_btn": [],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   390,
+   844
+  ],
+  "over": 0,
+  "under_44": [],
+  "tiny": [],
+  "errors": []
+ },
+ "b_1440": {
+  "card_inner": 796,
+  "head": [
+   796,
+   130.3
+  ],
+  "picker": [
+   796,
+   40
+  ],
+  "rungline": [
+   796,
+   17.5
+  ],
+  "rung_btn": [],
+  "tab": [],
+  "stage_btn": [
+   "258.7x40"
+  ],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   1440,
+   900
+  ],
+  "over": 0,
+  "under_44": [
+   "el-smb:Stage 41\u20136:259x40",
+   "el-smb:Stage 57\u20131:259x40",
+   "el-smb cur:Stage 6Run:259x40"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "b_1366": {
+  "card_inner": 796,
+  "head": [
+   796,
+   130.3
+  ],
+  "picker": [
+   796,
+   40
+  ],
+  "rungline": [
+   796,
+   17.5
+  ],
+  "rung_btn": [],
+  "tab": [],
+  "stage_btn": [
+   "258.7x40"
+  ],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   1366,
+   768
+  ],
+  "over": 0,
+  "under_44": [
+   "el-smb:Stage 41\u20136:259x40",
+   "el-smb:Stage 57\u20131:259x40",
+   "el-smb cur:Stage 6Run:259x40"
+  ],
+  "tiny": [],
+  "errors": [],
+  "keyboard": {
+   "log": [
+    "focus Stage 6 button",
+    "ArrowDown \u2192 focus rung 14, open: Stage 6",
+    "ArrowDown \u2192 focus rung 15, open: Stage 6",
+    "ArrowUp \u2192 focus rung 14, open: Stage 6",
+    "ArrowUp \u2192 focus rung 13, open: Stage 6",
+    "ArrowUp \u2192 focus rung 18, open: Stage 6",
+    "End \u2192 focus rung 18, open: Stage 6",
+    "Home \u2192 focus rung 13, open: Stage 6",
+    "8 \u2192 focus rung 18, open: Stage 6",
+    "ArrowLeft \u2192 focus rung 7, open: Stage 5",
+    "ArrowDown \u2192 focus rung 8, open: Stage 5",
+    "Escape \u2192 focus button Stage 5, open: none",
+    "Enter \u2192 focus rung 7, open: Stage 5",
+    "ArrowDown \u2192 focus rung 8, open: Stage 5",
+    "Space \u2192 focus button Stage 5, open: none",
+    "after Space: Stage 5 button reads \"Rung 8\", Stage 6 reads \"13\u201318\", checked: 8",
+    "ArrowUp \u2192 focus rung 12, open: Stage 5",
+    "Tab \u2192 focus rung 12, open: none"
+   ],
+   "roles": {
+    "button": [
+     "menu",
+     true,
+     "Stage 4, rungs 1 to 6, 0 of 6 reached"
+    ],
+    "menu": "menu",
+    "item": [
+     "menuitemradio"
+    ],
+    "item_label": "Rung 15, Stage 6: harmonic minor \u00b7 adds si, suggested next"
+   }
+  }
+ },
+ "b_1024": {
+  "card_inner": 834,
+  "head": [
+   834,
+   130.3
+  ],
+  "picker": [
+   834,
+   40
+  ],
+  "rungline": [
+   834,
+   17.5
+  ],
+  "rung_btn": [],
+  "tab": [],
+  "stage_btn": [
+   "271.3x40"
+  ],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   1024,
+   768
+  ],
+  "over": 0,
+  "under_44": [
+   "el-smb:Stage 41\u20136:271x40",
+   "el-smb:Stage 57\u20131:271x40",
+   "el-smb cur:Stage 6Run:271x40"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "b_390": {
+  "card_inner": 328,
+  "head": [
+   328,
+   202.4
+  ],
+  "picker": [
+   328,
+   60
+  ],
+  "rungline": [
+   328,
+   56.4
+  ],
+  "rung_btn": [],
+  "tab": [],
+  "stage_btn": [
+   "105.3x60"
+  ],
+  "menu": null,
+  "menu_item": [],
+  "menu_bottom": null,
+  "viewport": [
+   390,
+   844
+  ],
+  "over": 0,
+  "under_44": [],
+  "tiny": [],
+  "errors": []
+ },
+ "b_open_1440": {
+  "card_inner": 796,
+  "head": [
+   796,
+   130.3
+  ],
+  "picker": [
+   796,
+   40
+  ],
+  "rungline": [
+   796,
+   17.5
+  ],
+  "rung_btn": [],
+  "tab": [],
+  "stage_btn": [
+   "258.7x40"
+  ],
+  "menu": [
+   392,
+   312
+  ],
+  "menu_item": [
+   "378x44"
+  ],
+  "menu_bottom": 514,
+  "viewport": [
+   1440,
+   900
+  ],
+  "over": 0,
+  "under_44": [
+   "el-smb:Stage 41\u20136:259x40",
+   "el-smb:Stage 57\u20131:259x40",
+   "el-smb cur:Stage 6Run:259x40"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "b_open_1366": {
+  "card_inner": 796,
+  "head": [
+   796,
+   130.3
+  ],
+  "picker": [
+   796,
+   40
+  ],
+  "rungline": [
+   796,
+   17.5
+  ],
+  "rung_btn": [],
+  "tab": [],
+  "stage_btn": [
+   "258.7x40"
+  ],
+  "menu": [
+   392,
+   312
+  ],
+  "menu_item": [
+   "378x44"
+  ],
+  "menu_bottom": 514,
+  "viewport": [
+   1366,
+   768
+  ],
+  "over": 0,
+  "under_44": [
+   "el-smb:Stage 41\u20136:259x40",
+   "el-smb:Stage 57\u20131:259x40",
+   "el-smb cur:Stage 6Run:259x40"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "b_open_1024": {
+  "card_inner": 834,
+  "head": [
+   834,
+   130.3
+  ],
+  "picker": [
+   834,
+   40
+  ],
+  "rungline": [
+   834,
+   17.5
+  ],
+  "rung_btn": [],
+  "tab": [],
+  "stage_btn": [
+   "271.3x40"
+  ],
+  "menu": [
+   392,
+   312
+  ],
+  "menu_item": [
+   "378x44"
+  ],
+  "menu_bottom": 514,
+  "viewport": [
+   1024,
+   768
+  ],
+  "over": 0,
+  "under_44": [
+   "el-smb:Stage 41\u20136:271x40",
+   "el-smb:Stage 57\u20131:271x40",
+   "el-smb cur:Stage 6Run:271x40"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "b_open_390": {
+  "card_inner": 328,
+  "head": [
+   328,
+   202.4
+  ],
+  "picker": [
+   328,
+   60
+  ],
+  "rungline": [
+   328,
+   56.4
+  ],
+  "rung_btn": [],
+  "tab": [],
+  "stage_btn": [
+   "105.3x60"
+  ],
+  "menu": [
+   328,
+   348
+  ],
+  "menu_item": [
+   "314x50"
+  ],
+  "menu_bottom": 613,
+  "viewport": [
+   390,
+   844
+  ],
+  "over": 0,
+  "under_44": [],
+  "tiny": [],
+  "errors": []
+ }
+}
