@@ -62,3 +62,10 @@ Major triad: Metal. sus4: Metal. maj7: Metal. Existing gaps unchanged: 5, 7, m7,
 - `python3 tests/content_lint.py .`: passed, 0 failures (53 song entries, 25 scale-song entries, song-rule checks including the new Metal and gap checks; 32 rooms, 21 syllabus codes).
 - `python3 tests/unit_test.py .`: 959 checks, 0 failures (needed `npm install` in tests/harness first; node_modules is untracked).
 - Other suites not run (content-only change).
+
+## After independent check (IC_C18_C20_049, commit 4dd72a9)
+Fixed, within C18 scope only (self-check):
+1. Dead regex. `metal_slot_dishonest()` in `tests/content_lint.py` now fails a Metal-slot entry if it has a fallback note, or if its fallback, recording and suitability text together match the not-metal pattern (adds "not metal", "not a metal", "hard rock", "Britpop", "jazz", "stand-in", "fallback"). New fixture file `tests/fixtures/slot_honesty.json`: 4 must-fail cases (Wonderwall with "(Britpop rock, not metal)" and no fallback note; Highway to Hell with "hard rock" text; Misty with "jazz" recording; any entry with a fallback note) and 1 must-pass case (Enter Sandman). The lint checks every fixture gives its stated verdict on each run. Mutation re-run: Wonderwall in the `aug` Metal slot with `fallback: null` and "(Britpop rock, not metal)" now fails (exit 1).
+2. Gap cards render in slot order. `renderSongs()` merges song cards and SONGGAPS cards and sorts by the slot order. Checked in the page: sus4 shows Blues/jazz, Pop, Rock, Musical theatre, Metal (gap), Australian pick; major triad shows Pop, Rock, Metal (gap); maj7 shows Blues/jazz, Pop, Rock, Metal (gap); 5 shows the Musical theatre gap between Rock and Metal. No page errors.
+Not done, by instruction (for Justin first): other genre slots, gap cards for the 17 other unfilled slots, Nothing Else Matters (checker M1: infobox genre soft rock, power ballad), Gotye / Dance Monkey. Checker S4 (single-source Nothing Else Matters in m and add9) also left as is.
+Tests: content_lint passed; unit_test 959 checks, 0 failures; pageerrors_test: 881 random clicks, 0 errors (n_errors 0).

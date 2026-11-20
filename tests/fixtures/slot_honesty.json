@@ -1,0 +1,62 @@
+[
+ {
+  "name": "Wonderwall, no fallback, recording says not metal",
+  "must_fail": true,
+  "entry": {
+   "slot": "Metal",
+   "song": "Wonderwall",
+   "artist": "Oasis",
+   "recording": "Original 1995 single (Britpop rock, not metal)",
+   "suitability": "Clean.",
+   "fallback": null
+  }
+ },
+ {
+  "name": "Highway to Hell, suitability says hard rock",
+  "must_fail": true,
+  "entry": {
+   "slot": "Metal",
+   "song": "Highway to Hell",
+   "artist": "AC/DC",
+   "recording": "Original 1979 album version",
+   "suitability": "Hard rock, not metal.",
+   "fallback": null
+  }
+ },
+ {
+  "name": "Misty, recording says jazz",
+  "must_fail": true,
+  "entry": {
+   "slot": "Metal",
+   "song": "Misty",
+   "artist": "Erroll Garner",
+   "recording": "Original 1954 jazz recording",
+   "suitability": "Clean.",
+   "fallback": null
+  }
+ },
+ {
+  "name": "Any entry with a fallback note",
+  "must_fail": true,
+  "entry": {
+   "slot": "Metal",
+   "song": "Song",
+   "artist": "Band",
+   "recording": "Original",
+   "suitability": "Clean.",
+   "fallback": "stand-in: no metal example found"
+  }
+ },
+ {
+  "name": "Genuine metal entry, no fallback",
+  "must_fail": false,
+  "entry": {
+   "slot": "Metal",
+   "song": "Enter Sandman",
+   "artist": "Metallica",
+   "recording": "'Metallica' (Black Album) version",
+   "suitability": "Content note (mild): nightmare/death imagery in the lyric; no explicit language.",
+   "fallback": null
+  }
+ }
+]
