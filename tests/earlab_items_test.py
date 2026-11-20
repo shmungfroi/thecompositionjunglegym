@@ -13,11 +13,14 @@ Sections
   U  EL-11 rung wording, Stage switch, show all, Stage tags, rung change mid-question, page errors at Stages 4, 5, 6
   N  0.48 logic: "Nearly" at cadences rung 3 (Justin 19 Nov 2026, option a): judge, stats model, tally, streak, log, journal, feedback
   I  0.48 logic: the two rung 3 phrases that end interrupted after a cadential 6/4 (kept, answer "Interrupted"): strict SATB, one right
-           answer, feedback, the CAD64_INT_NEARLY switch (default false = wrong)
+           answer, feedback, the CAD64_INT_NEARLY switch (default true = Nearly, Justin 20 Nov 2026, item B)
   P  reconcile 0.48: every cadence result-panel sentence (card, spec 9.5), for every answer at every rung, is true of its item
   B  IC_EAR_048 S5: blind analysis sentences against each excerpt (no single-voice claims, its own numerals and mode, the key it
            cadences in, the bass on the root of the last chord from meta.json events and music21)
   T2 IC_EAR_048 S6: metre sentences say "you heard ... every bar / each beat" only when every split click sounded
+  V  BHL 0.48 (IC_EAR_048 S1, S2): the strict rules (below, ic_errors) for cadences rungs 1 and 2 and for bass and numerals, as well as
+           rung 3: generated items, every rung 1 realisation the drill can draw, every rung 2 model x key x register on the question grid (earCadReg),
+           every bass progression x key x register
   T  0.48 logic: Pulse and metre: answer grid per rung (2/4 from rung 1, 12/8 from rung 2), every metre against the fixture rows
            (tests/fixtures/metre_items.json) and music21, balance, and the tempo / playing-time tells
 """
@@ -263,9 +266,35 @@ def sec_K(items, real):
     tell('K', items, 'bass note of the last chord', lambda r: r['ch'][-1][0], A, W)
     tell('K', items, 'lowest bass note', lambda r: min(c[0] for c in r['ch']), A, W)
     tell('K', items, 'key', lambda r: r['k'], A, W)
+    # BHL 0.48 (Justin 20 Nov 2026, item H): the lowest and highest notes together, at every resolution the independent check used, and the span
+    lo = lambda r: min(map(min, r['ch'])); hi = lambda r: max(map(max, r['ch']))
+    for w in (1, 2, 3, 4, 6):
+        tell('K', items, f'lowest and highest note together ({w}-semitone bands)' if w > 1 else 'lowest and highest note together (exact)',
+             (lambda w: lambda r: (lo(r) // w, hi(r) // w))(w), A, W)
+    tell('K', items, 'span from lowest to highest note (exact)', lambda r: hi(r) - lo(r), A, W)
 
 
 SIX = ['perfect', 'plagal', 'imperfect', 'interrupted', 'phrygian', 'cad64']
+
+
+def sec_V(d):
+    """BHL 0.48: strict rules (ic_errors) beyond rung 3: cadences rungs 1-2 and bass and numerals. d: lists of {k, md, rns, ch, where}."""
+    for name, rows in d.items():
+        errs = collections.Counter(); ex = []; none = 0
+        for q in rows:
+            if not q['ch']:
+                none += 1
+                continue
+            e = ic_errors(q)
+            for x in e:
+                errs[x.split(': ', 1)[-1] if ': ' in x else x] += 1
+            if e and len(ex) < 3:
+                ex.append(f"{q['md']} {NM[q['k']]} {' '.join(q['rns'])} {q['ch']}: {e[:2]}")
+        COUNT[f'V strict rules: {name} checked'] = len(rows)
+        if none:
+            fail('V', f'{name}: {none} with no realisation')
+        if errs:
+            fail('V', f'{name}: strict errors {dict(errs.most_common(6))}; e.g. {ex}')
 
 
 def bass_degrees(q):
@@ -274,7 +303,8 @@ def bass_degrees(q):
 
 # ---- strict SATB rules for cadences rung 3, after the independent theory check (0.48, checks/ic/vl.py); errors only ----
 VL_Q = {'maj': [0, 4, 7], 'min': [0, 3, 7], 'dim': [0, 3, 6], 'dom7': [0, 4, 7, 10]}
-VL_RN = {'maj': {'I': (0, 'maj'), 'ii': (2, 'min'), 'iii': (4, 'min'), 'IV': (5, 'maj'), 'V': (7, 'maj'), 'V7': (7, 'dom7'), 'vi': (9, 'min'), 'V7/V': (2, 'dom7')},
+VL_RN = {'maj': {'I': (0, 'maj'), 'ii': (2, 'min'), 'iii': (4, 'min'), 'IV': (5, 'maj'), 'V': (7, 'maj'), 'V7': (7, 'dom7'), 'vi': (9, 'min'), 'V7/V': (2, 'dom7'),
+                 'V7/vi': (4, 'dom7')},
          'min': {'i': (0, 'min'), 'ii°': (2, 'dim'), 'III': (3, 'maj'), 'iv': (5, 'min'), 'V': (7, 'maj'), 'V7': (7, 'dom7'), 'VI': (8, 'maj')}}
 VL_RANGE = {0: (40, 62), 1: (48, 67), 2: (55, 74), 3: (60, 79)}
 
@@ -306,7 +336,7 @@ def ic_errors(q):
             if v[j] > v[j + 1]: E.append(f'ch{i} crossing')
         if v[3] - v[2] > 12 or v[2] - v[1] > 12: E.append(f'ch{i} upper-voice gap')
         if c['rn'] in ('V', 'V7') and pcs.count(LN) > 1: E.append(f'ch{i} doubled leading note')
-        if c['rn'] == 'V7/V' and pcs.count((c['root'] + 4) % 12) > 1: E.append(f'ch{i} V7/V doubled its leading note')
+        if c['rn'].startswith('V7/') and pcs.count((c['root'] + 4) % 12) > 1: E.append(f'ch{i} {c["rn"]} doubled its leading note')
         if c['inv'] == 2 and pcs.count(c['bass']) < 2: E.append(f'ch{i} 6/4 without doubled bass')
         if c['sev'] is not None and pcs.count(c['sev']) > 1: E.append(f'ch{i} doubled 7th')
     for i in range(1, len(V)):
@@ -314,6 +344,8 @@ def ic_errors(q):
         for j in range(4):
             mv = abs(N[j] - P[j])
             if mv > 12 or mv in (10, 11): E.append(f'{i}: voice {j} leaps {mv}')
+            # BHL 0.48 (IC_EAR_048 S1): no tritone leap (augmented 4th or diminished 5th) in any voice
+            if mv == 6: E.append(f'{i}: voice {j} leaps a tritone')
             if md == 'min' and mv == 3 and {P[j] % 12, N[j] % 12} == {(k + 8) % 12, (k + 11) % 12}: E.append(f'{i}: augmented 2nd')
         for j in range(3):
             if N[j] > P[j + 1] or N[j + 1] < P[j]: E.append(f'{i}: overlap')
@@ -332,9 +364,10 @@ def ic_errors(q):
         if cp['sev'] is not None and cn['rn'] != cp['rn']:
             for j in range(4):
                 if P[j] % 12 == cp['sev'] and P[j] - N[j] not in (1, 2): E.append(f'{i}: 7th does not fall by step')
-        if cp['rn'] == 'V7/V':
+        # the leading note of a secondary dominant (fi in V7/V, si in V7/vi) rises a semitone (IC_EAR_048 S2)
+        if cp['rn'].startswith('V7/'):
             for j in range(4):
-                if P[j] % 12 == (cp['root'] + 4) % 12 and N[j] - P[j] != 1: E.append(f'{i}: fi does not rise')
+                if P[j] % 12 == (cp['root'] + 4) % 12 and N[j] - P[j] != 1: E.append(f'{i}: {cp["rn"]} leading note does not rise')
     return E
 
 
@@ -506,6 +539,30 @@ async def main():
         ui['fbm'] = {tuple(k.split('|')): v for k, v in ui['fbm'].items()}
         sec_S(k3, k3r, ui)
 
+        # ---------------- V: strict rules for cadences rungs 1-2 and bass and numerals (BHL 0.48) ----------------
+        vd = await pg.evaluate("""(mk)=>{const R=eval(mk)(67),o={'cadences rung 1 items':[],'cadences rung 2 items':[],'bass and numerals items':[],
+              'cadences rung 1, every realisation the drill can draw':[],'cadences rung 2, every model x key x register':[],'bass and numerals, every progression x key x register':[]};
+            const row=(q)=>({k:q.key.k,md:q.key.mode,rns:q.rns||q.a,ch:q.ch});
+            for(let i=0;i<3000;i++)o['cadences rung 1 items'].push(row(earGen('cad',1,R)));
+            for(let i=0;i<4000;i++)o['cadences rung 2 items'].push(row(earGen('cad',2,R)));
+            for(const l of [1,2,3])for(let i=0;i<1500;i++)o['bass and numerals items'].push(row(earGen('bass',l,R)));
+            for(const e of earR1Pool())o['cadences rung 1, every realisation the drill can draw'].push({k:e.k,md:'maj',rns:e.t.split(' '),ch:e.ch});
+            for(const md of ['maj','min'])for(const c in CADT[2][md])for(const t of CADT[2][md][c])for(const k of earCadKeys(2,md))for(const b of [41,45,49,53])for(const s of [63,67,71,75,79]){
+              const P=earCadProg(2,t.split(' '),{k,mode:md},{b,s});o['cadences rung 2, every model x key x register'].push({k,md,rns:t.split(' '),ch:P.ch})}
+            for(const l of [1,2,3])for(const rns of earBassProgs(l))for(const k of BKEYS)for(const reg of [{b:42,s:66},{b:52,s:74},{b:47,s:70}]){
+              const P=earBassProg(rns,{k,mode:'maj'},reg);o['bass and numerals, every progression x key x register'].push({k,md:'maj',rns,ch:P.ch})}
+            return o}""", RNG)
+        # rung 2 grid points with no strict realisation are skipped by the questions (earCadReg); every model x key must have at least one
+        r2 = vd['cadences rung 2, every model x key x register']
+        have = collections.defaultdict(int)
+        for q in r2:
+            have[(q['md'], q['k'], ' '.join(q['rns']))] += bool(q['ch'])
+        COUNT['V rung 2 model x key with a strict realisation on every grid register (4 x 5)'] = f"{sum(1 for v in have.values() if v == 20)} of {len(have)}"
+        if any(v == 0 for v in have.values()):
+            fail('V', f"rung 2 model x key with no strict realisation: {[k for k, v in have.items() if v == 0][:5]}")
+        vd['cadences rung 2, every model x key x register'] = [q for q in r2 if q['ch']]
+        sec_V(vd)
+
         # "Without the key chord" (independent theory check 0.48): at rung 1, I–V in one key and IV–I a 5th higher can be the same two
         # chords, so the replay is hidden there. At rungs 2–3 every phrase opens on the tonic; check that no voicing, or transposition of
         # one, is heard under two answers, so the replay stays.
@@ -614,8 +671,8 @@ async def main():
             const before=st();document.querySelector('#earMain [data-earreset]').click();document.querySelector('#earMain [data-earresetyes]').click();o.zero=st();
             document.querySelector('#earMain [data-earresetundo]').click();o.restored=JSON.stringify(st())===JSON.stringify(before);
             return o}""", RNG)
-        COUNT['N flags (EAR_NEARLY on, CAD64_INT_NEARLY off, held models in)'] = 3
-        if nf['flags']['nearly'] is not True or nf['flags']['int'] is not False or nf['flags']['hold'] is not False:
+        COUNT['N flags (EAR_NEARLY on, CAD64_INT_NEARLY on, held models in)'] = 3
+        if nf['flags']['nearly'] is not True or nf['flags']['int'] is not True or nf['flags']['hold'] is not False:
             fail('N', f"flags: {nf['flags']}")
         if nf['flags']['zero'] != {'n': 0, 'ok': 0, 'streak': 0, 'best': 0, 'shown': 0, 'skipped': 0, 'nearly': 0}:
             fail('N', f"EARST0 is {nf['flags']['zero']}")
@@ -668,7 +725,7 @@ async def main():
                   chips:[...e.querySelectorAll('.el-ch')].map(c=>({t:c.title,s:(c.querySelector('small')||{}).textContent||''})),st:{...earSt()},judge:earJudge(q,'cad64')};
                 if(!flag){EAR.q=q;EAR.done=false;EAR.res=null;renderEar();document.querySelector('#earMain [data-earans="interrupted"]').click();o.panelRight=o.panelRight||{};
                   o.panelRight[md]=document.querySelector('#earMain .el-result .el-teach').textContent}}
-              CAD64_INT_NEARLY=false}
+              CAD64_INT_NEARLY=true}
             // a plain interrupted cadence (no 6/4) gets no 6/4 sentence; a cadential 6/4 item answered Interrupted is plain wrong
             let q;do{q=earGen('cad',3,R)}while(q.a!=='interrupted'||earCad64Int(q));o.plain=earTeachCad(q,{kind:'shown',given:null}).teach;
             do{q=earGen('cad',3,R)}while(q.a!=='cad64');o.c64int=earJudge(q,'interrupted');
@@ -724,7 +781,8 @@ async def main():
         if 'cadential 6/4' in ii['plain'].lower():
             fail('I', f"a plain interrupted cadence mentions the 6/4: {ii['plain']}")
         for md, j in ii['judge'].items():
-            if j != {'interrupted': 'correct', 'cad64': 'wrong', 'perfect': 'wrong', 'imperfect': 'wrong'}:
+            # BHL 0.48 (Justin 20 Nov 2026, item B): with the switch at its default (on), "Cadential 6/4" here is Nearly
+            if j != {'interrupted': 'correct', 'cad64': 'nearly', 'perfect': 'wrong', 'imperfect': 'wrong'}:
                 fail('I', f'{md} judging: {j}')
         F7 = ('n', 'ok', 'streak', 'best', 'shown', 'skipped', 'nearly')
         for k, r in ii['near'].items():
@@ -991,7 +1049,7 @@ async def main():
 
         # sections N and I leave the cadence drill on rung 3; put it back where section M left it (rung 2, no open question), because section U
         # expects the saved rung to be inside the Stage
-        await pg.evaluate("()=>{EAR.lvl.cad=2;EAR.q=null;EAR.done=false;EAR.res=null;EAR.st.cad={...EARST0};CAD64_INT_NEARLY=false;EAR_NEARLY=true;renderEar()}")
+        await pg.evaluate("()=>{EAR.lvl.cad=2;EAR.q=null;EAR.done=false;EAR.res=null;EAR.st.cad={...EARST0};CAD64_INT_NEARLY=true;EAR_NEARLY=true;renderEar()}")
         # ---------------- U: EL-11 rungs, Stage switch, show all, rung change, page errors at Stages 4, 5, 6 ----------------
         # merge 0.48: one Stage table, EARSTAGE (Fable's design spec, section 3): a drill or rung shows when its Stage <= the selected Stage
         WANT = {4: {'metre': [1, 2], 'rhy': [1, 2], 'qual': [1], 'mel': [1]},

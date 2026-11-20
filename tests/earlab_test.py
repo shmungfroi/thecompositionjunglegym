@@ -7,7 +7,8 @@ the register asks for it ("passes the existing SATB checker"), and then it check
 
 Sections
   A  cadence models: every template x key x level  (E8, E9, E10)
-  B  bass and numerals: every progression x key x level; 6,000 generated questions against the allow-list (E8, E9, E11)
+  B  bass and numerals: every progression x key x level; 6,000 generated questions against the allow-list (E8, E9, E11);
+     BHL 0.48 (IC_EAR_048 S3): no cadence model, bass progression or generated question moves ii(6) to IV or ii°(6) to iv
   C  tells: no answer predictable above chance from length, tempo or register (E10)
   D  pool sizes at level 1 (E11)
   E  blind analysis windows, labels and buttons (E1–E5)
@@ -141,6 +142,12 @@ def cad_category_ok(cat, toks, k, mode):
 POP = [('V', 'IV'), ('V', 'iv'), ('ii', 'I'), ('ii', 'vi'), ('V7', 'IV')]
 
 
+def retro_moves(toks):
+    """ii(6) -> IV and ii°(6) -> iv: a retrogression in common-practice harmony (the pre-dominant moves forward, IV to ii, ii to V)."""
+    base = [t.split(':')[0] for t in toks]
+    return [(a, b) for a, b in zip(base, base[1:]) if (a, b) in (('ii', 'IV'), ('ii°', 'iv'))]
+
+
 def pop_moves(toks):
     # a cadential 6/4 (I:2 / i:2) is a dominant-function chord, so ii6-I6/4 is the textbook approach, not ii-I
     base = [t.split(':')[0] if not t.endswith(':2') else 'cad64' for t in toks]
@@ -220,7 +227,7 @@ async def main():
             fail('C', 'level 3 is missing the cadential 6/4 or the Phrygian cadence')
 
         # ---------------- B: bass and numerals ----------------
-        bass = await pg.evaluate("""()=>{const out=[];for(const l of [1,2,3])for(const rns of earBassProgs(l))for(const k of BKEYS)for(const reg of [{b:42,s:66},{b:52,s:74},{b:47,s:70}]){const key={k,mode:'maj'},P=earProg(rns,key,reg);
+        bass = await pg.evaluate("""()=>{const out=[];for(const l of [1,2,3])for(const rns of earBassProgs(l))for(const k of BKEYS)for(const reg of [{b:42,s:66},{b:52,s:74},{b:47,s:70}]){const key={k,mode:'maj'},P=earBassProg(rns,key,reg);
             out.push({l,rns,k,ch:P.ch,app:P.ch?withKey(key,()=>checkSATB(P.ch,P.L)).filter(e=>e.sev==='error').map(e=>e.rule):['no realisation']})}return out}""")
         for q in bass:
             where = f"bass L{q['l']} [{' '.join(q['rns'])}] key {NM[q['k']]}"
@@ -252,6 +259,18 @@ async def main():
             COUNT['cadence questions (allow-list)'] += 1
             if pop_moves(q['rns']):
                 fail('B', f"cad L{q['l']} {q['rns']}: popular-style succession")
+            if retro_moves(q['rns']):
+                fail('B', f"cad L{q['l']} {q['rns']}: retrogression {retro_moves(q['rns'])}")
+        # BHL 0.48 (IC_EAR_048 S3): every model and every bass progression, as well as the generated questions above
+        allp = await pg.evaluate("[...[1,2,3].flatMap(l=>Object.values(CADT[l]).flatMap(o=>Object.values(o).flat())),...[1,2,3].flatMap(l=>earBassProgs(l).map(p=>p.join(' ')))]")
+        COUNT['models and bass progressions checked for ii(6)-IV'] = len(allp)
+        for t in allp:
+            if retro_moves(t.split()):
+                fail('B', f'[{t}]: retrogression {retro_moves(t.split())}')
+        for q in [x for x in await pg.evaluate("""()=>{let s=29;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o=[];for(const l of [1,2,3])for(let i=0;i<2000;i++)o.push(earGen('bass',l,R).a);return o}""")]:
+            COUNT['bass questions checked for ii(6)-IV'] += 1
+            if retro_moves(q):
+                fail('B', f'bass {q}: retrogression {retro_moves(q)}')
 
         # ---------------- C: tells ----------------
         tells = await pg.evaluate("""()=>{let s=17;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o={cad:[],metre:[],qual:[]};
@@ -292,10 +311,11 @@ async def main():
         held = await pg.evaluate("CAD3_HELD.filter(x=>Object.values(CADT[3]).some(o=>(o.interrupted||[]).includes(x)))")
         if len(held) != 2:
             fail('C', f'interrupted-after-6/4 models in the rung 3 interrupted pool: {held}')
-        # merge 0.48: one register path for cadence items (earCadReg); 0.48 logic: "Nearly" on, CAD64_INT_NEARLY off (open), held models in
+        # merge 0.48: one register path for cadence items (earCadReg); 0.48 logic: "Nearly" on, held models in; BHL 0.48: CAD64_INT_NEARLY on
+        # (Justin 20 Nov 2026, item B)
         mg = await pg.evaluate("({reg:/earCadReg\\(rns,key,r/.test(earGenCad.toString()),nearly:EAR_NEARLY,hold:CAD3_HOLD,int:CAD64_INT_NEARLY})")
-        COUNT['merge checks (earCadReg path, Nearly on, CAD64_INT_NEARLY off, held models in)'] = 4
-        if not mg['reg'] or mg['nearly'] is not True or mg['hold'] is not False or mg['int'] is not False:
+        COUNT['merge checks (earCadReg path, Nearly on, CAD64_INT_NEARLY on, held models in)'] = 4
+        if not mg['reg'] or mg['nearly'] is not True or mg['hold'] is not False or mg['int'] is not True:
             fail('C', f'merge: earGenCad register path / Nearly / hold switch / CAD64_INT_NEARLY: {mg}')
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['comp'])
         tell('metre', tells['metre'], 'tempo (10-bpm bands)', lambda r: r['bpm'] // 10, lambda r: r['a'])
