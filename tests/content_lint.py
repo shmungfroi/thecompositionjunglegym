@@ -307,6 +307,24 @@ report['song_rules']['post_2015'] = [f'{a} ({b})' for a, b in _post]
 if not _post:
     report['song_rules']['failures'].append('no song after 2015 (L70: span up to the present)')
 
+# 0.49 C18 slot honesty: a song in the Metal slot must be metal, not a genre fallback; a slot is either filled or a declared gap, never both.
+_FB = re.compile(r"fallback|stand-in|not metal|rather than metal|no (?:famous|clean)[^.]*metal|hard rock|britpop|jazz", re.I)
+_mg = re.search(r'^const SONGGAPS=(\{.*?\});', INDEX, re.M)
+SONGGAPS = json.loads(_mg.group(1)) if _mg else {}
+if not _mg:
+    report['song_rules']['failures'].append('SONGGAPS data not found')
+for q, v in SONGS.items():
+    for x in v:
+        if x['slot'] == 'Metal' and (x.get('fallback') or _FB.search(str(x.get('fallback') or ''))):
+            report['song_rules']['failures'].append(f'chord {q!r}: Metal slot holds a genre fallback ({x["song"]}); show it as a SONGGAPS gap instead')
+    filled = {x['slot'] for x in v}
+    for g in SONGGAPS.get(q, []):
+        if g in filled:
+            report['song_rules']['failures'].append(f'chord {q!r}: slot {g!r} is both filled and declared a gap')
+for q, g in SONGGAPS.items():
+    if q not in SONGS or any(x not in _SL for x in g):
+        report['song_rules']['failures'].append(f'SONGGAPS has an unknown chord type or slot: {q!r} {g}')
+
 # ---------- 5. syllabus tags (0.49 C10): every code used has NESA's wording; every code listed is used; element letters exist ----------
 # NESA outcome wording, read from curriculum.nsw.edu.au outcomes pages on 20 Nov 2026 (Music 1, Music 2, Music Extension 11-12 (2025)).
 NESA_WORDING = {
