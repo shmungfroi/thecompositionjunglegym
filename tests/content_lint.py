@@ -35,13 +35,27 @@ def line_of(text, pos):
 # term list's us:/usp: fields, straight after "US" ("the US half cadence", "= US authentic"), or in a code comment. Ordinary English is
 # not a US term: "half" and "whole" count only with note/rest/step/cadence; "measure" only as a counted noun ("measure 4", "two measures",
 # "the next measure"), never the verb; "staff" only in a music sense ("the treble staff", "staff lines"), never people ("staff room").
+SEP = r"(?:[\s\u00a0]|&nbsp;|-)"
+NUMW = r"(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)"
+UNITS = r"(?:cm|mm|km|kg|m|g|ml|l|hz|khz|db|px|pt|ms|s|%)"
 US_ALONE = re.compile(
-    r"\bauthentic\b|\bdeceptive\b|\bhalf[ -]cadences?\b"
-    r"|\b(?:quarter|eighth|sixteenth|half|whole)[ -](?:notes?|rests?)\b"
-    r"|\b(?:whole|half)[ -]steps?\b"
+    # cadence names: "authentic" / "deceptive" only in a cadence sense (not "an authentic Baroque sound")
+    r"\bauthentic(?=\s*(?:cadences?|closes?|endings?|resolutions?|and\s+plagal|or\s+plagal)\b|\s*[.,;:)\]]|\s*$)"
+    r"|\bdeceptive(?=\s*(?:cadences?|closes?|endings?|resolutions?|progressions?|resolves?)\b|\s*[.,;:)\]]|\s*$)"
+    r"|\bhalf" + SEP + r"cadences?\b"
+    # note and rest values, spelled out or numbered ("8th note", "two sixteenths"); "whole note-for-note" is ordinary English
+    r"|\b(?:quarter|eighth|sixteenth|thirty-second|half|whole)" + SEP + r"(?:notes?(?!-for-)|rests?)\b"
+    r"|\b(?:8th|16th|32nd|64th)" + SEP + r"(?:notes?(?!-for-)|rests?)\b"
+    r"|\b(?:eighth|sixteenth)s\b"
+    r"|\b(?:whole|half)" + SEP + r"steps?\b"
     r"|\bstaffs\b|\bstaff(?=\s+(?:lines?|notation|position|paper)\b)"
     r"|\b(?:the|a|treble|bass|grand|alto|tenor|each|one|single|five-line|same|top|bottom|lower|upper)\s+staff\b(?!\s+(?:room|members?|meetings?|development|notes))"
-    r"|\bmeasures?\s+\d|\b\d+\s+measures?\b"
+    # measure as a counted noun ("measure 4", "measures 4-8", "measure one"), not the verb ("it measures 4 cm")
+    r"|\bmeasures?\s+\d+(?:\s*[-\u2013]\s*\d+)?(?!\d)(?!\s*" + UNITS + r"\b)"
+    r"|\bmeasures?\s+" + NUMW + r"\b"
+    r"|\b\d+\s+measures?\b"
+    r"|\bmeasures?\s+of\s+(?:rest|silence)\b"
+    r"|\b(?:first|last|final|opening|closing|next|previous|second|third)\s+measures?\s+of\s+the\s+(?:song|piece|phrase|tune|verse|chorus|bridge|section|melody|excerpt|score|passage)\b"
     r"|\b(?:per|each|every|this|that|next|last|first|final|one|two|three|four|eight|twelve|sixteen|the|a)\s+measures?\b(?!\s+(?:of|the|every|each|how|a|an|it|its|your)\b)",
     re.I)
 
@@ -53,6 +67,8 @@ def us_allowed(text, start):
         i = before.rfind(o)
         if i != -1 and c not in before[i:]:
             return True
+    if re.search(r"\bin the US\b[^.\n]*\b(?:called|known|named|termed|labelled|labeled)\b[^.\n]*$", before, re.I):   # "In the US this is called a half cadence."
+        return True
     if re.search(r"\bus[p]?:'[^']*$", before):        # the term list's US field
         return True
     if re.search(r"\bUS:?\s+'?(?:imperfect\s+|Phrygian\s+)?$", before):   # "the US half cadence", "= US authentic", "US 'imperfect authentic'"
@@ -71,23 +87,16 @@ def us_alone(text):
     return [m for m in US_ALONE.finditer(text) if not us_allowed(text, m.start())]
 
 
-# the lint's own cases: each must be found (or not) exactly as listed
-US_CASES = [('Play a quarter note.', 1), ('Count measure 4 again.', 1), ('Two measures later.', 1), ('Write it on the treble staff.', 1),
-            ('A deceptive cadence.', 1), ('An authentic close.', 1), ('A half cadence.', 1), ('Go up a whole step.', 1), ('An eighth rest.', 1),
-            ('Draw the staff lines.', 1), ('Both staffs.', 1),
-            ('Half the class hears it.', 0), ('Measure every interval.', 0), ('Ask the teaching staff.', 0), ('Meet in the staff room.', 0),
-            ('The whole phrase.', 0), ('A whole-tone scale.', 0), ('Half-diminished.', 0), ('Take a measure of the gap.', 0),
-            ('A crotchet (US: quarter note).', 0), ('an imperfect cadence [US: half cadence] in minor', 0), ("{k:'minim',us:'half note'}", 0),
-            ('Imperfect = US half', 0), ("US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence.", 0),
-            ('x=1; // a whole note here', 0), ('/* the staff */', 0), ('see https://example.org//quarter-note', 1)]
+# the lint's own cases live in tests/fixtures/us_probes.json (positives must be found, negatives must not); each is run through us_alone()
+_FIX = json.loads((pathlib.Path(__file__).parent / 'fixtures' / 'us_probes.json').read_text(encoding='utf-8'))
+US_CASES = [(t, 1) for t in _FIX['positive']] + [(t, 0) for t in _FIX['negative']]
 report['us_terms'] = {'failures': [], 'cases_checked': len(US_CASES)}
 for s, n in US_CASES:
     if len(us_alone(s)) != n:
         report['us_terms']['failures'].append({'lint case': s, 'expected': n, 'found': [m.group(0) for m in us_alone(s)]})
 # a US bracket gives the whole US term: "(US: half)" or "(US: deceptive)" alone is a shortened term (L8)
-US_SHORT = re.compile(r'[(\[]US: (?:authentic|half|deceptive)\s*[)\];,]|\((?:half|authentic|deceptive)\)')
-for s, n in (('imperfect cadence (US: half).', 1), ('V7/vi → IV (US: deceptive) follows', 1), ('(US: half cadence)', 0), ('(US: half step, H)', 0),
-             ('(US: imperfect authentic)', 0), ('Imperfect (half) cadence (ends on V)', 1), ('(half the class)', 0)):
+US_SHORT = re.compile(r'[(\[]US:\s*(?:authentic|half|deceptive)\s*[.)\];,]|\((?:half|authentic|deceptive)\)', re.I)
+for s, n in [(t, 1) for t in _FIX['short_positive']] + [(t, 0) for t in _FIX['short_negative']]:
     if len(US_SHORT.findall(s)) != n:
         report['us_terms']['failures'].append({'lint case (short)': s, 'expected': n})
 for name, text in (('index.html', INDEX), ('scores/meta.json', META)):
