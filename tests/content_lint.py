@@ -149,6 +149,21 @@ for q, x in entries:
 for q, x in entries:
     if x['song'] == 'Nothing Else Matters' and q == 'add9' and 'as transcribed on hooktheory' not in x['where'].lower():
         report['sources']['failures'].append({'song': x['song'], 'why': 'add9 placement not labelled as Hooktheory-only'})
+# 0.48 (E, app-wide): the same rule for the Keys-room scale songs (SCSONGS, written as "let SCSONGS={...},IVSONGS={...};").
+_ms = re.search(r'^let SCSONGS=(\{.*\}),IVSONGS=\{', INDEX, re.M)
+if _ms:
+    _sc = json.loads(_ms.group(1))
+    report['scsong_entries'] = sum(len(v) for v in _sc.values())
+    for q, v in _sc.items():
+        for x in v:
+            srcs = x.get('sources') or []
+            if len(srcs) == 1 and 'hooktheory.com' in str(srcs[0]):
+                if 'as transcribed on hooktheory' not in str(x.get('where', '')).lower():
+                    report['sources']['failures'].append({'scale': q, 'song': x['song'], 'why': 'SCSONGS single Hooktheory source, where-text lacks "as transcribed on Hooktheory"'})
+                if 'single community transcription' not in str(srcs[0]):
+                    report['sources']['failures'].append({'scale': q, 'song': x['song'], 'why': 'SCSONGS single Hooktheory source, source note lacks "a single community transcription"'})
+else:
+    report['sources']['failures'].append('SCSONGS data not found for the Hooktheory label check')
 report['sources']['known_exceptions_count'] = len(exceptions_seen)
 report['sources']['known_exceptions_listed'] = len(KNOWN_NO_SOURCES)
 report['sources']['known_exceptions_now_sourced'] = sorted(' / '.join(k) for k in KNOWN_NO_SOURCES - exceptions_seen)
