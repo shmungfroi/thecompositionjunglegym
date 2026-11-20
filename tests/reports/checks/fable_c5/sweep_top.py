@@ -17,7 +17,7 @@ async def run(b, fix, shots=()):
     for w in range(761, 1301):
         await pg.set_viewport_size({'width': w, 'height': 768}); await pg.wait_for_timeout(15)
         R[w] = await pg.evaluate(P)
-        if w in shots: await pg.screenshot(path=str(HERE / f'c56a_top_{w}_{"fix" if fix else "built"}.png'), clip={'x': 0, 'y': 0, 'width': w, 'height': 64})
+        if w in shots: await pg.screenshot(path=str(HERE / f'c56_final_top_{w}.png'), clip={'x': 0, 'y': 0, 'width': w, 'height': 64})
     await pg.close(); return R
 def bands(R, f):
     out = []; start = None
@@ -31,12 +31,13 @@ def bands(R, f):
 async def main():
     async with async_playwright() as p:
         b = await cjg.launch(p); res = {}
-        for fix in (False, True):
-            R = await run(b, fix, shots=(761, 800, 860, 861, 901, 950, 1023, 1024, 1180))
-            k = 'fix' if fix else 'built'
+        # round 2: C5-6a is in index.html (4c42ff0), so only the build is swept; nothing is injected
+        for fix in (False,):
+            R = await run(b, fix, shots=(761, 777, 800, 811, 860, 861, 901, 938, 950, 973, 1023, 1024, 1180, 1181, 1280, 1281))
+            k = 'built'
             res[k] = {'stage_switch_wrapped': bands(R, lambda m: m['lvl'][1] > 40), 'selected_stage_clipped': bands(R, lambda m: m['lvlClip']), 'placeholder_cut': bands(R, lambda m: not m['ph']),
                       'search_under_220': bands(R, lambda m: m['search'] < 220), 'bar_spills': bands(R, lambda m: m['spill'] > 0), 'min_search': min(m['search'] for m in R.values()),
-                      'samples': {w: R[w] for w in (761, 800, 860, 861, 900, 901, 950, 1023, 1024, 1180, 1181, 1280, 1281)}}
+                      'samples': {w: R[w] for w in (761, 777, 800, 811, 860, 861, 900, 901, 938, 950, 973, 1023, 1024, 1180, 1181, 1280, 1281)}}
         await b.close()
     (HERE / 'sweep_top.json').write_text(json.dumps(res, indent=1)); print(json.dumps({k: {x: v[x] for x in v if x != 'samples'} for k, v in res.items()}, indent=1))
     for k in res: print(k, json.dumps(res[k]['samples']))
