@@ -807,7 +807,7 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 /* ---- rhythm (EL-5) ---- */
 .el-rhy{margin-top:4px}
 .el-rhy svg{display:block;max-width:100%}
-.el-sys{display:flex;flex-wrap:wrap;gap:0 4px}
+.el-sys{display:flex;flex-wrap:wrap;gap:8px 4px}
 .el-tiles{display:flex;flex-wrap:wrap;gap:8px}
 .el-tile{flex:none;height:64px;padding:0;border:1px solid var(--line);border-radius:var(--r-s);background:var(--panel);cursor:pointer;display:flex;flex-direction:column;align-items:stretch;justify-content:center}
 .el-tile:hover:not([disabled]){border-color:var(--gold);background:#1a160f}
@@ -1219,6 +1219,23 @@ label.ck{gap:8px;cursor:pointer}
 }
 .search input{text-overflow:ellipsis}
 
+/* rhythm rung 10: the drum lanes (mine, not in Fable's spec: kick and snare quaver lanes, two bars) */
+.el-drums{display:grid;gap:10px}
+.el-lane{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.el-lane .who,.el-lrow .who{width:128px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.el-lbar{display:grid;grid-template-columns:repeat(8,34px);gap:3px}
+.el-dcell{height:36px;border:1px solid var(--line);border-radius:var(--r-s);background:var(--panel);color:var(--muted);font:inherit;font-size:12px;cursor:pointer;padding:0}
+.el-dcell:hover{border-color:var(--gold)}
+.el-dcell.on{background:var(--gold);border-color:var(--gold);color:#1a160f;font-weight:600}
+.el-lanes{display:grid;gap:6px;margin-top:8px}
+.el-lrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.el-lb{display:grid;grid-template-columns:repeat(8,18px);gap:2px}
+.el-lb i{height:16px;border:1px solid var(--line);border-radius:3px;background:transparent}
+.el-lb i.on{background:var(--gold);border-color:var(--gold)}
+.el-lb i.x{border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
+.el-lb i.on.x{background:var(--red)}
+.el-cmp2{grid-column:1 / -1;margin-top:10px}
+@media(max-width:760px){.el-lbar{grid-template-columns:repeat(4,1fr);width:100%}.el-dcell{height:44px}.el-lane .who{width:100%}.el-lb{grid-template-columns:repeat(8,1fr);flex:1 1 100%}}
 /* ===== Ear Lab 0.49 ladders: UI (Fable ladder049.css, then ladder_ui.css, lifted as written; the replaced two-step entry rules are removed as ladder_ui.css says) ===== */
 /* Ear Lab 0.49: the long ladders (melody 12 rungs, rhythm 10). Component CSS for Sonnet to lift into index.html as written.
    Where DESIGN_049.md and this file disagree, this file wins. Existing tokens only. */
@@ -8304,10 +8321,178 @@ function earUiMarked(kind){const d=EAR.drill;if(!earLong(d)||(kind!=='ok'&&kind!
  if(st.ok>=8){const R=EAR.reached[d]=EAR.reached[d]||[];if(!R.includes(l)){R.push(l);earSave()}}
  if(st.ready){if(!EAR.sugSeen[k]){EAR.sugNow=true;EAR.sugSeen[k]=true}}else EAR.sugSeen[k]=false}
 
+/* ---------------- rhythm desk (rungs 1 to 10): cells in ticks, bars in beats ---------------- */
+// the beats of a bar as drawn: simple time one beat each, compound one dotted crotchet, 7/8 its three groups, 5/4 five crotchets
+function earRhyBeatsOf(metre,grp){const M=LMET[metre],out=[];if(metre==='7/8'){let p=0;(grp||[2,2,3]).forEach(n=>{out.push([p,p+n*210]);p+=n*210});return out}
+ for(let p=0;p<M.bar;p+=M.beat)out.push([p,p+M.beat]);return out}
+const earCompound=m=>!!(LMET[m]&&LMET[m].comp);
+// px per beat: wide (two bars to a line) and narrow (phones); compound beats are drawn 1.2 times as wide
+const earRhyPPB=narrow=>narrow?46:60;
+/* one cell's notes, rests and ties. X(t): the x of a tick within the bar; s: the cell's start tick; returns {svg, ev:[{on,dur,rest,x,tie}]} */
+function earCellDraw(k,X,s,top,base,ink){const C=LCELL[k],ev=[];let t=s,o='';const st=[];let prev=null;
+ C.t.forEach(([d,kd],j)=>{const nx=X(t)+5;
+  if(kd==='r'){if(d>=840)o+=`<rect x="${(nx+1).toFixed(1)}" y="${base-5}" width="10" height="5" fill="${ink}"/>`;else o+=elGlyph(d>=420?'restQuarter':'rest8th',nx+(d>=420?0:1),base+(d>=420?0:1.5),ink);st.push(null)}
+  else{const stem=d<1680,sx=nx+ELHW-.65;
+   o+=elGlyph(d>=1680?'noteheadWhole':d>=840?'noteheadHalf':'noteheadBlack',d>=1680?nx-3:nx,base,ink);if(stem)o+=`<line x1="${sx.toFixed(1)}" y1="${base-1.5}" x2="${sx.toFixed(1)}" y2="${top}" stroke="${ink}" stroke-width="1.3"/>`;
+   if([315,630,1260].includes(d))o+=elGlyph('augmentationDot',nx+ELHW+3+(d>=1680?3:0),base-4.3,ink);
+   if(kd==='t'&&prev!==null)o+=`<path d="M${(prev+ELHW).toFixed(1)} ${base+6}Q${((prev+ELHW+nx)/2).toFixed(1)} ${base+13} ${nx.toFixed(1)} ${base+6}" fill="none" stroke="${ink}" stroke-width="1.1"/>`;
+   st.push(stem?[sx,d]:null);prev=nx}
+  ev.push({on:t,dur:d,rest:kd==='r',x:nx});t+=d});
+ if(C.tieOut&&prev!==null)o+=`<path d="M${(prev+ELHW+1).toFixed(1)} ${base+6}q7 7 15 0" fill="none" stroke="${ink}" stroke-width="1.1"/>`;
+ // beams: runs of neighbouring notes shorter than a crotchet; a second beam where both neighbours are semiquavers or shorter, broken between a septuplet's groups
+ const runs=[];let cur=null;st.forEach((q,i)=>{if(q&&q[1]<420){if(!cur)runs.push(cur=[]);cur.push(i)}else cur=null});
+ const bar=(a,b,y)=>`<rect x="${(a-.65).toFixed(1)}" y="${y}" width="${(b-a+1.3).toFixed(1)}" height="4" fill="${ink}"/>`;
+ const idx=[];C.t.forEach(([d,kd],j)=>{idx.push(j)});
+ runs.forEach(R=>{if(R.length===1){const [sx,d]=st[R[0]];o+=elGlyph(d<=105?'flag16thUp':'flag8thUp',sx-.65,top,ink);return}
+  o+=bar(st[R[0]][0],st[R[R.length-1]][0],top);const short=i=>st[i][1]<=105,cut=C.tup&&C.tup.length>1?C.tup[0]:-1;
+  for(let j=0;j<R.length-1;j++){const a=R[j],b=R[j+1];if(short(a)&&short(b)&&j+1!==cut)o+=bar(st[a][0],st[b][0],top+6.5)}
+  R.forEach((i,j)=>{if(!short(i))return;const L=j>0&&short(R[j-1])&&j!==cut,Rt=j<R.length-1&&short(R[j+1])&&j+1!==cut;if(!L&&!Rt){const sx=st[i][0];o+=j>0?bar(sx-5.5,sx,top+6.5):bar(sx,sx+5.5,top+6.5)}})});
+ if(C.tup&&C.tup.length&&st.filter(Boolean).length>1&&k!=='trq'){const a=st.find(Boolean)[0],b=st.filter(Boolean).pop()[0];o+=`<text x="${((a+b)/2).toFixed(1)}" y="${top-5.5}" text-anchor="middle" font-family="'EB Garamond',Georgia,serif" font-style="italic" font-weight="500" font-size="14" fill="${ink}">${C.tup.reduce((a,b)=>a+b,0)}</text>`}
+ return{svg:o,ev}}
+// the width a beat is drawn with: a quintuplet 1.3 times, a septuplet 1.75 times (never less than 12 px a note)
+function earTupWide(k){const C=LCELL[k];if(!C||!C.tup)return 1;const n=C.tup.reduce((a,b)=>a+b,0);return n===5?1.3:n===7?1.75:1}
+/* one bar. o: {metre, grp, cells, region:[a,b] in full-bar ticks, sig, no, cursor, holes, final, narrow, marks:[ok per beat]|null, names:[[tick,name]], ruler, cls, evs (line events), start, label, caretId} */
+function earRhyBarSVG(o){const M=LMET[o.metre],beats=earRhyBeatsOf(o.metre,o.grp),comp=!!M.comp,ppb=earRhyPPB(o.narrow),ppt=ppb/420*(comp?.8:1),[ra,rb]=o.region,X0=o.sig?34:10,top=28,base=62,sy=78,Ht=o.names?106:90;
+ // beat widths, widened for tuplets
+ const cellAt=[];let p=ra;o.cells.forEach(k=>{cellAt.push([k,p]);p+=ladW(k)});
+ const bw=beats.map(([t0,t1])=>{let f=1;cellAt.forEach(([k,s])=>{if(s>=t0&&s<t1)f=Math.max(f,earTupWide(k))});const C=null;let w=(t1-t0)*ppt*f;cellAt.forEach(([k,s])=>{const c=LCELL[k];if(s>=t0&&s<t1&&c&&c.tup){const n=c.tup.reduce((a,b)=>a+b,0);if(n>3)w=Math.max(w,n*12+8)}});return w});
+ const bx=[];let acc=0;beats.forEach((b,i)=>{bx.push(acc);acc+=bw[i]});const X=t=>{const i=Math.max(0,Math.min(beats.length-1,beats.findIndex(([a,b])=>t>=a&&t<b)));const j=t>=beats[beats.length-1][1]?beats.length-1:i,[a,b]=beats[j];return bx[j]+(t-a)/(b-a)*bw[j]};
+ const xa=X(ra),xe=rb>=M.bar?acc:X(rb),Wd=X0+(xe-xa)+16,XX=t=>X0+X(t)-xa;
+ let s=`<svg class="el-rsvg" viewBox="0 0 ${Wd.toFixed(0)} ${Ht}" width="${Wd.toFixed(0)}" height="${Ht}" role="img" aria-label="${o.label||'Bar '+o.no}" data-t0="${o.start||0}" data-len="${rb-ra}" data-seg="${beats.map(([a,b],i)=>[a,b,(X0+bx[i]-xa).toFixed(1),(X0+bx[i]+bw[i]-xa).toFixed(1)].join(',')).join(';')}" data-ra="${ra}">`;
+ if(o.marks)beats.forEach(([a,b],i)=>{if(o.marks[i]===false&&b>ra&&a<rb)s+=`<rect x="${XX(Math.max(a,ra)).toFixed(1)}" y="0" width="${(XX(Math.min(b,rb))-XX(Math.max(a,ra))).toFixed(1)}" height="${Ht}" rx="6" fill="rgba(200,71,59,.13)"/>`});
+ s+=`<line x1="4" y1="${base}" x2="${Wd-6}" y2="${base}" stroke="#c9b98f" stroke-opacity=".55" stroke-width="1"/>`;
+ if(o.sig){const[n,d]=o.metre.split('/');[...n].forEach((c,i)=>s+=elGlyph('timeSig'+c,6+i*11,base-8.6,ELC.IV));[...d].forEach((c,i)=>s+=elGlyph('timeSig'+c,6+i*11,base+8.6,ELC.IV))}
+ beats.forEach(([a,b],i)=>{if(b<=ra||a>=rb)return;const cx=XX(Math.max(a,ra))+5+ELHW/2,ok=o.marks?o.marks[i]:null;
+  s+=`<g class="el-rn${o.count?' c':''}" data-k="${i}"><circle cx="${cx.toFixed(1)}" cy="9" r="9"/><text x="${cx.toFixed(1)}" y="13" text-anchor="middle"${ok!==null&&ok!==undefined?` fill="${ok?ELC.GREEN:ELC.RED}"`:''}>${i+1}</text></g>`;
+  if(ok!==null&&ok!==undefined)s+=`<path d="${ok?'M-3 0l2.2 2.2L3.4 -2.6':'M-2.6 -2.6l5.2 5.2M2.6 -2.6l-5.2 5.2'}" transform="translate(${(cx+11).toFixed(1)},9)" fill="none" stroke="${ok?ELC.GREEN:ELC.RED}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`});
+ // the grouping of an irregular bar: a dashed line where each later group starts
+ if(o.grp&&o.metre!=='7/8'){let g=0;o.grp.slice(0,-1).forEach(n=>{g+=n;const gx=X0+bx[g]-xa-3;if(g>0&&beats[g]&&beats[g][0]>=ra)s+=`<line x1="${gx.toFixed(1)}" y1="4" x2="${gx.toFixed(1)}" y2="${base+17}" stroke="${ELC.MUTED}" stroke-width="1" stroke-dasharray="2 3"/>`})}
+ if(o.metre==='7/8')beats.slice(1).forEach(([a],i)=>{if(a>ra){const gx=XX(a)-3;s+=`<line x1="${gx.toFixed(1)}" y1="4" x2="${gx.toFixed(1)}" y2="${base+17}" stroke="${ELC.MUTED}" stroke-width="1" stroke-dasharray="2 3"/>`}});
+ const ex=Wd-6;s+=o.final?`<line x1="${ex-6}" y1="${base-17}" x2="${ex-6}" y2="${base+17}" stroke="${o.ink||ELC.IV}" stroke-width="1"/><rect x="${ex-3}" y="${base-17}" width="3.5" height="34" fill="${o.ink||ELC.IV}"/>`:`<line x1="${Wd-7}" y1="${base-17}" x2="${Wd-7}" y2="${base+17}" stroke="${o.ink||ELC.IV}" stroke-width="1"/>`;
+ const ink=o.ink||ELC.IV;let used=ra;
+ cellAt.forEach(([k,st0])=>{const d=earCellDraw(k,XX,st0,top,base,ink);s+=d.svg;used=st0+ladW(k)});
+ // the sound strip: onsets and holds of the line's events that fall in this bar (ties merged)
+ (o.evs||[]).forEach(e=>{const a=e.on-o.start+ra,b=Math.min(a+e.dur,rb);if(a<ra||a>=rb)return;const x1=XX(a)+2.5,x2=XX(b)-2.5;
+  s+=e.rest?`<line x1="${(x1+1).toFixed(1)}" y1="${sy+3}" x2="${(x2-1).toFixed(1)}" y2="${sy+3}" stroke="${ELC.MUTED}" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round"/>`
+   :`<rect x="${x1.toFixed(1)}" y="${sy}" width="${Math.max(2,x2-x1).toFixed(1)}" height="6" rx="3" fill="${o.stripCol||ink}" fill-opacity=".8"/>`});
+ if(o.names)o.names.forEach(([k,st0,nm])=>{s+=`<text x="${(XX(st0)+3).toFixed(1)}" y="${sy+22}" font-family="Outfit,sans-serif" font-size="11" fill="${ELC.MUTED}" class="melname">${nm}</text>`});
+ if(o.cursor&&used<rb){const x=XX(used);s+=`<line x1="${(x+1).toFixed(1)}" y1="${top-4}" x2="${(x+1).toFixed(1)}" y2="${sy+8}" stroke="${ELC.GOLD}" stroke-width="1.5" stroke-linecap="round"/><path d="M${(x-3.5).toFixed(1)} ${top-9}h9l-4.5 5.5z" fill="${ELC.GOLD}"/>`}
+ if(o.holes){beats.forEach(([a,b])=>{const a2=Math.max(a,used),b2=Math.min(b,rb);if(b2>a2&&b>used)s+=`<rect x="${(XX(a2)+3).toFixed(1)}" y="${sy+.5}" width="${Math.max(6,XX(b2)-XX(a2)-6).toFixed(1)}" height="5" rx="2.5" fill="none" stroke="#7a6e55" stroke-width="1" stroke-dasharray="2 3"/>`})}
+ if(o.caret)s+=`<g class="el-caret" style="opacity:0"><line x1="0" y1="${top-4}" x2="0" y2="${sy+8}" stroke="${ELC.GOLD}" stroke-width="1.5" stroke-linecap="round"/><path d="M-3.5 ${top-9}h9l-4.5 5.5z" fill="${ELC.GOLD}"/></g>`;
+ return s+'</svg>'}
+// the line's bars as regions: [{region:[a,b], start, cells, no, anac}] for the cells entered so far (cells flat, anacrusis first)
+function earRhyBarsOf(q,A){const M=LMET[q.metre],an=q.anac||0,bl=q.barLen,out=[];let i=0,start=0;
+ const take=(len)=>{const g=[];let w=0;while(i<A.length&&LCELL[A[i]]&&w+ladW(A[i])<=len){g.push(A[i]);w+=ladW(A[i]);i++;if(w>=len)break}return g};
+ if(an){out.push({region:[M.bar-an,M.bar],start:0,cells:take(an),no:'upbeat',anac:true});start=an}
+ bl.forEach((L,b)=>{out.push({region:[0,L],start,cells:take(L),no:'Bar '+(b+1),last:b===bl.length-1});start+=L});return out}
+const earRhyEvents=(cells)=>ladRhyEvents(cells).ev;
+/* the cells' names, per cell: tie-in aware (ladRhyNames) */
+function earRhyNameList(q){return ladRhyNames(q)}
+// a whole line as bar svgs. cur: the bar being filled (cursor). marks: per-beat ok array from the marker
+function earRhyLineHTML(q,cells,o={}){const bars=earRhyBarsOf(q,cells),evs=earRhyEvents(cells),nar=!!o.narrow,nm=o.names?ladRhyNames({...q,anacCells:q.anacCells||[],cells:q.cells}):null;
+ let at=0;const full=bars.map(b=>{const w=b.cells.reduce((s,k)=>s+ladW(k),0);return w>=(b.anac?q.anac:q.barLen[b.no.replace('Bar ','')-1])});
+ let cur=full.findIndex(f=>!f);if(cur<0)cur=-1;
+ return bars.map((b,bi)=>{const M=LMET[q.metre],bm=o.marks?earRhyBeatMarks(q,o.marks,q.anac?bi:bi+1,b):null;
+  // names for the reveal, positioned at each cell's start
+  let names=null;if(nm){let p=b.region[0];names=[];const arr=nm[bi]||[];arr.forEach(({k,name})=>{names.push([k,p,name.includes(' ')&&(k==='q7_34'||k==='q7_43')?name.replace(' ',' '):name]);p+=ladW(k)})}
+  return earRhyBarSVG({metre:q.metre,grp:q.grp,cells:b.cells,region:b.region,sig:bi===0,no:b.no,cursor:o.cursor&&bi===cur,holes:o.holes&&bi===cur,final:bi===bars.length-1,narrow:nar,marks:bm,names,evs:o.strip===false?[]:evs,start:b.start,count:bi===0,stripCol:o.stripCol,caret:o.caret,label:(o.label||'')+b.no})}).join('')}
+// per-beat marks for one bar from the marker's beats list ({bar, beat, ok}; bar 0 the upbeat; 7/8 beats are eighths: a drawn group is right when all its eighths are)
+function earRhyBeatMarks(q,list,barNo,b){const M=LMET[q.metre],beats=earRhyBeatsOf(q.metre,q.grp);const bar=b.anac?0:barNo;
+ const mine=list.filter(x=>x.bar===bar);if(!mine.length)return null;
+ if(b.anac)return beats.map(([a,z])=>a>=b.region[0]?mine[0].ok:null);
+ return beats.map(([a,z])=>{const ov=mine.filter(x=>{const t0=(x.beat-1)*M.beat,t1=x.beat*M.beat;return t0<z&&t1>a});return ov.length?ov.every(x=>x.ok):null})}
+
+// ---- tiles: one per cell, drawn in its own notation, with its time name (from the names setting)
+function earTileName(k){const nm=ladNameTable()[k]||k;return(k==='q7_34'||k==='q7_43')?nm.replace(' ','\n'):nm}
+function earRhyTile2(k,o={}){const C=LCELL[k],comp=C.f==='c',pw=56,tot=ladW(k),nT=C.tup?C.tup.reduce((a,b)=>a+b,0):0,nm=earTileName(k),two=nm.includes('\n'),
+ chars=Math.max(...nm.split('\n').map(s=>s.length)),beats=tot/(comp?630:420);
+ const w=Math.max(Math.round(beats*pw),nT>3?(two?96:112):0,Math.ceil(chars*6.1+14),52),inner=nT===5?64:nT===7?86:Math.max(beats*pw,28),sound=C.t.filter(([d,kd])=>kd!=='r').length;
+ const x0=(w-inner)/2+(C.t.length===1&&!nT?inner/2-11:0),X=t=>x0+t*inner/tot,top=nT?16:12,d=earCellDraw(k,X,0,top,44,ELC.IV);
+ const tt=elTitle(k);
+ return`<button class="el-tile${nT>3?' tup':nT?' tup3':''}" style="width:${w}px" data-earcell="${k}" aria-label="${tt}, ${nm.replace('\n',' ')}" title="${tt}" data-tt ${o.off?'disabled':''}><svg viewBox="0 0 ${w} 56" width="${w}" height="56" aria-hidden="true"><line x1="0" y1="44" x2="${w}" y2="44" stroke="#c9b98f" stroke-opacity=".3"/>${d.svg}</svg><small>${nm}</small></button>`}
+// the tiles a question offers: the rung's cells that its metre can use (compound metres take the compound cells, 7/8 the cells of its groups of 2 and 3)
+function earTilesFor(q){const m=q.metre;let v=ladRhyTiles(q.l);
+ if(LMET[m].comp)v=v.filter(k=>LCELL[k].f==='c'||k==='e'||k==='err');
+ else if(m==='7/8')v=v.filter(k=>['e2','q','re','er','c3','cD','cqe','ceq','e','q5','q7_34','q7_43','tri'].includes(k));
+ else v=v.filter(k=>LCELL[k].f==='s');
+ return v}
+// the position in the line after the cells entered: {bar (0 upbeat), pos (ticks in the bar), L (the bar's length), done}
+function earRhyPos(q,A){const an=q.anac||0,bl=q.barLen;let used=A.reduce((s,k)=>s+(LCELL[k]?ladW(k):0),0);
+ if(an&&used<an)return{bar:0,pos:used,L:an,done:false,off:LMET[q.metre].bar-an};if(an)used-=an;
+ for(let b=0;b<bl.length;b++){if(used<bl[b])return{bar:b+1,pos:used,L:bl[b],done:false,off:0};used-=bl[b]}return{bar:bl.length,pos:0,L:0,done:true,off:0}}
+// the cells already written in the bar being filled
+function earBarSoFar(q,A){const P=earRhyPos(q,A);let n=0,w=0;for(let i=A.length-1;i>=0&&w<P.pos;i--){w+=ladW(A[i]);n++}return A.slice(A.length-n)}
+const earBigTup=k=>{const C=LCELL[k];return!!(C&&C.tup&&C.tup.reduce((a,b)=>a+b,0)>3)};
+function earTileOK(q,A,k){const P=earRhyPos(q,A),w=ladW(k);if(P.done||P.pos+w>P.L)return false;if(earBigTup(k)&&earBarSoFar(q,A).some(earBigTup))return false;if(P.bar===0)return true;
+ const m=q.metre,bl=q.barLen,L=P.L,full=L-L%(LMET[m].comp?630:420),p=P.pos;
+ return !!(ladCellOK(k,p,m,full,{last:P.bar===bl.length})||(p>=full&&ladCellOK(k,p-full,m,L-full+999,{end:true}))||m==='7/8'||m==='5/4')}
+function earRhyPosText(q,A){const P=earRhyPos(q,A);if(P.done)return'complete';const beats=earRhyBeatsOf(q.metre,q.grp),t=P.pos+P.off,i=beats.findIndex(([a,b])=>t>=a&&t<b),mid=t!==beats[i][0];
+ return P.bar===0?'the upbeat':`bar ${P.bar} of ${q.barLen.length}, ${mid?'in beat':'beat'} ${i+1}`}
+const ELFAMCAP={one:'One beat',two:'Two beats',long:'Longer',tup:'Tuplets'};
+function earTileFamilies(q,tiles){const fam=k=>{const C=LCELL[k];if(C.tup)return'tup';const u=C.f==='c'?630:420,b=ladW(k)/u;return b<=1?'one':b<=2?'two':'long'};
+ const g={one:[],two:[],long:[],tup:[]};tiles.forEach(k=>g[fam(k)].push(k));return g}
+function earRhyTilesHTML(q,A){const tiles=earTilesFor(q),on=k=>!earTileOK(q,A,k),T=k=>earRhyTile2(k,{off:on(k)}),big=tiles.length>9;
+ if(!big)return`<div class="el-tiles named" role="group" aria-label="Rhythm tiles">${tiles.map(T).join('')}</div>`;
+ const g=earTileFamilies(q,tiles);return`<div class="el-tfams">${Object.keys(g).filter(f=>g[f].length).map(f=>`<div class="el-tfam" role="group" aria-label="${ELFAMCAP[f]}"><span data-notm>${ELFAMCAP[f]}</span><div class="el-tiles named">${g[f].map(T).join('')}</div></div>`).join('')}</div>`}
+function earFullRhy(q){const A=EAR.ans;if(q.drums){const a=A&&A.riff?A:{riff:[],drums:{kick:[],snare:[]}};return earRhyPos(q,a.riff).done&&a.drums.kick.length>0&&a.drums.snare.length>1}return earRhyPos(q,A).done}
+// ---- the entry area
+function earRhyAreaHTML(q,l){if(EAR.done)return'';const groove=!!q.drums,A=groove?(EAR.ans.riff||[]):EAR.ans,cells=A;
+ const lab=`Your ${groove?'riff':'rhythm'} · ${earRhyPosText(q,cells)}`,alab='Your rhythm so far: '+(cells.length?cells.map(k=>elTitle(k)).join(', '):'nothing yet');
+ const wide=`<div class="el-rhy wide"><div class="el-sys">${earRhyLineHTML(q,cells,{cursor:true,holes:true,label:'Your rhythm, '})}</div></div>`,nar=`<div class="el-rhy narrow">${earRhyLineHTML(q,cells,{cursor:true,holes:true,narrow:true,label:'Your rhythm, '})}</div>`;
+ return`<div class="el-lbl" data-notm>${lab}</div><span class="el-sr">${alab}</span>${wide}${nar}<div class="el-lbl" data-notm>Add the next beat</div>${earRhyTilesHTML(q,cells)}${groove?earDrumHTML(q):''}${earEditBtns(earFullRhy(q))}`}
+// ---- R10: the drum groove, two quaver lanes a bar
+function earDrumHTML(q){const D=EAR.ans.drums||{kick:[],snare:[]},lane=(nm,key)=>`<div class="el-lane" role="group" aria-label="${nm}"><span class="who" data-notm>${nm}</span>${q.barLen.map((L,b)=>`<div class="el-lbar" data-bar="${b+1}">${[0,1,2,3,4,5,6,7].map(i=>{const t=b*1680+i*210,on=D[key].includes(t);return`<button class="el-dcell${on?' on':''}" data-eardrum="${key}:${t}" aria-pressed="${on}" aria-label="${nm}, bar ${b+1}, ${i%2?'and after beat '+((i-1)/2+1):'beat '+(i/2+1)}"><span aria-hidden="true">${i%2?'&':i/2+1}</span></button>`}).join('')}</div>`).join('')}</div>`;
+ return`<div class="el-lbl" data-notm>Kick and snare drums · tap where each one plays</div><div class="el-drums">${lane('Kick','kick')}${lane('Snare','snare')}</div>`}
+
+// ---- the reveal
+const earCap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function earRhyCellAtTick(cells,tick){let p=0;for(const k of cells||[]){const w=ladW(k);if(tick>=p&&tick<p+w)return{k,start:p};p+=w}return null}
+function earTwoHead(parts){return parts.map(p=>`<span class="pt ${p.k}">${ELICON[p.k==='ok'?'tick':p.k==='near'?'near':'cross']}<span>${p.t}${p.u?` <small>${p.u}</small>`:''}</span></span>`).join('')}
+function earLaneRow(nm,ticks,truth,nb,mine){const cell=(t)=>{const on=ticks.includes(t),want=truth.includes(t),bad=mine&&on!==want;return`<i class="${on?'on':''}${bad?' x':''}"></i>`};
+ return`<div class="el-lrow"><span class="who">${nm}</span>${Array.from({length:nb},(_,b)=>`<span class="el-lb">${[0,1,2,3,4,5,6,7].map(i=>cell(b*1680+i*210)).join('')}</span>`).join('')}</div>`}
+function earDrumCmp(q,res){const g=res.given&&res.given.drums,T=ladDrumOns(q.drums),nb=q.barLen.length;
+ return`<div class="el-lanes" data-notm role="img" aria-label="Kick and snare, you wrote and the answer">${g?earLaneRow('Kick, you wrote',g.kick||[],T.kick,nb,true)+earLaneRow('Snare, you wrote',g.snare||[],T.snare,nb,true):''}${earLaneRow('Kick, it was',T.kick,T.kick,nb,false)}${earLaneRow('Snare, it was',T.snare,T.snare,nb,false)}</div>`}
+function earRhyCmp2(q,res){const g=res.given,gr=q.drums?(g&&g.riff):g,marks=res.mark?res.mark.beats:null,who=(t,c='')=>`<div class="who ${c}" data-notm>${t}</div>`;
+ const row=(narrow)=>`${gr?who('You wrote')+`<div class="el-sys">${earRhyLineHTML(q,gr,{marks,narrow,label:'You wrote, '})}</div>`:''}${who('It was','ans')}<div class="el-sys">${earRhyLineHTML(q,q.a,{stripCol:ELC.GOLD,caret:true,names:true,narrow,label:'It was, '})}</div>`;
+ return`<div class="el-cmp wide" id="earCmpW">${row(false)}</div><div class="el-cmp narrow" id="earCmpN">${row(true)}</div>${q.drums?`<div class="el-cmp2">${earDrumCmp(q,res)}</div>`:''}`}
+// the display beat (1-based) that holds an engine beat (7/8: engine beats are quavers, drawn beats are the groups)
+function earRhyDispBeat(q,bar,beat){const beats=earRhyBeatsOf(q.metre,q.grp),M=LMET[q.metre],t=(beat-1)*M.beat,i=beats.findIndex(([a,b])=>t>=a&&t<b);return i<0?beat:i+1}
+function earTeachRhy2(q,res){const g=res.given,groove=!!q.drums,gr=groove?(g&&g.riff):g,mk=res.mark||{},beats=mk.beats||[],bad=beats.filter(b=>!b.ok),N=beats.length,m=N-bad.length,M=LMET[q.metre],an=q.anac||0,nb=q.barLen.length;let head,teach,rp=[],two=null;
+ const cmp=earRhyCmp2(q,res),cn=k=>ELCN[k]||elTitle(k),cw=k=>ELW[k]||elTitle(k);
+ const tickOf=b=>b.anac||b.bar===0?0:an+q.barLen.slice(0,b.bar-1).reduce((s,x)=>s+x,0)+(b.beat-1)*M.beat;
+ if(g===null){head='Here is the rhythm';teach='Follow the notes as it plays, then tap it back.'}
+ else if(mk.kind==='right'){head='Every beat right';const a=q.a,sp=a.includes('dq')?', including the dotted rhythm':a.some(k=>['syn','synT'].includes(k))?', including the syncopation':a.some(k=>['qr','err','er','re'].includes(k))?', including the rest':a.some(k=>LCELL[k].tup)?', including the tuplet':'';
+  teach=mk.why&&/another allowed/.test(mk.why)?'Every beat right, and the same sound written with other cells. The rung\'s own notation is shown below.':`Every beat right${sp}. Tap it once more as you listen.`}
+ else if(mk.kind==='nearly'){head='The sound is right';teach=`Nearly: ${mk.why}.`}
+ else if(!bad.length){head='The sound is right';teach=`Your cells sound like the answer, but this rung writes them differently. Compare the two lines below.`}
+ else{head=`${m} of ${N} beats match`;const b0=bad[0],t0=tickOf(b0),ga=earRhyCellAtTick(gr,t0),aa=earRhyCellAtTick(q.a,t0),db=earRhyDispBeat(q,b0.bar,b0.beat),
+   where=b0.bar===0||b0.anac?'the upbeat':nb>1?`<span data-notm>bar ${b0.bar}</span>, beat ${db}`:`beat ${db}`;let lead='';
+  if(nb>1){const okB=[];for(let b=1;b<=nb;b++)if(!bad.some(x=>x.bar===b))okB.push(b);lead=okB.length&&bad[0].bar!==0?`<span data-notm>Bar ${okB[0]}</span> is exactly right. `:''}
+  teach=`${lead}${b0.bar===0||b0.anac?'In the upbeat, you':nb>1?`In ${where}, you`:`On beat ${db}, you`} wrote ${ga?`${cn(ga.k)} (${cw(ga.k)})`:'nothing'}. Listen for ${aa?`${cw(aa.k)} there: ${cn(aa.k)}`:'silence'}.`;
+  rp.push({v:'beat',o:`${b0.bar}:${b0.bar===0||b0.anac?1:b0.beat}`,t:`Hear ${b0.bar===0||b0.anac?'the upbeat':`${nb>1?`<span data-notm>bar ${b0.bar}</span>, `:''}beat ${db}`}: yours, then the answer`})}
+ if(groove&&g&&mk.parts){const P=mk.parts;two=[{k:P.riff&&P.riff.ok?'ok':'bad',t:P.riff&&P.riff.ok?'Riff right':`Riff ${m} of ${N} beats`},{k:P.kick?'ok':'bad',t:P.kick?'Kick right':'Kick not yet'},{k:P.snare?'ok':'bad',t:P.snare?'Snare right':'Snare not yet'}];
+  if(mk.ok){teach='Riff, kick and snare all right. Hear them together once more.'}else if(!bad.length&&(!P.kick||!P.snare)){teach=`The riff is right. Compare the ${!P.kick&&!P.snare?'kick and snare lanes':!P.kick?'kick lane':'snare lane'} with the answer below.`}}
+ if(groove){rp.push({v:'all',t:'Hear it all together'});rp.push({v:'riff',t:'Riff alone'});rp.push({v:'drums',t:'Drums alone'})}else rp.push({v:'follow',t:'Hear it all, following the notes'});
+ return{kind:res.kind,head:two?earTwoHead(two):head,twoHead:!!two,teach,cmp,replays:rp}}
+// the caret at the reveal moves bar by bar: u is in semiquavers from the start of the line (upbeat first)
+function earRhyCaret(u){const tick=u*105;document.querySelectorAll('#earMain .el-cmp:not([style*="none"]) .el-caret').forEach(c=>{const svg=c.closest('svg');if(!svg||!svg.getBoundingClientRect().width){c.style.opacity=0;return}
+  const t0=+svg.dataset.t0,ra=+svg.dataset.ra,segs=svg.dataset.seg.split(';').map(s=>s.split(',').map(Number)),len=+svg.dataset.len||0,rel=tick-t0+ra;
+  if(tick<t0-.5||(len&&tick>=t0+len-.5)){c.style.opacity=0;return}
+  const sg=segs.find(([a,b])=>rel>=a-.5&&rel<b-.5)||segs[segs.length-1],x=sg[2]+(rel-sg[0])/(sg[1]-sg[0])*(sg[3]-sg[2]);c.setAttribute('transform',`translate(${(x+1).toFixed(1)},0)`);c.style.opacity=1})}
+
+// the answer's empty shape: a list of cells, or at rhythm rung 10 the riff and the kick and snare quaver lanes
+function earBlankAns(q){return q&&q.d==='rhy'&&q.drums?{riff:[],drums:{kick:[],snare:[]}}:[]}
+function earAnsPush(k){if(Array.isArray(EAR.ans))EAR.ans.push(k);else EAR.ans.riff.push(k)}
+function earRhyAsk(q,l){const M=q?LMET[q.metre]:LMET[LRMET[l][0]],n=q?ladBeatTicks(q.metre,q.grp).length:LMET[LRMET[l][0]].bar/(M.beat||420),nb=q?q.barLen.length+(q.anac?1:0):LRBARS[l],cnt=ELNUMW[n]||n;
+ const g=q&&q.grp&&q.metre==='5/4'?`, grouped ${q.grp.join(' + ')}`:q&&q.metre==='7/8'?`, grouped ${(q.grp||[2,2,3]).join(' + ')}`:'';
+ if(l===10)return`${earCap(cnt)} clicks count you in, then two bars of a riff and a drum groove play. Write the riff with the tiles, then tap where the kick and snare play.`;
+ return`${earCap(cnt)} clicks count you in${g}, then ${nb===1?'one bar':(ELNUMW[nb]||nb)+' bars'} of rhythm ${l===1?'is clapped':'plays on one note'}. Write what you hear.`}
+// a setting: one more group at the right of the listening options row (ladder_ui.js setting())
+function earSettingHTML(cap,aria,attr,on,opts){return`<span class="grp set"><span class="cap">${cap}</span><div class="el-seg" role="group" aria-label="${aria}">${opts.map(([k,t,tip])=>`<button ${attr}="${k}" aria-pressed="${k===on}"${tip?` title="${tip}"`:''}>${t}</button>`).join('')}</div></span>`}
 HIST.ear=mkHist(()=>EAR.ans,v=>{if(EAR.done)return;EAR.ans=v;renderEar()});
 function earNew(){elStop();if(earSkip())toast('Skipped. It counts as skipped, not as a miss.');EAR.done=false;EAR.sugNow=false;EAR.res=null;EAR.ans=[];HIST.ear.u=[];HIST.ear.r=[];
  if(EAR.drill==='blind'&&!EAR.blind){EAR.q=null;renderEar();earLoadBlind().then(()=>{EAR.q=earGen('blind',earLvl());EAR.q.plays=0;EAR.focus='[data-earplay="all"]';renderEar();earPlay()}).catch(()=>{$('earMain')&&($('earMain').querySelector('.earq').innerHTML='<p class="note">The scores could not be loaded. Blind analysis needs the score files that come with the published app.</p>')});return}
- EAR.q=earGen(EAR.drill,earLvl());EAR.q.plays=0;EAR.focus='[data-earplay="all"]';renderEar();earPlay()}
+ EAR.q=earGen(EAR.drill,earLvl());EAR.q.plays=0;EAR.ans=earBlankAns(EAR.q);EAR.focus='[data-earplay="all"]';renderEar();earPlay()}
 /* ---- R2: melody desk (hand-sign ladder beside the stave) ---- */
 // R2: the Ear Lab melody stave, drawn through the shared engraving layer (ENG): exercise task size, final-px text, house colours.
 // opts: {rows:[{label?,cells:[{n:{s,o}|null,col?,tcol?}]}], cur:index of the place being written (-1 none), reserve:[{s,o}...] (pitches to leave room for)}
@@ -8445,9 +8630,9 @@ function earNow(){const I=elInfo(),q=EAR.q,mine=I.state!=='idle'&&ELT.item===q&&
  if(!q){const rdy=elReady(EAR.drill);return rdy?{st:'ready',b:'Play',s:'Press play to hear the first one'}:{st:'wait',b:'Loading…',s:EAR.drill==='blind'?'Loading the scores and the piano…':'Loading the piano…'}}
  return{st:'ready',b:'Play again',s:q.plays?`Ready · played ${elTimes(q.plays)}`:'Ready'}}
 // the rhythm count-in: beats 0-3 at 60/bpm from the lead-in (the visible count 1 2 3 4 lights with it)
-function earCountIn(){const q=EAR.q;if(!q||q.d!=='rhy'||ELT.variant!=='all'||ELT.st!=='playing'||!ELT.bl)return 0;const e=(performance.now()-ELT.start)/1000-ELT.lead,n=Math.floor(e/ELT.bl)+1;return e>=0&&n>=1&&n<=4?n:0}
+function earCountIn(){const q=EAR.q;if(!q||q.d!=='rhy'||ELT.variant!=='all'||ELT.st!=='playing'||!ELT.bl)return 0;const e=(performance.now()-ELT.start)/1000-ELT.lead,n=Math.floor(e/ELT.bl)+1;return e>=0&&n>=1&&n<=earRhyBeatsOf(q.metre,q.grp).length?n:0}
 function earVarsHTML(q,l){const d=EAR.drill;
- if(d==='rhy'){const bpm=earRhyBpm(l);return`<div class="el-vars"><span class="grp"><span class="cap">Pulse</span><div class="el-seg" role="group" aria-label="Pulse"><button data-earpulse="1" aria-pressed="${EAR.rhy.pulse}">On</button><button data-earpulse="0" aria-pressed="${!EAR.rhy.pulse}">Off</button></div></span><span class="gap"></span><span class="grp"><span class="cap">Speed</span><div class="el-seg" role="group" aria-label="Speed"><button data-earspd="72" aria-pressed="${bpm===72}">Steady · 72</button><button data-earspd="100" aria-pressed="${bpm===100}">Normal · 100</button></div></span><span class="gap"></span><span class="fix">Sound: ${l===1?'clap':'tone'}</span></div>`}
+ if(d==='rhy'){const bpm=earRhyBpm(l);return`<div class="el-vars"><span class="grp"><span class="cap">Pulse</span><div class="el-seg" role="group" aria-label="Pulse"><button data-earpulse="1" aria-pressed="${EAR.rhy.pulse}">On</button><button data-earpulse="0" aria-pressed="${!EAR.rhy.pulse}">Off</button></div></span><span class="gap"></span><span class="grp"><span class="cap">Speed</span><div class="el-seg" role="group" aria-label="Speed"><button data-earspd="72" aria-pressed="${bpm===72}">Steady · 72</button><button data-earspd="100" aria-pressed="${bpm===100}">Normal · 100</button></div></span><span class="gap"></span><span class="fix">Sound: ${l===1?'clap':'tone'}</span>${l>=7?earSettingHTML('Names','Rhythm names','data-earnames',EAR.names,[['k','Kodály names'],['kk','Kodály with konnakol tuplets','Triplets are named ta-ki-ta']]):''}</div>`}
  const v=[];if(q&&(d==='cad'||d==='bass'||d==='mel')&&!(d==='cad'&&q.l===1))v.push(['nokey','Without the key chord']);if(q&&d==='bass')v.push(['bassonly','Bass only']);if(q&&d==='mel')v.push(['first','First note']);
  return v.length?`<div class="el-vars"><span class="cap">Or just</span>${v.map(([k,t])=>`<button class="el-var" data-earplay="${k}" aria-pressed="false"><i></i>${t}</button>`).join('')}</div>`:''}
 function earStageHTML(q,l){const N=earNow(),dis=N.st==='wait';
@@ -8455,13 +8640,13 @@ function earStageHTML(q,l){const N=earNow(),dis=N.st==='wait';
   ${earVarsHTML(q,l)}<div class="el-acts">${q?`<button class="el-btn" data-earshow>Show me</button><button class="el-btn" data-earnew>Skip →</button>`:''}</div></div>`}
 function earDockHTML(q){if(!q)return'';const N=earNow(),rb=EAR.done?`<button class="el-btn gold" data-eardock="next">Next →</button>`:(EAR.drill==='rhy'||EAR.drill==='bass'||EAR.drill==='mel')?`<button class="el-btn gold" data-eardock="check" ${earFull(q)?'':'disabled'}>Check</button>`:'';
  return`<div class="el-dock" id="earDock" role="region" aria-label="Ear Lab playback"><button class="el-play" data-eardock="toggle" data-v="*" aria-label="${N.b}" aria-pressed="false">${ELRING}</button><div class="el-now ${N.st}"><b>${elDrillName(EAR.drill)}</b><span>${N.s}</span></div>${rb}</div>`}
-function earFull(q){const A=EAR.ans;return q.d==='rhy'?A.reduce((s,k)=>s+RCELL[k].w,0)===16*q.bars:q.d==='bass'?A.length===3:q.d==='mel'?A.length>=q.a.length-1:false}
+function earFull(q){const A=EAR.ans;return q.d==='rhy'?earFullRhy(q):q.d==='bass'?A.length===3:q.d==='mel'?A.length>=q.a.length-1:false}
 // ---- the result panel (spec 9)
 function elReplayBtn(r,first){const o=r.o!==undefined?` data-earo="${r.o}"`:'';
  return first?`<button class="el-replay" data-earplay="${r.v}"${o} aria-pressed="false"><span class="el-play" data-v="${r.v}" aria-hidden="true">${ELRING}</span><span>${r.t}</span></button>`:`<button class="el-btn" data-earplay="${r.v}"${o} aria-pressed="false">${r.t}</button>`}
 function earResultHTML(q,T){const res=EAR.res,k=T.kind,cls=k==='ok'?'ok':k==='nearly'?'near':k==='shown'?'shown':'bad',ico=k==='ok'?'tick':k==='nearly'?'near':k==='shown'?'eye':'cross',vt=k==='ok'?'Correct':k==='nearly'?'Nearly':k==='shown'?'Shown':'Not this time';
- return`<div class="el-result ${cls}" id="earResult" role="group" aria-label="Result: ${vt}"><div class="el-mark">${ELICON[ico]}</div><div><div class="el-verdict">${vt}</div><div class="el-answer" role="heading" aria-level="3" data-notm>${T.head}${T.small?` <small>${T.small}</small>`:''}</div></div><button class="el-btn gold" data-earnew>Next →</button>
-  <div class="el-body"><p class="el-teach">${T.teach}</p>${T.pic||''}</div>${T.cmp||''}<div class="el-body"><div class="el-replays">${T.replays.map((r,i)=>elReplayBtn(r,i===0)).join('')}</div>${T.after||''}</div></div>`}
+ return`<div class="el-result ${cls}" id="earResult" role="group" aria-label="Result: ${vt}"><div class="el-mark">${ELICON[ico]}</div><div><div class="el-verdict">${vt}</div><div class="el-answer${T.twoHead?' two':''}" role="heading" aria-level="3" data-notm>${T.head}${T.small?` <small>${T.small}</small>`:''}</div></div><button class="el-btn gold" data-earnew>Next →</button>
+  <div class="el-body"><p class="el-teach">${T.teach}</p>${T.pic||''}</div>${T.cmp||''}<div class="el-body"><div class="el-replays">${T.replays.map((r,i)=>elReplayBtn(r,i===0)).join('')}</div>${T.after||''}</div>${earSugHTML(EAR.drill,earLvl())}</div>`}
 /* ---- feedback that teaches (spec 9): the answer as the headline, one or two sentences relating the student's choice to it, a replay that demonstrates it ---- */
 const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const ELNUM={2:'two',3:'three',4:'four',5:'five',6:'six'};
@@ -8481,23 +8666,6 @@ function earTeachMetre(q,res){const a=q.a,g=res.given,A=earMetreD(a),nm=A.irr?'I
   else t=both}
  const rp=[{v:'beats',t:'Hear it again with the beats shown'}];if(g&&g!==a)rp.push({v:'given',t:`Hear ${g} at the same speed`});
  return{kind:res.kind,head:nm,small:A.irr?`${a} (${a==='5/4'?'3+2':'2+2+3'})`:a,teach:t,replays:rp,after:elBeatsSVG(a)}}
-function earRhyCmpHTML(q,res){const bars=q.bars,g=res.given,kb=earRhyBeats(q.a,bars),gb=g?earRhyBeats(g,bars):null,marks=gb?kb.map((k,i)=>gb[i]===k):null,stick=q.l===1,ink=ELC.IV;
- const one=(cells,o)=>earRhySVG(cells,{stick,...o}),GB=earRhyBars(g||[],bars),AB=earRhyBars(q.a,bars),who=(t,c='')=>`<div class="who ${c}" data-notm>${t}</div>`;
- const wide=`<div class="el-cmp wide">${g?who('You wrote')+one(g,{u:18,bars,marks,label:'You wrote: '+g.map(k=>elTitle(k)).join(', ')}):''}${who('It was','ans')}${one(q.a,{u:18,bars,ruler:!g,stripCol:ELC.GOLD,caret:true,label:'It was: '+q.a.map(k=>elTitle(k)).join(', ')})}</div>`;
- let nar='';for(let b=0;b<bars;b++){const last=b===bars-1,mk=marks?marks.slice(b*4,b*4+4):null;
-  nar+=(g?who(bars>1?`You wrote · bar ${b+1}`:'You wrote')+one(GB[b]||[],{u:17,bars:1,marks:mk,final:last,label:'You wrote, bar '+(b+1)}):'')+who(g||bars>1?(bars>1?`It was · bar ${b+1}`:'It was'):'It was','ans')+one(AB[b],{u:17,bars:1,ruler:!g,stripCol:ELC.GOLD,final:last,caret:true,label:'It was, bar '+(b+1)})}
- return`${wide.replace('class="el-cmp wide"','class="el-cmp wide" id="earCmpW"')}<div class="el-cmp narrow" id="earCmpN">${nar}</div>`}
-function earTeachRhy(q,res){const bars=q.bars,N=4*bars,g=res.given,kb=earRhyBeats(q.a,bars),gb=g?earRhyBeats(g,bars):null,rp=[];let head,teach;
- const cmp=earRhyCmpHTML(q,res);
- if(g===null){head='Here is the rhythm';teach='Follow the notes as it plays, then tap it back.'}
- else{const bad=[];kb.forEach((k,i)=>{if(gb[i]!==k)bad.push(i)});const m=N-bad.length;
-  if(!bad.length){head='Every beat right';const sp=q.a.includes('dq')?', including the dotted rhythm':q.a.includes('syn')?', including the syncopation':q.a.includes('qr')?', including the rest':'';teach=`Every beat right${sp}. Tap it once more as you listen.`}
-  else{head=`${m} of ${N} beats match`;const b0=bad[0],bar=Math.floor(b0/4)+1,beat=b0%4+1,ga=earRhyCellAt(g,b0),aa=earRhyCellAt(q.a,b0),where=bars>1?`<span data-notm>bar ${bar}</span>, beat ${beat}`:`beat ${beat}`;
-   let lead='';if(bars>1){const okBars=[];for(let b=0;b<bars;b++)if(!bad.some(i=>Math.floor(i/4)===b))okBars.push(b+1);lead=okBars.length?`<span data-notm>Bar ${okBars[0]}</span> is exactly right. `:`${m} of ${N} beats match. `}
-   teach=`${lead}${bars>1?`In ${where}, you`:`On beat ${beat}, you`} wrote ${ga?`${ELCN[ga.k]} (${ELW[ga.k]})`:'nothing'}. Listen for ${ELW[aa.k]} there: ${ELCN[aa.k]}.`;
-   rp.push({v:'beat',o:`${Math.floor(b0/4)}:${b0%4}`,t:`Hear ${bars>1?`<span data-notm>bar ${bar}</span>, `:''}beat ${beat}: yours, then the answer`})}}
- rp.push({v:'follow',t:'Hear it all, following the notes'});
- return{kind:res.kind,head,teach,cmp,replays:rp}}
 const ELQP={'':['major','perfect',null],m:['minor','perfect',null],dim:['minor','diminished',null],aug:['major','augmented',null],maj7:['major','perfect','major'],7:['major','perfect','minor'],m7:['minor','perfect','minor'],m7b5:['minor','diminished','minor'],dim7:['minor','diminished','diminished']};
 function earQualDeciding(a,g){const A=ELQP[a],G=g!==null&&g!==undefined?ELQP[g]:null;if(!G){return a==='dim'||a==='aug'?'q5':ELQP[a][2]?'q7':'q3'}
  if(A[0]!==G[0])return'q3';if(A[1]!==G[1])return'q5';return'q7'}
@@ -8642,7 +8810,7 @@ function earTeachMel(q,res){const g=res.given,a=q.a,head=a.join(' ');let t,k=1;
  const rp=[];if(g&&!res.ok)rp.push({v:'frag',o:String(Math.max(1,k)),t:`Hear notes ${Math.max(1,k)} to ${Math.min(a.length,k+2)}: yours, then the answer`});
  rp.push({v:'all',t:'Hear it all with the hand signs'});
  return{kind:res.kind,head,teach:t,replays:rp}}
-function earTeach(q,res){const T=q.d==='metre'?earTeachMetre(q,res):q.d==='rhy'?earTeachRhy(q,res):q.d==='qual'?earTeachQual(q,res):q.d==='bass'?earTeachBass(q,res):q.d==='mel'?earTeachMel(q,res):earTeachCad(q,res);
+function earTeach(q,res){const T=q.d==='metre'?earTeachMetre(q,res):q.d==='rhy'?earTeachRhy2(q,res):q.d==='qual'?earTeachQual(q,res):q.d==='bass'?earTeachBass(q,res):q.d==='mel'?earTeachMel(q,res):earTeachCad(q,res);
  return T}
 /* ---- answer areas ---- */
 function earOptCls(v,q,pre=''){if(!EAR.done)return'';const res=EAR.res,g=res&&res.given;
@@ -8670,12 +8838,6 @@ function earBassAreaHTML(q){const lock=EAR.done,A=lock&&EAR.res&&EAR.res.given?E
  return`<div class="el-lbl" data-notm>Name chords 2–4 in ${keyName(q.key)}</div><div class="el-slots${lock?' lock':''}">${slots}</div>
   <div class="el-opts c4${q.opts.length===5?' n5':''}" role="group" aria-label="Chord numerals">${q.opts.map(o=>{const f=earNumFn(o,q.key.mode),[fnm,c]=ELFN[f];return`<button class="el-opt num" style="--fc:${c}" data-earrn="${o}" title="${fnm}" ${lock||A.length>=3?'disabled':''}>${earRnHTML(o)}<span class="fn">${fnm}</span></button>`}).join('')}</div>${lock?'':earEditBtns(A.length===3)}`}
 function earEditBtns(full){return EAR.done?'':`<div class="el-edit"><button class="el-btn sm" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="el-btn sm" data-hist="ear:r" title="Redo">↷ Redo</button><button class="el-btn sm" data-earclr>Clear</button><span class="sp"></span><button class="el-btn gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
-function earRhyAreaHTML(q,l){if(EAR.done)return'';const A=EAR.ans,used=A.reduce((s,k)=>s+RCELL[k].w,0),tot=16*q.bars,stick=l===1,nm=ladNameTable(),GA=earRhyBars(A,q.bars);
- const lab=`Your rhythm · ${used/4} of ${tot/4} beats`,alab='Your rhythm so far: '+(A.length?A.map(k=>elTitle(k)).join(', '):'nothing yet');
- const wide=`<div class="el-rhy wide">${earRhySVG(A,{u:18,bars:q.bars,stick,cursor:true,countin:0,label:alab,caret:false,first:true})}</div>`;
- let nar='';for(let b=0;b<q.bars;b++){const last=b===q.bars-1,cur=b===Math.min(q.bars-1,Math.floor(used/16))&&used<tot;nar+=earRhySVG(GA[b]||[],{u:17,bars:1,stick,cursor:cur,holes:true,total:16,label:'Bar '+(b+1),final:last,first:b===0,ruler:true})}
- const pos=used%16;const tiles=earCells(l).map(k=>{const w=RCELL[k].w,ok=used+w<=tot&&(w<8||pos%8===0)&&pos+w<=16;return earRhyTile(k,{stick,named:nm,disabled:!ok})}).join('');
- return`<div class="el-lbl" data-notm>${lab}</div>${wide}<div class="el-rhy narrow">${nar}</div><div class="el-lbl" data-notm>Add the next beat</div><div class="el-tiles${nm?' named':''}">${tiles}</div>${earEditBtns(used===tot)}`}
 function earMelDeskHTML(q){const lock=EAR.done,A=EAR.ans,full=A.length>=q.a.length-1,res=EAR.res;let strip='';
  if(lock)strip=earResultHTML(q,earTeachMel(q,res));
  const aria=lock?'The melody: '+q.a.join(' ')+'.'+(res.given&&!res.ok?' You wrote: '+[q.a[0],...res.given].join(' ')+'.':''):'Your melody so far: '+[q.a[0],...A].join(' ');
@@ -8705,7 +8867,7 @@ function renderEar(){const el=$('earMain');if(!el)return;
  el.innerHTML=`<div class="el-drills" role="tablist" aria-label="Ear Lab drills">${tabs.map(([k,n])=>`<button class="el-drill${d===k?' on':''}" role="tab" aria-selected="${d===k}" data-eardr="${k}"><b>${n}</b><small>${earStageTag(k)}</small></button>`).join('')}${allBtn}</div>
  <div class="el-cols"><section class="card" id="earCard"><div class="el-head${earLong(d)?' long':''}"><div><div class="el-tag">${earStageTag(d)}</div><h2 class="el-title">${elDrillName(d)}</h2></div>${tally}
   <div class="el-rungrow">${earLong(d)?earPickerHTML(d,l):`<div class="el-rungs" role="group" aria-label="Rung">${rungs.map(n=>`<button data-earlv="${n}" aria-pressed="${l===n}" class="${l===n?'on':''}" title="${earRungStages(d,n)}">Rung ${n}</button>`).join('')}</div>${hidR&&!EAR.all?`<button class="el-all" data-earall aria-pressed="false">show all rungs</button>`:''}</div>`}</div></div>
-  <p class="el-ask">${d==='rhy'?ELASK.rhy.replace('one bar of rhythm plays on one note',(l===3?'two bars':'one bar')+(l===1?' of rhythm is clapped':l===3?' of rhythm play on one note':' of rhythm plays on one note')):ELASK[d]}</p>
+  <p class="el-ask">${d==='rhy'?earRhyAsk(q,l):ELASK[d]}</p>
   ${T?earResultHTML(q,T):d==='mel'&&q&&EAR.done?'':earStageHTML(q,l)}
   ${earAnswerAreaHTML(q,l)}${earFootHTML(s)}</section>${earTipsHTML(d)}</div>${earDockHTML(q)}`;
  if(q&&d==='mel')earMelMount(q);
@@ -8731,8 +8893,6 @@ function earLane(ev){const L=document.getElementById('earLane');if(!L)return;L.q
  const t=L.querySelector(`.bt[data-bar="${(ev.bar-1)%4}"][data-beat="${ev.beat-1}"]`);if(t)t.classList.add('now')}
 function earClearNow(){const L=document.getElementById('earLane');if(L)L.querySelectorAll('.bt.now').forEach(x=>x.classList.remove('now'));document.querySelectorAll('#earBassRow .el-ch.now').forEach(x=>x.classList.remove('now'));
  document.querySelectorAll('#earMain .el-caret').forEach(c=>c.style.opacity=0)}
-function earRhyCaret(u){document.querySelectorAll('#earMain .el-cmp:not([style*="none"]) .el-caret').forEach(c=>{const svg=c.closest('svg');if(!svg||!svg.getBoundingClientRect().width)return;const x0=+c.dataset.x0,uu=+c.dataset.u,bg=+c.dataset.bg,b=Math.floor(u/16),p=u%16;
-  c.setAttribute('transform',`translate(${x0+b*(16*uu+bg)+p*uu+1},0)`);c.style.opacity=1})}
 // the dock: a copy of the toggle that follows the student on phones while the stage (or the result's first replay) is out of view
 function earDockShow(on){const dk=$('earDock');if(!dk)return;dk.classList.toggle('show',!!on&&ROOM==='ear'&&!!EAR.q);document.body.classList.toggle('ear-docked',dk.classList.contains('show'))}
 function earObserve(){if(EAR.io){EAR.io.disconnect();EAR.io=null}earDockShow(false);const dk=$('earDock');if(!dk||!window.IntersectionObserver||ROOM!=='ear')return;
@@ -8752,8 +8912,9 @@ function earSounding(){return ELT.st!=='idle'&&ELT.item===EAR.q&&ELT.variant!=='
 function earPress(v,main,o){const q=EAR.q;
  if(main){if(!q){earNew();return}if(earSounding()){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,'all');return}
  if(!q)return;if(earSounding()&&ELT.variant===v){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,v,o)}
-document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earall],[data-earplay],[data-eardock],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earpulse],[data-earspd],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore],[data-band],[data-earstay]');if(!t)return;const d=t.dataset;
+document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earall],[data-earplay],[data-eardock],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earpulse],[data-earspd],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore],[data-band],[data-earstay],[data-eardrum],[data-earnames]');if(!t)return;const d=t.dataset;
  if(d.band){EAR.band=+d.band;renderEar();return}
+ if(d.earnames){EAR.names=d.earnames==='kk'?'kk':'k';earSave();renderEar();return}
  if(d.earstay!==undefined){EAR.sugNow=false;renderEar();return}
  // EL-11: leaving a question unanswered (a change of drill or rung) records it as skipped, and says so
  if(d.eardr){if(d.eardr===EAR.drill)return;elStop();const sk=earSkip();EAR.drill=d.eardr;EAR.q=null;EAR.done=false;EAR.ans=[];EAR.resetAsk=false;earSave();renderEar();if(sk)toast('The unanswered question was recorded as skipped (not a miss).');return}
@@ -8765,11 +8926,12 @@ document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.cl
  if(d.earpulse!==undefined){elStop();EAR.rhy.pulse=d.earpulse==='1';earSave();renderEar();return}
  if(d.earspd!==undefined){elStop();EAR.rhy.bpm=+d.earspd===72?72:100;earSave();renderEar();return}
  if(d.earans!==undefined&&EAR.q&&!EAR.done){elStop();const j=earJudge(EAR.q,d.earans);earMark(j==='nearly'?'nearly':j==='correct',d.earans);renderEar();return}
- if(d.earcell&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earcell);renderEar();return}
+ if(d.earcell&&!EAR.done){HIST.ear.push();earAnsPush(d.earcell);renderEar();return}
+ if(d.eardrum&&!EAR.done){HIST.ear.push();const[k,t]=d.eardrum.split(':'),L=EAR.ans.drums[k],i=L.indexOf(+t);if(i<0)L.push(+t);else L.splice(i,1);L.sort((a,b)=>a-b);renderEar();return}
  if(d.earrn&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earrn);renderEar();return}
  if(d.earsol&&EAR.done&&EAR.q&&EAR.q.d==='mel'){const n=eSolParse(d.earsol);elPlay(EAR.q,'tap',{midi:eSolMidi(n,EAR.q.key)});return}
  if(d.earsol&&!EAR.done){HIST.ear.push();EAR.ans.push(d.earsol);const n=d.earsol.match(/^([a-z]+)([,']*)$/),o=(n[2].match(/'/g)||[]).length-(n[2].match(/,/g)||[]).length;elPlay(EAR.q,'tap',{midi:eSolMidi({s:n[1],o},EAR.q.key)});renderEar();return}
- if(d.earclr!==undefined&&!EAR.done){HIST.ear.push();EAR.ans=[];renderEar();return}
+ if(d.earclr!==undefined&&!EAR.done){HIST.ear.push();EAR.ans=earBlankAns(EAR.q);renderEar();return}
  if(d.earchk!==undefined){elStop();earCheck();return}
  if(d.earshow!==undefined){elStop();earMark(false,null);renderEar();return}
  // EL-10: Reset asks inline (no browser dialog), then offers Undo
