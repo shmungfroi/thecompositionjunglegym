@@ -7346,7 +7346,7 @@ const EARHOW={metre:'Count along. Where does the strongest click fall, and how m
 function earBlindCats(l){const P=earBlindPool(l);return Object.keys(CADL).filter(k=>P.some(x=>x.cat===k))}
 /* ---- Ear Lab 0.48 card: the drill strip, tally, sound stage (one Play/Stop toggle), result panel, answer areas, foot (design spec) ---- */
 const ELRING='<svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle class="trk" cx="24" cy="24" r="22.5"/><circle class="arc" cx="24" cy="24" r="22.5" pathLength="100"/></svg><svg class="ico play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.2v11.6L14 8z" fill="currentColor"/></svg><svg class="ico stop" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="1.5" fill="currentColor"/></svg>';
-const ELASK={metre:'How many beats in a bar? Does each beat split in two or in three?',rhy:'Four clicks count you in, then the rhythm plays on one note. Write what you hear.',
+const ELASK={metre:'How many beats in a bar? Does each beat split in two or in three?',rhy:'Four clicks count you in, then one bar of rhythm plays on one note. Write what you hear.',
  qual:'One chord: together, then note by note, then together. What kind of chord is it?',cad:'The key chord plays first, then a short phrase. How does the phrase end?',
  bass:'The key chord plays first. Chord 1 is always I. Name chords 2 to 4.',mel:'The key chord plays first and the first note is given. Write the rest in solfa.',
  blind:'A phrase from a real score, with the score hidden. Name the cadence at the end.'};
@@ -7659,7 +7659,7 @@ function renderEar(){const el=$('earMain');if(!el)return;
  el.innerHTML=`<div class="el-drills" role="tablist" aria-label="Ear Lab drills">${tabs.map(([k,n])=>`<button class="el-drill${d===k?' on':''}" role="tab" aria-selected="${d===k}" data-eardr="${k}"><b>${n}</b><small>${earStageTag(k)}</small></button>`).join('')}${allBtn}</div>
  <div class="el-cols"><section class="card" id="earCard"><div class="el-head"><div><div class="el-tag">${earStageTag(d)}</div><h2 class="el-title">${elDrillName(d)}</h2></div>${tally}
   <div class="el-rungrow"><div class="el-rungs" role="group" aria-label="Rung">${rungs.map(n=>`<button data-earlv="${n}" aria-pressed="${l===n}" class="${l===n?'on':''}" title="${earRungStages(d,n)}">Rung ${n}</button>`).join('')}</div>${hidR&&!EAR.all?`<button class="el-all" data-earall aria-pressed="false">show all rungs</button>`:''}</div></div>
-  <p class="el-ask">${d==='rhy'&&l===1?ELASK.rhy.replace('the rhythm plays on one note','the rhythm is clapped'):ELASK[d]}</p>
+  <p class="el-ask">${d==='rhy'?ELASK.rhy.replace('one bar of rhythm plays on one note',(l===3?'two bars':'one bar')+(l===1?' of rhythm is clapped':l===3?' of rhythm play on one note':' of rhythm plays on one note')):ELASK[d]}</p>
   ${T?earResultHTML(q,T):d==='mel'&&q&&EAR.done?'':earStageHTML(q,l)}
   ${earAnswerAreaHTML(q,l)}${earFootHTML(s)}</section>${earTipsHTML(d)}</div>${earDockHTML(q)}`;
  if(q&&d==='mel')earMelMount(q);
