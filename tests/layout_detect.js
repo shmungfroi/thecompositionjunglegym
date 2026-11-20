@@ -3,7 +3,7 @@
  const vis=e=>{const s=getComputedStyle(e);return s.visibility!=='hidden'&&s.display!=='none'&&+s.opacity>0.05};
  const items=[];
  const walker=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT);
- let n;while(n=walker.nextNode()){const t=n.textContent.trim();if(!t)continue;const el=n.parentElement;if(!el||el.closest('script,style'))continue;
+ let n;while(n=walker.nextNode()){const t=n.textContent.trim();if(!t)continue;const el=n.parentElement;if(!el||el.closest('script,style,.el-sr,.sr-only'))continue;
   if(el.closest('svg')&&!['text','tspan'].includes(el.tagName.toLowerCase()))continue;
   if(!el.getClientRects().length||!vis(el))continue;
   {const d=el.closest('details:not([open])');if(d&&!el.closest('summary'))continue}
@@ -21,7 +21,7 @@
   const k=a.t+'|'+b.t;if(seen.has(k))continue;seen.add(k);
   out.overlap.push({a:a.t,b:b.t,x:Math.round(Math.min(a.x1,b.x1)),y:Math.round(Math.min(a.y1,b.y1)+scrollY),w:Math.round(Math.max(a.x2,b.x2)-Math.min(a.x1,b.x1)),h:Math.round(Math.max(a.y2,b.y2)-Math.min(a.y1,b.y1)),svg:a.svg||b.svg,frac:+(ar/mn).toFixed(2)})}}
  // clipped text: overflow hidden/clip boxes whose text content is cut off
- document.querySelectorAll('main *').forEach(e=>{if(e.closest('svg')||!e.getClientRects().length)return;const s=getComputedStyle(e);
+ document.querySelectorAll('main *').forEach(e=>{if(e.closest('svg,.el-sr,.sr-only')||!e.getClientRects().length)return;const s=getComputedStyle(e);
   const hid=/(hidden|clip)/.test(s.overflowX+s.overflowY);if(!hid)return;if(!e.textContent.trim())return;
   const cx=e.scrollWidth>e.clientWidth+2&&/(hidden|clip)/.test(s.overflowX)&&s.textOverflow!=='ellipsis',cy=e.scrollHeight>e.clientHeight+3&&/(hidden|clip)/.test(s.overflowY);
   if(cx||cy){const r=e.getBoundingClientRect();out.clipped.push({el:e.tagName+'.'+String(e.className).split(' ')[0],t:e.textContent.trim().slice(0,40),dir:(cx?'x':'')+(cy?'y':''),by:cx?e.scrollWidth-e.clientWidth:e.scrollHeight-e.clientHeight,x:Math.round(r.left),y:Math.round(r.top+scrollY),w:Math.round(r.width),h:Math.round(r.height)})}});
