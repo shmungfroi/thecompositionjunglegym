@@ -27,8 +27,8 @@ How it names a chord (the generator; fixes the old labels' faults)
     cadence chords: V(7) – I;
   * a 4-3 (or bass 2-3) suspension is written V(4–3), with the chord the suspension resolves into.
 Function (for the harmony row's colour, as the app's FN colours): T tonic, PD predominant, D dominant (V, vii°),
-C colour (applied, chromatic or altered chords; a major I inside a minor-key phrase), W the minor v (no leading note, weak pull: register item R9),
-S the subtonic VII of a minor key. The final major I of a minor-key piece (Picardy third) stays T.
+C colour (applied, chromatic or altered chords; a major I inside a minor-key phrase), MD modal dominant ("soft pull", 0.48
+decision 12; was W and S): the minor v and the subtonic VII of a minor key, neither with a leading note. The final major I of a minor-key piece (Picardy third) stays T.
 """
 import sys, re, json, pathlib
 from fractions import Fraction as Fr
@@ -201,9 +201,9 @@ def function(d, acc, q, key, applied, diatonic=True):
     if d == 0:
         return 'T'
     if d == 4:
-        return 'D' if q == 'maj' else 'W'
+        return 'D' if q == 'maj' else 'MD'
     if d == 6:
-        return 'D' if q in ('dim', 'dim7', 'hdim') else 'S' if q == 'maj' else 'C'
+        return 'D' if q in ('dim', 'dim7', 'hdim') else 'MD' if q == 'maj' else 'C'
     if q == 'aug':
         return 'C'
     return ['T', 'PD', 'T', 'PD', 'D', 'T', 'D'][d]
