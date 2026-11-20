@@ -12,6 +12,8 @@ Sections
   C  tells: no answer predictable above chance from length, tempo or register (E10); 0.49 C3: exact-semitone register tells at rungs 2-3
   D  pool sizes at level 1 (E11); 0.49 C4 / C23: the rung 1 V–vi pool (open or close spacing, >= 100) against an independent
      exhaustive enumeration; C12: no incomplete chord at rung 1
+  A  (also) 0.49 C25: no major triad in first inversion doubles its 3rd or drops its 5th (vi / VI excepted), in every cadence and
+     bass realisation checked by vl_check
   E  blind analysis windows, labels and buttons (E1–E5)
   F  blind playback note lengths (E6)
   G  ranges (E14)
@@ -63,10 +65,24 @@ def rn_info(tok, k, mode):
     sev = r.seventh.pitchClass if r.seventh is not None else None
     third = r.third.pitchClass if r.third is not None else None
     return dict(pcs=pcs, root=r.root().pitchClass, bass=r.bass().pitchClass, third=third, seventh=sev,
-                scale_degree=r.scaleDegree, secondary=r.secondaryRomanNumeral is not None, figure=r.figure)
+                scale_degree=r.scaleDegree, secondary=r.secondaryRomanNumeral is not None, figure=r.figure,
+                major_triad=r.isMajorTriad(), inversion=r.inversion(), fifth=r.fifth.pitchClass if r.fifth is not None else None)
 
 
 PERFECT = {0: 'P1', 7: 'P5'}
+
+
+def dbl_check(chs, toks, info, where, sec):
+    """0.49 C25 (IC_REG_049 S1): a major triad in first inversion (music21's reading) is complete and doubles its root or 5th, never its
+    3rd; vi / VI (which double the 3rd after V) are the one exception."""
+    for i, (c, f) in enumerate(zip(chs, info)):
+        base = toks[i].split(':')[0].split('/')[0]
+        if f['major_triad'] and f['inversion'] == 1 and base not in ('vi', 'VI'):
+            COUNT[f'C25 doubling check ({sec}): major first-inversion chords checked'] += 1
+            if sum(1 for m in c if m % 12 == f['third']) > 1:
+                fail(sec, f'{where}: chord {i+1} {toks[i]} doubles its 3rd ({c})')
+            if f['fifth'] not in {m % 12 for m in c}:
+                fail(sec, f'{where}: chord {i+1} {toks[i]} has no 5th ({c})')
 
 
 def vl_check(chs, toks, k, mode, where):
@@ -91,6 +107,7 @@ def vl_check(chs, toks, k, mode, where):
             fail('A', f'{where}: chord {i+1} voices cross')
         if c[3] - c[2] > 12 or c[2] - c[1] > 12:
             fail('A', f'{where}: chord {i+1} upper voices more than an octave apart')
+    dbl_check(chs, toks, info, where, 'A')
     for i in range(len(chs) - 1):
         P, N, f0, f1 = chs[i], chs[i+1], info[i], info[i+1]
         for a in range(4):
@@ -319,7 +336,7 @@ async def main():
         tells = await pg.evaluate("""()=>{let s=17;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o={cad:[],metre:[],qual:[]};
             for(const l of [1,2,3])for(let i=0;i<5000;i++){const c=earGen('cad',l,R);o.cad.push({l,a:c.a,sub:c.sub||'',md:c.key.mode,n:c.ch.length,lo:Math.min(...c.ch.flat()),hi:Math.max(...c.ch.flat()),
                 s2:c.rns[1],open:c.ch[0].join(','),fin:c.ch[c.ch.length-1][3],fb:c.ch[0][0],lb:c.ch[c.ch.length-1][0],fs:c.ch[0][3],
-                sp:c.ch.map(v=>v[3]-v[1]>12?'o':'c').join(''),comp:c.ch.every(v=>new Set(v.map(m=>mod(m,12))).size>=3)});
+                sp:c.ch.map(v=>v[3]-v[1]>12?'o':'c').join(''),comp:c.ch.every(v=>new Set(v.map(m=>mod(m,12))).size>=3),rns:c.rns,k:c.key.k,ch:c.ch});
               const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
               const q=earGen('qual',l,R);o.qual.push({l,a:q.a,lo:q.notes[0],hi:q.notes[q.notes.length-1]})}return o}""")
         MARGIN = 0.05
@@ -352,6 +369,11 @@ async def main():
             COUNT[f'info: rung {l} spacing of every chord (open/close): accuracy vs chance'] = f'{acc:.1%} vs {ch:.1%}'
         if any(not r['comp'] for r in tells['cad'] if r['l'] == 1):
             fail('C', 'C12: a rung 1 item has an incomplete chord')
+        # 0.49 C25: the doubling check on every generated cadence question (15,000, rungs 1-3)
+        _ri = {}
+        for r in tells['cad']:
+            info = [_ri.setdefault((t, r['k'], r['md']), rn_info(t, r['k'], r['md'])) for t in r['rns']]
+            dbl_check(r['ch'], r['rns'], info, f"cad L{r['l']} {r['md']} [{' '.join(r['rns'])}] key {NM[r['k']]}", 'C')
         # 0.49 C3 (IC_EAR2_048 C2): exact-semitone register tells at rungs 2 and 3, alone and with the mode. Before 0.49 the exact lowest and
         # highest note pair predicted the answer 11 (rung 2) and 14 (rung 3) points above chance, and the last bass note 11 (rung 2, 7 keys).
         # Rung 1's are in earlab_items_test section K. The bass and soprano degrees (lowest note as do or so ...) are the cadence, not a tell.

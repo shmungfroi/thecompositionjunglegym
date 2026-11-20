@@ -423,6 +423,10 @@ def ic_errors(q):
         if c['rn'].startswith('V7/') and pcs.count((c['root'] + 4) % 12) > 1: E.append(f'ch{i} {c["rn"]} doubled its leading note')
         if c['inv'] == 2 and pcs.count(c['bass']) < 2: E.append(f'ch{i} 6/4 without doubled bass')
         if c['sev'] is not None and pcs.count(c['sev']) > 1: E.append(f'ch{i} doubled 7th')
+        # 0.49 C25 (IC_REG_049 S1): a major triad in first inversion is complete and doubles its root or 5th, never its 3rd (vi / VI excepted)
+        if c['inv'] == 1 and c['sev'] is None and (c['third'] - c['root']) % 12 == 4 and (c['fifth'] - c['root']) % 12 == 7 and c['rn'] not in ('vi', 'VI'):
+            if pcs.count(c['third']) > 1: E.append(f'ch{i} {c["rn"]}6 doubles its 3rd')
+            if c['fifth'] not in pcs: E.append(f'ch{i} {c["rn"]}6 has no 5th')
     for i in range(1, len(V)):
         P, N, cp, cn = V[i - 1], V[i], C[i - 1], C[i]
         for j in range(4):
