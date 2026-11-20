@@ -6809,15 +6809,20 @@ function sylLine(c){const m=SYLM[c];return m?`Syllabus: ${m.n} · ${[...m.e].map
    EAR LAB (Level 3)
    ===================================================================== */
 const EARSAVE=LS.get('cjg_ear')||{};
-const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,all:!!EARSAVE.all,rhy:{pulse:!EARSAVE.rhy||EARSAVE.rhy.pulse!==false,bpm:EARSAVE.rhy&&(EARSAVE.rhy.bpm===72||EARSAVE.rhy.bpm===100)?EARSAVE.rhy.bpm:null},q:null,ans:[],done:false,res:null,meta:null,blind:null};
-function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all,rhy:EAR.rhy})}
-const EDR=[['metre','Pulse and metre','4–5'],['rhy','Rhythm dictation','4–5'],['qual','Chord quality','4–6'],['cad','Cadences','5–6'],['bass','Bass and numerals','5–6'],['mel','Melodic dictation','4–6'],['blind','Blind analysis','5–6']];
+const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,all:!!EARSAVE.all,rhy:{pulse:!EARSAVE.rhy||EARSAVE.rhy.pulse!==false,bpm:EARSAVE.rhy&&(EARSAVE.rhy.bpm===72||EARSAVE.rhy.bpm===100)?EARSAVE.rhy.bpm:null},q:null,ans:[],done:false,res:null,meta:null,blind:null,
+ // 0.49 ladders: rhythm names ('k' Kodály names | 'kk' Kodály with konnakol tuplets), M9 solfa ('home' Keep home do | 'move' Move do (mutation)),
+ // readiness (rd[drill][rung] = the last 10 answered: 1 right, 0 wrong). Saved rungs keep their number (register 0.3).
+ names:EARSAVE.names==='kk'?'kk':'k',mod:EARSAVE.mod==='move'?'move':'home',rd:EARSAVE.rd&&typeof EARSAVE.rd==='object'?EARSAVE.rd:{}};
+function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all,rhy:EAR.rhy,names:EAR.names,mod:EAR.mod,rd:EAR.rd})}
+const EDR=[['metre','Pulse and metre','4–5'],['rhy','Rhythm dictation','4–6'],['qual','Chord quality','4–6'],['cad','Cadences','5–6'],['bass','Bass and numerals','5–6'],['mel','Melodic dictation','4–6'],['blind','Blind analysis','5–6']];
 /* EL-11: each drill's levels are rungs (Rung 1, 2, 3). One Stage table, EARSTAGE (0.48 design spec, section 3): the Stage at which each
    rung starts. A drill or rung is offered when its Stage is at or below the top-bar Stage switch (4/5/6); everything else sits behind
    "Show all" (EAR.all, saved; changing the Stage clears it). The drill and rung in use always show, and a drill outside the Stage offers
    all its rungs, so a student is never stranded. Stage per rung approved by Justin (19 Nov 2026): metre rung 3 (5/4, 7/8) is Stage 5, so
    Pulse and metre reads "Stage 4–5" (EDR agrees). */
-const EARSTAGE={metre:[4,4,5],rhy:[4,4,5],qual:[4,5,6],cad:[5,5,6],bass:[5,5,6],mel:[4,5,6],blind:[5,5,6]};
+// 0.49 ladders (LADDER_REGISTER_049 section 1): melodic dictation has 12 rungs and rhythm dictation 10; the other drills keep three
+const EARSTAGE={metre:[4,4,5],rhy:[4,4,4,5,5,5,5,6,6,6],qual:[4,5,6],cad:[5,5,6],bass:[5,5,6],mel:[4,4,4,4,5,5,5,5,6,6,6,6],blind:[5,5,6]};
+function earRungs(d){return EARSTAGE[d].map((_,i)=>i+1)}
 function earStage(){return typeof S!=='undefined'&&[4,5,6].includes(S.level)?S.level:6}
 function earStageTxt(a,b){return a===b?`Stage ${a}`:`Stage ${a}–${b}`}
 function earStageTag(d){const v=EARSTAGE[d];return earStageTxt(Math.min(...v),Math.max(...v))}
@@ -6825,11 +6830,11 @@ function earDrillOn(d,g=earStage()){return EARSTAGE[d][0]<=g}
 function earRungOn(d,r,g=earStage()){return EARSTAGE[d][r-1]<=g}
 function earRungStages(d,r){return earStageTxt(EARSTAGE[d][r-1],Math.max(...EARSTAGE[d]))}
 // a drill outside the Stage (open because it was chosen, or through Show all) offers all its rungs
-function earRungsShown(d){if(EAR.all||!earDrillOn(d))return[1,2,3];return[1,2,3].filter(r=>earRungOn(d,r))}
+function earRungsShown(d){if(EAR.all||!earDrillOn(d))return earRungs(d);return earRungs(d).filter(r=>earRungOn(d,r))}
 function earDrillShown(d,g=earStage()){return !!EAR.all||earDrillOn(d,g)||d===EAR.drill}
 function earRungShown(d,l){return earRungsShown(d).includes(l)||(d===EAR.drill&&l===earLvl())}
 // whether anything is behind "Show all" at this Stage
-function earHidden(g=earStage()){return EDR.some(([k])=>!earDrillOn(k,g)||[1,2,3].some(r=>!earRungOn(k,r,g)))}
+function earHidden(g=earStage()){return EDR.some(([k])=>!earDrillOn(k,g)||earRungs(k).some(r=>!earRungOn(k,r,g)))}
 const epick=(a,r)=>a[Math.floor(r()*a.length)];
 /* ---- question generators: pure, given a random function ---- */
 const METRES={'2/4':{b:2,sub:2,acc:[2,0]},'3/4':{b:3,sub:2,acc:[2,0,0]},'4/4':{b:4,sub:2,acc:[2,0,1,0]},'6/8':{b:2,sub:3,acc:[2,0]},'9/8':{b:3,sub:3,acc:[2,0,0]},'12/8':{b:4,sub:3,acc:[2,0,1,0]},'5/4':{b:5,sub:2,acc:[2,0,0,1,0]},'7/8':{b:3,sub:0,grp:[2,2,3],acc:[2,1,1]}};
@@ -6851,7 +6856,8 @@ const RCELL={q:{l:'crotchet',u:[[4,0]],v:[['q',0]],w:4},e2:{l:'2 quavers',u:[[2,
  s4:{l:'4 semiquavers',u:[[1,0],[1,0],[1,0],[1,0]],v:[['16',0],['16',0],['16',0],['16',0]],w:4},qr:{l:'crotchet rest',u:[[4,1]],v:[['q',1]],w:4},
  dq:{l:'dotted crotchet + quaver',u:[[6,0],[2,0]],v:[['q',0,1],['8',0]],w:8},es2:{l:'quaver + 2 semiquavers',u:[[2,0],[1,0],[1,0]],v:[['8',0],['16',0],['16',0]],w:4},
  s2e:{l:'2 semiquavers + quaver',u:[[1,0],[1,0],[2,0]],v:[['16',0],['16',0],['8',0]],w:4},syn:{l:'quaver, crotchet, quaver',u:[[2,0],[4,0],[2,0]],v:[['8',0],['q',0],['8',0]],w:8}};
-function earCells(l){return l===1?['q','e2','h']:l===2?['q','e2','h','s4','qr','dq']:['q','e2','h','s4','qr','dq','es2','s2e','syn']}
+// 0.49: the rung's tiles come from the ladder engine (LRV); the old rung lists were [q e2 h], [+ s4 qr dq], [+ es2 s2e syn]
+function earCells(l){return ladRhyTiles(l)}
 function earFill(l,r,bars){const out=[];for(let b=0;b<bars;b++){let pos=0;while(pos<16){const ok=earCells(l).filter(k=>{const w=RCELL[k].w;return pos+w<=16&&(w<8||pos%8===0)&&!(k==='qr'&&pos===0)});out.push(epick(ok,r));pos+=RCELL[out[out.length-1]].w}}
  if(RCELL[out[out.length-1]]&&out[out.length-1]==='qr')out[out.length-1]='q';return out}
 function earGenRhy(l,r){const bars=l===3?2:1;return{d:'rhy',bars,a:earFill(l,r,bars)}}
@@ -7144,7 +7150,9 @@ function earBassProg(rns,key,reg){for(const g of [reg,...EARBREG]){const P=earPr
 function earGenBass(l,r){const key={k:epick(BKEYS,r),mode:'maj'},rns=epick(earBassProgs(l),r),reg={b:42+Math.floor(r()*11),s:66+Math.floor(r()*9)},P=earBassProg(rns,key,reg);
  return{d:'bass',a:rns,key,ch:P.ch,bass:P.ch.map(c=>c[0]),opts:earBassPool(l)}}
 // solfa: semitones above do, and letter steps above do
-const ESOL={d:[0,0],r:[2,1],m:[4,2],f:[5,3],s:[7,4],si:[8,4],l:[9,5],t:[11,6]};
+const ESOL={d:[0,0],r:[2,1],m:[4,2],f:[5,3],s:[7,4],si:[8,4],l:[9,5],t:[11,6],
+ // 0.49 ladders: every chromatic syllable (Justin's chart: sharps di ri fi si li, flats te le se me ra): [semitones above do, letter steps above do]
+ di:[1,0],ri:[3,1],fi:[6,3],li:[10,5],ra:[1,1],me:[3,2],se:[6,4],le:[8,5],te:[10,6]};
 const ESOLMAJ=['d','r','m','f','s','l','t'],ESOLMIN=['l','t','d','r','m','f','si'];
 function eSolOf(i,mode){if(mode==='maj'){const w=mod(i,7);return{s:ESOLMAJ[w],o:Math.floor(i/7)}}const p=i+5,w=mod(i,7);return{s:ESOLMIN[w],o:Math.floor(p/7)-1}}
 function eSolTxt(n){return n.s+(n.o<0?','.repeat(-n.o):n.o>0?"'".repeat(n.o):'')}
@@ -7161,12 +7169,576 @@ function earGenMel(l,r){const mode=l===3?'min':'maj',key={k:mode==='maj'?epick(C
   const endC=l===1?[0,2,4]:[0];const last=endC.filter(x=>earMelOK(seq[seq.length-1],x,l,mode));if(!ok||!last.length)continue;seq.push(epick(last,r));
   const notes=seq.map(i=>eSolOf(i,mode));return{d:'mel',key,mode,a:notes.map(eSolTxt),notes,midi:notes.map(x=>eSolMidi(x,key)),idx:seq,range:[lo,hi]}}
  return null}
+
+/* =====================================================================
+   EAR LAB LADDERS 0.49 · ENGINE (tests/reports/ladder_049/LADDER_REGISTER_049.md, Justin's answers L101–L104)
+   Melody rungs M1–M12, rhythm rungs R1–R10. Pure generators (given a random function), marking, readiness, settings
+   and the data tables. The API for the desks is documented in tests/reports/ladder_049/ENGINE_API.md.
+   Reference model: tests/reports/ladder_049/ladder_proto.py (its pools, shares and tell tables are the acceptance targets).
+   ===================================================================== */
+const LADT=420;  // rule U: ticks per crotchet (LCM of 12, 5 and 7): semiquaver 105, quaver 210, triplet quaver 140, quintuplet 84, septuplet 60
+const LADKEYS={4:[0,7,2,9,5,10,3],5:[0,7,2,9,4,5,10,3,8],6:[0,7,2,9,4,11,5,10,3,8,1]};   // rule MK: do's pitch class, by Stage
+const LADSTG=typeof EARSTAGE!=='undefined'?{mel:EARSTAGE.mel,rhy:EARSTAGE.rhy}:{mel:[4,4,4,4,5,5,5,5,6,6,6,6],rhy:[4,4,4,5,5,5,5,6,6,6]};
+const LADSHARE=2/3;   // D2: share of items that contain the rung's new thing
+const lmod=(a,n)=>((a%n)+n)%n;
+const lpick=(a,r)=>a[Math.floor(r()*a.length)];
+const lrand=(r,lo,hi)=>lo+Math.floor(r()*(hi-lo+1));
+/* ---------------- solfa: do-relative diatonic index i (d=0 … t=6, d'=7, t,=-1, l,=-2, s,=-3) and alter a (-1, 0, +1) ---------------- */
+const LDIA=['d','r','m','f','s','l','t'],LSEMI=[0,2,4,5,7,9,11];
+const LRAISE={0:'di',1:'ri',3:'fi',4:'si',5:'li'},LLOWER={1:'ra',2:'me',4:'se',5:'le',6:'te'};   // Justin's chart (20 Nov): sharps di ri fi si li, flats te le se me ra
+const LSYLW={d:[0,0],r:[1,0],m:[2,0],f:[3,0],s:[4,0],l:[5,0],t:[6,0],di:[0,1],ri:[1,1],fi:[3,1],si:[4,1],li:[5,1],ra:[1,-1],me:[2,-1],se:[4,-1],le:[5,-1],te:[6,-1]};
+const LSOLNAME={d:'do',r:'re',m:'mi',f:'fa',s:'so',l:'la',t:'ti',di:'di',ri:'ri',fi:'fi',si:'si',li:'li',ra:'ra',me:'me',se:'se',le:'le',te:'te'};
+function ladSyl(i,a=0){const w=lmod(i,7),o=Math.floor(i/7),s=a===0?LDIA[w]:(a>0?LRAISE:LLOWER)[w];return s+(o>0?"'".repeat(o):o<0?','.repeat(-o):'')}
+function ladSemis(i,a=0){return LSEMI[lmod(i,7)]+12*Math.floor(i/7)+a}
+function ladParse(tx){const m=/^([a-z]+)([,']*)$/.exec(tx||'');if(!m||!LSYLW[m[1]])return null;const[w,a]=LSYLW[m[1]],o=(m[2].match(/'/g)||[]).length-(m[2].match(/,/g)||[]).length;return{i:w+7*o,a}}
+// hand signs: chromatic syllables use the solfa names only, no new sign art (L99): sign = the base syllable's sign, alter = the direction
+function ladSolInfo(tx){const p=ladParse(tx);if(!p)return null;const w=lmod(p.i,7),base=LDIA[w],s=tx.replace(/[,']/g,'');return{syl:s,name:LSOLNAME[s],base,alter:p.a,sign:p.a?null:base,i:p.i,o:Math.floor(p.i/7)}}
+function ladDo(pc){return 60+lmod(pc,12)}   // rule MR1: do = C4..B4 for every mode, item and key cue
+const LDONAME=['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'],LLET='CDEFGAB',LNAT=[0,2,4,5,7,9,11];
+// spelling in the key of do = pc: {letter, acc (-2..2), name e.g. 'F♯', oct (scientific), midi}
+function ladSpell(i,a,doPc){const midi=ladDo(doPc)+ladSemis(i,a),li=LLET.indexOf(LDONAME[lmod(doPc,12)][0])+i,L=LLET[lmod(li,7)],
+  oct=4+Math.floor(li/7),nat=LNAT[lmod(li,7)]+12*(oct+1),acc=midi-nat;return{letter:L,acc,name:L+(['𝄫','♭','','♯','𝄪'][acc+2]||'?'),oct,midi}}
+/* ---------------- rhythm cells, in ticks (rule U). kind n = note, r = rest, t = tied continuation (no new onset) ---------------- */
+const LCELL={
+ q:{t:[[420,'n']],f:'s'},e2:{t:[[210,'n'],[210,'n']],f:'s'},h:{t:[[840,'n']],f:'s'},qr:{t:[[420,'r']],f:'s'},
+ w:{t:[[1680,'n']],f:'s'},hd:{t:[[1260,'n']],f:'s'},
+ s4:{t:[[105,'n'],[105,'n'],[105,'n'],[105,'n']],f:'s'},
+ dq:{t:[[630,'n'],[210,'n']],f:'s'},es2:{t:[[210,'n'],[105,'n'],[105,'n']],f:'s'},s2e:{t:[[105,'n'],[105,'n'],[210,'n']],f:'s'},
+ er:{t:[[210,'r'],[210,'n']],f:'s'},re:{t:[[210,'n'],[210,'r']],f:'s'},
+ cD:{t:[[630,'n']],f:'c'},c3:{t:[[210,'n'],[210,'n'],[210,'n']],f:'c'},cqe:{t:[[420,'n'],[210,'n']],f:'c'},ceq:{t:[[210,'n'],[420,'n']],f:'c'},
+ cdse:{t:[[315,'n'],[105,'n'],[210,'n']],f:'c'},c6:{t:[[105,'n'],[105,'n'],[105,'n'],[105,'n'],[105,'n'],[105,'n']],f:'c'},cDD:{t:[[1260,'n']],f:'c'},
+ syn:{t:[[210,'n'],[420,'n'],[210,'n']],f:'s'},
+ synT:{t:[[210,'n'],[210,'n'],[210,'t'],[210,'n']],f:'s'},     // the syn-co-pa sound across beats 2–3, tied at the bar's middle (D11)
+ antA:{t:[[210,'n'],[210,'n'],[420,'t']],f:'s'},               // anticipation: a quaver on 2& tied over to beat 3
+ antB:{t:[[210,'n'],[210,'n']],f:'s',tieOut:true},             // anticipation: a quaver on 4& tied over to the next bar's beat 1
+ tri:{t:[[140,'n'],[140,'n'],[140,'n']],f:'s',tup:[3]},dsq:{t:[[315,'n'],[105,'n']],f:'s'},
+ tres:{t:[[630,'n'],[630,'n'],[420,'n']],f:'s'},charl:{t:[[630,'n'],[210,'n'],[840,'r']],f:'s'},
+ q5:{t:Array(5).fill([84,'n']),f:'s',tup:[5]},q7_34:{t:Array(7).fill([60,'n']),f:'s',tup:[3,4]},q7_43:{t:Array(7).fill([60,'n']),f:'s',tup:[4,3]},
+ trq:{t:[[280,'n'],[140,'n']],f:'s',tup:[2]},                  // triplet crotchet–quaver: only ever an answer (a swung pair written as a triplet = Nearly, R8)
+ e:{t:[[210,'n']],f:'s'},qd:{t:[[630,'n']],f:'s'},cq:{t:[[420,'n']],f:'c'},err:{t:[[210,'r']],f:'s'},hr:{t:[[840,'r']],f:'s'}};
+function ladW(k){return LCELL[k].t.reduce((s,[d])=>s+d,0)}
+/* time names (RHYNAMES extends the approved 0.48 table; the first nine are unchanged). D12: 5- and 7-tuplet tiles show the konnakol names
+   in both settings; the triplet is tri-o-la under 'k' (Kodály names) and ta-ki-ta under 'kk' (Kodály with konnakol tuplets). */
+const LADNAMES={q:'ta',e2:'ti-ti',h:'ta-a',s4:'tika-tika',qr:'sa',dq:'tam-ti',es2:'ti-tika',s2e:'tika-ti',syn:'syn-co-pa',
+ w:'ta-a-a-a',hd:'ta-a-a',er:'sa ti',re:'ti sa',cD:'tam',c3:'ti-ti-ti',cqe:'ta ti',ceq:'ti ta',cdse:'tim-ka-ti',c6:'tika-tika-tika',cDD:'ta-a-a',
+ synT:'ti ti-i ti',antA:'ti ti-i',antB:'ti ti-',tri:'tri-o-la',dsq:'tim-ka',tres:'tam ti-i ta',charl:'tam ti sa-a',
+ q5:'ta-da-ki-na-dom',q7_34:'ta-ki-ta ta-ka-di-mi',q7_43:'ta-ka-di-mi ta-ki-ta',trq:'ta ti (triplet)',e:'ti',qd:'tam',cq:'ta',err:'sa',hr:'sa-a'};
+const LADNAMES_KK={...LADNAMES,tri:'ta-ki-ta'};
+const LADCN={w:'a semibreve',hd:'a dotted minim',er:'a quaver rest and a quaver',re:'a quaver and a quaver rest',cD:'a dotted crotchet',c3:'three quavers',cqe:'a crotchet and a quaver',
+ ceq:'a quaver and a crotchet',cdse:'a dotted quaver, a semiquaver and a quaver',c6:'six semiquavers',cDD:'a dotted minim',synT:'a quaver, a quaver tied to a quaver, and a quaver',
+ antA:'two quavers, the second tied over the beat',antB:'two quavers, the second tied over the barline',tri:'a triplet',dsq:'a dotted quaver and a semiquaver',
+ tres:'the tresillo: dotted crotchet, dotted crotchet, crotchet',charl:'the Charleston: dotted crotchet, quaver, minim rest',q5:'a quintuplet',q7_34:'a septuplet (3+4)',
+ q7_43:'a septuplet (4+3)',trq:'a triplet crotchet and quaver',e:'a quaver',qd:'a dotted crotchet',cq:'a crotchet',err:'a quaver rest',hr:'a minim rest'};
+const LADTITLE={w:'semibreve',hd:'dotted minim',er:'quaver rest, quaver',re:'quaver, quaver rest',cD:'dotted crotchet',c3:'3 quavers',cqe:'crotchet, quaver',ceq:'quaver, crotchet',
+ cdse:'dotted quaver, semiquaver, quaver',c6:'6 semiquavers',cDD:'dotted minim',synT:'quaver, tied quavers, quaver',antA:'2 quavers, tied over the beat',antB:'2 quavers, tied over the barline',
+ tri:'triplet quavers',dsq:'dotted quaver, semiquaver',tres:'tresillo (3+3+2)',charl:'Charleston',q5:'quintuplet',q7_34:'septuplet 3+4',q7_43:'septuplet 4+3',trq:'triplet crotchet, quaver',
+ e:'quaver',qd:'dotted crotchet',cq:'crotchet',err:'quaver rest',hr:'minim rest'};
+const LADW={w:'one sound held for four beats',hd:'one sound held for three beats',er:'silence, then a sound on the half-beat',re:'a sound, then silence on the half-beat',cD:'one sound for the whole beat',
+ c3:'three even sounds',cqe:'long-short',ceq:'short-long',cdse:'long-short-short (siciliano)',c6:'six even sounds',cDD:'one sound for the whole bar',synT:'short-long-short across the middle of the bar',
+ antA:'a sound that arrives early, before beat 3',antB:'a sound that arrives early, before the next bar',tri:'three even sounds in one beat',dsq:'long-short in one beat',tres:'3+3+2',
+ charl:'long-short, then silence',q5:'five even sounds in one beat',q7_34:'seven even sounds in one beat, grouped 3+4',q7_43:'seven even sounds in one beat, grouped 4+3',
+ trq:'long-short in one beat, in triplets',e:'half a beat',qd:'one and a half beats',cq:'two thirds of the beat',err:'half a beat of silence',hr:'two beats of silence'};
+function ladNameTable(set){return(set||(typeof EAR!=='undefined'&&EAR.names)||'k')==='kk'?LADNAMES_KK:LADNAMES}
+/* metres: bar and beat in ticks; strong = where two-beat cells may start (RF) */
+const LMET={'2/4':{bar:840,beat:420,strong:[0]},'3/4':{bar:1260,beat:420,strong:[0]},'4/4':{bar:1680,beat:420,strong:[0,840]},
+ '6/8':{bar:1260,beat:630,strong:[0],comp:true},'12/8':{bar:2520,beat:630,strong:[0,1260],comp:true},
+ '5/4':{bar:2100,beat:420,strong:[0,1260]},'7/8':{bar:1470,beat:210,strong:[0]}};
+/* ---------------- fill rules (RF) ---------------- */
+// cells allowed at position p of a bar of this metre (len: the bar's own length, shorter in a last bar after an anacrusis)
+function ladCellOK(k,p,metre,len,o={}){const M=LMET[metre],w=ladW(k),C=LCELL[k];if(p+w>len)return false;
+ if(M.comp){if(C.f!=='c'||p%630)return false;if(k==='cDD'&&!(p===0&&metre==='6/8'||p===0||p===1260))return false;if(k==='cq')return!!o.end;return true}
+ if(C.f!=='s'||p%420)return false;
+ if(k==='w'&&!(metre==='4/4'&&p===0))return false;
+ if(k==='hd'&&!(['3/4','4/4'].includes(metre)&&p===0))return false;
+ if(w===840&&k!=='synT'&&!M.strong.includes(p))return false;
+ if(k==='synT'&&!(metre==='4/4'&&p===420))return false;
+ if((k==='tres'||k==='charl')&&!(metre==='4/4'&&p===0))return false;
+ if(k==='antA'&&!(metre==='4/4'&&p===420))return false;
+ if(k==='antB'&&!(metre==='4/4'&&p===1260&&!o.last))return false;
+ if(['e','qd','err','hr','trq'].includes(k))return!!o.end;
+ return true}
+function ladOns(cells){let p=0;const out=[];cells.forEach(k=>LCELL[k].t.forEach(([d,kd])=>{if(kd!=='t')out.push([p,kd]);p+=d}));return out}
+/* one bar of cells. vocab: the cells allowed; o.len: shorter last bar (anacrusis rule); o.last: the line's last bar; o.tieIn: the bar
+   starts under a tie from antB (its first cell must open with a note) */
+function ladFillBar(r,metre,vocab,o={}){const M=LMET[metre],len=o.len||M.bar,step=M.comp?630:420,full=len-len%step,rem=len-full;
+ for(let tr=0;tr<200;tr++){const out=[];let p=0,ok=true;
+  while(p<full){const c=vocab.filter(k=>ladCellOK(k,p,metre,full,o));if(!c.length){ok=false;break}const k=lpick(c,r);out.push(k);p+=ladW(k)}
+  if(!ok)continue;
+  if(rem)out.push(M.comp?'cq':'e');
+  if(ladOns(out).every(([,kd])=>kd==='r'))continue;
+  if(o.last&&out[out.length-1]==='antB')continue;
+  if(o.tieIn&&LCELL[out[0]].t[0][1]!=='n')continue;
+  return out}
+ throw new Error('lad: no fill '+metre)}
+/* ---------------- rhythm ladder (R1–R10) ---------------- */
+const LRV={1:['q','e2','h','qr'],2:['q','e2','h','qr','w','hd'],3:['q','e2','h','qr','w','hd','s4']};
+LRV[4]=[...LRV[3],'dq','es2','s2e','er','re'];
+LRV[5]=[...LRV[4],'cD','c3','cqe','ceq','cdse','c6','cDD'];
+LRV[6]=[...LRV[5],'syn','synT','antA','antB'];
+LRV[7]=[...LRV[6],'tri','dsq'];
+LRV[8]=[...LRV[7],'tres','charl'];
+LRV[9]=[...LRV[8],'q5','q7_34','q7_43'];
+LRV[10]=LRV[6].filter(k=>LCELL[k].f==='s');
+const LRNEW={2:['w','hd'],3:['s4'],4:['dq','es2','s2e','er','re'],5:['cD','c3','cqe','ceq','cdse','c6'],6:['syn','synT','antA','antB'],7:['tri','dsq','12/8','anac'],
+ 8:['tres','charl','swing','backbeat'],9:['5/4','7/8','q5','q7_34','q7_43']};
+const LRMET={1:['4/4'],2:['2/4','3/4','4/4'],3:['2/4','3/4','4/4'],4:['2/4','3/4','4/4'],5:['2/4','3/4','4/4','6/8'],6:['2/4','3/4','4/4','6/8'],
+ 7:['2/4','3/4','4/4','6/8','12/8'],8:['4/4'],9:['2/4','3/4','4/4','6/8'],10:['4/4']};
+const LRBARS={1:1,2:2,3:2,4:2,5:2,6:2,7:2,8:2,9:4,10:2};
+// the rung's tiles (entry palette), both families; compound tiles are live only in compound metres
+function ladRhyTiles(l){const v=[...(LRV[l]||LRV[1])];if(l>=7&&l<=9)v.push('e','cq');return v}
+function ladRhyNewIn(l,it){const N=LRNEW[l];if(!N)return true;const flat=new Set(it.cells.flat());
+ return N.some(x=>flat.has(x))||N.includes(it.metre)||(it.anac&&N.includes('anac'))||(it.swing&&N.includes('swing'))||(it.backbeat&&N.includes('backbeat'))}
+// the new thing as hidden content (a new metre is shown on screen, so it is not hidden)
+function ladRhyHiddenNew(l,it){const N=LRNEW[l];if(!N)return null;const flat=new Set(it.cells.flat());return N.some(x=>flat.has(x))||(it.swing&&N.includes('swing'))||(it.backbeat&&N.includes('backbeat'))}
+function ladGenRhy(l,r,o={}){l=Math.max(1,Math.min(10,l));if(l===10)return ladGenGroove(r,o);
+ const wantNew=o.wantNew!==undefined?o.wantNew:(LRNEW[l]?r()<LADSHARE:true);
+ for(let tr=0;tr<800;tr++){let metre,grp=null,tup=false;
+  if(l===9){if(wantNew){tup=r()<1/3;metre=tup?lpick(['4/4','5/4'],r):lpick(['5/4','7/8'],r)}else metre=lpick(LRMET[9],r)}
+  else metre=lpick(LRMET[l],r);
+  let vocab=(l===9?LRV[8]:LRV[l]).slice();
+  if(LMET[metre].comp)vocab=vocab.filter(k=>LCELL[k].f==='c');else vocab=vocab.filter(k=>LCELL[k].f==='s');
+  const nb=LRBARS[l],it={d:'rhy',l,metre,grp:null,cells:[],anac:0,anacCells:[],swing:false,backbeat:false,tup:false};
+  let anac=0;if(l>=7&&!['5/4','7/8'].includes(metre)&&r()<.3)anac=LMET[metre].comp?210:lpick([210,420],r);
+  if(metre==='7/8'){grp=lpick([[2,2,3],[3,2,2],[2,3,2]],r);
+   for(let b=0;b<nb;b++)it.cells.push(grp.map(g=>g===2?lpick(['e2','q','re','er'],r):lpick(['c3','cD','cqe','ceq'],r)))}
+  else if(metre==='5/4'){grp=lpick([[3,2],[2,3]],r);const hv=vocab.filter(k=>!['w','tres','charl','synT','antA','antB','q5','q7_34','q7_43'].includes(k));
+   for(let b=0;b<nb;b++){let bar=[];grp.forEach(g=>{bar=bar.concat(ladFillBar(r,g===3?'3/4':'2/4',hv))});it.cells.push(bar)}}
+  else{const v2=vocab.filter(k=>!['q5','q7_34','q7_43'].includes(k));let tieIn=false;
+   for(let b=0;b<nb;b++){const last=b===nb-1,bar=ladFillBar(r,metre,v2,{last,len:last&&anac?LMET[metre].bar-anac:0,tieIn});it.cells.push(bar);tieIn=bar[bar.length-1]==='antB'}}
+  // R9 tuplets: at most one per bar, on a beat, replacing a one-beat cell (4/4 and 5/4 items of the tuplet branch)
+  if(tup){let n=0;it.cells.forEach(bar=>{const idx=[];let p=0;bar.forEach((k,i)=>{if(ladW(k)===420&&p%420===0&&LCELL[k].t[0][1]==='n')idx.push(i);p+=ladW(k)});
+    if(idx.length&&(r()<.6||!n)){bar[lpick(idx,r)]=lpick(['q5','q7_34','q7_43'],r);n++}});if(!n)continue;it.tup=true}
+  if(anac){it.anac=anac;it.anacCells=[anac===420?'q':'e']}
+  if(l===8){it.swing=r()<.4&&it.cells.some(b=>b.includes('e2'));it.backbeat=r()<.5}
+  it.grp=grp;
+  if(l===1||ladRhyNewIn(l,it)===wantNew){
+   it.new=wantNew;it.nb=nb;it.tempo=l===1?lrand(r,66,84):lrand(r,66,100);it.pitch=l===1?72:lpick([67,69,72,74],r);it.clap=l===1;
+   return ladRhyFinish(it)}}
+ throw new Error('lad: rhythm gen '+l)}
+// shared fields: flat answer cells (the anacrusis first), bar lengths, legacy fields for the 0.48 desk (bars = number of bars, a = cells)
+function ladRhyFinish(it){const M=LMET[it.metre];it.barLen=it.cells.map((b,i)=>i===it.cells.length-1&&it.anac?M.bar-it.anac:M.bar);
+ it.a=[...it.anacCells,...it.cells.flat()];it.bars=it.cells.length;it.lvl=it.l;it.id=ladRhyKey(it);return it}
+function ladRhyKey(it){return[it.metre,(it.grp||[]).join('+'),it.cells.map(b=>b.join(' ')).join('|'),it.anac,it.swing?1:0,it.backbeat?1:0].join('/')}
+/* R10: two-part rhythm. Drums: kick on a quaver grid, always on beat 1, never on the snare's beats 2 and 4 (32 patterns a bar); snare backbeat,
+   or backbeat + a 4& pickup. Riff: rung 6 simple vocabulary, 2 bars of 4/4. Recordings (D13) are in LADREC (empty until checked). */
+function ladGenGroove(r,o={}){for(let tr=0;tr<200;tr++){const kick=[],snare=[];
+  for(let b=0;b<2;b++){let m;do{m=lrand(r,0,255)}while(!(m&1)||(m&4)||(m&64));kick.push(m);snare.push(r()<.5?'bb':'bb4')}
+  const cells=[];let tieIn=false;for(let b=0;b<2;b++){const bar=ladFillBar(r,'4/4',LRV[10],{last:b===1,tieIn});cells.push(bar);tieIn=bar[bar.length-1]==='antB'}
+  const it={d:'rhy',l:10,metre:'4/4',grp:null,cells,anac:0,anacCells:[],swing:false,backbeat:false,tup:false,new:true,nb:2,tempo:lrand(r,66,100),pitch:lpick([67,69,72,74],r),clap:false,
+   drums:{kick,snare}};
+  ladRhyFinish(it);it.id+='/'+kick.join(',')+'/'+snare.join(',');return it}}
+// drum onsets of an R10 item, in ticks from the start: {kick:[...], snare:[...]}
+function ladDrumOns(dr){const k=[],s=[];dr.kick.forEach((m,b)=>{for(let i=0;i<8;i++)if(m&(1<<i))k.push(b*1680+i*210)});
+ dr.snare.forEach((x,b)=>{s.push(b*1680+420,b*1680+1260);if(x==='bb4')s.push(b*1680+1470)});return{kick:k,snare:s}}
+/* the sounding pattern of a rhythm (cells with the anacrusis first): notes and rests with onset and length in ticks; ties merged; tuplet
+   groups marked (g: index in the group, acc: +3 dB on the first note of each group) */
+function ladRhyEvents(cells,o={}){let p=0,tieNext=false;const ev=[];
+ cells.forEach(k=>{const C=LCELL[k],gs=[];if(C.tup){let s=0;C.tup.forEach(g=>{gs.push(s);s+=g})}
+  C.t.forEach(([d,kd],j)=>{if(kd==='t'||(tieNext&&kd==='n'&&j===0)){const last=ev[ev.length-1];if(last)last.dur+=d}
+   else ev.push({on:p,dur:d,rest:kd==='r',cell:k,tup:!!C.tup,acc:!!C.tup&&gs.includes(j)});
+   tieNext=false;p+=d});
+  if(C.tieOut)tieNext=true});
+ return{ev,len:p}}
+// a sound signature (onsets and held lengths of notes and rests) per bar, for marking
+function ladSoundSig(cells,barLen,anac){const{ev}=ladRhyEvents(cells),bounds=[];let s=0;const all=[anac||0,...barLen].filter((x,i)=>i>0||x>0);
+ all.forEach(L=>{bounds.push([s,s+L]);s+=L});
+ return bounds.map(([a,b])=>ev.filter(e=>e.on>=a&&e.on<b).map(e=>(e.rest?'r':'n')+(e.on-a)+':'+e.dur).join(','))}
+/* rhythm marking (D11, R8, R9): right = the same cells (or the same sound with cells the rung's notation rules allow, RF);
+   Nearly = the same sound in a notation the register names: plain syn-co-pa across the bar's middle for the tied form (D11), a swung pair
+   written as a triplet crotchet–quaver (R8), a septuplet with the other grouping (R9). Returns {ok, nearly, kind, beats, why} */
+function ladRhyMark(q,ans){ans=Array.isArray(ans)?ans.slice():ans&&ans.riff?ans:[];const truth=q.a,res={ok:false,nearly:false,kind:'wrong',beats:[],why:''};
+ if(q.l===10&&q.drums&&ans.riff){const rm=ladRhyMark({...q,l:6,drums:null},ans.riff),D=ladDrumOns(q.drums),G=ans.drums||{kick:[],snare:[]},
+   eq=(a,b)=>a.length===b.length&&[...a].sort((x,y)=>x-y).every((x,i)=>x===[...b].sort((x,y)=>x-y)[i]),dk=eq(D.kick,G.kick||[]),ds=eq(D.snare,G.snare||[]);
+  return{ok:rm.ok&&dk&&ds,nearly:false,kind:rm.ok&&dk&&ds?'right':'wrong',parts:{riff:rm,kick:dk,snare:ds},beats:rm.beats}}
+ const bl=q.barLen,an=q.anac||0,tot=an+bl.reduce((a,b)=>a+b,0),wsum=ans.reduce((s,k)=>s+(LCELL[k]?ladW(k):0),0);
+ const sigT=ladSoundSig(truth,bl,an),sigA=wsum===tot&&ans.every(k=>LCELL[k])?ladSoundSig(ans,bl,an):null;
+ // per-beat ticks: the beat's slice of the sound (notes and rests, held marks) equal
+ const grid=c=>{const{ev}=ladRhyEvents(c),g=new Array(Math.ceil(tot/105)).fill('.');ev.forEach(e=>{const a=e.on/105;for(let j=0;j<e.dur/105;j++){const x=Math.floor(a+j);if(x<g.length&&g[x]==='.')g[x]=e.rest?'r':j===0?'n':'-'}});
+  // tuplets do not fit the semiquaver grid: mark their onsets exactly
+  ev.forEach(e=>{if(e.on%105){const x=Math.floor(e.on/105);g[x]+='*'+e.on}});return g};
+ const gT=grid(truth),gA=sigA?grid(ans):null,M=LMET[q.metre],bt=M.beat/105;let pos=0;
+ if(an){res.beats.push({bar:0,beat:0,ok:!!gA&&gT.slice(0,an/105).join()===gA.slice(0,an/105).join(),anac:true});pos=an/105}
+ bl.forEach((L,b)=>{for(let x=0;x<L/105;x+=bt){const a=pos+x,e=Math.min(pos+x+bt,pos+L/105);res.beats.push({bar:b+1,beat:x/bt+1,ok:!!gA&&gT.slice(a,e).join()===gA.slice(a,e).join()})}pos+=L/105});
+ if(ans.length===truth.length&&ans.every((k,i)=>k===truth[i])){res.ok=true;res.kind='right';return res}
+ if(!sigA){res.why='length';return res}
+ const same=sigT.every((s,i)=>s===sigA[i]);
+ if(same){// the same sound in other cells: the register's Nearly cases, else right when the cells keep the rules (RF)
+  const near=ans.some((k,i)=>(k==='syn'&&truth.includes('synT'))||(k==='q7_34'&&truth.includes('q7_43'))||(k==='q7_43'&&truth.includes('q7_34')));
+  if(near){res.nearly=true;res.kind='nearly';res.why=ans.includes('syn')?'syncopation across the middle of the bar: written with a tie (ti ti-i ti)':'septuplet grouping (the accents)';return res}
+  if(ladRhyLegal(q,ans)){res.ok=true;res.kind='right';res.why='same sound, another allowed notation';return res}
+  res.why='same sound, notation outside the rung\'s rules';return res}
+ // R8: a swung pair written as a triplet crotchet–quaver
+ if(q.swing){const sw=truth.map(k=>k==='e2'?'trq':k);if(ladSoundSig(sw,bl,an).every((s,i)=>s===sigA[i])){res.nearly=true;res.kind='nearly';res.why='swing: write the pair as straight quavers, marked swung';return res}}
+ return res}
+// whether an answer's cells keep the fill rules (RF) bar by bar
+function ladRhyLegal(q,ans){const bl=q.barLen,an=q.anac||0;let i=0,need=an;if(an){let w=0;while(w<an&&i<ans.length){w+=ladW(ans[i]);i++}if(w!==an)return false}
+ for(let b=0;b<bl.length;b++){let p=0;const L=bl[b],full=L-L%(LMET[q.metre].comp?630:420);
+  while(p<L&&i<ans.length){const k=ans[i];if(!(ladCellOK(k,p,q.metre,full,{last:b===bl.length-1})||(p>=full&&ladCellOK(k,p-full,q.metre,L-full+999,{end:true}))||q.metre==='7/8'||q.metre==='5/4'))return false;p+=ladW(k);i++}
+  if(p!==L)return false}
+ return i===ans.length}
+/* ---------------- melody ladder (M1–M12) ---------------- */
+const LMNEW={2:'l, l and low s',3:'ti (t, and t)',4:'rhythm: crotchets, quavers, minims',5:'la-pentatonic and natural minor',6:'leaps beyond the tonic triad; 3/4, 6/8, anacrusis',
+ 7:'harmonic and melodic minor (si, fi)',8:'modes (Dorian on re, Mixolydian on so), te and fi',9:'modulation (Keep home do / Move do)',10:'chromatic passing and neighbour notes',
+ 11:'two parts: melody and bass',12:'real repertoire'};
+const LRNEWTXT={2:'semibreve, dotted minim; 2/4 and 3/4',3:'four semiquavers',4:'tam-ti, ti-tika, tika-ti, quaver rests',5:'6/8: the six compound cells',6:'syncopation and ties',
+ 7:'triplets, tim-ka, anacrusis, 12/8',8:'swing, backbeat, tresillo, Charleston',9:'5/4 and 7/8, quintuplets and septuplets',10:'two parts: drums and riff'};
+const LMMIN={4:5,5:5,6:9,7:9,8:9,9:16,10:16,11:8};
+function ladMelVocab(l,metre){const c=metre==='6/8';if(l<=5)return['q','e2','h'];if(l<=8)return c?['cD','c3','cqe','cDD']:['q','e2','h','hd'];if(l<=10)return c?['cD','c3','cqe','cDD']:['q','e2','h','hd','dq'];return['q','e2','h','hd']}
+// the rhythm of a melody item (rung 4 on): metre, cells by bar, anacrusis. The last bar ends on a long final note and is shortened by the anacrusis (D9)
+function ladMelRhythm(l,r){let metre,bars;if(l<=5){metre=lpick(['2/4','4/4'],r);bars=2}else if(l<=8){metre=lpick(['2/4','3/4','4/4','6/8'],r);bars=4}
+ else if(l<=10){metre=lpick(['2/4','3/4','4/4','6/8'],r);bars=8}else{metre=lpick(['3/4','4/4'],r);bars=lpick([4,8],r)}
+ const vocab=ladMelVocab(l,metre).filter(k=>!(k==='hd'&&metre!=='3/4'));let anac=0;
+ if(l>=6&&r()<.3)anac=metre==='6/8'||(l===11&&metre==='3/4')?(metre==='6/8'?210:420):lpick([210,420],r);   // M11 3/4: a crotchet upbeat, so the bass's last note is a minim
+ const X=()=>lpick(['q','e2'],r),out=[];
+ for(let b=0;b<bars;b++){if(b<bars-1){out.push(ladFillBar(r,metre,vocab));continue}
+  let f;if(metre==='2/4')f=!anac?(r()<.5?['h']:['q','q']):anac===420?['q']:['qd'];
+  else if(metre==='4/4')f=!anac?(r()<.7?[X(),X(),'h']:['q','q','h']):anac===420?['hd']:[X(),X(),'qd'];   // RF: no minim across the bar's middle
+  else if(metre==='3/4')f=!anac?(r()<.5?['hd']:[X(),'h']):anac===420?(r()<.5?['h']:[X(),'q']):[X(),'qd'];
+  else f=!anac?(r()<.5?['cDD']:[lpick(['c3','cqe'],r),'cD']):[lpick(['c3','cqe','cD'],r),'cq'];
+  out.push(f)}
+ return{metre,cells:out,anac,anacCells:anac?[anac===420?'q':'e']:[]}}
+function ladNoteCount(cells,anacCells){return ladOns([...anacCells,...cells.flat()]).filter(([,k])=>k==='n').length}
+const lpent=i=>[0,1,2,4,5].includes(lmod(i,7));
+// interval check after alterations: every move is a step, a repeat, or a 3rd–6th / octave of a standard quality; the tritone only as f–t
+// resolving inward (D6); the augmented 2nd only fa–si in harmonic minor (D5)
+function ladMoveOK(x,a,y,b,var_){const dd=Math.abs(y-x),sm=Math.abs(ladSemis(y,b)-ladSemis(x,a));
+ if(dd===0)return sm===0;if(dd===1)return sm===1||sm===2||(sm===3&&var_==='harm'&&lmod(Math.min(x,y),7)===3);
+ if(dd===2)return sm===3||sm===4;if(dd===3)return sm===5||sm===6;if(dd===4)return sm===7||sm===6;if(dd===5)return sm===8||sm===9;if(dd===7)return sm===12;return false}
+function ladMelSpec(l){if(l===1)return{pool:[0,1,2,3,4],start:[0,2,4],end:[0,2,4],n:[5],tri:[0,2,4],nw:null};
+ if(l===2)return{pool:[-3,-2,0,1,2,3,4,5],start:[-3,0,2,4],end:[0],n:[6],tri:[-3,0,2,4],nw:[-3,-2,5]};
+ if(l===3||l===4)return{pool:[-3,-2,-1,0,1,2,3,4,5,6,7],start:[-3,0,2,4],end:[0,7],n:[7,8],tri:[-3,0,2,4,7],nw:[-1,6]};return{}}
+/* the pitch line (rule MP). Returns {p:[[i,a]...], info} or null. Port of ladder_proto.gen_pitch with D5 (fa–si once, flagged) and the
+   interval-quality check (ladMoveOK) added. */
+function ladPitch(l,r,n,wantNew){const S=ladMelSpec(l);
+ for(let tr=0;tr<4000;tr++){
+  if(l<=4){let pool=S.pool,tune='dia';if(l>=3){tune=wantNew?'dia':'pent';if(tune==='pent')pool=pool.filter(lpent)}else if(l===2&&!wantNew)pool=[0,1,2,3,4];
+   const seq=[lpick(S.start.filter(x=>pool.includes(x)),r)];let ok=true;
+   for(let k=1;k<n;k++){const last=seq[k-1],pp=[...pool].sort((a,b)=>a-b);let c=[];
+    for(const x of pool){const d=Math.abs(x-last);
+     if(d===0){if(l===1?!(k>1&&seq[k-2]===x):!(k>1&&seq[k-2]===x)&&r()<.5)c.push(x);continue}
+     if(l>=3&&tune==='pent'&&Math.abs(pp.indexOf(x)-pp.indexOf(last))===1){c.push(x);continue}
+     if(d===1){if(l>=3&&lmod(last,7)===6&&lmod(x,7)!==0&&lmod(x,7)!==5)continue;c.push(x)}
+     else if(l===1){if(d===2&&[0,2,4].includes(last)&&[0,2,4].includes(x))c.push(x)}
+     else if(S.tri.includes(last)&&S.tri.includes(x)&&d<=5){if(l>=3&&lmod(last,7)===6)continue;c.push(x)}}
+    if(k===n-1)c=c.filter(x=>S.end.includes(x));
+    if(!c.length){ok=false;break}seq.push(lpick(c,r))}
+   if(!ok)continue;
+   if(l>=3&&lmod(seq[n-2],7)===6&&lmod(seq[n-1],7)!==0)continue;
+   const got=S.nw?seq.some(x=>S.nw.includes(x)):true;
+   if(l===1||got===wantNew)return{p:seq.map(x=>[x,0]),info:{mode:'maj',tune,var:tune,home:0}};continue}
+  let v,scale,home,tri,leaps;
+  if(l===5){if(wantNew){v=lpick(['lapent','natmin'],r);scale=[];for(let x=-3;x<6;x++)if(v==='natmin'||lpent(x))scale.push(x);home=-2;tri=[-2,0,2,5]}
+   else{v='major';scale=[];for(let x=-3;x<8;x++)scale.push(x);home=0;tri=[-3,0,2,4,7]}leaps='tri'}
+  else if(l===6||l===10||l===11){const mn=r()<.5;v=mn?'natmin':'major';scale=[];for(let x=-3;x<(mn?6:8);x++)scale.push(x);
+   [home,tri]=mn?[-2,[-2,0,2,5]]:[0,[-3,0,2,4,7]];leaps=(l!==6||wantNew)?'all':'tri'}
+  else if(l===7){v=wantNew?lpick(['harm','melo'],r):'natmin';scale=[];for(let x=-3;x<6;x++)scale.push(x);home=-2;tri=[-2,0,2,5];leaps='all'}
+  else if(l===8){v=wantNew?lpick(['dor','mix','te','fi'],r):lpick(['major','natmin'],r);scale=[];for(let x=-3;x<8;x++)scale.push(x);
+   home={dor:1,mix:4,te:0,fi:0,major:0,natmin:-2}[v];tri=scale.filter(x=>[0,2,4].includes(lmod(x-home,7)));leaps='all'}
+  else return null;
+  const seq=[lpick(scale.filter(x=>tri.includes(x)),r)];let ok=true;
+  for(let k=1;k<n;k++){const last=seq[k-1];let c=[];
+   for(const x of scale){const d=Math.abs(x-last);
+    if(d===0){if(!(k>1&&seq[k-2]===x)&&r()<.4)c.push(x);continue}
+    if(d===1){if(v==='harm'&&lmod(last,7)===4&&lmod(x,7)!==5)continue;if(v==='lapent'&&!(lpent(x)&&lpent(last)))continue;c.push(x)}
+    else if(v==='lapent'&&lpent(x)&&lpent(last)&&d===2&&Math.abs(ladSemis(x)-ladSemis(last))===3)c.push(x);
+    else if(leaps==='tri'){if(tri.includes(last)&&tri.includes(x)&&d<=5)c.push(x)}
+    else if((d>=2&&d<=5)||d===7){const iv=Math.abs(ladSemis(x)-ladSemis(last));if(iv===6&&!(new Set([lmod(last,7),lmod(x,7)]).has(3)&&new Set([lmod(last,7),lmod(x,7)]).has(6)))continue;
+     if(v==='lapent'&&!(lpent(x)&&lpent(last)))continue;c.push(x)}}
+   if(k===n-1)c=c.filter(x=>lmod(x,7)===lmod(home,7));
+   if(!c.length){ok=false;break}seq.push(lpick(c,r))}
+  if(!ok)continue;
+  const out=seq.map((x,i)=>{let a=0;const nx=i+1<seq.length?seq[i+1]:null;
+   if(v==='harm'&&lmod(x,7)===4)a=1;
+   if(v==='melo'&&[3,4].includes(lmod(x,7))&&nx!==null&&nx>x)a=1;
+   if(v==='te'&&lmod(x,7)===6&&r()<.7&&nx!==null&&nx===x-1)a=-1;
+   if(v==='fi'&&lmod(x,7)===3&&nx!==null&&nx===x+1)a=1;
+   return[x,a]});
+  let bad=false,aug=[];
+  for(let i=0;i<out.length-1;i++){const[x,a]=out[i],[y,b]=out[i+1];
+   if(v==='harm'&&lmod(x,7)===4&&lmod(y,7)!==5)bad=true;
+   if(v==='melo'&&lmod(x,7)===3&&a===1&&!(lmod(y,7)===4&&b===1))bad=true;
+   if(!ladMoveOK(x,a,y,b,v))bad=true;
+   if(v==='harm'&&y===x+1&&lmod(x,7)===3&&a===0&&b===1)aug.push(i);
+   if(Math.abs(ladSemis(x,a)-ladSemis(y,b))===6){if(i+2>=out.length)bad=true;else{const z=out[i+2][0];if(!((lmod(y,7)===3&&z===y-1)||(lmod(y,7)===6&&z===y+1)))bad=true}}}
+  if(bad||aug.length>1)continue;   // D5: fa–si at most once per item
+  if(lmod(out[out.length-1][0],7)!==lmod(home,7))continue;
+  if(l===7&&wantNew&&!out.some(([,a])=>a))continue;
+  if(l===8&&wantNew&&['te','fi'].includes(v)&&!out.some(([,a])=>a))continue;
+  if(l===6){const got=out.some((u,i)=>i<out.length-1&&Math.abs(u[0]-out[i+1][0])>=2&&!(tri.includes(u[0])&&tri.includes(out[i+1][0])));if(got!==wantNew)continue}
+  return{p:out,info:{mode:home===-2?'min':v==='dor'?'dor':v==='mix'?'mix':'maj',var:v,home,aug2:aug}}}
+ return null}
+/* M9: two 4-bar phrases joined at a pivot note (the last note of phrase 1, common to both keys; never fa going to V). Kinds (D8): major → dominant,
+   major → relative minor, minor → relative major, minor → dominant minor. Pitches are given in the home key's solfa (Keep home do);
+   phrase 2's new-key spelling (Move do) is kept beside them. */
+function ladMod(r,n1,n2){const kind=lpick(['M-V','M-vi','m-III','m-v'],r);
+ for(let tr=0;tr<300;tr++){const g1=ladPitch(kind[0]==='M'?3:5,r,n1,true);if(!g1)continue;const p1=g1.p;
+  const rel=kind==='M-vi'||kind==='m-III',g2=ladPitch(kind==='M-vi'||kind==='m-v'?7:3,r,n2,true);if(!g2)continue;const p2=g2.p,shift=rel?0:4,pv=p1[p1.length-1][0];
+  if(shift&&lmod(pv,7)===3)continue;
+  const p2o=p2.map(([x,a])=>[x+shift,a+(shift&&lmod(x+shift,7)===3&&lmod(x,7)===6?1:0)]);
+  // the join is a singable move (M6 leap rules)
+  const[jx,ja]=p1[p1.length-1],[kx,ka]=p2o[0];if(!ladMoveOK(jx,ja,kx,ka,'')&&!(Math.abs(kx-jx)<=1))continue;
+  return{p:[...p1,...p2o],p2,info:{mode:kind[0]==='M'?'maj':'min',var:kind,kind,pivot:n1-1,shift,home:kind[0]==='M'?0:-2,newHome:kind==='M-V'?4:kind==='M-vi'?-2:kind==='m-III'?0:2}}}
+ return null}
+// pitch-class sets of a key in do-relative semitones: major diatonic; la-based minor with its raised 6th and 7th (fi, si)
+function ladKeySet(mode,shiftSemis){const b=mode==='maj'?[0,2,4,5,7,9,11]:[9,11,0,2,4,5,7,6,8];return new Set(b.map(x=>lmod(x+shiftSemis,12)))}
+/* the M9 pivot window (register M9 marking): the true pivot, or any note in the run of notes common to both keys immediately before the first
+   note that belongs only to the new key (the last note when no note belongs only to the new key) */
+function ladPivotWindow(notes,info){const kind=info.kind,old=ladKeySet(kind[0]==='M'?'maj':'min',0),
+  nw=kind==='M-V'?ladKeySet('maj',7):kind==='M-vi'?ladKeySet('min',0):kind==='m-III'?ladKeySet('maj',0):ladKeySet('min',7);
+ const pc=x=>lmod(ladSemis(x.i,x.a),12);let first=notes.findIndex((x,j)=>j>info.pivot&&nw.has(pc(x))&&!old.has(pc(x)));const end=first<0?notes.length-1:first-1;
+ let st=Math.min(end,info.pivot);while(st>0&&old.has(pc(notes[st-1]))&&nw.has(pc(notes[st-1])))st--;
+ return[Math.min(st,info.pivot),Math.max(end,info.pivot)]}
+// M10: chromatic passing and lower neighbour notes. An insertion splits a crotchet note (simple 'q' → 'e2'; 6/8 'cqe' crotchet → 'c3'; 'cD' → 'cqe')
+function ladChrom(r,p,slots,wantNew){if(!wantNew)return{p,ins:[],split:[]};
+ const res=[],split=[],ins=[];
+ for(let i=0;i<p.length;i++){const[x,a]=p[i];res.push([x,a]);if(i===p.length-1)break;const[y,b]=p[i+1],s=slots[i];
+  if(!s||!s.split)continue;let add=null;
+  if(a===0&&b===0&&Math.abs(y-x)===1&&Math.abs(ladSemis(y)-ladSemis(x))===2&&r()<.35){if(y>x&&LRAISE[lmod(x,7)])add=[x,1];else if(y<x&&LLOWER[lmod(x,7)])add=[x,-1]}
+  else if(a===0&&b===0&&y===x&&[1,4,5].includes(lmod(x,7))&&r()<.3)add=[x-1,1];
+  if(add){res.push(add);ins.push(res.length-1);split.push(i)}}
+ return{p:res,ins,split}}
+// note slots of a rhythm: per note its cell, bar, onset and length (ticks from the start, the anacrusis at 0)
+function ladSlots(cells,anacCells,metre){const out=[];let p=0;const bars=[anacCells,...cells];
+ bars.forEach((bar,bi)=>bar.forEach((k,ci)=>{LCELL[k].t.forEach(([d,kd],j)=>{if(kd==='n')out.push({on:p,dur:d,cell:k,bar:bi,ci,j,split:bi>0&&(LCELL[k].t.length===1&&(k==='q'||k==='cD')||(k==='cqe'&&j===0))});
+   else if(kd==='t'&&out.length)out[out.length-1].dur+=d;p+=d})}));
+ return out}
+function ladSplitCells(cells,anacCells,slots,split){const bars=[anacCells.slice(),...cells.map(b=>b.slice())];
+ split.forEach(i=>{const s=slots[i],k=bars[s.bar][s.ci];bars[s.bar][s.ci]=k==='q'?'e2':k==='cD'?'cqe':k==='cqe'?'c3':k});return{anacCells:bars[0],cells:bars.slice(1)}}
+/* M11: the bass. One note per minim (4/4) or per bar (3/4); chord roots and first inversions of I ii IV V vi (minor: i ii°6 iv V VI); ending V–I;
+   outer-voice rules (ladOuterCheck). Review items (1/3): root-position I IV V only. */
+const LCH={maj:{I:[0,2,4],ii:[1,3,5],IV:[3,5,0],V:[4,6,1],vi:[5,0,2]},min:{i:[5,0,2],'ii°':[6,1,3],iv:[1,3,5],V:[2,4,6],VI:[3,5,0]}};
+const LCHNEXT={maj:{I:['I','ii','IV','V','vi'],ii:['V'],IV:['I','ii','V'],V:['I','vi'],vi:['ii','IV','V']},min:{i:['i','ii°','iv','V','VI'],'ii°':['V'],iv:['i','ii°','V'],V:['i','VI'],VI:['ii°','iv','V']}};
+function ladChordPcs(mode,ch){return LCH[mode][ch].map((w,j)=>lmod(LSEMI[lmod(w,7)]+(mode==='min'&&ch==='V'&&j===1?1:0),12))}
+// the outer-voice checker: s, b = MIDI per slot (soprano at the slot's onset, bass). Returns [{rule, i, msg}]
+function ladOuterCheck(s,b,doPc,mode){const out=[],lt=mode==='maj'?11:8,P=x=>lmod(x,12);
+ for(let i=0;i<s.length;i++){if(b[i]>=s[i])out.push({rule:'crossing',i,msg:`slot ${i+1}: the bass is not below the melody`});
+  if(i===0)continue;const i0=P(s[i-1]-b[i-1]),i1=P(s[i]-b[i]),ms=s[i]-s[i-1],mb=b[i]-b[i-1];
+  if([0,7].includes(i0)&&i0===i1&&ms&&mb)out.push({rule:'parallel',i,msg:`slots ${i}–${i+1}: consecutive ${i0?'5ths':'octaves'}`});
+  else if([0,7].includes(i1)&&ms*mb>0&&Math.abs(ms)>2)out.push({rule:'direct',i,msg:`slot ${i+1}: a direct ${i1?'5th':'octave'} with a leap in the melody`});
+  if(P(b[i-1]-(60+doPc))===lt&&b[i]-b[i-1]!==1)out.push({rule:'leading',i,msg:`slot ${i}: the leading note in the bass does not rise`});
+  if([6,10,11].includes(Math.abs(mb))||Math.abs(mb)>12)out.push({rule:'bassleap',i,msg:`slot ${i}: the bass leaps a 7th, a tritone or more than an octave`});
+}
+ return out}
+function ladBass(r,notes,metre,nb,anac,doPc,mode,wantNew){const per=metre==='4/4'?2:1,span=metre==='4/4'?840:1260,ns=nb*per,mm=mode==='min'?'min':'maj',
+  T=mm==='maj'?'I':'i',D='V',dm=ladDo(doPc),sop=[],slots=[];
+ for(let k=0;k<ns;k++){const t=anac+k*span,dur=k===ns-1?span-anac:span,nt=notes.find(x=>x.on<=t&&x.on+x.dur>t)||notes[notes.length-1];
+  sop.push(nt.midi);slots.push({on:t,dur,s:nt,inSlot:notes.filter(x=>x.on<t+dur&&x.on+x.dur>t)})}
+ const chords=Object.keys(LCH[mm]),allow=wantNew?chords:(mm==='maj'?['I','IV','V']:['i','iv','V']);
+ const cand=(k,prev)=>{const s=slots[k],spc=lmod(s.s.midi-dm,12);let L=k===0?[T]:k===ns-1?[T]:k===ns-2?[D]:chords.filter(c=>allow.includes(c));
+   if(k>0)L=L.filter(c=>LCHNEXT[mm][prev.ch].includes(c));
+   const o=[];L.forEach(ch=>{const pcs=ladChordPcs(mm,ch);if(!pcs.includes(spc))return;
+    if(mm==='min'&&ch==='V'&&s.inSlot.some(x=>lmod(x.midi-dm,12)===7))return;   // so natural against the raised so
+    const invs=ch==='ii°'?[1]:k===0||k>=ns-2||!wantNew?[0]:[0,1];
+    invs.forEach(inv=>{const bpc=lmod(pcs[inv]+doPc,12);for(let m=41;m<=62;m++)if(m%12===bpc)o.push({ch,inv,m})})});
+   return o};
+ let found=null,steps=0;const walk=(k,acc)=>{if(found||steps>2500)return;steps++;if(k===ns){found=acc.slice();return}
+  const c=cand(k,acc[k-1]).map(x=>({x,w:(k?Math.abs(x.m-acc[k-1].m):Math.abs(x.m-48))+r()*7}));c.sort((a,b)=>a.w-b.w);
+  for(const{x}of c){const S=sop.slice(0,k+1),B=[...acc.map(a=>a.m),x.m];if(ladOuterCheck(S,B,doPc,mm).length)continue;acc.push(x);walk(k+1,acc);acc.pop();if(found)return}};
+ walk(0,[]);if(!found)return null;
+ return found.map((x,k)=>{const rel=x.m-dm;let w=LSEMI.indexOf(lmod(rel,12)),a=0,base=rel;if(w<0){base=rel-1;w=LSEMI.indexOf(lmod(base,12));a=1}
+  const ii=w+7*Math.floor(base/12);return{on:slots[k].on,dur:slots[k].dur,midi:x.m,i:ii,a,sol:ladSyl(ii,a),chord:x.ch+(x.inv?'6':''),sop:sop[k]}})}
+/* M12 (classical): the curated excerpts (LADM12, data below). Contemporary items (D13) live in LADREC. */
+function ladGenM12(r,o={}){const P=LADM12.filter(x=>!o.score||x.score===o.score);if(!P.length)return null;const x=lpick(P,r);
+ const notes=x.notes.map(([on,dur,midi,sol])=>{const p=ladParse(sol);return{on,dur,midi,sol,i:p?p.i:null,a:p?p.a:0,rest:midi===null}}).filter(n=>!n.rest);
+ const it={d:'mel',l:12,lvl:12,metre:x.metre,anac:x.anac||0,key:{k:x.tonic,mode:x.mode,do:x.do},mode:x.mode,modeName:null,doMidi:ladDo(x.do),tempo:x.tempo,
+  notes:notes.map(n=>({...n,s:(n.sol||'').replace(/[,']/g,''),o:n.i!==null?Math.floor(n.i/7):0})),excerpt:{id:x.id,score:x.score,bars:x.bars,ms:x.ms,level:x.level,credit:x.credit},
+  barLen:x.barLen,cells:null,new:true,info:{var:'repertoire',home:x.mode==='min'?-2:0}};
+ it.a=it.notes.map(n=>n.sol);it.midi=it.notes.map(n=>n.midi);it.n=it.notes.length;it.range=[Math.min(...it.notes.map(n=>n.i)),Math.max(...it.notes.map(n=>n.i))];return it}
+/* the melody generator. Returns the item (fields in ENGINE_API.md). Rungs 1–3 keep the 0.48 item fields (a, notes {s,o}, midi, idx, range, key) */
+function ladGenMel(l,r,o={}){l=Math.max(1,Math.min(12,l));if(l===12)return ladGenM12(r,o);
+ const hasNew=l>=2&&l!==12,wantNew=o.wantNew!==undefined?o.wantNew:(hasNew?r()<LADSHARE:true),stage=LADSTG.mel[l-1];
+ for(let tr=0;tr<400;tr++){let rh=null,n,got,extra={};
+  if(l<=3)n=lpick(ladMelSpec(l).n,r);
+  else{rh=ladMelRhythm(l,r);n=ladNoteCount(rh.cells,rh.anacCells);if(n<LMMIN[l])continue}
+  if(l===9){if(wantNew){const sl=ladSlots(rh.cells,rh.anacCells,rh.metre),b4=sl.filter(s=>s.bar<=4).length;
+    got=ladMod(r,b4,n-b4);if(!got)continue}
+   else{got=ladPitch(lpick([6,7],r),r,n,r()<.5);if(!got)continue;got.info={...got.info,kind:null,var:'review:'+got.info.var}}}
+  else if(l===10){const sl=ladSlots(rh.cells,rh.anacCells,rh.metre);got=ladPitch(10,r,n,true);if(!got)continue;
+   const ch=ladChrom(r,got.p,sl,wantNew);if(wantNew&&!ch.ins.length)continue;
+   if(ch.split.length){const nc=ladSplitCells(rh.cells,rh.anacCells,sl,ch.split);rh={...rh,...nc}}
+   got={p:ch.p,info:{...got.info,ins:ch.ins}};if(ladNoteCount(rh.cells,rh.anacCells)!==got.p.length)continue}
+  else if(l===11){// the bass needs chord tones on the slot onsets and so–ti–re over the V before the end: redraw the line (not the rhythm) until they fit
+   const per=rh.metre==='4/4'?2:1,span=per===2?840:1260,ns=rh.cells.length*per,on=k=>rh.anac+k*span,sl=ladSlots(rh.cells,rh.anacCells,rh.metre);got=null;
+   for(let pt=0;pt<60&&!got;pt++){const g=ladPitch(11,r,n,true);if(!g)continue;const mm=g.info.mode==='min'?'min':'maj',pcs=k=>{const t=on(k),j=sl.findIndex(x=>x.on<=t&&x.on+x.dur>t);return j<0?null:lmod(ladSemis(...g.p[j]),12)};
+    const allowU=new Set(Object.keys(LCH[mm]).filter(c=>wantNew||['I','IV','V','i','iv'].includes(c)).flatMap(c=>ladChordPcs(mm,c)));
+    let ok=true;for(let k=0;k<ns&&ok;k++){const pc=pcs(k);if(pc===null||!allowU.has(pc))ok=false;if(mm==='min'&&pc===7)ok=false}
+    const TT=mm==='maj'?'I':'i';if(ok&&(!ladChordPcs(mm,'V').includes(pcs(ns-2))||!ladChordPcs(mm,TT).includes(pcs(ns-1))||!ladChordPcs(mm,TT).includes(pcs(0))))ok=false;if(ok)got=g}
+   if(!got)continue}
+  else{got=ladPitch(l,r,n,wantNew);if(!got)continue}
+  const p=got.p,info=got.info,lo=Math.min(...p.map(x=>x[0])),hi=Math.max(...p.map(x=>x[0]));
+  const key=lpick(LADKEYS[stage],r),dm=ladDo(key);
+  if(dm+Math.min(...p.map(([x,a])=>ladSemis(x,a)))<55||dm+Math.max(...p.map(([x,a])=>ladSemis(x,a)))>83)continue;   // MR2: G3–B5
+  const mode=info.mode,tonicIdx=info.home||0,it={d:'mel',l,lvl:l,new:wantNew,info,mode,
+   key:{k:lmod(key+ladSemis(tonicIdx),12),mode,do:key},doMidi:dm,
+   modeName:mode==='dor'?'Dorian on re':mode==='mix'?'Mixolydian on so':null};
+  let slots;
+  if(rh){slots=ladSlots(rh.cells,rh.anacCells,rh.metre);if(slots.length!==p.length)continue;
+   Object.assign(it,{metre:rh.metre,cells:rh.cells,anac:rh.anac,anacCells:rh.anacCells,tempo:lrand(r,72,96)});
+   it.barLen=rh.cells.map((b,i)=>i===rh.cells.length-1&&rh.anac?LMET[rh.metre].bar-rh.anac:LMET[rh.metre].bar)}
+  else{slots=p.map((_,i)=>({on:i*420,dur:420,cell:'q',bar:1,ci:i}));Object.assign(it,{metre:null,cells:null,anac:0,anacCells:[],tempo:null,step:.65})}
+  it.notes=p.map(([x,a],i)=>({i:x,a,sol:ladSyl(x,a),s:ladSyl(x,a).replace(/[,']/g,''),o:Math.floor(x/7),midi:dm+ladSemis(x,a),on:slots[i].on,dur:slots[i].dur,bar:slots[i].bar}));
+  it.a=it.notes.map(x=>x.sol);it.midi=it.notes.map(x=>x.midi);it.idx=p.map(x=>x[0]);it.n=p.length;it.range=[Math.min(lo,ladMelRange(l)[0]),Math.max(hi,ladMelRange(l)[1])];
+  if(info.aug2)it.aug2=info.aug2;                                   // D5: index i of each fa–si step (notes i → i+1), for the visual support
+  if(l===10)it.chrom=info.ins||[];
+  if(l===9&&info.kind){it.pivot=info.pivot;it.kind=info.kind;it.pivotWindow=ladPivotWindow(it.notes,info);
+   const sh=info.shift;   // D8: both readings. home: the old key's syllables throughout; move: the key in force (the pivot carries both names)
+   it.readings={home:it.a.slice(),move:it.notes.map((x,j)=>j<info.pivot?x.sol:ladSyl(got.p2&&j>info.pivot?got.p2[j-info.pivot-1][0]:x.i-sh,got.p2&&j>info.pivot?got.p2[j-info.pivot-1][1]:x.a))};
+   it.pivotNames=[it.notes[info.pivot].sol,ladSyl(it.notes[info.pivot].i-sh,it.notes[info.pivot].a)];it.newKey={do:lmod(key+(sh?7:0),12),mode:info.kind==='M-V'||info.kind==='m-III'?'maj':'min'}}
+  if(l===11){const mm=info.mode==='min'?'min':'maj',bass=ladBass(r,it.notes,it.metre,it.cells.length,it.anac,key,mm,wantNew);if(!bass)continue;it.bass=bass;it.info={...info,bassChords:bass.map(b=>b.chord)}}
+  if(l<=3)it.key={k:key,mode:'maj',do:key};
+  it.id=ladMelKey(it);return it}
+ throw new Error('lad: melody gen '+l)}
+function ladMelRange(l){return l===1?[0,4]:l===2?[-3,5]:l<=4?[-3,7]:l===5?[-3,5]:[-3,7]}
+function ladMelKey(it){return[it.a.join(' '),it.metre,it.cells?it.cells.map(b=>b.join(' ')).join('|'):'',it.anac,(it.bass||[]).map(b=>b.sol).join(' ')].join('/')}
+/* ---------------- the duration palette (L103): legal lengths at the current position ---------------- */
+// the grammar of a bar: the rung's cells (plus the ending figures in the last bar, the anacrusis cells in bar 0)
+function ladMelBarVocab(q,b){const M=q.metre,base=ladMelVocab(q.l,M);if(b===0)return['e','q'];if(b===q.cells.length)return[...new Set([...base,'q','e2','h','hd','qd','cq','cD','c3','cqe','cDD'])];return base}
+// a parse of the entered lengths of one bar against the cells: returns the set of next legal [ticks, kind] (kind n note, r rest)
+function ladBarNext(q,b,ds,L){const M=LMET[q.metre],V=ladMelBarVocab(q,b),out=new Map(),last=b===q.cells.length;
+ const okAt=(k,p)=>b===0?true:(ladCellOK(k,p,q.metre,L,{end:last})||(last&&['q','h','e2','hd'].includes(k)&&p%M.beat===0&&p+ladW(k)<=L&&!(q.metre==='4/4'&&p<840&&p+ladW(k)>840)));
+ const rec=(p,j)=>{if(j===ds.length){if(p>=L)return;V.forEach(k=>{if(okAt(k,p)){const[d]=LCELL[k].t[0];out.set(d,1)}});return}
+  V.forEach(k=>{if(!okAt(k,p))return;const T=LCELL[k].t;let jj=j,ok=true,pp=p;for(let x=0;x<T.length;x++){if(jj===ds.length){out.set(T[x][0],1);ok=false;break}if(ds[jj]!==T[x][0]){ok=false;break}pp+=T[x][0];jj++}
+   if(ok)rec(pp,jj)})};
+ rec(0,0);return[...out.keys()].sort((a,b)=>b-a)}
+/* ladPalette(q, entries, part): entries = what the student has entered AFTER the given first note: [{s:'m'|null (rest), t:ticks}].
+   Returns {done, bar (0 = anacrusis), beat, tick (in the bar), lengths:[{t, rest:false|true, label}]}. Rests may stand wherever a note of the
+   same length up to a crotchet may (M12: up to a beat). */
+const LDUR={1680:'semibreve',1260:'dotted minim',840:'minim',630:'dotted crotchet',420:'crotchet',315:'dotted quaver',210:'quaver',105:'semiquaver',140:'triplet quaver'};
+function ladLines(q,part){return part==='bass'?q.bass:q.notes}
+function ladFirst(q,part){const n=ladLines(q,part)[0];return{s:n.sol,t:n.dur}}
+function ladPalette(q,entries,part='mel'){const all=[ladFirst(q,part),...(entries||[])];
+ if(!q.cells&&q.l<=3){const done=all.length>=q.n;return{done,bar:1,beat:all.length+1,tick:0,lengths:done?[]:[{t:420,rest:false,label:'crotchet'}]}}
+ const bl=[part==='bass'?0:q.anac||0,...q.barLen];let b=0,used=0,i=0;while(b<bl.length&&bl[b]===0)b++;
+ const per=[];bl.forEach(()=>per.push([]));
+ for(const e of all){while(b<bl.length&&used>=bl[b]){b++;used=0}if(b>=bl.length)return{done:true,over:true,lengths:[]};per[b].push(e.t);used+=e.t}
+ while(b<bl.length&&used>=bl[b]){b++;used=0}
+ if(b>=bl.length)return{done:true,lengths:[]};
+ let L=[];
+ if(q.l===12||part==='bass'){const M=LMET[q.metre]||LMET['4/4'],rem=bl[b]-used,beatPos=used%M.beat;
+  if(part==='bass')L=[1260,840,630,420].filter(d=>d<=rem&&(q.metre==='4/4'?d<=840&&(used%840===0||d===420):true))
+  else L=[1680,1260,840,630,420,315,210,105,140].filter(d=>d<=rem&&(d%M.beat===0?beatPos===0:(beatPos+d<=M.beat||(d===630&&beatPos===0&&!M.comp))));}
+ else L=ladBarNext(q,b,per[b],bl[b]);
+ const M=LMET[q.metre]||LMET['4/4'];
+ return{done:false,bar:b,beat:Math.floor(used/M.beat)+1,tick:used,lengths:[...L.map(t=>({t,rest:false,label:LDUR[t]||t+' ticks'})),...L.filter(t=>t<=(q.l===12?M.beat:420)).map(t=>({t,rest:true,label:(LDUR[t]||t)+' rest'}))]}}
+// the answer in the entry format, after the given first note (rests filled in where the line is silent): for "Show me", the reveal and tests
+function ladTruthEntries(q,part='mel'){const L=ladLines(q,part),out=[];let p=L[0].on+L[0].dur;
+ const rests=d=>{while(d>0){const t=[420,315,210,105].find(x=>x<=d&&(x<=d))||d;out.push({s:null,t});d-=t}};
+ L.slice(1).forEach(n=>{if(n.on>p)rests(n.on-p);out.push({s:n.sol,t:n.dur});p=n.on+n.dur});
+ const end=part==='bass'||!q.barLen?p:(q.anac||0)+q.barLen.reduce((a,b)=>a+b,0);if(end>p&&q.l===12)rests(end-p);return out}
+// automatic beaming: groups of entry indices (in the full line, the given note = 0) beamed together, per beat (dotted crotchet in compound time)
+function ladBeams(q,entries,part='mel'){const all=[ladFirst(q,part),...(entries||[])],M=LMET[q.metre]||LMET['4/4'],bl=[q.anac||0,...(q.barLen||[])],out=[];
+ let b=0,used=0,cur=[],key=null;while(b<bl.length-1&&!bl[b])b++;const flush=()=>{if(cur.length>1)out.push(cur);cur=[]};
+ all.forEach((e,j)=>{while(b<bl.length-1&&used>=bl[b]){b++;used=0}
+  const off=b===0?M.bar-bl[0]:0,bk=b+':'+Math.floor((used+off)/M.beat),beam=!!e.s&&e.t<420;
+  if(beam&&bk===key)cur.push(j);else{flush();if(beam){cur=[j];key=bk}else key=null}used+=e.t});
+ flush();return out}
+// the entered line in the marking format: [{on, dur, rest, sol, midi}] from the start (the anacrusis at 0), the given note first
+function ladEntriesToLine(q,entries,part='mel'){const all=[ladFirst(q,part),...(entries||[])],dm=q.doMidi||ladDo(q.key.do);let p=ladLines(q,part)[0].on||0;
+ return all.map(e=>{const pp=e.s?ladParse(e.s):null,x={on:p,dur:e.t,rest:!e.s,sol:e.s||null,midi:pp?dm+ladSemis(pp.i,pp.a):null};if(part==='bass'&&pp)x.midi=dm+ladSemis(pp.i,pp.a);p+=e.t;return x})}
+// time names of a melody's rhythm for the reveal (names are not shown during entry): per bar, the cells and their names
+function ladMelNames(q,set){const T=ladNameTable(set);if(!q.cells)return null;return[q.anacCells,...q.cells].map(b=>b.map(k=>({k,name:T[k]})))}
+function ladRhyNames(q,set){const T=ladNameTable(set),bars=[q.anacCells||[],...q.cells];let tieIn=false;
+ return bars.map(b=>b.map(k=>{let nm=T[k];if(tieIn){nm=nm.replace(/^[a-z]+/,'i');tieIn=false}if(LCELL[k].tieOut)tieIn=true;return{k,name:nm}}))}
+/* ---------------- melody marking (D4) ----------------
+   ans: entries after the given first note: rungs 1–3 a list of solfa strings (0.48 desk) or entries; rungs 4+ [{s, t}] (s null = rest);
+   M11 {mel:[...], bass:[...]}. o.pivot: the note index the student marked "Mutation here" (M9, Move do only).
+   Right only when every note's pitch and rhythm are right; Nearly only at M10, when every wrong note has the right pitch spelt with the
+   other chromatic syllable. M9 compares pitches as sounds; the pivot is checked only when EAR.mod is 'move'. */
+function ladMelMarkLine(q,ans,part,o={}){const truth=ladLines(q,part),dm=q.doMidi||ladDo(q.key.do);
+ const ents=(ans||[]).map(x=>typeof x==='string'?{s:x,t:420}:x),line=q.cells||part==='bass'||q.l===12?ladEntriesToLine(q,ents,part):[{s:truth[0].sol,t:420},...ents].map((e,j)=>{const pp=ladParse(e.s);return{on:j*420,dur:420,rest:false,sol:e.s,midi:pp?dm+ladSemis(pp.i,pp.a):null}});
+ const by=new Map(line.map(x=>[x.on,x])),detail=truth.map((t,j)=>{const g=by.get(t.on);if(!g)return{j,pitch:false,rhythm:false,given:null};
+  const rhythm=g.dur===t.dur&&!g.rest,pitch=!g.rest&&g.midi===t.midi&&(q.l===9||q.l===12||part==='bass'||g.sol===t.sol);
+  const spell=!g.rest&&g.midi===t.midi&&!pitch;return{j,pitch,rhythm,spell,given:g.sol,want:t.sol}});
+ const extra=line.filter(x=>!truth.some(t=>t.on===x.on)&&!x.rest).length;
+ const right=detail.every(d=>d.pitch&&d.rhythm)&&!extra&&line.length>=truth.length&&line.filter(x=>!x.rest).length===truth.length;
+ const nearly=!right&&q.l===10&&!extra&&detail.every(d=>d.rhythm&&(d.pitch||d.spell))&&detail.some(d=>d.spell)&&detail.filter(d=>d.spell).every(d=>{const w=ladParse(d.want),g=ladParse(d.given);return w&&g&&(w.a!==0||g.a!==0)});
+ return{right,nearly,detail,extra,nRight:detail.filter(d=>d.pitch&&d.rhythm).length,n:truth.length}}
+function ladMelMark(q,ans,o={}){if(q.l===11){const A=ans&&!Array.isArray(ans)?ans:{mel:ans,bass:[]},m=ladMelMarkLine(q,A.mel,'mel'),b=ladMelMarkLine(q,A.bass,'bass');
+  return{ok:m.right&&b.right,nearly:false,kind:m.right&&b.right?'right':'wrong',parts:{mel:m,bass:b},detail:m.detail,nRight:m.nRight+b.nRight,n:m.n+b.n}}
+ const m=ladMelMarkLine(q,ans,'mel',o);let ok=m.right,pivotOK=null;
+ const mode=o.mod||(typeof EAR!=='undefined'&&EAR.mod)||'home';
+ if(q.l===9&&q.pivotWindow&&mode==='move'){pivotOK=o.pivot!=null&&o.pivot>=q.pivotWindow[0]&&o.pivot<=q.pivotWindow[1];ok=ok&&pivotOK}
+ return{ok,nearly:!ok&&m.nearly,kind:ok?'right':m.nearly?'nearly':'wrong',detail:m.detail,extra:m.extra,nRight:m.nRight,n:m.n,pivot:pivotOK,mod:q.l===9?mode:undefined}}
+/* ---------------- readiness (D10): last 10 answered (right or wrong) per drill and rung; Shown, Skipped and Nearly left out ---------------- */
+function ladRdPush(rd,drill,rung,kind){if(kind!=='ok'&&kind!=='miss')return rd;rd[drill]=rd[drill]||{};const a=(rd[drill][rung]||[]).concat(kind==='ok'?1:0);rd[drill][rung]=a.slice(-10);return rd}
+function ladRdState(rd,drill,rung,shown){const a=(rd&&rd[drill]&&rd[drill][rung])||[],ok=a.reduce((s,x)=>s+x,0),nx=rung+1,has=(shown||[]).includes(nx);
+ return{last:a.slice(),n:a.length,ok,ready:ok>=8&&has,next:has?nx:null,text:has?`Ready for the next rung? Rung ${nx}: ${(drill==='mel'?LMNEW:LRNEWTXT)[nx]||''}`:''}}
+/* ---------------- recordings (D13): stored transcriptions, notes and rhythm only; no lyrics, no audio. Empty until the recordings check. ----------------
+   entry: {id, drill:'mel'|'rhy', rung:12|10, artist, title, year, link, start:'m:ss', end:'m:ss', credit, checked:false,
+           key:{do:pc, mode}, metre, anac, notes:[[on, dur, sol]] (melody) | {riff:[cells by bar], drums:{kick,snare}} (rhythm)} */
+const LADREC={mel:[],rhy:[]};
+/* ---------------- playback ---------------- */
+// key cue (D7, MR1): the mode's own tonic triad at do = 60 + pc; minor la-do-mi, Dorian re-fa-la, Mixolydian so-ti-re
+function ladCueNotes(q){const dm=q.doMidi||ladDo(q.key.do),h=q.l===12?(q.mode==='min'?-2:0):(q.info&&q.info.home)||0,T=dm+ladSemis(h),th=['maj','mix'].includes(q.mode)||(q.l===12&&q.mode!=='min')?4:3;return[T-12,T,T+th,T+7]}
+function ladTickSec(q,o={}){const bpm=o.bpm||q.tempo||84;return 60/bpm/LADT}
+// count-in (L-play): one full bar on the woodblock in the metre's beats (7/8 by its groups, accent on each group), then, with an anacrusis,
+// the pulse goes on through the short bar so the upbeat sounds on its own beat. Returns {lineStart, beats:[t...]}
+function ladBeatTicks(metre,grp,len){const M=LMET[metre],out=[];if(metre==='7/8'){let p=0;(grp||[2,2,3]).forEach((g,i)=>{out.push([p,i===0]);p+=g*210});return out}
+ for(let p=0;p<(len||M.bar);p+=M.beat)out.push([p,p===0]);return out}
+function ladCountIn(q,t,tk,o={}){const M=LMET[q.metre];ladBeatTicks(q.metre,q.grp).forEach(([p,acc])=>elBlock(t+p*tk,acc));let ls=t+M.bar*tk;
+ if(q.anac){const off=M.bar-q.anac;ladBeatTicks(q.metre,q.grp).forEach(([p,acc])=>{if(p<off)elBlock(ls+p*tk,acc)});ls+=off*tk}return ls}
+// drums (R8 backbeat context, R10): kick and snare
+function ladKick(t,g=1){const A=ac(),o=A.createOscillator(),e=A.createGain();o.type='sine';o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);
+ e.gain.setValueAtTime(.0001,t);e.gain.linearRampToValueAtTime(.55*g,t+.004);e.gain.exponentialRampToValueAtTime(.0001,t+.25);o.connect(e);e.connect(MAST);o.start(t);o.stop(t+.26);schEnd(t+.26);ACT.push(o)}
+function ladSnare(t,g=1){const A=ac(),s=A.createBufferSource(),f=A.createBiquadFilter(),e=A.createGain(),o=A.createOscillator(),e2=A.createGain();s.buffer=noiseBuf();f.type='highpass';f.frequency.value=1500;
+ e.gain.setValueAtTime(.0001,t);e.gain.linearRampToValueAtTime(.32*g,t+.003);e.gain.exponentialRampToValueAtTime(.0001,t+.16);s.connect(f);f.connect(e);e.connect(MAST);
+ o.type='triangle';o.frequency.value=190;e2.gain.setValueAtTime(.0001,t);e2.gain.linearRampToValueAtTime(.18*g,t+.003);e2.gain.exponentialRampToValueAtTime(.0001,t+.09);o.connect(e2);e2.connect(MAST);
+ s.start(t);s.stop(t+.17);o.start(t);o.stop(t+.1);schEnd(t+.17);ACT.push(s,o)}
+const LADACC=Math.pow(10,3/20);   // tuplet group accent: +3 dB on the first note of each group (R9)
+/* rhythm playback (R1–R10): count-in, the line (clap at rung 1, tone from rung 2), tuplet accents, swing (2:1), backbeat context (R8),
+   drums and riff (R10; variant 'drums' | 'riff' | 'all'), pulse (EAR.rhy.pulse). Tempo: the student's choice (72 or 100) or the item's drawn tempo. */
+function ladSchedRhy(q,variant,t0,o={}){const bpm=o.bpm||(typeof EAR!=='undefined'&&EAR.rhy.bpm)||q.tempo||84,tk=60/bpm/LADT,lead=.15,pulse=o.pulse!==undefined?o.pulse:(typeof EAR==='undefined'||EAR.rhy.pulse),
+  clap=o.clap!==undefined?o.clap:!!q.clap,M=LMET[q.metre],t=t0+lead;const ls=ladCountIn(q,t,tk);
+ const{ev,len}=ladRhyEvents(q.a),swing=!!q.swing,evOut=[],line0=ls-(q.anac||0)*tk;
+ const at=e=>{let on=e.on;if(swing&&e.cell==='e2'){const rel=(on-(q.anac||0)+M.bar*4)%420;if(rel===210)on+=70}return on};
+ const dur=e=>swing&&e.cell==='e2'?((at(e)-(q.anac||0)+M.bar*4)%420===0?280:140):e.dur;
+ if(variant!=='drums')ev.forEach(e=>{if(e.rest)return;const st=line0+at(e)*tk,d=dur(e)*tk,g=e.acc?LADACC:1;
+  if(clap)elClap(st);else elRhyNote(st,d,q.pitch||72,g);evOut.push({t:st-t0+ELPRE,d,on:e.on,dur:e.dur,acc:e.acc});
+  if(o.follow&&!ELT.rendering){const u=e.on/105;PLAY.timers.push(setTimeout(()=>{try{earRhyCaret(u)}catch(_){}},Math.max(0,(st-ac().currentTime)*1000)))}});
+ const end=line0+len*tk,barsT=q.barLen.reduce((a,b)=>a+b,0);
+ if(q.backbeat||q.drums){const D=q.drums?ladDrumOns(q.drums):(()=>{const k=[],s=[];q.barLen.forEach((L,b)=>{const b0=b*M.bar;[0,840].forEach(x=>{if(x<L)k.push(b0+x)});[420,1260].forEach(x=>{if(x<L)s.push(b0+x)})});return{kick:k,snare:s}})();
+  if(variant!=='riff'){D.kick.forEach(x=>ladKick(ls+x*tk,q.drums?1:.7));D.snare.forEach(x=>ladSnare(ls+x*tk,q.drums?1:.7))}}
+ if(pulse)ladBeatTicks(q.metre,q.grp).forEach(([p])=>{for(let b=0;b<q.barLen.length;b++){const x=b*M.bar+p;if(x<barsT)elBlock(ls+x*tk,false)}});
+ return{end:Math.max(end,ls+barsT*tk),lead:lead+ELPRE,bl:M.beat*tk,events:evOut,start:ls-t0+ELPRE,beat:420*tk,gain:clap?Math.sqrt(5/Math.max(2,evOut.length/q.barLen.length)):1}}
+// "hear that beat": the given answer's beat, then the right one (o.o = [bar, beat], bar 0 = the anacrusis)
+function ladSchedRhyBeat(q,t0,o={}){const g=(typeof EAR!=='undefined'&&EAR.res&&EAR.res.given)||[],[bar,bt]=o.o||[1,1],bpm=72,tk=60/bpm/LADT,M=LMET[q.metre],lead=.15;
+ const a0=bar===0?0:(q.anac||0)+(bar-1)*M.bar+(bt-1)*M.beat,a1=bar===0?(q.anac||0):a0+M.beat;let t=t0+lead;
+ const one=cells=>{ladRhyEvents(cells).ev.forEach(e=>{if(!e.rest&&e.on>=a0&&e.on<a1){if(q.clap)elClap(t+(e.on-a0)*tk);else elRhyNote(t+(e.on-a0)*tk,Math.min(e.dur,a1-e.on)*tk,q.pitch||72,e.acc?LADACC:1)}});elBlock(t,false);t+=(a1-a0)*tk+.45};
+ one(g);one(q.a);return{end:t,lead:lead+ELPRE,bl:M.beat*tk}}
+/* melody playback. Rungs 1–3: key cue, then one note every 0.65 s (as built). Rung 4 on: key cue (D7), one bar of count-in (with the
+   anacrusis on its own beat), the line at the item's tempo. M11: 'all' both parts, 'melonly', 'bassonly'. M12: 'all' the melody alone,
+   'accomp' with the score's accompaniment (needs AN.meta loaded). 'first': the first note only. 'nokey': no key cue. */
+function ladSchedMel(q,variant,t0,o={}){let t=t0;if(variant!=='nokey'){ladCueNotes(q).forEach(m=>tone(m,t,'piano',.55,1.3));t+=1.6}
+ if(!q.cells&&q.l<=3){const ns=variant==='first'?q.midi.slice(0,1):q.midi;ns.forEach((m,i)=>c2Tone(m,t+i*.65,.6,1));return{end:t+(ns.length-1)*.65+.6+.05,lead:ELPRE,first:t}}
+ const tk=60/(o.bpm||q.tempo||84)/LADT,ls=q.metre?ladCountIn(q,t,tk):t+.4,line0=ls-(q.anac||0)*tk;let end=ls;
+ const mel=variant==='bassonly'?[]:variant==='first'?q.notes.slice(0,1):q.notes;
+ mel.forEach(n=>{if(n.midi==null)return;const st=line0+n.on*tk,d=Math.max(.12,n.dur*tk-.03);c2Tone(n.midi,st,d,1);end=Math.max(end,st+d)});
+ if(q.bass&&variant!=='melonly'&&variant!=='first')q.bass.forEach(b=>{const st=line0+b.on*tk,d=b.dur*tk-.03;tone(b.midi,st,'bass',.9,d);end=Math.max(end,st+d)});
+ if(q.l===12&&variant==='accomp'&&typeof AN!=='undefined'&&AN.meta&&AN.meta[q.excerpt.score]){const[s,e]=q.excerpt.ms,mel=new Set(q.notes.map(n=>Math.round(n.on)+':'+n.midi));
+  AN.meta[q.excerpt.score].events.forEach(([ms,p,d])=>{if(ms>=s-5&&ms<e-5){const st=line0+(q.anac||0)*tk+(ms-s)/1000*(q.msScale||1),du=Math.min(d,e-ms)/1000;tone(p,st,'piano',.7,du);end=Math.max(end,st+du)}})}
+ return{end:end+.05,lead:ELPRE,first:line0}}
+// the drill's scheduler for the transport (earSched): items made by this engine
+function ladSched(q,variant,t0,o={}){if(q.d==='rhy')return variant==='beat'?ladSchedRhyBeat(q,t0,o):ladSchedRhy(q,variant,t0,{...o,follow:variant==='follow'});return ladSchedMel(q,variant,t0,o)}
+/* R1 no-repeat window (D1): the last 30 rhythm rung 1 items are not drawn again */
+const LADHIST={};
+function ladGenFresh(d,l,r){const key=d+l,H=LADHIST[key]=LADHIST[key]||[],win=d==='rhy'&&l===1?30:0;let q;
+ for(let i=0;i<200;i++){q=d==='rhy'?ladGenRhy(l,r):ladGenMel(l,r);if(!win||!H.includes(q.id))break}
+ if(win){H.push(q.id);if(H.length>win)H.shift()}return q}
+
+/* M12 classical excerpts: hand-picked phrases from the ten licensed scores (tests/reports/ladder_049/m12_curate.py, m12_excerpts.json).
+   notes: [onset ticks, length ticks, MIDI (null = rest), solfa against do = the key signature's do]; ms: the excerpt in AN.meta[score].events.
+   Every row needs the independent theory check before release (register M12). */
+const LADM12=[{"id":"chorale_upbeat-4","score":"chorale","bars":"upbeat-4","tonic":7,"mode":"maj","do":7,"metre":"3/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1260,1260,1260,840],"ms":[0,7201],"notes":[[0,420,67,"d"],[420,840,67,"d"],[1260,420,74,"s"],[1680,630,71,"m"],[2310,210,69,"r"],[2520,420,67,"d"],[2940,630,67,"d"],[3570,210,69,"r"],[3780,420,71,"m"],[4200,840,69,"r"]],"credit":"J. Bach, chorale \"Aus meines Herzens Grunde\", BWV 269"},{"id":"chorale_4-7","score":"chorale","bars":"4-7","tonic":7,"mode":"maj","do":7,"metre":"3/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1260,1260,840],"ms":[7200,12601],"notes":[[0,420,71,"m"],[420,840,74,"s"],[1260,420,72,"f"],[1680,420,71,"m"],[2100,840,69,"r"],[2940,840,67,"d"]],"credit":"J. Bach, chorale \"Aus meines Herzens Grunde\", BWV 269"},{"id":"chorale_upbeat-10","score":"chorale","bars":"upbeat-10","tonic":7,"mode":"maj","do":7,"metre":"3/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1260,1260,840],"ms":[12600,18001],"notes":[[0,420,71,"m"],[420,420,71,"m"],[840,420,72,"f"],[1260,420,74,"s"],[1680,630,74,"s"],[2310,210,72,"f"],[2520,420,71,"m"],[2940,840,69,"r"]],"credit":"J. Bach, chorale \"Aus meines Herzens Grunde\", BWV 269"},{"id":"chorale_10-14","score":"chorale","bars":"10-14","tonic":7,"mode":"maj","do":7,"metre":"3/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1260,1260,1260,840],"ms":[18000,25201],"notes":[[0,420,67,"d"],[420,840,71,"m"],[1260,420,72,"f"],[1680,840,74,"s"],[2520,420,72,"f"],[2940,1260,71,"m"],[4200,840,67,"d"]],"credit":"J. Bach, chorale \"Aus meines Herzens Grunde\", BWV 269"},{"id":"chorale_14-18","score":"chorale","bars":"14-18","tonic":7,"mode":"maj","do":7,"metre":"3/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1260,1260,1260,840],"ms":[25200,32401],"notes":[[0,420,71,"m"],[420,840,74,"s"],[1260,420,72,"f"],[1680,840,71,"m"],[2520,420,69,"r"],[2940,630,67,"d"],[3570,210,69,"r"],[3780,420,71,"m"],[4200,840,69,"r"]],"credit":"J. Bach, chorale \"Aus meines Herzens Grunde\", BWV 269"},{"id":"ohaupt_upbeat-2","score":"ohaupt","bars":"upbeat-2","tonic":2,"mode":"maj","do":2,"metre":"4/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1260],"ms":[0,4801],"notes":[[0,420,66,"m"],[420,420,71,"l"],[840,420,69,"s"],[1260,420,67,"f"],[1680,420,66,"m"],[2100,840,64,"r"],[2940,420,66,"m"]],"credit":"J. Bach, chorale \"Befiehl du deine Wege\" (tune: \"O Haupt voll Blut und Wunden\"), BWV 244/44 (St Matthew Passion)"},{"id":"ohaupt_2-4","score":"ohaupt","bars":"2-4","tonic":2,"mode":"maj","do":2,"metre":"4/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1260],"ms":[4800,9601],"notes":[[0,420,73,"t"],[420,420,74,"d'"],[840,420,74,"d'"],[1260,210,73,"t"],[1470,210,71,"l"],[1680,420,73,"t"],[2100,1260,71,"l"]],"credit":"J. Bach, chorale \"Befiehl du deine Wege\" (tune: \"O Haupt voll Blut und Wunden\"), BWV 244/44 (St Matthew Passion)"},{"id":"ohaupt_upbeat-6","score":"ohaupt","bars":"upbeat-6","tonic":2,"mode":"maj","do":2,"metre":"4/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1260],"ms":[9600,14401],"notes":[[0,420,74,"d'"],[420,210,73,"t"],[630,210,71,"l"],[840,420,69,"s"],[1260,420,71,"l"],[1680,420,73,"t"],[2100,840,74,"d'"],[2940,420,74,"d'"]],"credit":"J. Bach, chorale \"Befiehl du deine Wege\" (tune: \"O Haupt voll Blut und Wunden\"), BWV 244/44 (St Matthew Passion)"},{"id":"ohaupt_6-8","score":"ohaupt","bars":"6-8","tonic":2,"mode":"maj","do":2,"metre":"4/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1260],"ms":[14400,19201],"notes":[[0,420,69,"s"],[420,420,71,"l"],[840,420,69,"s"],[1260,420,67,"f"],[1680,420,67,"f"],[2100,1260,66,"m"]],"credit":"J. Bach, chorale \"Befiehl du deine Wege\" (tune: \"O Haupt voll Blut und Wunden\"), BWV 244/44 (St Matthew Passion)"},{"id":"ohaupt_8-10","score":"ohaupt","bars":"8-10","tonic":2,"mode":"maj","do":2,"metre":"4/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1260],"ms":[19200,24001],"notes":[[0,420,74,"d'"],[420,210,73,"t"],[630,210,74,"d'"],[840,420,76,"r'"],[1260,420,74,"d'"],[1680,420,73,"t"],[2100,840,71,"l"],[2940,420,73,"t"]],"credit":"J. Bach, chorale \"Befiehl du deine Wege\" (tune: \"O Haupt voll Blut und Wunden\"), BWV 244/44 (St Matthew Passion)"},{"id":"ohaupt_10-12","score":"ohaupt","bars":"10-12","tonic":2,"mode":"maj","do":2,"metre":"4/4","anac":420,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1260],"ms":[24000,28801],"notes":[[0,420,66,"m"],[420,420,67,"f"],[840,420,66,"m"],[1260,420,64,"r"],[1680,420,69,"s"],[2100,1260,66,"m"]],"credit":"J. Bach, chorale \"Befiehl du deine Wege\" (tune: \"O Haupt voll Blut und Wunden\"), BWV 244/44 (St Matthew Passion)"},{"id":"jesu_1-2","score":"jesu","bars":"1-2","tonic":4,"mode":"min","do":7,"metre":"4/4","anac":0,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1680],"ms":[0,4801],"notes":[[0,420,71,"m"],[420,420,71,"m"],[840,420,69,"r"],[1260,420,67,"d"],[1680,840,66,"t,"],[2520,840,64,"l,"]],"credit":"J. Bach, chorale \"Jesu, meine Freude\", BWV 64/8"},{"id":"jesu_3-4","score":"jesu","bars":"3-4","tonic":4,"mode":"min","do":7,"metre":"4/4","anac":0,"level":7,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1680],"ms":[4800,9601],"notes":[[0,420,71,"m"],[420,420,71,"m"],[840,420,73,"fi"],[1260,420,75,"si"],[1680,840,76,"l"],[2520,840,75,"si"]],"credit":"J. Bach, chorale \"Jesu, meine Freude\", BWV 64/8"},{"id":"jesu_5-6","score":"jesu","bars":"5-6","tonic":4,"mode":"min","do":7,"metre":"4/4","anac":0,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1680],"ms":[9600,14401],"notes":[[0,420,76,"l"],[420,420,79,"d'"],[840,630,78,"t"],[1470,210,76,"l"],[1680,1680,76,"l"]],"credit":"J. Bach, chorale \"Jesu, meine Freude\", BWV 64/8"},{"id":"jesu_7-8","score":"jesu","bars":"7-8","tonic":4,"mode":"min","do":7,"metre":"4/4","anac":0,"level":6,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1680],"ms":[14400,19201],"notes":[[0,420,71,"m"],[420,420,71,"m"],[840,420,72,"f"],[1260,420,71,"m"],[1680,630,69,"r"],[2310,210,67,"d"],[2520,840,67,"d"]],"credit":"J. Bach, chorale \"Jesu, meine Freude\", BWV 64/8"},{"id":"jesu_9-11","score":"jesu","bars":"9-11","tonic":4,"mode":"min","do":7,"metre":"4/4","anac":0,"level":7,"rhyExtra":false,"tempo":100.0,"barLen":[1680,1680,840],"ms":[19200,25201],"notes":[[0,420,71,"m"],[420,420,73,"fi"],[840,420,74,"s"],[1260,420,71,"m"],[1680,420,76,"l"],[2100,420,74,"s"],[2520,840,73,"fi"],[3360,840,71,"m"]],"credit":"J. Bach, chorale \"Jesu, meine Freude\", BWV 64/8"},{"id":"k545_1-4","score":"k545","bars":"1-4","tonic":0,"mode":"maj","do":0,"metre":"4/4","anac":0,"level":6,"rhyExtra":true,"tempo":120.0,"barLen":[1680,1680,1680,1260],"ms":[0,7501],"notes":[[0,840,72,"d'"],[840,420,76,"m'"],[1260,420,79,"s'"],[1680,630,71,"t"],[2310,105,72,"d'"],[2415,105,74,"r'"],[2520,420,72,"d'"],[2940,420,null,null],[3360,840,81,"l'"],[4200,420,79,"s'"],[4620,420,84,"d''"],[5040,420,79,"s'"],[5460,210,77,"f'"],[5670,105,76,"m'"],[5775,105,77,"f'"],[5880,420,76,"m'"]],"credit":"W. Mozart, Piano Sonata in C, K. 545, first movement"},{"id":"k545_18-19","score":"k545","bars":"18-19","tonic":7,"mode":"maj","do":7,"metre":"4/4","anac":0,"level":6,"rhyExtra":true,"tempo":120.0,"barLen":[1680,1680],"ms":[34000,38001],"notes":[[0,420,86,"s'"],[420,105,null,null],[525,105,86,"s'"],[630,105,83,"m'"],[735,105,79,"d'"],[840,420,76,"l"],[1260,105,null,null],[1365,105,76,"l"],[1470,105,79,"d'"],[1575,105,76,"l"],[1680,420,84,"f'"],[2100,105,null,null],[2205,105,84,"f'"],[2310,105,81,"r'"],[2415,105,78,"t"],[2520,420,74,"s"],[2940,105,null,null],[3045,105,74,"s"],[3150,105,78,"t"],[3255,105,74,"s"]],"credit":"W. Mozart, Piano Sonata in C, K. 545, first movement"},{"id":"k545_20-21","score":"k545","bars":"20-21","tonic":7,"mode":"maj","do":7,"metre":"4/4","anac":0,"level":6,"rhyExtra":true,"tempo":120.0,"barLen":[1680,1680],"ms":[38000,42001],"notes":[[0,420,83,"m'"],[420,105,null,null],[525,105,83,"m'"],[630,105,79,"d'"],[735,105,76,"l"],[840,420,72,"f"],[1260,105,null,null],[1365,105,72,"f"],[1470,105,76,"l"],[1575,105,72,"f"],[1680,420,81,"r'"],[2100,105,null,null],[2205,105,81,"r'"],[2310,105,78,"t"],[2415,105,74,"s"],[2520,420,71,"m"],[2940,105,null,null],[3045,105,79,"d'"],[3150,105,74,"s"],[3255,105,71,"m"]],"credit":"W. Mozart, Piano Sonata in C, K. 545, first movement"},{"id":"k545_24-25","score":"k545","bars":"24-25","tonic":7,"mode":"maj","do":7,"metre":"4/4","anac":0,"level":6,"rhyExtra":true,"tempo":120.0,"barLen":[1680,1680],"ms":[46000,50001],"notes":[[0,210,83,"m'"],[210,210,79,"d'"],[420,840,86,"s'"],[1260,105,84,"f'"],[1365,105,83,"m'"],[1470,105,81,"r'"],[1575,105,79,"d'"],[1680,1680,81,"r'"]],"credit":"W. Mozart, Piano Sonata in C, K. 545, first movement"},{"id":"k545_50-53","score":"k545","bars":"50-53","tonic":0,"mode":"maj","do":0,"metre":"4/4","anac":0,"level":4,"rhyExtra":false,"tempo":120.0,"barLen":[1680,1680,1680,1680],"ms":[98000,106001],"notes":[[0,420,81,"l'"],[420,420,null,null],[840,420,null,null],[1260,420,81,"l'"],[1680,420,79,"s'"],[2100,420,null,null],[2520,420,null,null],[2940,420,79,"s'"],[3360,420,77,"f'"],[3780,420,null,null],[4200,420,null,null],[4620,420,77,"f'"],[5040,420,76,"m'"],[5460,420,null,null],[5880,420,null,null],[6300,420,76,"m'"]],"credit":"W. Mozart, Piano Sonata in C, K. 545, first movement"},{"id":"k545_56-57","score":"k545","bars":"56-57","tonic":0,"mode":"maj","do":0,"metre":"4/4","anac":0,"level":4,"rhyExtra":false,"tempo":120.0,"barLen":[1680,1260],"ms":[110000,113501],"notes":[[0,210,71,"t"],[210,210,79,"s'"],[420,210,76,"m'"],[630,210,72,"d'"],[840,210,74,"r'"],[1050,210,79,"s'"],[1260,210,76,"m'"],[1470,210,72,"d'"],[1680,420,74,"r'"],[2100,420,79,"s'"],[2520,420,67,"s"]],"credit":"W. Mozart, Piano Sonata in C, K. 545, first movement"},{"id":"k545_69-70","score":"k545","bars":"69-70","tonic":0,"mode":"maj","do":0,"metre":"4/4","anac":0,"level":6,"rhyExtra":true,"tempo":120.0,"barLen":[1680,1680],"ms":[136000,140001],"notes":[[0,210,79,"s'"],[210,105,81,"l'"],[315,105,83,"t'"],[420,105,84,"d''"],[525,105,86,"r''"],[630,105,88,"m''"],[735,105,86,"r''"],[840,105,84,"d''"],[945,105,83,"t'"],[1050,105,81,"l'"],[1155,105,79,"s'"],[1260,105,77,"f'"],[1365,105,76,"m'"],[1470,105,74,"r'"],[1575,105,72,"d'"],[1680,1680,74,"r'"]],"credit":"W. Mozart, Piano Sonata in C, K. 545, first movement"},{"id":"k331a_1-4","score":"k331a","bars":"1-4","tonic":9,"mode":"maj","do":9,"metre":"6/8","anac":0,"level":6,"rhyExtra":true,"tempo":72.0,"barLen":[1260,1260,1260,1260],"ms":[0,10001],"notes":[[0,315,73,"m"],[315,105,74,"f"],[420,210,73,"m"],[630,420,76,"s"],[1050,210,76,"s"],[1260,315,71,"r"],[1575,105,73,"m"],[1680,210,71,"r"],[1890,420,74,"f"],[2310,210,74,"f"],[2520,420,69,"d"],[2940,210,69,"d"],[3150,420,71,"r"],[3570,210,71,"r"],[3780,420,73,"m"],[4200,105,76,"s"],[4305,105,74,"f"],[4410,420,73,"m"],[4830,210,71,"r"]],"credit":"W. Mozart, Piano Sonata in A, K. 331, first movement: the theme"},{"id":"k331a_5-8","score":"k331a","bars":"5-8","tonic":9,"mode":"maj","do":9,"metre":"6/8","anac":0,"level":6,"rhyExtra":true,"tempo":72.0,"barLen":[1260,1260,1260,1050],"ms":[10000,19584],"notes":[[0,315,73,"m"],[315,105,74,"f"],[420,210,73,"m"],[630,420,76,"s"],[1050,210,76,"s"],[1260,315,71,"r"],[1575,105,73,"m"],[1680,210,71,"r"],[1890,420,74,"f"],[2310,210,74,"f"],[2520,420,69,"d"],[2940,210,71,"r"],[3150,420,73,"m"],[3570,210,74,"f"],[3780,420,73,"m"],[4200,210,71,"r"],[4410,420,69,"d"]],"credit":"W. Mozart, Piano Sonata in A, K. 331, first movement: the theme"},{"id":"k331a_9-12","score":"k331a","bars":"9-12","tonic":9,"mode":"maj","do":9,"metre":"6/8","anac":0,"level":6,"rhyExtra":true,"tempo":72.0,"barLen":[1260,1260,1260,1260],"ms":[20000,30001],"notes":[[0,315,76,"s"],[315,105,78,"l"],[420,210,76,"s"],[630,420,78,"l"],[1050,210,78,"l"],[1260,315,81,"d'"],[1575,105,80,"t"],[1680,210,78,"l"],[1890,210,78,"l"],[2100,210,76,"s"],[2310,210,76,"s"],[2520,210,76,"s"],[2730,210,73,"m"],[2940,210,69,"d"],[3150,210,76,"s"],[3360,210,74,"f"],[3570,210,71,"r"],[3780,210,76,"s"],[3990,210,73,"m"],[4200,210,69,"d"],[4410,420,73,"m"],[4830,210,71,"r"]],"credit":"W. Mozart, Piano Sonata in A, K. 331, first movement: the theme"},{"id":"k331a_15-16","score":"k331a","bars":"15-16","tonic":9,"mode":"maj","do":9,"metre":"6/8","anac":0,"level":6,"rhyExtra":false,"tempo":72.0,"barLen":[1260,1260],"ms":[35000,40001],"notes":[[0,420,69,"d"],[420,210,71,"r"],[630,420,73,"m"],[1050,210,74,"f"],[1260,420,73,"m"],[1680,210,71,"r"],[1890,420,71,"r"],[2310,210,73,"m"]],"credit":"W. Mozart, Piano Sonata in A, K. 331, first movement: the theme"},{"id":"k331d_3-4","score":"k331d","bars":"3-4","tonic":9,"mode":"min","do":0,"metre":"6/8","anac":0,"level":10,"rhyExtra":true,"tempo":72.0,"barLen":[1260,1260],"ms":[5000,10001],"notes":[[0,105,69,"l"],[105,105,76,"m'"],[210,105,75,"ri'"],[315,105,76,"m'"],[420,105,72,"d'"],[525,105,69,"l"],[630,105,68,"si"],[735,105,76,"m'"],[840,105,77,"f'"],[945,105,76,"m'"],[1050,105,74,"r'"],[1155,105,71,"t"],[1260,105,71,"t"],[1365,105,69,"l"],[1470,105,68,"si"],[1575,105,69,"l"],[1680,105,71,"t"],[1785,105,72,"d'"],[1890,420,72,"d'"],[2310,210,71,"t"]],"credit":"W. Mozart, K. 331, first movement: Variation III (minore)"},{"id":"k331d_7-8","score":"k331d","bars":"7-8","tonic":9,"mode":"min","do":0,"metre":"6/8","anac":0,"level":10,"rhyExtra":true,"tempo":72.0,"barLen":[1260,1050],"ms":[15000,19584],"notes":[[0,105,81,"l'"],[105,105,80,"si'"],[210,105,81,"l'"],[315,105,84,"d''"],[420,105,83,"t'"],[525,105,86,"r''"],[630,105,84,"d''"],[735,105,83,"t'"],[840,105,84,"d''"],[945,105,88,"m''"],[1050,105,86,"r''"],[1155,105,89,"f''"],[1260,105,88,"m''"],[1365,105,87,"ri''"],[1470,105,88,"m''"],[1575,105,76,"m'"],[1680,105,78,"fi'"],[1785,105,80,"si'"],[1890,420,81,"l'"]],"credit":"W. Mozart, K. 331, first movement: Variation III (minore)"},{"id":"k331d_9-10","score":"k331d","bars":"9-10","tonic":9,"mode":"min","do":0,"metre":"6/8","anac":0,"level":10,"rhyExtra":true,"tempo":72.0,"barLen":[1260,1260],"ms":[20000,25001],"notes":[[0,105,69,"l"],[105,105,68,"si"],[210,105,69,"l"],[315,105,81,"l'"],[420,105,80,"si'"],[525,105,79,"s'"],[630,105,79,"s'"],[735,105,77,"f'"],[840,105,76,"m'"],[945,105,77,"f'"],[1050,105,76,"m'"],[1155,105,77,"f'"],[1260,105,81,"l'"],[1365,105,80,"si'"],[1470,105,81,"l'"],[1575,105,80,"si'"],[1680,105,81,"l'"],[1785,105,77,"f'"],[1890,105,77,"f'"],[1995,105,76,"m'"],[2100,105,75,"ri'"],[2205,105,76,"m'"],[2310,105,75,"ri'"],[2415,105,76,"m'"]],"credit":"W. Mozart, K. 331, first movement: Variation III (minore)"},{"id":"k331d_11-12","score":"k331d","bars":"11-12","tonic":9,"mode":"min","do":0,"metre":"6/8","anac":0,"level":7,"rhyExtra":true,"tempo":72.0,"barLen":[1260,1260],"ms":[25000,30001],"notes":[[0,105,76,"m'"],[105,105,74,"r'"],[210,105,72,"d'"],[315,105,71,"t"],[420,105,69,"l"],[525,105,76,"m'"],[630,105,77,"f'"],[735,105,74,"r'"],[840,105,71,"t"],[945,105,69,"l"],[1050,105,68,"si"],[1155,105,71,"t"],[1260,105,71,"t"],[1365,105,69,"l"],[1470,105,72,"d'"],[1575,105,71,"t"],[1680,105,74,"r'"],[1785,105,72,"d'"],[1890,420,72,"d'"],[2310,210,71,"t"]],"credit":"W. Mozart, K. 331, first movement: Variation III (minore)"},{"id":"k331d_15-16","score":"k331d","bars":"15-16","tonic":9,"mode":"min","do":0,"metre":"6/8","anac":0,"level":10,"rhyExtra":true,"tempo":72.0,"barLen":[1260,1260],"ms":[35000,40001],"notes":[[0,105,69,"l"],[105,105,68,"si"],[210,105,69,"l"],[315,105,72,"d'"],[420,105,71,"t"],[525,105,74,"r'"],[630,105,72,"d'"],[735,105,71,"t"],[840,105,72,"d'"],[945,105,76,"m'"],[1050,105,74,"r'"],[1155,105,77,"f'"],[1260,105,76,"m'"],[1365,105,75,"ri'"],[1470,105,76,"m'"],[1575,105,64,"m"],[1680,105,66,"fi"],[1785,105,68,"si"],[1890,105,69,"l"],[1995,105,68,"si"],[2100,105,69,"l"],[2205,105,64,"m"],[2310,105,60,"d"],[2415,105,64,"m"]],"credit":"W. Mozart, K. 331, first movement: Variation III (minore)"},{"id":"maple_11-12","score":"maple","bars":"11-12","tonic":8,"mode":"maj","do":8,"metre":"2/4","anac":735,"level":10,"rhyExtra":true,"tempo":100.0,"barLen":[840],"ms":[12450,14701],"notes":[[0,105,82,"r'"],[105,105,83,"me'"],[210,105,80,"d'"],[315,105,82,"r'"],[420,210,84,"m'"],[630,105,80,"d'"],[735,105,84,"m'"],[840,105,80,"d'"],[945,210,82,"r'"],[1155,210,80,"d'"],[1365,105,null,null],[1470,105,80,"d'"]],"credit":"Scott Joplin (c. Joplin, \"Maple Leaf Rag\" (1899)"},{"id":"maple_15-16","score":"maple","bars":"15-16","tonic":8,"mode":"maj","do":8,"metre":"2/4","anac":735,"level":10,"rhyExtra":true,"tempo":100.0,"barLen":[630],"ms":[17250,19201],"notes":[[0,105,70,"r"],[105,105,71,"me"],[210,105,68,"d"],[315,105,70,"r"],[420,210,72,"m"],[630,105,68,"d"],[735,105,72,"m"],[840,105,68,"d"],[945,210,70,"r"],[1155,210,68,"d"]],"credit":"Scott Joplin (c. Joplin, \"Maple Leaf Rag\" (1899)"},{"id":"maple_30-33","score":"maple","bars":"30-33","tonic":8,"mode":"maj","do":8,"metre":"2/4","anac":735,"level":10,"rhyExtra":true,"tempo":100.0,"barLen":[840,840,840],"ms":[35250,39901],"notes":[[0,105,65,"l,"],[105,105,69,"di"],[210,105,72,"m"],[315,105,77,"l"],[420,105,72,"m"],[525,105,69,"ra"],[630,105,65,"l,"],[735,105,null,null],[840,105,65,"l,"],[945,105,70,"r"],[1050,105,73,"f"],[1155,210,77,"l"],[1365,210,73,"f"],[1575,210,72,"m"],[1785,105,null,null],[1890,105,72,"m"],[1995,105,null,null],[2100,210,70,"r"],[2310,105,63,"s,"],[2415,210,68,"d"],[2625,210,75,"s"],[2835,210,75,"s"],[3045,210,75,"s"]],"credit":"Scott Joplin (c. Joplin, \"Maple Leaf Rag\" (1899)"},{"id":"maple_82-83","score":"maple","bars":"82-83","tonic":8,"mode":"maj","do":8,"metre":"2/4","anac":735,"level":6,"rhyExtra":true,"tempo":100.0,"barLen":[840],"ms":[97650,99901],"notes":[[0,105,70,"r"],[105,105,72,"m"],[210,105,68,"d"],[315,105,null,null],[420,210,70,"r"],[630,105,63,"s,"],[735,210,68,"d"],[945,210,75,"s"],[1155,210,75,"s"],[1365,210,75,"s"]],"credit":"Scott Joplin (c. Joplin, \"Maple Leaf Rag\" (1899)"},{"id":"chopin7_upbeat-2","score":"chopin7","bars":"upbeat-2","tonic":9,"mode":"maj","do":9,"metre":"3/4","anac":420,"level":6,"rhyExtra":true,"tempo":92.025,"barLen":[1260,840],"ms":[0,3914],"notes":[[0,420,64,"s,"],[420,315,73,"m"],[735,105,74,"f"],[840,420,71,"r"],[1260,420,71,"r"],[1680,840,71,"r"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in A major, Op. 28 No. 7 (1839)"},{"id":"chopin7_2-4","score":"chopin7","bars":"2-4","tonic":9,"mode":"maj","do":9,"metre":"3/4","anac":420,"level":10,"rhyExtra":true,"tempo":92.025,"barLen":[1260,840],"ms":[3913,7827],"notes":[[0,420,78,"l"],[420,315,75,"fi"],[735,105,76,"s"],[840,420,81,"d'"],[1260,420,81,"d'"],[1680,840,81,"d'"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in A major, Op. 28 No. 7 (1839)"},{"id":"chopin7_4-5","score":"chopin7","bars":"4-5","tonic":9,"mode":"maj","do":9,"metre":"3/4","anac":420,"level":10,"rhyExtra":true,"tempo":92.025,"barLen":[1260],"ms":[7826,10436],"notes":[[0,420,73,"m"],[420,315,70,"di"],[735,105,71,"r"],[840,420,74,"f"],[1260,420,74,"f"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in A major, Op. 28 No. 7 (1839)"},{"id":"chopin7_6-8","score":"chopin7","bars":"6-8","tonic":9,"mode":"maj","do":9,"metre":"3/4","anac":420,"level":6,"rhyExtra":true,"tempo":92.025,"barLen":[1260,840],"ms":[11739,15653],"notes":[[0,420,68,"t,"],[420,315,68,"t,"],[735,105,69,"d"],[840,420,73,"m"],[1260,420,73,"m"],[1680,840,73,"m"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in A major, Op. 28 No. 7 (1839)"},{"id":"chopin7_10-12","score":"chopin7","bars":"10-12","tonic":9,"mode":"maj","do":9,"metre":"3/4","anac":420,"level":6,"rhyExtra":true,"tempo":92.025,"barLen":[1260,840],"ms":[19565,23479],"notes":[[0,420,78,"l"],[420,315,74,"f"],[735,105,76,"s"],[840,420,85,"m'"],[1260,420,85,"m'"],[1680,840,85,"m'"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in A major, Op. 28 No. 7 (1839)"},{"id":"chopin7_14-15","score":"chopin7","bars":"14-15","tonic":9,"mode":"maj","do":9,"metre":"3/4","anac":420,"level":6,"rhyExtra":true,"tempo":92.025,"barLen":[1260],"ms":[27391,30001],"notes":[[0,420,68,"t,"],[420,315,71,"r"],[735,105,69,"d"],[840,420,81,"d'"],[1260,420,81,"d'"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in A major, Op. 28 No. 7 (1839)"},{"id":"chopin20_1-2","score":"chopin20","bars":"1-2","tonic":0,"mode":"min","do":3,"metre":"4/4","anac":0,"level":10,"rhyExtra":true,"tempo":45.003,"barLen":[1680,1680],"ms":[0,10668],"notes":[[0,420,67,"m"],[420,420,68,"f"],[840,315,67,"m"],[1155,105,65,"r"],[1260,420,63,"d"],[1680,420,63,"d"],[2100,420,65,"r"],[2520,315,63,"d"],[2835,105,61,"te,"],[2940,420,60,"l,"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in C minor, Op. 28 No. 20 (1839)"},{"id":"chopin20_3-4","score":"chopin20","bars":"3-4","tonic":0,"mode":"min","do":3,"metre":"4/4","anac":0,"level":10,"rhyExtra":true,"tempo":45.003,"barLen":[1680,1680],"ms":[10667,21334],"notes":[[0,420,62,"t,"],[420,420,64,"di"],[840,315,67,"m"],[1155,105,65,"r"],[1260,420,64,"ra"],[1680,420,62,"t,"],[2100,420,67,"m"],[2520,315,71,"si"],[2835,105,68,"f"],[2940,420,67,"m"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in C minor, Op. 28 No. 20 (1839)"},{"id":"chopin20_5-8","score":"chopin20","bars":"5-8","tonic":0,"mode":"min","do":3,"metre":"4/4","anac":0,"level":10,"rhyExtra":true,"tempo":44.994,"barLen":[1680,1680,1680,1680],"ms":[21333,42668],"notes":[[0,420,75,"d'"],[420,420,75,"d'"],[840,315,74,"t"],[1155,105,66,"ri"],[1260,420,74,"t"],[1680,420,72,"l"],[2100,420,74,"t"],[2520,315,71,"si"],[2835,105,69,"fi"],[2940,420,67,"m"],[3360,420,72,"l"],[3780,420,68,"f"],[4200,315,67,"m"],[4515,105,65,"r"],[4620,420,63,"d"],[5040,420,63,"d"],[5460,420,65,"r"],[5880,315,63,"d"],[6195,105,62,"t,"],[6300,420,60,"l,"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in C minor, Op. 28 No. 20 (1839)"},{"id":"chopin20_11-12","score":"chopin20","bars":"11-12","tonic":0,"mode":"min","do":3,"metre":"4/4","anac":0,"level":6,"rhyExtra":true,"tempo":44.994,"barLen":[1680,1680],"ms":[53333,64001],"notes":[[0,420,72,"l"],[420,420,68,"f"],[840,315,67,"m"],[1155,105,65,"r"],[1260,420,63,"d"],[1680,420,63,"d"],[2100,420,65,"r"],[2520,315,63,"d"],[2835,105,62,"t,"],[2940,420,60,"l,"]],"credit":"Fryderyk Chopin (1810–1849). Chopin, Prelude in C minor, Op. 28 No. 20 (1839)"}];
+// the 0.48 desk draws cells from RCELL (semiquaver units): give it every ladder cell (tuplets in fractional units)
+Object.keys(LCELL).forEach(k=>{if(RCELL[k])return;const u=LCELL[k].t.map(([d,kd])=>[d/105,kd==='r'?1:0]),vd=d=>({1680:'w',1260:'h',840:'h',630:'q',420:'q',315:'8',210:'8',105:'16'}[d]||'16');
+ RCELL[k]={l:LADTITLE[k]||k,u,v:LCELL[k].t.map(([d,kd])=>[vd(d),kd==='r'?1:0,[1260,630,315].includes(d)?1:0]),w:u.reduce((a,[d])=>a+d,0)}});
+/* ===================== END EAR LAB LADDERS ENGINE ===================== */
 const EARSC=[['chorale',1],['ohaupt',1],['jesu',2],['k331a',2],['k331d',3],['chopin7',3],['chopin20',3]];
 function cadCat(t){return/Interrupted/i.test(t)?'interrupted':/Plagal/i.test(t)?'plagal':/Imperfect|Half/i.test(t)?'imperfect':'perfect'}
 function earBlindPool(l){if(!EAR.blind)return[];return EAR.blind.filter(x=>x.lvl<=l)}
 function earGenBlind(l,r){const P=earBlindPool(l);if(!P.length)return null;const x=epick(P,r);return{d:'blind',...x,a:x.cat}}
 function earGen(d,l,r=Math.random){const q=earGen1(d,l,r);if(q){if(!q.l)q.l=l;q.lvl=l}return q}
-function earGen1(d,l,r){return d==='metre'?earGenMetre(l,r):d==='rhy'?earGenRhy(l,r):d==='qual'?earGenQual(l,r):d==='cad'?earGenCad(l,r):d==='bass'?earGenBass(l,r):d==='mel'?earGenMel(l,r):earGenBlind(l,r)}
+function earGen1(d,l,r){return d==='metre'?earGenMetre(l,r):d==='rhy'?ladGenFresh('rhy',l,r):d==='qual'?earGenQual(l,r):d==='cad'?earGenCad(l,r):d==='bass'?earGenBass(l,r):d==='mel'?ladGenFresh('mel',l,r):earGenBlind(l,r)}
 window.earGen=earGen;
 /* ---- blind analysis: find each cadence's bar from the engraved score ---- */
 function earLoadBlind(){if(EAR.blind)return Promise.resolve(EAR.blind);return anLoadMeta().then(meta=>Promise.all(EARSC.map(([k])=>anLoadSvg(k))).then(svgs=>{const out=[];
@@ -7229,7 +7801,7 @@ let ELCLAP=4;const ELPRE=.05; // seconds from the press to the first scheduled t
 function earClick(t,a){const A=ac(),o=A.createOscillator(),g=A.createGain();a=Math.max(-1,Math.min(2,a));o.type='square';o.frequency.value=a>=2?1568:a===1?1175:a===0?988:784;const pk=.2*Math.pow(10,-5*(2-a)/20);
  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(pk,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(g);g.connect(MAST);o.start(t);o.stop(t+.09);schEnd(t+.09);ACT.push(o)}
 // rhythm tone (EL-4): a clear attack (3 ms), then a steady tone, released hard at the written end (a 10 ms fall ending 6 ms before it, so a following note re-attacks)
-function elRhyNote(t,d,m=72){const A=ac(),o=A.createOscillator(),o2=A.createOscillator(),f=A.createBiquadFilter(),g=A.createGain(),g2=A.createGain(),e=t+d,pk=.32;
+function elRhyNote(t,d,m=72,gain=1){const A=ac(),o=A.createOscillator(),o2=A.createOscillator(),f=A.createBiquadFilter(),g=A.createGain(),g2=A.createGain(),e=t+d,pk=.32*gain;
  o.type='triangle';o.frequency.value=hz(m);o2.type='sine';o2.frequency.value=hz(m)*2;g2.gain.value=.22;f.type='lowpass';f.frequency.setValueAtTime(6000,t);f.frequency.exponentialRampToValueAtTime(2200,t+.08);
  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(pk,t+.003);g.gain.exponentialRampToValueAtTime(pk*.6,t+Math.min(.07,d*.4));g.gain.setValueAtTime(pk*.6,e-.016);g.gain.linearRampToValueAtTime(0,e-.006);
  o.connect(f);o2.connect(g2);g2.connect(f);f.connect(g);g.connect(MAST);o.start(t);o2.start(t);o.stop(e);o2.stop(e);schEnd(e);ACT.push(o,o2)}
@@ -7281,6 +7853,8 @@ function earSchedRhyBeat(q,t0,o){const g=(EAR.res&&EAR.res.given)||[],[bar,bt]=(
  one(g,t);t+=len*sq+beat;one(q.a,t);t+=len*sq;return{end:t,lead:lead+ELPRE,bl:beat,gain:clap?1.2:1}}
 function earSched(q,variant,t0,o={}){let t=t0,end=t0;
  if(variant==='tap'){c2Tone(o.midi,t,.5,1);return{end:t+.55,lead:ELPRE}}
+ // 0.49 ladders: melody and rhythm items from the ladder engine (the 'frag' and 'ending' replays stay with earSchedReplay)
+ if((q.d==='rhy'&&q.barLen)||(q.d==='mel'&&!['q3','q5','q7','qab','last','pair','frag','ending'].includes(variant)))return ladSched(q,variant,t0,o);
  if(variant==='given'&&q.d==='metre'){const g=EAR.res&&EAR.res.given;return earSchedMetre(earGenMetre(3,Math.random,{m:g,bpm:q.bpm}),t0)}
  if(q.d==='metre')return earSchedMetre(q,t0);
  if(q.d==='rhy')return variant==='beat'?earSchedRhyBeat(q,t0,o):earSchedRhy(q,t0,{...o,follow:variant==='follow'});
@@ -7306,10 +7880,14 @@ const ELICON={tick:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.6l
 /* RHYNAMES: the time name written under each entry tile, at every rung (Justin 19 Nov, 4b). One table keyed by cell: change a name here and nowhere else.
    Rung 1 names (ta, ti-ti, ta-a) as built; rungs 2-3 use the common Kodaly names (tika-tika, ti-tika, tika-ti, tam-ti, syn-co-pa,
    sa for a rest), approved by Justin 20 Nov (L91 A). */
-const RHYNAMES={q:'ta',e2:'ti-ti',h:'ta-a',s4:'tika-tika',qr:'sa',dq:'tam-ti',es2:'ti-tika',s2e:'tika-ti',syn:'syn-co-pa'};
+// 0.49: the one table now lives in the ladder engine (LADNAMES; the nine names above unchanged, the 21:24 extension and D12 added);
+// RHYNAMES_KK is the "Kodály with konnakol tuplets" setting (EAR.names 'kk')
+const RHYNAMES=LADNAMES,RHYNAMES_KK=LADNAMES_KK;
 const ELCN={q:'a crotchet',e2:'two quavers',h:'a minim',s4:'four semiquavers',qr:'a crotchet rest',dq:'a dotted crotchet and a quaver',es2:'a quaver and two semiquavers',s2e:'two semiquavers and a quaver',syn:'a quaver, a crotchet and a quaver'};
 const ELTITLE={q:'crotchet',e2:'2 quavers',h:'minim',s4:'4 semiquavers',qr:'crotchet rest',dq:'dotted crotchet, quaver',es2:'quaver, 2 semiquavers',s2e:'2 semiquavers, quaver',syn:'quaver, crotchet, quaver'};
 const ELW={q:'one sound',e2:'two even sounds',s4:'four even sounds',h:'one sound held for two beats',qr:'a beat of silence',dq:'long-short across two beats',es2:'long-short-short',s2e:'short-short-long',syn:'short-long-short across two beats'};
+Object.assign(ELCN,{...LADCN,...ELCN});Object.assign(ELW,{...LADW,...ELW});   // 0.49 cells (ELTITLE keeps the 0.48 cells; elTitle reads the ladder table for the rest)
+function elTitle(k){return ELTITLE[k]||LADTITLE[k]||k}
 function elGlyph(name,x,y,fill,s=ELS){return`<path d="${ELGLY[name]}" transform="translate(${x.toFixed(1)},${y.toFixed(1)}) scale(${s},${-s})" fill="${fill}"/>`}
 // one cell's notes. x: left edge of its first semiquaver; u: px per semiquaver; top: stem top; base: notehead centre
 function elCellMarks(cell,x,u,top,base,stick,ink=ELC.IV){let o='',pos=0;const stems=[];
@@ -7364,7 +7942,7 @@ function earRhySVG(cells,o={}){const u=o.u||18,bars=o.bars||1,sig=o.sig!==false,
 // one entry tile: the cell in the same notation on a faint line, width = duration x 14 px
 function earRhyTile(k,o={}){const u=14,w=RCELL[k].w*u,base=44,stick=!!o.stick,nm=o.named&&o.named[k];
  const marks=elCellMarks(k,[ 'q','qr','h'].includes(k)?(w-ELHW)/2-6:RCELL[k].w===4?-2.5:2,u,12,base,stick);
- return`<button class="el-tile" style="width:${w}px" data-earcell="${k}" aria-label="${ELTITLE[k]}" title="${ELTITLE[k]}" data-tt ${o.disabled?'disabled':''}><svg viewBox="0 0 ${w} 56" width="${w}" height="56" aria-hidden="true">${stick?'':`<line x1="0" y1="${base}" x2="${w}" y2="${base}" stroke="#c9b98f" stroke-opacity=".3"/>`}${marks}</svg>${nm?`<small>${nm}</small>`:''}</button>`}
+ return`<button class="el-tile" style="width:${w}px" data-earcell="${k}" aria-label="${elTitle(k)}" title="${elTitle(k)}" data-tt ${o.disabled?'disabled':''}><svg viewBox="0 0 ${w} 56" width="${w}" height="56" aria-hidden="true">${stick?'':`<line x1="0" y1="${base}" x2="${w}" y2="${base}" stroke="#c9b98f" stroke-opacity=".3"/>`}${marks}</svg>${nm?`<small>${nm}</small>`:''}</button>`}
 /* ---- metre: signatures, beat pictures, the beat lane ---- */
 function elSigSVG(n,d){const s=ELS*1.05,num=(v,y)=>{let x,wd=0,out='';String(v).split('').forEach(c=>wd+=(c==='1'?300:470)*1.44*s);x=(26-wd)/2;
   String(v).split('').forEach(c=>{out+=`<path d="${ELGLY['timeSig'+c]}" transform="translate(${x.toFixed(1)},${y}) scale(${s},${-s})"/>`;x+=(c==='1'?300:470)*1.44*s});return out};
@@ -7420,7 +7998,9 @@ function earRecord(kind){EAR.st[EAR.drill]=earStatNext(earSt(),kind);EAR.resetUn
 function earJudge(q,given){if(q&&given===q.a)return'correct';if(!q||q.d!=='cad'||q.l!==3)return'wrong';
  if(EAR_NEARLY&&CADPARENT[q.a]&&CADPARENT[q.a]===given)return'nearly';if(CAD64_INT_NEARLY&&given==='cad64'&&earCad64Int(q))return'nearly';return'wrong'}
 // ok: true, false, or 'nearly'; given null = "Show me"
-function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===null?'shown':ok==='nearly'?'nearly':ok?'ok':'miss';earRecord(kind);EAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};EAR.focus='[data-earnew]';EAR.announce=true;
+function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===null?'shown':ok==='nearly'?'nearly':ok?'ok':'miss';earRecord(kind);
+ if(EAR.drill==='mel'||EAR.drill==='rhy'){ladRdPush(EAR.rd,EAR.drill,earLvl(),kind);earSave()}   // D10 readiness: answered only
+ EAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};EAR.focus='[data-earnew]';EAR.announce=true;
  // undo and redo end once the answer is marked
  HIST.ear.u=[];HIST.ear.r=[];hBtns();
  logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${kind==='ok'?'correct':kind==='shown'?'shown':kind==='nearly'?'nearly':'missed'}`)}
@@ -7430,9 +8010,9 @@ function earSkip(){if(!EAR.q||EAR.done||EAR.q.plays===0)return false;earRecord('
 function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill];return l||earRungsShown(EAR.drill)[0]}
 // R4 family answers (imperfect for a Phrygian cadence, perfect for a cadential 6/4) are Nearly (EAR_NEARLY) or wrong; the result panel's
 // text for both states comes from earCadNear / earCad64IntGiven (one source, reconcile 0.48)
-function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){earMark(rhyOnsets(EAR.ans)===rhyOnsets(q.a),EAR.ans.slice())}
+function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){const m=ladRhyMark(q,EAR.ans);earMark(m.ok?true:m.nearly?'nearly':false,Array.isArray(EAR.ans)?EAR.ans.slice():EAR.ans);EAR.res.mark=m}
  else if(q.d==='bass'){earMark(EAR.ans.length===3&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
- else if(q.d==='mel'){earMark(EAR.ans.length===q.a.length-1&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
+ else if(q.d==='mel'){const m=ladMelMark(q,EAR.ans,{pivot:EAR.pivot});earMark(m.ok?true:m.nearly?'nearly':false,Array.isArray(EAR.ans)?EAR.ans.slice():EAR.ans);EAR.res.mark=m}
  renderEar()}
 HIST.ear=mkHist(()=>EAR.ans,v=>{if(EAR.done)return;EAR.ans=v;renderEar()});
 function earNew(){elStop();if(earSkip())toast('Skipped. It counts as skipped, not as a miss.');EAR.done=false;EAR.res=null;EAR.ans=[];HIST.ear.u=[];HIST.ear.r=[];
@@ -7613,7 +8193,7 @@ function earTeachMetre(q,res){const a=q.a,g=res.given,A=earMetreD(a),nm=A.irr?'I
  return{kind:res.kind,head:nm,small:A.irr?`${a} (${a==='5/4'?'3+2':'2+2+3'})`:a,teach:t,replays:rp,after:elBeatsSVG(a)}}
 function earRhyCmpHTML(q,res){const bars=q.bars,g=res.given,kb=earRhyBeats(q.a,bars),gb=g?earRhyBeats(g,bars):null,marks=gb?kb.map((k,i)=>gb[i]===k):null,stick=q.l===1,ink=ELC.IV;
  const one=(cells,o)=>earRhySVG(cells,{stick,...o}),GB=earRhyBars(g||[],bars),AB=earRhyBars(q.a,bars),who=(t,c='')=>`<div class="who ${c}" data-notm>${t}</div>`;
- const wide=`<div class="el-cmp wide">${g?who('You wrote')+one(g,{u:18,bars,marks,label:'You wrote: '+g.map(k=>ELTITLE[k]).join(', ')}):''}${who('It was','ans')}${one(q.a,{u:18,bars,ruler:!g,stripCol:ELC.GOLD,caret:true,label:'It was: '+q.a.map(k=>ELTITLE[k]).join(', ')})}</div>`;
+ const wide=`<div class="el-cmp wide">${g?who('You wrote')+one(g,{u:18,bars,marks,label:'You wrote: '+g.map(k=>elTitle(k)).join(', ')}):''}${who('It was','ans')}${one(q.a,{u:18,bars,ruler:!g,stripCol:ELC.GOLD,caret:true,label:'It was: '+q.a.map(k=>elTitle(k)).join(', ')})}</div>`;
  let nar='';for(let b=0;b<bars;b++){const last=b===bars-1,mk=marks?marks.slice(b*4,b*4+4):null;
   nar+=(g?who(bars>1?`You wrote · bar ${b+1}`:'You wrote')+one(GB[b]||[],{u:17,bars:1,marks:mk,final:last,label:'You wrote, bar '+(b+1)}):'')+who(g||bars>1?(bars>1?`It was · bar ${b+1}`:'It was'):'It was','ans')+one(AB[b],{u:17,bars:1,ruler:!g,stripCol:ELC.GOLD,final:last,caret:true,label:'It was, bar '+(b+1)})}
  return`${wide.replace('class="el-cmp wide"','class="el-cmp wide" id="earCmpW"')}<div class="el-cmp narrow" id="earCmpN">${nar}</div>`}
@@ -7800,8 +8380,8 @@ function earBassAreaHTML(q){const lock=EAR.done,A=lock&&EAR.res&&EAR.res.given?E
  return`<div class="el-lbl" data-notm>Name chords 2–4 in ${keyName(q.key)}</div><div class="el-slots${lock?' lock':''}">${slots}</div>
   <div class="el-opts c4${q.opts.length===5?' n5':''}" role="group" aria-label="Chord numerals">${q.opts.map(o=>{const f=earNumFn(o,q.key.mode),[fnm,c]=ELFN[f];return`<button class="el-opt num" style="--fc:${c}" data-earrn="${o}" title="${fnm}" ${lock||A.length>=3?'disabled':''}>${earRnHTML(o)}<span class="fn">${fnm}</span></button>`}).join('')}</div>${lock?'':earEditBtns(A.length===3)}`}
 function earEditBtns(full){return EAR.done?'':`<div class="el-edit"><button class="el-btn sm" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="el-btn sm" data-hist="ear:r" title="Redo">↷ Redo</button><button class="el-btn sm" data-earclr>Clear</button><span class="sp"></span><button class="el-btn gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
-function earRhyAreaHTML(q,l){if(EAR.done)return'';const A=EAR.ans,used=A.reduce((s,k)=>s+RCELL[k].w,0),tot=16*q.bars,stick=l===1,nm=RHYNAMES,GA=earRhyBars(A,q.bars);
- const lab=`Your rhythm · ${used/4} of ${tot/4} beats`,alab='Your rhythm so far: '+(A.length?A.map(k=>ELTITLE[k]).join(', '):'nothing yet');
+function earRhyAreaHTML(q,l){if(EAR.done)return'';const A=EAR.ans,used=A.reduce((s,k)=>s+RCELL[k].w,0),tot=16*q.bars,stick=l===1,nm=ladNameTable(),GA=earRhyBars(A,q.bars);
+ const lab=`Your rhythm · ${used/4} of ${tot/4} beats`,alab='Your rhythm so far: '+(A.length?A.map(k=>elTitle(k)).join(', '):'nothing yet');
  const wide=`<div class="el-rhy wide">${earRhySVG(A,{u:18,bars:q.bars,stick,cursor:true,countin:0,label:alab,caret:false,first:true})}</div>`;
  let nar='';for(let b=0;b<q.bars;b++){const last=b===q.bars-1,cur=b===Math.min(q.bars-1,Math.floor(used/16))&&used<tot;nar+=earRhySVG(GA[b]||[],{u:17,bars:1,stick,cursor:cur,holes:true,total:16,label:'Bar '+(b+1),final:last,first:b===0,ruler:true})}
  const pos=used%16;const tiles=earCells(l).map(k=>{const w=RCELL[k].w,ok=used+w<=tot&&(w<8||pos%8===0)&&pos+w<=16;return earRhyTile(k,{stick,named:nm,disabled:!ok})}).join('');
@@ -7826,7 +8406,7 @@ function renderEar(){const el=$('earMain');if(!el)return;
  const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill),d=EAR.drill;
  if(!rdy&&!EAR.preloading){EAR.preloading=elPreload(d).catch(()=>{}).then(()=>{EAR.preloading=null;if(ROOM==='ear'&&$('earMain'))renderEar()})}
  el.classList.add('el');const fk=EAR.focus||earFocusKey();EAR.focus=null;
- const tabs=EDR.filter(([k])=>earDrillShown(k)),hidD=EDR.filter(([k])=>!earDrillShown(k)),rungs=[...new Set([...earRungsShown(d),l])].sort(),hidR=rungs.length<3;
+ const tabs=EDR.filter(([k])=>earDrillShown(k)),hidD=EDR.filter(([k])=>!earDrillShown(k)),rungs=[...new Set([...earRungsShown(d),l])].sort((a,b)=>a-b),hidR=rungs.length<earRungs(d).length;   // 0.49: numeric order, 12 / 10 rungs
  const hmin=Math.min(...hidD.map(([k])=>EARSTAGE[k][0])),hmax=Math.max(...hidD.map(([k])=>Math.max(...EARSTAGE[k])));
  const allBtn=hidD.length?`<button class="el-all" data-earall aria-pressed="false" title="Also offer the drills and rungs outside Stage ${earStage()}">${hidD.length} more for ${earStageTxt(hmin,hmax)} · show all</button>`:EAR.all?`<button class="el-all" data-earall aria-pressed="true" title="Offer only the drills and rungs for Stage ${earStage()}">Show Stage ${earStage()} only</button>`:'';
  const fresh=EAR.ok0===undefined?s.ok:EAR.ok0,fade=s.ok>fresh&&EAR.ok0Drill===d;EAR.ok0=s.ok;EAR.ok0Drill=d;

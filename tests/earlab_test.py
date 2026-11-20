@@ -20,6 +20,9 @@ Sections
   H  text (E7, E12)
   I  every drill at every level renders and marks without page errors
   J  fixtures from the independent checker (tests/fixtures/earlab_ic.json), when present
+  L  0.49 ladders (LADDER_REGISTER_049): pools, tells (5,000 seeded items a rung), new-thing share, range and do = 60 + pc, RF and the
+     anacrusis rule, names (D12), M9 pivot window and both readings (D8), M11 outer voices (2,000 items, independent checker), marking
+     (D4, D11, R8, R9), readiness (D10), the duration palette (L103), playback. All labelled self-check: the build's own checks.
 """
 import sys, asyncio, json, pathlib, collections, random
 
@@ -230,6 +233,436 @@ def predict_acc(rows, feat, ans):
             hit += (c.most_common(1)[0][0] if c else default) == ans(r)
     tot = collections.Counter(ans(r) for r in rows)
     return hit / len(rows), tot.most_common(1)[0][1] / len(rows)
+
+
+# ===================================================================================================================
+# L: the 0.49 ladders (LADDER_REGISTER_049; Justin's answers L101-L104). A port of the reference model's checks
+# (tests/reports/ladder_049/ladder_proto.py): pools (rule P), tells (5-point margin over the given information), the new-thing share
+# (rule N, D2), range and do placement (MR1, MR2), the fill rules (RF) and the anacrusis / last-bar rule (D9), the names table (D12),
+# the M9 pivot window and both readings (D8), the M11 outer voices (an independent counterpoint checker), marking (D4, D11, R8, R9),
+# readiness (D10), the duration palette (L103). Every check here is the build's own: labelled "self-check" in the counts.
+# ===================================================================================================================
+LTICK = 420
+# the cells, re-entered here from the register (ticks; n note, r rest, t tied), not read from the app
+LCELLS = {'q': [(420, 'n')], 'e2': [(210, 'n')] * 2, 'h': [(840, 'n')], 'qr': [(420, 'r')], 'w': [(1680, 'n')], 'hd': [(1260, 'n')],
+          's4': [(105, 'n')] * 4, 'dq': [(630, 'n'), (210, 'n')], 'es2': [(210, 'n'), (105, 'n'), (105, 'n')], 's2e': [(105, 'n'), (105, 'n'), (210, 'n')],
+          'er': [(210, 'r'), (210, 'n')], 're': [(210, 'n'), (210, 'r')], 'cD': [(630, 'n')], 'c3': [(210, 'n')] * 3, 'cqe': [(420, 'n'), (210, 'n')],
+          'ceq': [(210, 'n'), (420, 'n')], 'cdse': [(315, 'n'), (105, 'n'), (210, 'n')], 'c6': [(105, 'n')] * 6, 'cDD': [(1260, 'n')],
+          'syn': [(210, 'n'), (420, 'n'), (210, 'n')], 'synT': [(210, 'n'), (210, 'n'), (210, 't'), (210, 'n')], 'antA': [(210, 'n'), (210, 'n'), (420, 't')],
+          'antB': [(210, 'n'), (210, 'n')], 'tri': [(140, 'n')] * 3, 'dsq': [(315, 'n'), (105, 'n')], 'tres': [(630, 'n'), (630, 'n'), (420, 'n')],
+          'charl': [(630, 'n'), (210, 'n'), (840, 'r')], 'q5': [(84, 'n')] * 5, 'q7_34': [(60, 'n')] * 7, 'q7_43': [(60, 'n')] * 7,
+          'e': [(210, 'n')], 'qd': [(630, 'n')], 'cq': [(420, 'n')]}
+LBAR = {'2/4': 840, '3/4': 1260, '4/4': 1680, '6/8': 1260, '12/8': 2520, '5/4': 2100, '7/8': 1470}
+COMPOUND = {'6/8', '12/8'}
+APPROVED = {'q': 'ta', 'e2': 'ti-ti', 'h': 'ta-a', 's4': 'tika-tika', 'qr': 'sa', 'dq': 'tam-ti', 'es2': 'ti-tika', 's2e': 'tika-ti', 'syn': 'syn-co-pa',
+            'w': 'ta-a-a-a', 'hd': 'ta-a-a', 'er': 'sa ti', 're': 'ti sa', 'cD': 'tam', 'c3': 'ti-ti-ti', 'cqe': 'ta ti', 'ceq': 'ti ta', 'cdse': 'tim-ka-ti',
+            'c6': 'tika-tika-tika', 'cDD': 'ta-a-a', 'synT': 'ti ti-i ti', 'tri': 'tri-o-la', 'dsq': 'tim-ka', 'tres': 'tam ti-i ta', 'charl': 'tam ti sa-a',
+            'q5': 'ta-da-ki-na-dom', 'q7_34': 'ta-ki-ta ta-ka-di-mi', 'q7_43': 'ta-ka-di-mi ta-ki-ta'}
+SEMI = [0, 2, 4, 5, 7, 9, 11]
+SYLW = {'d': (0, 0), 'r': (1, 0), 'm': (2, 0), 'f': (3, 0), 's': (4, 0), 'l': (5, 0), 't': (6, 0), 'di': (0, 1), 'ri': (1, 1), 'fi': (3, 1), 'si': (4, 1), 'li': (5, 1),
+        'ra': (1, -1), 'me': (2, -1), 'se': (4, -1), 'le': (5, -1), 'te': (6, -1)}
+
+
+def l_semis(tx):
+    b = tx.rstrip(",'")
+    o = tx.count("'") - tx.count(',')
+    w, a = SYLW[b]
+    return SEMI[w] + 12 * o + a
+
+
+def l_tell_table(rows, feats, targets, margin=0.05):
+    """ladder_proto.tell_table: accuracy of the majority answer per (given, feature) value against per given value alone; cells with
+    fewer than 30 items on average are skipped (too many values for the sample)"""
+    out = []
+    for fn, (f, st) in feats.items():
+        for tn, t in targets.items():
+            rr = [x for x in rows if t(x) is not None]
+            if not rr:
+                continue
+            S = st or (lambda x: 0)
+            vals = len(set((S(x), f(x)) for x in rr))
+            if len(rr) / max(1, vals) < 30:
+                continue
+
+            def acc_of(g):
+                by = collections.defaultdict(collections.Counter)
+                for x in rr:
+                    by[g(x)][t(x)] += 1
+                return sum(c.most_common(1)[0][1] for c in by.values()) / len(rr)
+            acc, base = acc_of(lambda x: (S(x), f(x))), acc_of(S)
+            out.append(dict(feature=fn, target=tn, acc=acc, base=base, fail=acc > base + margin))
+    return out
+
+
+def l_rf_check(it, where, melody=False):
+    """RF and D9, re-derived: cells on beats; two-beat cells on strong beats only (synT at beat 2 of 4/4 by its tie); dotted minim from beat 1;
+    semibreve only as a whole 4/4 bar; tresillo and Charleston whole 4/4 bars; no all-rest bar; bar lengths add up; the last bar is shortened
+    by the anacrusis"""
+    m = it['metre']
+    bar = LBAR[m]
+    bl = it['barLen']
+    if it['anac'] and (bl[-1] != bar - it['anac'] or any(x != bar for x in bl[:-1])):
+        fail('L', f'{where}: anacrusis {it["anac"]} but bar lengths {bl}')
+    if not it['anac'] and any(x != bar for x in bl):
+        fail('L', f'{where}: bar lengths {bl} in {m}')
+    if sum(sum(d for d, _ in LCELLS[c]) for c in it['anacCells']) != it['anac']:
+        fail('L', f'{where}: anacrusis cells {it["anacCells"]} do not make {it["anac"]}')
+    strong = {'2/4': [0], '3/4': [0], '4/4': [0, 840], '5/4': [0, 1260], '6/8': [0], '12/8': [0, 1260], '7/8': [0]}[m]
+    for b, cells in enumerate(it['cells']):
+        p = 0
+        notes = 0
+        L = bl[b]
+        for c in cells:
+            w = sum(d for d, _ in LCELLS[c])
+            if m == '7/8':
+                pass
+            elif m in COMPOUND:
+                if p % 630 and not (c == 'cq' and p + w == L):
+                    fail('L', f'{where}: bar {b+1} compound cell {c} starts off the beat at {p}')
+            else:
+                if p % 420 and not (c == 'e' and p + w == L):
+                    fail('L', f'{where}: bar {b+1} cell {c} starts off the beat at {p}')
+                last_fig = melody and b == len(it['cells']) - 1 and c == 'h' and not (m == '4/4' and p < 840 < p + w)   # a melody's ending figure
+                if w == 840 and c != 'synT' and p not in strong and m != '5/4' and not last_fig:
+                    fail('L', f'{where}: bar {b+1} two-beat cell {c} at {p} (not a strong beat)')
+                if m == '5/4' and it.get('grp'):
+                    g0 = it['grp'][0] * 420
+                    if p < g0 < p + w:
+                        fail('L', f'{where}: bar {b+1} cell {c} crosses the 5/4 grouping {it["grp"]}')
+                if c == 'synT' and not (m == '4/4' and p == 420):
+                    fail('L', f'{where}: tied syncopation away from the bar middle')
+                if c == 'hd' and p != 0 and m != '5/4':
+                    fail('L', f'{where}: dotted minim at {p}')
+                if c in ('w', 'tres', 'charl') and not (m == '4/4' and p == 0 and L == 1680):
+                    fail('L', f'{where}: {c} is not a whole 4/4 bar')
+            notes += sum(1 for d, k in LCELLS[c] if k == 'n')
+            p += w
+        if p != L:
+            fail('L', f'{where}: bar {b+1} adds up to {p}, not {L}')
+        if not notes:
+            fail('L', f'{where}: bar {b+1} is all rest')
+    if it['cells'][-1] and it['cells'][-1][-1] == 'antB':
+        fail('L', f'{where}: a tie over the end of the line')
+
+
+def l_ctp_check(it, where):
+    """M11 outer voices, independently (music21 for the chords): each bass note is the root or (ii°: only) the 3rd of the chord it names,
+    in the key; the melody note at the bass note's onset belongs to that chord; no parallel or consecutive 5ths / octaves between the
+    outer voices; no direct 5th / octave with a leap in the melody; no crossing; the leading note in the bass rises; I (i) first, V–I (i)
+    at the end, both in root position"""
+    do, mode = it['do'], it['mode']
+    tonic = (do + 9) % 12 if mode == 'min' else do
+    k = m21key.Key(TON[tonic] if mode != 'min' else {'D-': 'C#', 'A-': 'G#'}.get(TON[tonic], TON[tonic]).lower())
+    B = it['bass']
+    sop = []
+    for b in B:
+        n = next((x for x in it['notes'] if x[0] <= b[0] < x[0] + x[1]), None)
+        if n is None:
+            fail('L', f'{where}: no melody note at the bass onset {b[0]}')
+            return
+        sop.append(n[2])
+    for j, b in enumerate(B):
+        fig = b[3].replace('°', 'o')
+        inv = fig.endswith('6')
+        rn = roman.RomanNumeral(fig, k)
+        pcs = {p.pitchClass for p in rn.pitches}
+        want = rn.third.pitchClass if inv else rn.root().pitchClass
+        if b[2] % 12 != want:
+            fail('L', f'{where}: bass {b[2]} is not the {"3rd" if inv else "root"} of {b[3]}')
+        if sop[j] % 12 not in pcs:
+            fail('L', f'{where}: melody {sop[j]} not in {b[3]} at slot {j+1}')
+        if b[2] >= sop[j]:
+            fail('L', f'{where}: crossing at slot {j+1}')
+    if B[0][3] not in ('I', 'i') or B[-1][3] not in ('I', 'i') or B[-2][3] != 'V':
+        fail('L', f'{where}: does not open on I and close V–I: {[x[3] for x in B]}')
+    lt = (tonic + 11) % 12
+    for j in range(1, len(B)):
+        s0, s1, b0, b1 = sop[j - 1], sop[j], B[j - 1][2], B[j][2]
+        i0, i1 = (s0 - b0) % 12, (s1 - b1) % 12
+        if i0 in (0, 7) and i0 == i1 and s0 != s1 and b0 != b1:
+            fail('L', f'{where}: consecutive {"octaves" if i0 == 0 else "5ths"} slots {j}-{j+1}')
+        elif i1 in (0, 7) and (s1 - s0) * (b1 - b0) > 0 and abs(s1 - s0) > 2:
+            fail('L', f'{where}: direct {"octave" if i1 == 0 else "5th"} with a melodic leap into slot {j+1}')
+        if b0 % 12 == lt and b1 - b0 != 1:
+            fail('L', f'{where}: the leading note in the bass does not rise (slot {j})')
+    COUNT['self-check L8 M11 outer-voice items checked (independent checker)'] += 1
+
+
+async def ladder_section(pg):
+    MK = "(seed)=>{let s=seed;return()=>{s=(s*16807)%2147483647;return s/2147483647}}"
+    # ---------------- L0: stages, settings, names ----------------
+    st = await pg.evaluate("""()=>({mel:EARSTAGE.mel,rhy:EARSTAGE.rhy,rs:[4,5,6].map(g=>{S.level=g;EAR.all=false;return{mel:earRungsShown('mel'),rhy:earRungsShown('rhy')}}),
+        edr:EDR.find(x=>x[0]==='rhy')[2],tag:earStageTag('rhy'),names:EAR.names,mod:EAR.mod,saved:(()=>{EAR.names='kk';EAR.mod='move';earSave();const o=LS.get('cjg_ear');EAR.names='k';EAR.mod='home';earSave();return[o.names,o.mod,typeof o.rd]})(),
+        N:LADNAMES,NK:LADNAMES_KK,R:RHYNAMES,tiles:Object.fromEntries([1,2,3,4,5,6,7,8,9,10].map(l=>[l,ladRhyTiles(l)])),ec:[1,2,3].map(l=>earCells(l).join(' '))})""")
+    COUNT['self-check L0 Stage table and settings'] = 1
+    if st['mel'] != [4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6] or st['rhy'] != [4, 4, 4, 5, 5, 5, 5, 6, 6, 6]:
+        fail('L', f"EARSTAGE mel {st['mel']} rhy {st['rhy']}")
+    want_rs = [dict(mel=[1, 2, 3, 4], rhy=[1, 2, 3]), dict(mel=list(range(1, 9)), rhy=list(range(1, 8))), dict(mel=list(range(1, 13)), rhy=list(range(1, 11)))]
+    if st['rs'] != want_rs:
+        fail('L', f"rungs shown by Stage {st['rs']}")
+    if st['edr'] != '4–6' or st['tag'] != 'Stage 4–6':
+        fail('L', f"rhythm dictation Stage tag {st['edr']} / {st['tag']}")
+    if st['names'] != 'k' or st['mod'] != 'home' or st['saved'] != ['kk', 'move', 'object']:
+        fail('L', f"settings: names {st['names']}, mod {st['mod']}, saved {st['saved']}")
+    # names (D12; approved 20 Nov and 21:24): every tile at every rung has a name in both tables; the approved names unchanged
+    for k, v in APPROVED.items():
+        COUNT['self-check L6 names checked'] += 1
+        if st['N'].get(k) != v:
+            fail('L', f"name of {k}: {st['N'].get(k)!r}, approved {v!r}")
+    for l, tiles in st['tiles'].items():
+        for k in tiles:
+            COUNT['self-check L6 tile x rung names'] += 1
+            if not st['N'].get(k) or not st['NK'].get(k):
+                fail('L', f'rung {l} tile {k}: no time name in one of the two settings')
+    if st['N']['tri'] != 'tri-o-la' or st['NK']['tri'] != 'ta-ki-ta' or any(st['N'][k] != st['NK'][k] for k in st['N'] if k != 'tri'):
+        fail('L', 'names setting: only the triplet changes between Kodály and Kodály with konnakol tuplets (D12)')
+    if st['R'] != st['N']:
+        fail('L', 'RHYNAMES is not the ladder names table')
+
+    # ---------------- L1-L4, L11: melody items (5,000 seeded per rung) ----------------
+    N = 5000
+    mel = {}
+    for l in range(1, 12):   # one rung per call (the page keeps one rung's items at a time)
+        mel[l] = await pg.evaluate("""(a)=>{const[MK,N,l]=a,R=eval(MK)(491+l),rows=[];for(let i=0;i<N;i++){const q=ladGenMel(l,R);
+        rows.push({l,id:q.id,key:q.key.do,octv:q.doMidi-60-q.key.do,n:q.n,tempo:q.tempo||0,metre:q.metre||'',anac:q.anac||0,sol:q.a,new:q.new,
+          var:String((q.info&&(q.info.kind||q.info.var||q.info.tune))||''),rb1:q.cells?q.cells[0].join(' '):null,lo:Math.min(...q.midi),hi:Math.max(...q.midi),
+          cue:i<500?ladCueNotes(q):null,home:(q.info&&q.info.home)||0,mode:q.mode,barLen:i<1000?q.barLen||null:null,cells:i<1000?q.cells:null,anacCells:q.anacCells||[],
+          bass:q.bass?q.bass.map(b=>[b.on,b.dur,b.midi,b.chord]):null,notes:l===11&&i<2000?q.notes.map(x=>[x.on,x.dur,x.midi]):null,do:q.key.do,
+          aug2:q.aug2||null,ns:l===7?q.notes.map(x=>x.sol):null})}return rows}""", [MK, N, l])
+    for l, rows in mel.items():
+        ids = {x['id'] for x in rows}
+        COUNT[f'self-check L1 M{l} distinct items in {N}'] = len(ids)
+        if len(ids) < 100:
+            fail('L', f'M{l}: {len(ids)} distinct items in {N} draws (rule P: at least 100)')
+        if l >= 2:
+            sh = sum(1 for x in rows if x['new']) / len(rows)
+            COUNT[f'self-check L3 M{l} new-thing share'] = round(sh, 3)
+            if not 0.60 <= sh <= 0.73:
+                fail('L', f'M{l}: new-thing share {sh:.2f} (rule N: 0.60-0.73)')
+        lo, hi = min(x['lo'] for x in rows), max(x['hi'] for x in rows)
+        COUNT[f'self-check L4 M{l} MIDI range'] = f'{lo}-{hi}'
+        if lo < 55 or hi > 83:
+            fail('L', f'M{l}: MIDI {lo}-{hi} outside G3-B5 (MR2)')
+        if any(x['octv'] != 0 for x in rows):
+            fail('L', f'M{l}: do is not 60 + pc for every item (MR1)')
+        for x in rows[:500]:
+            T = 60 + x['do'] + SEMI[x['home'] % 7] + 12 * (x['home'] // 7)
+            if x['cue'][1] != T or x['cue'][0] != T - 12:
+                fail('L', f"M{l}: key cue {x['cue']} is not the mode's tonic triad at do = 60 + pc (D7)")
+                break
+        if l >= 4:
+            for x in rows[:1000]:
+                l_rf_check(dict(metre=x['metre'], barLen=x['barLen'], anac=x['anac'], anacCells=x['anacCells'], cells=x['cells']), f'M{l} {x["id"][:40]}', melody=True)
+                COUNT['self-check L5 melody rhythms checked against RF and D9'] += 1
+            tp = [x['tempo'] for x in rows]
+            if min(tp) < 72 or max(tp) > 96:
+                fail('L', f'M{l}: tempo {min(tp)}-{max(tp)} (72-96)')
+    # D5: fa-si at most once, as a step, flagged
+    for x in mel[7]:
+        if x['aug2'] is not None:
+            COUNT['self-check L2 M7 items checked for fa-si (D5)'] += 1
+            steps = [i for i in range(len(x['ns']) - 1) if x['ns'][i].rstrip(",'") == 'f' and x['ns'][i + 1].rstrip(",'") == 'si' and l_semis(x['ns'][i + 1]) - l_semis(x['ns'][i]) == 3]
+            if len(steps) > 1 or sorted(steps) != sorted(x['aug2']):
+                fail('L', f"M7 fa-si: steps at {steps}, flagged {x['aug2']}")
+                break
+    # tells (the prototype's tables)
+    for l, rows in mel.items():
+        feats = {'key signature': (lambda x: x['key'], None),
+                 'octave of the melody against the key cue': (lambda x: x['octv'], lambda x: x['key']),
+                 'number of notes (shown at rungs 1-3 only)': (lambda x: x['n'] if x['l'] <= 3 else 0, None),
+                 'tempo (8-bpm bands)': (lambda x: x['tempo'] // 8, None),
+                 'anacrusis (shown in the bar outline)': (lambda x: x['anac'], None)}
+        targets = {'note 2 solfa': lambda x: x['sol'][1], 'note 3 solfa': lambda x: x['sol'][2] if x['n'] > 2 else None,
+                   'note 4 solfa': lambda x: x['sol'][3] if x['n'] > 3 else None, 'penultimate solfa': lambda x: x['sol'][-2],
+                   'contains the new thing': lambda x: x['new'] if l >= 2 else None, 'variant': lambda x: x['var'] or None,
+                   'rhythm of bar 1': lambda x: x['rb1']}
+        tl = l_tell_table(rows, feats, {k: v for k, v in targets.items() if k != 'rhythm of bar 1'})
+        if l >= 4:
+            tl += l_tell_table(rows, {k + ', given the metre': (f, lambda x: x['metre']) for k, (f, s) in feats.items()}, {'rhythm of bar 1': targets['rhythm of bar 1']})
+            tl += l_tell_table(rows, {'metre (shown)': (lambda x: x['metre'], None)}, {k: v for k, v in targets.items() if k != 'rhythm of bar 1'})
+        if l == 11:
+            tl += l_tell_table(rows, {'length': (lambda x: x['n'], None), 'key': (lambda x: x['key'], None)},
+                               {'bass first note': lambda x: x['bass'][0][3], 'bass last note': lambda x: x['bass'][-1][3]})
+        COUNT[f'self-check L2 M{l} tells checked (5,000 items)'] = len(tl)
+        for t in tl:
+            if t['fail']:
+                fail('L', f"M{l} tell: {t['feature']} predicts {t['target']} {t['acc']:.0%} (given-information baseline {t['base']:.0%})")
+    # L8: M11 outer voices
+    for x in mel[11][:2000]:
+        l_ctp_check(dict(do=x['do'], mode='min' if x['mode'] == 'min' else 'maj', bass=x['bass'], notes=x['notes']), f"M11 {x['id'][:30]}")
+
+    # ---------------- rhythm items ----------------
+    rhy = {}
+    for l in range(1, 11):
+        rhy[l] = await pg.evaluate("""(a)=>{const[MK,N,l]=a,R=eval(MK)(503+l),rows=[];for(let i=0;i<N;i++){const q=ladGenRhy(l,R);
+        rows.push({l,id:q.id,metre:q.metre,tempo:q.tempo,pitch:q.pitch,anac:q.anac,anacCells:q.anacCells,cells:q.cells,barLen:q.barLen,new:q.new,hn:ladRhyHiddenNew(l,q),
+          tup:!!q.tup,kick:q.drums?q.drums.kick:null,swing:q.swing,backbeat:q.backbeat,grp:q.grp})}return rows}""", [MK, N, l])
+    for l, rows in rhy.items():
+        ids = [x['id'] for x in rows]
+        COUNT[f'self-check L1 R{l} distinct items in {N}'] = len(set(ids))
+        if l == 1:
+            if len(set(ids)) != 99:
+                fail('L', f'R1: {len(set(ids))} distinct bars (D1: exactly 99)')
+        elif len(set(ids)) < 100:
+            fail('L', f'R{l}: {len(set(ids))} distinct items (rule P)')
+        if 2 <= l <= 9:
+            sh = sum(1 for x in rows if x['new']) / len(rows)
+            COUNT[f'self-check L3 R{l} new-thing share'] = round(sh, 3)
+            if not 0.60 <= sh <= 0.73:
+                fail('L', f'R{l}: new-thing share {sh:.2f}')
+        for x in rows[:1500]:
+            l_rf_check(x, f'R{l} {x["id"][:40]}')
+            COUNT['self-check L5 rhythm items checked against RF and D9'] += 1
+        if l == 9:
+            for x in rows:
+                if x['tup']:
+                    COUNT['self-check L13 R9 tuplet items checked'] += 1
+                    per = [sum(1 for c in b if c in ('q5', 'q7_34', 'q7_43')) for b in x['cells']]
+                    if x['metre'] not in ('4/4', '5/4') or max(per) > 1:
+                        fail('L', f"R9 tuplets: metre {x['metre']}, per bar {per}")
+
+        def secs(x):
+            return round((x['anac'] + sum(x['barLen'])) / LTICK * 60 / x['tempo'])
+        # given information: the metre and the bar outline, which shows the anacrusis and the last bar shortened by it (D9). With an upbeat
+        # of a quaver the short last bar must end on a quaver, so the anacrusis is part of the baseline, not a feature (the reference model
+        # did not shorten the last bar)
+        given = lambda x: (x['metre'], x['anac'])
+        feats = {'tempo (8-bpm bands)': (lambda x: x['tempo'] // 8, given), 'playing time (whole seconds)': (secs, given),
+                 'tone pitch (MIDI)': (lambda x: x['pitch'], given), 'anacrusis (shown), metre given': (lambda x: x['anac'], lambda x: x['metre'])}
+        allc = lambda x: [c for b in x['cells'] for c in b]
+        targets = {'first cell': lambda x: x['cells'][0][0], 'second cell': lambda x: x['cells'][0][1] if len(x['cells'][0]) > 1 else None,
+                   'last cell': lambda x: x['cells'][-1][-1], 'contains a new cell (hidden)': lambda x: x['hn']}
+        if l == 9:
+            targets['contains a tuplet'] = lambda x: x['tup']
+        if l == 10:
+            targets['kick density'] = lambda x: sum(bin(m).count('1') for m in x['kick'])
+        tl = l_tell_table(rows, {k: v for k, v in feats.items() if not k.startswith('anacrusis')}, targets)
+        tl += l_tell_table(rows, {k: v for k, v in feats.items() if k.startswith('anacrusis')}, {k: v for k, v in targets.items() if k != 'last cell'})
+        COUNT[f'self-check L2 R{l} tells checked (5,000 items)'] = len(tl)
+        for t in tl:
+            if t['fail']:
+                fail('L', f"R{l} tell: {t['feature']} predicts {t['target']} {t['acc']:.0%} (baseline {t['base']:.0%})")
+    # D1: no repeat of a rung 1 bar within the last 30 (the app's own draw, earGen)
+    seq = await pg.evaluate("()=>{const o=[];for(let i=0;i<3000;i++)o.push(earGen('rhy',1).id);return o}")
+    rep = [i for i in range(len(seq)) if seq[i] in seq[max(0, i - 30):i]]
+    COUNT['self-check L1 R1 consecutive draws checked for repeats within 30'] = len(seq)
+    if rep:
+        fail('L', f'R1: {len(rep)} repeats within 30 items (D1), first at {rep[0]}')
+
+    # ---------------- L7: M9 pivot window and both readings ----------------
+    m9 = await pg.evaluate("""(MK)=>{const R=eval(MK)(497),o=[];while(o.length<2000){const q=ladGenMel(9,R);if(!q.kind)continue;
+        o.push({kind:q.kind,do:q.key.do,pivot:q.pivot,win:q.pivotWindow,home:q.readings.home,move:q.readings.move,a:q.a,midi:q.midi,pn:q.pivotNames,nk:q.newKey})}return o}""", MK)
+    for q in m9:
+        COUNT['self-check L7 M9 items checked'] += 1
+        w = f"M9 {q['kind']} {' '.join(q['a'][:6])}"
+        sh = 7 if q['kind'] in ('M-V', 'm-v') else 0
+        if q['home'] != q['a']:
+            fail('L', f'{w}: the Keep home do reading is not the item\'s solfa')
+        dm = 60 + q['do']
+        for j, (h, mv, mi) in enumerate(zip(q['home'], q['move'], q['midi'])):
+            if dm + l_semis(h) != mi:
+                fail('L', f'{w}: home reading {h} is not MIDI {mi}')
+                break
+            nd = dm + (sh if j >= q['pivot'] else 0)
+            if (nd + l_semis(mv) - mi) % 12:
+                fail('L', f'{w}: move reading {mv} at {j} is not MIDI {mi} with do {nd}')
+                break
+            if j < q['pivot'] and mv != h:
+                fail('L', f'{w}: the readings differ before the pivot')
+                break
+        if q['pn'][0] != q['home'][q['pivot']] or q['pn'][1] != q['move'][q['pivot']]:
+            fail('L', f"{w}: pivot names {q['pn']}")
+        if q['kind'] in ('M-V', 'm-v') and q['home'][q['pivot']].rstrip(",'") == 'f':
+            fail('L', f'{w}: the pivot is fa going to V')
+        # the window, re-derived: run of notes common to both keys before the first note only in the new key
+        old = {0, 2, 4, 5, 7, 9, 11} if q['kind'][0] == 'M' else {9, 11, 0, 2, 4, 5, 7, 6, 8}
+        new = {(x + (7 if q['kind'] == 'M-V' else 0)) % 12 for x in ({0, 2, 4, 5, 7, 9, 11} if q['kind'] in ('M-V', 'm-III') else {9, 11, 0, 2, 4, 5, 7, 6, 8})}
+        if q['kind'] == 'm-v':
+            new = {(x + 7) % 12 for x in {9, 11, 0, 2, 4, 5, 7, 6, 8}}
+        pcs = [l_semis(h) % 12 for h in q['home']]
+        first = next((j for j in range(q['pivot'] + 1, len(pcs)) if pcs[j] in new and pcs[j] not in old), None)
+        end = (first - 1) if first is not None else len(pcs) - 1
+        stt = min(end, q['pivot'])
+        while stt > 0 and pcs[stt - 1] in old and pcs[stt - 1] in new:
+            stt -= 1
+        if [min(stt, q['pivot']), max(end, q['pivot'])] != q['win']:
+            fail('L', f"{w}: pivot window {q['win']}, re-derived {[stt, end]}")
+
+    # ---------------- L9, L10: marking, palette, readiness ----------------
+    mk = await pg.evaluate("""(MK)=>{const R=eval(MK)(499),o={right:{},wrong:{},pal:{},beams:0,err:[]};
+        for(let l=1;l<=12;l++){let r=0,w=0,p=0;for(let i=0;i<150;i++){const q=ladGenMel(l,R),parts=l===11?['mel','bass']:['mel'],A={};
+          for(const part of parts){const E=ladTruthEntries(q,part);A[part]=E;let ok=true;for(let j=0;j<E.length;j++){if(!ladPalette(q,E.slice(0,j),part).lengths.some(x=>x.t===E[j].t&&x.rest===!E[j].s)){ok=false;break}}
+            if(ok&&ladPalette(q,E,part).done)p++}
+          const ans=l===11?A:A.mel;if(ladMelMark(q,ans,{mod:'home'}).ok)r++;
+          // one wrong pitch: a note a step away
+          const B=JSON.parse(JSON.stringify(ans)),L=l===11?B.mel:B,k=L.findIndex(e=>e.s);if(k>=0){const pp=ladParse(L[k].s);L[k].s=ladSyl(pp.i+1,0)}
+          const mm=ladMelMark(q,B,{mod:'home'});if(!mm.ok&&!mm.nearly&&mm.detail.some(d=>!d.pitch))w++}
+         o.right[l]=r;o.wrong[l]=w;o.pal[l]=p}
+        // M10: the other chromatic spelling = Nearly (D4)
+        let nl=0,nt=0;for(let i=0;i<400&&nt<50;i++){const q=ladGenMel(10,R);if(!q.chrom||!q.chrom.length)continue;const E=ladTruthEntries(q),j=q.chrom[0]-1,pp=ladParse(E[j].s);
+          const s2=pp.a>0?ladSyl(pp.i+1,-1):ladSyl(pp.i-1,1),F=E.map(x=>({...x}));F[j].s=s2;nt++;const m=ladMelMark(q,F);if(m.nearly&&!m.ok)nl++}
+        o.m10=[nl,nt];
+        // M9: the pivot only under Move do
+        let pv=[0,0,0];for(let i=0;i<200;i++){const q=ladGenMel(9,R);if(!q.kind)continue;const E=ladTruthEntries(q);pv[0]++;
+          if(ladMelMark(q,E,{mod:'home'}).ok&&ladMelMark(q,E,{mod:'move',pivot:q.pivot}).ok)pv[1]++;if(!ladMelMark(q,E,{mod:'move',pivot:null}).ok&&!ladMelMark(q,E,{mod:'move',pivot:q.pivotWindow[1]+1}).ok)pv[2]++}
+        o.m9=pv;
+        // rhythm: the answer itself is right; the register's Nearly cases
+        o.rr={};for(let l=1;l<=10;l++){let r=0;for(let i=0;i<300;i++){const q=ladGenRhy(l,R);if(ladRhyMark(q,q.a).ok)r++}o.rr[l]=r}
+        const base={d:'rhy',l:6,metre:'4/4',anac:0,anacCells:[],cells:[['q','synT','q']],barLen:[1680],swing:false};base.a=base.cells.flat();
+        o.d11=ladRhyMark(base,['q','syn','q']).kind;o.d11b=ladRhyMark(base,['q','synT','q']).kind;
+        const t7={d:'rhy',l:9,metre:'4/4',anac:0,anacCells:[],cells:[['q7_43','q','h']],barLen:[1680]};t7.a=t7.cells.flat();o.sep=ladRhyMark(t7,['q7_34','q','h']).kind;
+        const sw={d:'rhy',l:8,metre:'4/4',anac:0,anacCells:[],cells:[['e2','q','h']],barLen:[1680],swing:true};sw.a=sw.cells.flat();o.swing=ladRhyMark(sw,['trq','q','h']).kind;
+        o.wrongR=ladRhyMark(sw,['q','q','h']).kind;
+        // R10 marking by parts
+        const g=ladGenRhy(10,R),D=ladDrumOns(g.drums);o.r10=[ladRhyMark(g,{riff:g.a,drums:D}).ok,ladRhyMark(g,{riff:g.a,drums:{kick:D.kick.slice(1),snare:D.snare}}).ok];
+        // D10 readiness: answered only; 8 of the last 10
+        let rd={};['ok','ok','shown','skipped','nearly','ok','ok','ok','ok','ok','ok','miss','miss'].forEach(k=>ladRdPush(rd,'mel',4,k));
+        o.rd=[rd.mel[4].join(''),ladRdState(rd,'mel',4,[4,5]).ready,ladRdState({mel:{4:[1,1,1,1,1,1,1,1,0,0]}},'mel',4,[4,5]).ready,ladRdState({mel:{4:[1,1,1,1,1,1,1,0,0,0]}},'mel',4,[4,5]).ready,
+          ladRdState({mel:{4:[1,1,1,1,1,1,1,1,1,1]}},'mel',4,[4]).ready];
+        // beaming: quaver pairs beamed, crotchets not
+        const q4=ladGenMel(4,R),E4=ladTruthEntries(q4),bm=ladBeams(q4,E4);let full=[{t:q4.notes[0].dur,s:'x'},...E4];o.beams=bm.every(g=>g.every(j=>full[j].t<420)&&g.length>=2);
+        return o}""", MK)
+    for l in range(1, 13):
+        COUNT['self-check L9 melody answers marked'] += 150
+        if mk['right'][str(l)] != 150:
+            fail('L', f"M{l}: the right answer is marked right {mk['right'][str(l)]} of 150")
+        if mk['wrong'][str(l)] != 150:
+            fail('L', f"M{l}: one wrong pitch is marked wrong (with the note flagged) {mk['wrong'][str(l)]} of 150")
+        if mk['pal'][str(l)] != (300 if l == 11 else 150):
+            fail('L', f"M{l}: the answer can be entered through the palette {mk['pal'][str(l)]} times")
+    COUNT['self-check L9 M10 enharmonic spellings marked Nearly'] = f"{mk['m10'][0]} of {mk['m10'][1]}"
+    if mk['m10'][1] < 20 or mk['m10'][0] != mk['m10'][1]:
+        fail('L', f"M10: the other chromatic spelling is Nearly {mk['m10']}")
+    if mk['m9'][1] != mk['m9'][0] or mk['m9'][2] != mk['m9'][0]:
+        fail('L', f"M9 pivot marking (Move do only): {mk['m9']}")
+    for l in range(1, 11):
+        if mk['rr'][str(l)] != 300:
+            fail('L', f"R{l}: the answer itself is marked right {mk['rr'][str(l)]} of 300")
+    if (mk['d11'], mk['d11b'], mk['sep'], mk['swing'], mk['wrongR']) != ('nearly', 'right', 'nearly', 'nearly', 'wrong'):
+        fail('L', f"rhythm Nearly cases (D11 syn, septuplet grouping, swing triplet, plain wrong): {mk['d11']}, {mk['d11b']}, {mk['sep']}, {mk['swing']}, {mk['wrongR']}")
+    if mk['r10'] != [True, False]:
+        fail('L', f"R10 marking by parts: {mk['r10']}")
+    if mk['rd'] != ['1111111100', True, True, False, False]:
+        fail('L', f"readiness (D10): {mk['rd']}")
+    if not mk['beams']:
+        fail('L', 'beaming groups a note of a crotchet or longer')
+    COUNT['self-check L9 marking, readiness and beaming cases'] = 12
+
+    # ---------------- L14: playback renders for every rung (count-in, tuplet accents, swing, backbeat, two parts) ----------------
+    pb = await pg.evaluate("""async(MK)=>{const R=eval(MK)(503),o={};for(let l=1;l<=10;l++){const q=ladGenRhy(l,R);EAR.rhy.bpm=null;const r=await elRender(q,'all');
+        const want=ladRhyEvents(q.a).ev.filter(e=>!e.rest).length;o['r'+l]=[r.info.events.length,want,+r.info.dur.toFixed(2)]}
+        const t9=ladGenRhy(9,R,{wantNew:true});o.acc=ladRhyEvents(['q7_34']).ev.map(e=>e.acc?1:0).join('');
+        for(let l=1;l<=12;l++){const q=ladGenMel(l,R);const r=await elRender(q,'all');o['m'+l]=+r.info.dur.toFixed(2)}return o}""", MK)
+    COUNT['self-check L14 rungs rendered offline'] = 22
+    for l in range(1, 11):
+        got, want, d = pb[f'r{l}']
+        if got != want or d <= 0:
+            fail('L', f'R{l} playback: {got} notes scheduled, {want} written ({d} s)')
+    if pb['acc'] != '1001000':
+        fail('L', f"septuplet 3+4 accents {pb['acc']} (R9: +3 dB on the first of each group)")
+    for l in range(1, 13):
+        if not pb[f'm{l}'] > 0:
+            fail('L', f'M{l} playback did not render')
 
 
 async def main():
@@ -642,6 +1075,10 @@ async def main():
                 fail('J', f'{len(miss)} model x key combinations have no fixture row, e.g. {miss[:3]}')
         else:
             fail('J', 'tests/fixtures/earlab_ic.json is missing')
+        n0 = len(errs)
+        await ladder_section(pg)
+        if len(errs) > n0:
+            fail('L', f'page errors in the ladder checks: {errs[n0:][:3]}')
         await b.close()
 
     report = {'counts': dict(COUNT), 'failures': {k: v[:25] for k, v in FAIL.items()}, 'n_failures': sum(len(v) for v in FAIL.values())}
