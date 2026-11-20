@@ -1,0 +1,27 @@
+/* Ear Lab 0.49, entry A/B preview, option (b): the length palette. Mock CSS for the preview only; nothing here is lifted yet.
+   The palette takes the step switch's place on the melody desk (.meldesk.r4.bylen). Existing tokens only.
+   (The class is .bylen, not .pal: .pal is the chord palette in the Gym.) */
+.el-palwrap{grid-area:steps;min-width:0}
+.el-pal{display:flex;border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden}
+.el-pallab{flex:none;display:flex;align-items:center;padding:0 12px 0 14px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);background:var(--panel2);border-right:1px solid var(--line)}
+.el-len{position:relative;flex:1 1 0;min-width:44px;height:68px;padding:6px 0 8px;display:grid;justify-items:center;align-content:center;background:none;border:0;border-radius:0;color:var(--ivory);cursor:pointer}
+.el-len+.el-len{border-left:1px solid var(--line)}
+.el-len svg{display:block;width:auto;height:38px}
+.el-len small{margin-top:3px;font-size:11px;line-height:13px;letter-spacing:.4px;color:var(--muted)}
+.el-len:hover:not([disabled]){background:rgba(201,162,74,.06)}
+/* the chosen length stays chosen: a gold wash, a brighter glyph and name, and a bar at the foot (a mark, not only a colour) */
+.el-len[aria-checked=true]{background:rgba(201,162,74,.13);color:var(--goldhi)}
+.el-len[aria-checked=true] small{color:var(--goldhi)}
+.el-len[aria-checked=true]::after{content:"";position:absolute;left:16px;right:16px;bottom:0;height:2px;border-radius:2px 2px 0 0;background:var(--gold)}
+/* a length that does not fit what is left of the bar */
+.el-len[disabled]{cursor:default}
+.el-len[disabled] svg,.el-len[disabled] small{opacity:.32}
+.el-len:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+@media (max-width:760px){
+ /* the palette stays on screen with the score: it sticks directly under it, and the ladder rows pass beneath */
+ .meldesk.r4.bylen .melscore{border-bottom:0;padding-bottom:8px}
+ .el-palwrap{order:-1;position:sticky;top:calc(var(--top) + var(--melscore-h,216px));z-index:3;margin:-12px -16px 0;padding:0 16px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+ .el-len{height:52px;padding:2px 0 5px}
+ .el-len svg{height:31px}
+ .el-len small{margin-top:0}
+}
