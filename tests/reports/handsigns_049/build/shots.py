@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """PNG renders: sheet, ladder mock-ups (1366x768 and 390), per-sign PNGs (ink, transparent, 600 px tall), the full ladder."""
-import asyncio, pathlib, build, gen
+import asyncio, pathlib, build
 from playwright.async_api import async_playwright
 H = pathlib.Path(__file__).resolve().parent; R = H.parent; P = R / 'png'
 async def main():
@@ -14,8 +14,8 @@ async def main():
             over = await pg.evaluate('document.documentElement.scrollWidth-innerWidth'); print('mock', w, 'sideways overflow', over)
             await pg.screenshot(path=str(P / f'ladder_mock_{w}.png'), full_page=True); await pg.close()
         pg = await b.new_page(viewport={'width': 750, 'height': 600})
-        for n in gen.ORDER + ["do'"]:
-            s = build.sign(n, 'mid')
+        for n in build.ORDER + ["do'"]:
+            s = build.sign(n, 'full')
             await pg.set_content(f'<body style="margin:0;color:#1d1a14"><style>svg{{width:750px;height:600px;display:block}}</style>{s}</body>')
             await pg.screenshot(path=str(P / f'{"do-high" if n == "do" + chr(39) else n}.png'), omit_background=True)
         await pg.close()

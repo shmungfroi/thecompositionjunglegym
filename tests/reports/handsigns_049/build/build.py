@@ -1,23 +1,32 @@
 #!/usr/bin/env python3
-"""Builds the 0.49 hand-sign deliverables from gen.py: svg/ (ladder weight), svg/display/ (light weight for big screens),
-sheet.html, ladder_mock.html, ladder_full.html. Then run shots.py for the PNGs."""
-import pathlib, gen
+"""Builds the 0.49 hand-sign deliverables (round 2) from the drawings ink.py leaves in build/drawn/:
+svg/ (the full drawings), svg/small/ (the simplified small-size drawings from the same posed hand), sheet.html,
+ladder_mock.html, ladder_full.html. Order: python3 ink.py (about 6 minutes), python3 build.py, python3 shots.py."""
+import pathlib, json
 H = pathlib.Path(__file__).resolve().parent; R = H.parent
 F = '../../../design/earlab_048/fonts'
 FONTS = ''.join(f"@font-face{{font-family:'Outfit';font-weight:{w};src:url({F}/outfit-latin-{w}-normal.woff2) format('woff2')}}" for w in (300, 400, 600)) + \
         f"@font-face{{font-family:'Poiret One';src:url({F}/poiret-one-latin-400-normal.woff2) format('woff2')}}"
 TOK = ":root{--ink:#0b0906;--panel:#12100b;--panel2:#17140e;--line:#2a2418;--gold:#c9a24a;--goldhi:#f0d48a;--ivory:#ece2c8;--muted:#9c927c;--red:#c8473b;--green:#8fbf6a;--violet:#a493d8;--paper:#f6f0e2;--pink:#1d1a14}"
-WEIGHTS = {'ladder': (2.6, 1.7), 'mid': (2.0, 1.4), 'display': (1.6, 1.15)}
-
+ORDER = ['do', 'di', 'ra', 're', 'ri', 'me', 'mi', 'fa', 'fi', 'se', 'so', 'si', 'le', 'la', 'li', 'te', 'ti']
+NAMES = {'di': 'di (raised do)', 'ri': 'ri (raised re)', 'fi': 'fi (raised fa)', 'si': 'si (raised so)', 'li': 'li (raised la)', 'te': 'te (lowered ti)',
+         'le': 'le (lowered la)', 'se': 'se (lowered so)', 'me': 'me (lowered mi)', 'ra': 'ra (lowered re)'}
+_D = {}
+def drawn(n):
+    if n not in _D: _D[n] = json.loads((H / 'drawn' / f'{n}.json').read_text())
+    return _D[n]
+def svg(n, small=False):
+    d = drawn(n); s = '_s' if small else ''
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 64" role="img" aria-label="{NAMES.get(n, n)} hand sign">'
+            f'<path d="{d["tone" + s]}" fill="currentColor" fill-opacity="{".2" if small else ".17"}"/><path d="{d["ink" + s]}" fill="currentColor"/></svg>')
 def sign(n, weight='ladder', cls=''):
-    o, i = WEIGHTS[weight]; base = n.replace("'", '')
-    s = gen.svg(base).replace(f'stroke-width="{gen.W_OUT}"', f'stroke-width="{o}"').replace(f'stroke-width="{gen.W_IN}"', f'stroke-width="{i}"')
-    return s.replace('<svg ', f'<svg class="hsg {cls}" ', 1)
+    """weight 'ladder' = the simplified small-size drawing; anything else = the full drawing"""
+    return svg(n.replace("'", ''), small=(weight == 'ladder')).replace('<svg ', f'<svg class="hsg {cls}" ', 1)
 
 GEST = {
- "do'": 'the do fist again, at the forehead', 'ti': 'first finger points up and forward; the rest curled', 'la': 'hand hangs loose from the wrist, all fingers drooping',
- 'so': 'open hand on its edge, palm towards you, thumb on top', 'fa': 'loose fist, thumb pointing down', 'mi': 'flat hand, level, palm down',
- 're': 'flat hand slanting upward', 'do': 'closed fist, knuckles forward',
+ "do'": 'the do fist again, at the forehead', 'ti': 'first finger points up and forward; the other fingers curled', 'la': 'hand hangs loose from the wrist, palm down, fingers drooping',
+ 'so': 'open hand on its edge, palm towards you, thumb on top', 'fa': 'loose fist, thumb pointing down towards mi', 'mi': 'flat hand, level, palm down',
+ 're': 'flat hand slanting upward, palm down', 'do': 'closed fist, palm down, knuckles forward',
  'di': 'the do fist tipped up', 'ri': 'the re slant, steeper', 'fi': 'the fa hand turned over: thumb up', 'si': 'the so hand lifted, fingers opening',
  'li': 'the la hand turned up: palm cupped upward', 'te': 'the ti finger pointing down', 'le': 'the la hand dropped: fingers hang straight down',
  'se': 'the so hand tipped down, palm open', 'me': 'the mi hand sloping down', 'ra': 'the re hand with the thumb let fall'}
@@ -29,23 +38,21 @@ CHROMA_UP = ["do'", 'ti', 'li', 'la', 'si', 'so', 'fi', 'fa', 'mi', 'ri', 're', 
 col = lambda n: f"var(--{DEG.get(n, 'violet')})"
 
 def write_svgs():
-    (R / 'svg' / 'display').mkdir(parents=True, exist_ok=True)
-    for n in gen.ORDER:
-        (R / 'svg' / f'{n}.svg').write_text(gen.svg(n) + '\n')
-        o, i = WEIGHTS['display']
-        (R / 'svg' / 'display' / f'{n}.svg').write_text(gen.svg(n).replace(f'stroke-width="{gen.W_OUT}"', f'stroke-width="{o}"').replace(f'stroke-width="{gen.W_IN}"', f'stroke-width="{i}"') + '\n')
+    (R / 'svg' / 'small').mkdir(parents=True, exist_ok=True)
+    for n in ORDER:
+        (R / 'svg' / f'{n}.svg').write_text(svg(n) + '\n'); (R / 'svg' / 'small' / f'{n}.svg').write_text(svg(n, True) + '\n')
 
 def sheet():
-    big = lambda L: ''.join(f'<figure class="big"><div style="color:{col(n)}">{sign(n, "display")}</div><figcaption><b>{n}</b><span>{GEST[n]}</span></figcaption></figure>' for n in L)
+    big = lambda L: ''.join(f'<figure class="big"><div style="color:{col(n)}">{sign(n, "full")}</div><figcaption><b>{n}</b><span>{GEST[n]}</span></figcaption></figure>' for n in L)
     def sizes(theme):
         rows = ''
         for n in DIA[::-1] + UP[::-1] + DOWN[::-1]:
             c = col(n) if theme == 'dark' else '#1d1a14'
             rows += (f'<tr><th>{n}</th><td style="color:{c}">{sign(n, "ladder", "s1")}</td><td style="color:{c}">{sign(n, "ladder", "s2")}</td>'
-                     f'<td style="color:{c}">{sign(n, "mid", "s3")}</td><td class="one">{sign(n, "ladder", "s1")}</td></tr>')
+                     f'<td style="color:{c}">{sign(n, "full", "s3")}</td><td class="one">{sign(n, "ladder", "s1")}</td></tr>')
         ink = 'gold' if theme == 'dark' else 'ink, one colour'
-        return (f'<div class="szs {theme}"><table><thead><tr><th></th><th>42 × 34<br><small>phone ladder</small></th><th>50 × 40<br><small>desktop ladder</small></th>'
-                f'<th>120 × 96<br><small>card</small></th><th>42 × 34<br><small>{ink}</small></th></tr></thead>{rows}</table></div>')
+        return (f'<div class="szs {theme}"><table><thead><tr><th></th><th>42 × 34<br><small>phone ladder · small drawing</small></th><th>50 × 40<br><small>desktop ladder · small drawing</small></th>'
+                f'<th>120 × 96<br><small>card · full drawing</small></th><th>42 × 34<br><small>{ink}</small></th></tr></thead>{rows}</table></div>')
     pairs = [('re', 'ti'), ('fa', 'ti'), ('re', 'ri'), ('mi', 'me'), ('re', 'ra'), ('so', 'si'), ('so', 'se'), ('la', 'le'), ('la', 'li'), ('fa', 'fi'), ('ti', 'te'), ('do', 'di')]
     pr = lambda th: ''.join(f'<span class="pair">{sign(a, "ladder", "s1")}{sign(b, "ladder", "s1")}<small>{a} · {b}</small></span>' for a, b in pairs)
     html = f'''<!doctype html><html lang="en-AU"><meta charset="utf-8"><title>Hand signs · design sheet 0.49</title><style>{FONTS}{TOK}
@@ -65,7 +72,7 @@ p{{margin:0 0 8px;max-width:820px}}.note{{color:var(--muted);font-size:13px}}
 .pairs{{display:flex;flex-wrap:wrap;gap:10px}}.pair{{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--gold)}}
 .pair small{{color:var(--muted);font-size:12px;margin-left:4px}}.pairs.light .pair{{background:var(--paper);border-color:#d9cfb6;color:#1d1a14}}.pairs.light small{{color:#6d6452}}
 </style>
-<h1>Hand signs</h1><p class="note">Composition Jungle Gym · design sheet for approval · 0.49 · original drawings, one right hand, wrist entering from the right, fingers to the left (the signer's own hand, as Curwen's plate also shows it). Colour is the degree colour; every drawing is a single colour.</p>
+<h1>Hand signs</h1><p class="note">Composition Jungle Gym · design sheet for approval · 0.49 · round 2 · drawn from a posed anatomical hand · one right hand, the signer's own view, wrist from the right. Colour is the degree colour; every drawing is a single colour. The two ladder sizes use the simplified small-size drawing made from the same hand.</p>
 <h2>The scale · do to do′</h2><div class="grid">{big(DIA[::-1])}</div>
 <h2>Raised · the parent sign turned up</h2><div class="grid c5">{big(UP[::-1])}</div>
 <h2>Lowered · the parent sign turned down</h2><div class="grid c5">{big(DOWN[::-1])}</div>
@@ -109,7 +116,7 @@ h2{{font:600 12px Outfit;letter-spacing:3px;text-transform:uppercase;color:var(-
 def ladder_full():
     rows = [("do'", None, None), (None, 'te', 'li'), ('la', None, None), (None, 'le', 'si'), ('so', None, None), (None, 'se', 'fi'), ('fa', None, None), ('mi', None, None), (None, 'me', 'ri'), ('re', None, None), (None, 'ra', 'di'), ('do', None, None)]
     rows.insert(1, ('ti', None, None))
-    cell = lambda n, c: f'<div class="c {c}" style="grid-row:{{r}}/span 2">{sign(n, "mid")}<b>{n.replace(chr(39), "′")}</b></div>' if n else ''
+    cell = lambda n, c: f'<div class="c {c}" style="grid-row:{{r}}/span 2">{sign(n, "full")}<b>{n.replace(chr(39), "′")}</b></div>' if n else ''
     h, r = '', 1
     for d, fl, sh in rows:
         if d: h += cell(d, 'd').format(r=r); nxt = r + 2

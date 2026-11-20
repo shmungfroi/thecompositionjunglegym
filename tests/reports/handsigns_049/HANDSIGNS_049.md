@@ -2,20 +2,23 @@
 
 Design step for approval. Nothing in `index.html` has changed. Branch `049-handsigns`, 20 Nov 2026. Design lead: Fable.
 
+**Round 2 (after Justin, 21:36: "the illustrations are awful. make them much more human").** The round 1 glove-like outlines are gone (git keeps them at `6705031`). All 17 signs are redrawn as naturalistic hands; gestures, viewpoint and heights are unchanged. Sections 1 and 5 describe the new drawings; section 5.3 says what changed per sign and which ones I am still unhappy with.
+
 Justin's brief (20 Nov 21:16): "these are just examples, we must build our own based on these. the principles are common property only the actual art is a possible IP issue."
 
 ## 1. What is here
 
 | File | What it is |
 |---|---|
-| `svg/*.svg` (17) | The signs at ladder weight: do re mi fa so la ti, di ri fi si li, te le se me ra. do′ uses `do.svg`. Single colour (`currentColor`), viewBox 80 × 64 |
-| `svg/display/*.svg` (17) | The same drawings with a lighter line, for cards and a teaching screen |
+| `svg/*.svg` (17) | The full drawings: do re mi fa so la ti, di ri fi si li, te le se me ra. do′ uses `do.svg`. Single colour (`currentColor`: ink line plus one flat tone at 17%), viewBox 80 × 64, about 20 kB each |
+| `svg/small/*.svg` (17) | The simplified small-size drawing of each sign, made from the same posed hand: bold contour, the main overlaps, a 20% tint. For the ladder sizes (42 × 34 to about 60 px). About 4 kB each |
 | `sheet.html`, `png/sheet_1366.png` | Every sign, labelled, at three sizes, dark and light, plus the look-alike pairs at the phone size |
 | `ladder_mock.html`, `png/ladder_mock_1366.png`, `png/ladder_mock_390.png` | Static mock-up of the ladders (major, flats, sharps, la-based minor, Keys room rows) |
 | `png/app_earlab_1366.png`, `png/app_earlab_390.png`, `png/app_keys_1366.png`, `png/app_keys_390.png` | The real app at 1366 × 768 and 390 with the new signs swapped in at run time (`build/app_mock.py`; `index.html` untouched) |
-| `png/<syllable>.png` (18, incl. `do-high.png`) | Each sign alone: 750 × 600, transparent, ink `#1d1a14`, all in the same frame so they keep their relative size when placed in a document |
+| `png/<syllable>.png` (18, incl. `do-high.png`) | Each sign alone (full drawing): 750 × 600, transparent, ink `#1d1a14`, all at the same scale so they keep their relative size when placed in a document |
 | `ladder_full.html`, `png/ladder_full.png` | The whole ladder: scale in the centre, lowered signs left, raised signs right, transparent |
-| `build/gen.py`, `build/build.py`, `build/shots.py`, `build/app_mock.py` | The source of the drawings and the scripts that make everything above |
+| `build/hand3d.py`, `build/poses.py`, `build/ink.py` | The hand model, the seventeen poses, and the drawing derived from them (section 5) |
+| `build/build.py`, `build/shots.py`, `build/app_mock.py`, `build/preview.py`, `build/view.py` | Scripts that make the sheet, mock-ups and PNGs. Order: `ink.py` (about 6 minutes), `build.py`, `shots.py`, `app_mock.py` |
 | `refs/` | Justin's reference images (gesture evidence only). **Left out of the commit**: they are other people's artwork and full-screen screenshots that show browser tabs and bookmarks, and this repository publishes to GitHub Pages. They stay in the worktree, untracked |
 
 ## 2. The gestures
@@ -75,7 +78,7 @@ Nothing in [J] looks wrong. The one place I am reading rather than quoting is ra
 - **Keys room, "Sing it · hand signs".** Rows of syllable, degree, note name and a written description ("closed fist"); no picture. Chromatic steps read "chromatic syllable: raised fi".
 - The app has one theme (dark). The light renders on the sheet are for print and booklets.
 
-Proposed slots (shown in the mock-ups): 55 × 44 on the desktop ladder, 45 × 36 on the phone ladder, 50 × 40 in the Keys rows (42.5 × 34 on phones). Row heights do not change (49 and 44 px), there is no sideways scroll at 390, and no text is below the 11 px floor. The new frame is squarer than the KMEIA strip (80 × 64 against roughly 2 : 1), so a tilted hand gets the same room as a level one and the ladder column gets 20 px back.
+Proposed slots (shown in the mock-ups, using the small drawings): 55 × 44 on the desktop ladder, 45 × 36 on the phone ladder, 50 × 40 in the Keys rows (42.5 × 34 on phones). Row heights do not change (49 and 44 px), there is no sideways scroll at 390, and no text is below the 11 px floor. The new frame is squarer than the KMEIA strip (80 × 64 against roughly 2 : 1), so a tilted hand gets the same room as a level one and the ladder column gets 20 px back.
 
 ## 4. Viewpoint
 
@@ -83,23 +86,57 @@ Proposed slots (shown in the mock-ups): 55 × 44 on the desktop ladder, 45 × 36
 
 One honest caveat. For the palm-down signs (do, re, mi, la, ti) a student looking down sees more of the back of the hand than the drawing shows; like every chart, the drawing lowers the eye to hand height so the shape reads as a silhouette. A true front view (what the class sees of the teacher) was rejected: do becomes a row of knuckles and mi a thin edge, and re, mi and me can no longer be told apart.
 
-A left-handed mirror set is one transform away if wanted.
+A left-handed mirror set is one transform away if wanted. In round 2 the eye is where the signer's eyes are (above and to the thumb side), so the palm-down signs now show the back of the hand as the signer sees it, which removes most of the caveat above.
 
-## 5. The drawings, and why they are original
+## 5. The drawings (round 2), and why they are original
 
-- **Made from nothing but our own coordinates.** Every outline is a Bezier path typed by hand in `build/gen.py`. No reference image was traced, vectorised, overlaid or opened in a drawing tool; the references were read once for the gesture and described in words (section 2) before any drawing began.
-- **A system the references do not have.** Seven base hands only (fist, blade, fa, so, open so, la, ti). Each chromatic sign is its parent placed again by rotation or by turning it over, which is the teaching rule itself (raised = turned up, lowered = turned down) made visible. ra has the blade with the thumb let fall.
-- **Our own line.** Two weights of one round-nib line (outline and inner lines), a 10% tint of the same colour inside the silhouette so the hand has body at 34 px, the wrist left open and closed by a single cuff arc borrowed from the Garden's corner curl. Fingers are simplified to what a sign needs: no nails, no knuckle shading, no sleeve.
-- **Unlike each reference.** The KMEIA chart is a fine naturalistic pencil sketch; Curwen's plate is a cross-hatched engraving with shirt cuffs; Classics for Kids is a loose realistic outline; Teach Beside Me and Midnight Music are flat-colour clip art. Ours is a constructed monoline with a tinted silhouette and a cuff arc, in a different frame (80 × 64), with different proportions. What is shared is only what the gesture dictates: a fist is a fist, and the hand comes in from the right as in Curwen's 1870s public-domain plate.
-- **Colour.** Each drawing is one colour (`currentColor`): gold on the Ear Lab ladder, the degree colour in the Keys room, ink on paper.
+### 5.1 Method: a hand built from measurement, posed, and drawn from what is seen
 
-**Small sizes.** Checked at 42 × 34 (sheet, "signs that must not be confused", and `png/ladder_mock_390.png`): re and ti differ in mass (blade against fist with a finger); fa and ti differ in direction (thumb down against finger up); re, ri, me and ra differ by slope and by ra's thumb; so, si and se differ by fan and tilt; la, le and li by the direction of the fingers; fa and fi, ti and te are each other upside down.
+No chart, photo or other artwork was traced, overlaid or vectorised. The reference for every drawing is a hand I constructed in code.
 
-**My own criticism, so you can judge it with me.** (1) The do fist is the weakest drawing: it reads a little like a mitten at large size. (2) li (la turned up) is the least natural hand. (3) The line is clean rather than rough: it is pen-like, not sketchy. If you want more of the hand in it (a drier, slightly uneven ink line), that is a second pass on the same shapes, not a redraw. I would take one round of your corrections on the shapes before anything is built.
+1. **Bones from anatomical measurement** (`build/hand3d.py`). An adult right hand about 185 mm from wrist to middle fingertip: four metacarpals from the wrist to the knuckles, three phalanges per finger with real lengths (middle finger 48 / 29 / 24 mm, little finger 34 / 19 / 21 mm), the knuckle line in its real arc (index and ring behind the middle, little finger well back), a thumb of three bones rooted at the wrist. Each joint bends only on its real axis.
+2. **Flesh.** Tapered rounded segments around the bones, blended where skin is continuous (finger into palm, thumb into its thenar pad, wrist into an elliptical forearm) and kept separate where it is not (finger against finger). Knuckle heads, the thenar and hypothenar pads and the web of the thumb are part of the form. A closed fist is filled where finger pads meet the palm.
+3. **Pose** (`build/poses.py`). Each sign is a list of joint angles in degrees. Poses are relaxed, not stiff: no two fingers share an angle, the little finger always curls a little more, the "flat" hand keeps 2° to 13° of bend in every joint.
+4. **The signer's eye.** The posed hand is looked at from where the signer's own eyes are: from the thumb side and from above (10° to 40°), slightly turned.
+5. **The drawing** (`build/ink.py`) is derived from what that eye sees: the outer contour; every edge where one part passes in front of another; the line between touching fingers; folds at bent joints. Fingernails, knuckle wrinkles, the creases under each finger joint and the three main palm creases are placed on the skin in 3D, so they foreshorten correctly and are drawn only where that skin faces the eye.
+6. **Line and tone.** Line weight follows the light (upper left): heavy underneath and on the shadow side, lighter on top, lightest for creases and nails; each line swells and thins along its length. One flat mid-tone lies on the side turned from the light. The forearm ends open, as an illustrator leaves it.
+7. **Small sizes.** A second drawing of the same posed hand: bold contour, only the big overlaps, a tint over the whole hand. This is what the ladders use.
+
+Everything is one colour (`currentColor`), so a sign takes the degree colour, gold, or plain ink on paper.
+
+### 5.2 Why it is original
+
+The gestures are Curwen's and common property. The artwork is ours: the hand is our own construction from measurements, the poses are our own numbers, and the lines are computed from our model. The result does not share a contour with any reference: the eye point (above and turned), the proportions, the line and the tone are all different from the KMEIA pencil sketch, Curwen's engraving and the clip-art charts.
+
+### 5.3 What changed per sign, and my own criticism
+
+| Sign | Round 2 | Honest verdict |
+|---|---|---|
+| do, do′ | A real fist seen from the thumb side and above: knuckle bumps on top, the thumb closed across the front underneath, nail showing | Reads as a human fist, but it is the weakest of the diatonic signs: the thumb is tucked low and the small mark by the index curl is not clear. Small size is a compact shape |
+| re | Flat relaxed hand slanting up about 28°, fingers slightly staggered, thumb resting below | Good |
+| mi | The same hand, level | Good |
+| fa | Loose fist, thumb straight down with its nail | Good; the curled index is a little busy |
+| so | Open hand on its edge, palm to the eye with its three creases, thumb up | The best drawing. The thumb is slightly long; one stray patch of tone on the palm |
+| la | Hand hanging from a bent wrist, fingers drooping at slightly different angles | Good, a little crowded where the thumb crosses the fingers |
+| ti | First finger up and forward, the others closed, thumb across | Good |
+| di | The do fist tipped up 28° | As do |
+| ri | The re hand at 50° | Good |
+| fi | Thumb up, the curled fingers and their nails towards the eye | Good |
+| si | The so hand lifted 16°, fingers fanned | Good |
+| li | Palm turned up and cupped, fingers curling up | **Unhappy.** The fingers overlap from this eye point and it takes a second to read. A lower eye point would help |
+| te | The ti hand pointing down about 36° | Good; the thumb under the finger is slightly awkward |
+| le | The la hand dropped further, fingers nearly straight down | **Unhappy.** Hard to tell from la at a glance at card size (clear enough at ladder size by its upright shape); the forearm is cut short to fit the frame |
+| se | The so hand tipped down 30°, palm open | Good |
+| me | The mi hand sloping down 28°, slightly more relaxed | Good |
+| ra | The re hand with the thumb let fall | Good; still the one gesture that needs your confirmation (decision 4) |
+
+General limits. (1) These are drawings computed from a model, not drawn by a person with a pen from a sitter; they read as fine-ink life drawings, but the model's skin is smooth: no veins, tendons or wrinkles beyond the main creases. (2) Hatching was not used; the form is carried by line weight and one flat tone. (3) A full drawing is about 20 kB of path data (about 340 kB for the set, 65 kB for the small set). The app today carries the KMEIA PNGs as data URIs, so this is a like-for-like weight, but it should be a conscious choice at build time: the ladders need only the small set.
+
+**Small sizes.** Checked at 42 × 34 on the sheet ("signs that must not be confused") and in `png/ladder_mock_390.png`, small drawings: re and ti differ in mass (flat hand against fist with a finger); fa and ti in direction; re, ri, me by slope, ra by its thumb; so, si, se by fan and tilt; la is a slanting droop, le upright, li cupped upward; fa and fi, ti and te point opposite ways; do and di differ only by tilt, which is the weakest pair.
 
 ## 6. Decisions for Justin
 
-1. **Replace the KMEIA drawings everywhere, or use ours only for the chromatic signs?** Recommend **replace everywhere**: one look across all 18 signs, no join between two drawing styles on a ladder that has both (every minor ladder has si), single-colour SVG that takes the degree colour and stays sharp on a teaching screen, about 20 px more room in the ladder, and no third-party artwork left in the app. The KMEIA credit in the Ear Lab note, the Credits panel and `NOTICE.md` would then come out, replaced by a line that the signs are Curwen's and the drawings are the app's own. The cost is that the KMEIA sketches are the ones Australian students know and are, frankly, more lifelike than mine; if you would rather keep them, ours still fills the chromatic gaps, with a visible change of style.
+1. **Replace the KMEIA drawings everywhere, or use ours only for the chromatic signs?** Recommend **replace everywhere**: one look across all 18 signs, no join between two drawing styles on a ladder that has both (every minor ladder has si), single-colour SVG that takes the degree colour and stays sharp on a teaching screen, about 20 px more room in the ladder, and no third-party artwork left in the app. The KMEIA credit in the Ear Lab note, the Credits panel and `NOTICE.md` would then come out, replaced by a line that the signs are Curwen's and the drawings are the app's own. The cost is that the KMEIA sketches are the ones Australian students already know; if you would rather keep them, ours still fills the chromatic gaps, with a visible change of style.
 2. **Approve the convention for the chromatic signs** as drawn from your chart: each is its parent turned up (raised) or down (lowered), with fi = thumb up, te = ti finger down, not Curwen's sideways pointing. Recommend **yes**.
 3. **si.** So lifted with the fingers opening (drawn), or so simply slanted up with the fingers together. Recommend **fingers opening**; it replaces today's so-plus-♯.
 4. **ra.** The re slant with the thumb let fall (drawn, my reading of your chart), or another form you teach. Recommend **as drawn**, but this is the one sign I would like you to make with your own hand and confirm.
@@ -107,10 +144,13 @@ A left-handed mirror set is one transform away if wanted.
 6. **Spellings.** Your chart has me and te; the app's scale data has `ma` and `ta`. Recommend **me and te app-wide** (le, se, ra are already so), as a register item with a test, since the Ear Lab and the Keys room both read that data. so stays "so" (not "sol").
 7. **Viewpoint.** One right hand, wrist from the right, as in section 4. Recommend **yes**. Say if you want the left-hand mirror offered as a setting.
 8. **Where the signs appear.** Recommend the Ear Lab ladder (as now) **and** the Keys room "Sing it" rows, where today there are only words, beside the words. Sizes as in section 3.
-9. **Line.** Keep the clean pen line, or ask for a rougher ink pass. Recommend **approve the shapes first**, then decide.
+9. **The drawings themselves (round 2).** Approve the naturalistic hands as the direction, with a further pass on do/di, li and le (section 5.3), or name the signs you want redone. Recommend **approve the direction, redo those four**. Two options if you want more: restrained hatching instead of the flat tone, and a sleeve cuff instead of the open forearm.
+10. **Two drawings per sign.** Full drawing on cards, teaching screens and print; the simplified small drawing on the ladders (under about 60 px). Recommend **yes**: the full drawing clogs at 34 px.
 
 ## 7. Not done in this step
 
 - No change to `index.html`, `NOTICE.md` or the tests. Building it is a register item after approval (Sonnet for the wiring, a unit test that every syllable in `SCALES` has a sign, layout test at 390).
 - The Curwen quotations in [C2] come from OCR text and want checking against the page scan.
 - No independent check of the drawings by a second model or by a Kodály colleague yet; decision 4 in particular rests on one small picture.
+- do/di, li and le want another pass (section 5.3).
+- The approval cards in `/home/claude/cards` were re-rendered from the new `png/` files (outside this repository).
