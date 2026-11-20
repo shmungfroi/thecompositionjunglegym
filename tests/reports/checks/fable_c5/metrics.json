@@ -1,0 +1,3934 @@
+{
+ "1440": {
+  "head_metre": {
+   "empty": [
+    796,
+    97
+   ],
+   "counted": [
+    796,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "head_cad": {
+   "empty": [
+    796,
+    97
+   ],
+   "counted": [
+    796,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "ear_cb_off": {
+   "box": [
+    18,
+    18
+   ],
+   "app": "none",
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "rgb(156, 146, 124)",
+   "row": 20,
+   "checked": false
+  },
+  "ear_cb_on": {
+   "bg": "rgb(201, 162, 74)",
+   "border": "rgb(201, 162, 74)",
+   "tick": "1",
+   "tickCol": "rgb(11, 9, 6)",
+   "checked": true
+  },
+  "head_mel": {
+   "empty": [
+    796,
+    97
+   ],
+   "counted": [
+    796,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "head_bass": {
+   "empty": [
+    796,
+    97
+   ],
+   "counted": [
+    796,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "ear_over": 0,
+  "head_real": {
+   "before": [
+    796,
+    97
+   ],
+   "after": [
+    796,
+    97
+   ],
+   "tally_text": "\u2013 no answers yet"
+  },
+  "keys_rest": {
+   "kqhead": [
+    551,
+    1026,
+    840,
+    47
+   ],
+   "tally": [
+    1271,
+    1026,
+    120,
+    47
+   ],
+   "tabs": [
+    551,
+    1026,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u25b6 Start:69x28",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_0": {
+   "kqhead": [
+    551,
+    1026,
+    840,
+    47
+   ],
+   "tally": [
+    1271,
+    1026,
+    120,
+    47
+   ],
+   "tabs": [
+    551,
+    1026,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_9": {
+   "kqhead": [
+    551,
+    372,
+    840,
+    47
+   ],
+   "tally": [
+    1224,
+    372,
+    167,
+    47
+   ],
+   "tabs": [
+    551,
+    372,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_48": {
+   "kqhead": [
+    551,
+    372,
+    840,
+    47
+   ],
+   "tally": [
+    1179,
+    372,
+    212,
+    47
+   ],
+   "tabs": [
+    551,
+    372,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_ticks_initial": [
+   true,
+   true,
+   false
+  ],
+  "keys_ticks_toggled": [
+   true,
+   false,
+   true
+  ],
+  "keys_after_toggle": {
+   "kqhead": [
+    551,
+    384,
+    840,
+    47
+   ],
+   "tally": [
+    1179,
+    384,
+    212,
+    47
+   ],
+   "tabs": [
+    551,
+    384,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "focus_ring": [
+   "checkbox",
+   "solid",
+   "2px",
+   "rgb(240, 212, 138)"
+  ],
+  "link_hover": [
+   "rgb(240, 212, 138)",
+   "rgb(201, 162, 74)"
+  ],
+  "keys_sing": {
+   "kqhead": [
+    551,
+    295,
+    840,
+    47
+   ],
+   "tally": [
+    1271,
+    295,
+    120,
+    47
+   ],
+   "tabs": [
+    551,
+    295,
+    209,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini :Hear it \u00b7 na:112x28",
+    "mini gold:Sing it back:91x28",
+    "mini gold:Higher voice:96x28",
+    "mini :Lower voice:92x28",
+    "mini gold:Next interva:113x28",
+    "mini:\u21bb Starting n:113x28",
+    "mini:Hear the ans:118x28",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": null,
+   "boxOn": null,
+   "tickrow": null,
+   "over": 0
+  },
+  "rooms": [
+   "seed",
+   "keys",
+   "voice",
+   "climbs",
+   "forms",
+   "analysis",
+   "ear",
+   "gym",
+   "oracle"
+  ],
+  "sweep": {
+   "seed": {
+    "boxes": [],
+    "over": 0
+   },
+   "keys": {
+    "boxes": [],
+    "over": 0
+   },
+   "voice": {
+    "boxes": [],
+    "over": 0
+   },
+   "climbs": {
+    "boxes": [],
+    "over": 0
+   },
+   "forms": {
+    "boxes": [],
+    "over": 0
+   },
+   "analysis": {
+    "boxes": [
+     {
+      "lab": "note|follow",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       66,
+       20
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "note|cadences",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       91,
+       20
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "note|chord on every beat",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       165,
+       20
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     }
+    ],
+    "over": 0
+   },
+   "ear": {
+    "boxes": [],
+    "over": 0
+   },
+   "gym": {
+    "boxes": [],
+    "over": 0
+   },
+   "oracle": {
+    "boxes": [
+     {
+      "lab": "ck|start at home",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       110,
+       18
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "ck|include a colour card",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       154,
+       18
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "ck|sevenths",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       80,
+       18
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     }
+    ],
+    "over": 0
+   }
+  },
+  "errors": []
+ },
+ "1366": {
+  "head_metre": {
+   "empty": [
+    796,
+    97
+   ],
+   "counted": [
+    796,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "head_cad": {
+   "empty": [
+    796,
+    97
+   ],
+   "counted": [
+    796,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "ear_cb_off": {
+   "box": [
+    18,
+    18
+   ],
+   "app": "none",
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "rgb(156, 146, 124)",
+   "row": 20,
+   "checked": false
+  },
+  "ear_cb_on": {
+   "bg": "rgb(201, 162, 74)",
+   "border": "rgb(201, 162, 74)",
+   "tick": "1",
+   "tickCol": "rgb(11, 9, 6)",
+   "checked": true
+  },
+  "head_mel": {
+   "empty": [
+    796,
+    97
+   ],
+   "counted": [
+    796,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "head_bass": {
+   "empty": [
+    796,
+    97
+   ],
+   "counted": [
+    796,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "ear_over": 0,
+  "head_real": {
+   "before": [
+    796,
+    97
+   ],
+   "after": [
+    796,
+    97
+   ],
+   "tally_text": "\u2013 no answers yet"
+  },
+  "keys_rest": {
+   "kqhead": [
+    551,
+    1026,
+    766,
+    47
+   ],
+   "tally": [
+    1197,
+    1026,
+    120,
+    47
+   ],
+   "tabs": [
+    551,
+    1026,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u25b6 Start:69x28",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_0": {
+   "kqhead": [
+    551,
+    1026,
+    766,
+    47
+   ],
+   "tally": [
+    1197,
+    1026,
+    120,
+    47
+   ],
+   "tabs": [
+    551,
+    1026,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_9": {
+   "kqhead": [
+    551,
+    306,
+    766,
+    47
+   ],
+   "tally": [
+    1150,
+    306,
+    167,
+    47
+   ],
+   "tabs": [
+    551,
+    306,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_48": {
+   "kqhead": [
+    551,
+    306,
+    766,
+    47
+   ],
+   "tally": [
+    1105,
+    306,
+    212,
+    47
+   ],
+   "tabs": [
+    551,
+    306,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_ticks_initial": [
+   true,
+   true,
+   false
+  ],
+  "keys_ticks_toggled": [
+   true,
+   false,
+   true
+  ],
+  "keys_after_toggle": {
+   "kqhead": [
+    551,
+    318,
+    766,
+    47
+   ],
+   "tally": [
+    1105,
+    318,
+    212,
+    47
+   ],
+   "tabs": [
+    551,
+    318,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "focus_ring": [
+   "checkbox",
+   "solid",
+   "2px",
+   "rgb(240, 212, 138)"
+  ],
+  "link_hover": [
+   "rgb(240, 212, 138)",
+   "rgb(201, 162, 74)"
+  ],
+  "keys_sing": {
+   "kqhead": [
+    551,
+    163,
+    766,
+    47
+   ],
+   "tally": [
+    1197,
+    163,
+    120,
+    47
+   ],
+   "tabs": [
+    551,
+    163,
+    209,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini :Hear it \u00b7 na:112x28",
+    "mini gold:Sing it back:91x28",
+    "mini gold:Higher voice:96x28",
+    "mini :Lower voice:92x28",
+    "mini gold:Next interva:113x28",
+    "mini:\u21bb Starting n:113x28",
+    "mini:Hear the ans:118x28",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": null,
+   "boxOn": null,
+   "tickrow": null,
+   "over": 0
+  },
+  "rooms": [
+   "seed",
+   "keys",
+   "voice",
+   "climbs",
+   "forms",
+   "analysis",
+   "ear",
+   "gym",
+   "oracle"
+  ],
+  "sweep": {
+   "seed": {
+    "boxes": [],
+    "over": 0
+   },
+   "keys": {
+    "boxes": [],
+    "over": 0
+   },
+   "voice": {
+    "boxes": [],
+    "over": 0
+   },
+   "climbs": {
+    "boxes": [],
+    "over": 0
+   },
+   "forms": {
+    "boxes": [],
+    "over": 0
+   },
+   "analysis": {
+    "boxes": [
+     {
+      "lab": "note|follow",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       66,
+       20
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "note|cadences",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       91,
+       20
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "note|chord on every beat",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       165,
+       20
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     }
+    ],
+    "over": 0
+   },
+   "ear": {
+    "boxes": [],
+    "over": 0
+   },
+   "gym": {
+    "boxes": [],
+    "over": 0
+   },
+   "oracle": {
+    "boxes": [
+     {
+      "lab": "ck|start at home",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       110,
+       18
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "ck|include a colour card",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       154,
+       18
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "ck|sevenths",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       80,
+       18
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     }
+    ],
+    "over": 0
+   }
+  },
+  "errors": []
+ },
+ "1024": {
+  "head_metre": {
+   "empty": [
+    834,
+    97
+   ],
+   "counted": [
+    834,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "head_cad": {
+   "empty": [
+    834,
+    97
+   ],
+   "counted": [
+    834,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "ear_cb_off": {
+   "box": [
+    18,
+    18
+   ],
+   "app": "none",
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "rgb(156, 146, 124)",
+   "row": 20,
+   "checked": false
+  },
+  "ear_cb_on": {
+   "bg": "rgb(201, 162, 74)",
+   "border": "rgb(201, 162, 74)",
+   "tick": "1",
+   "tickCol": "rgb(11, 9, 6)",
+   "checked": true
+  },
+  "head_mel": {
+   "empty": [
+    834,
+    97
+   ],
+   "counted": [
+    834,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "head_bass": {
+   "empty": [
+    834,
+    97
+   ],
+   "counted": [
+    834,
+    97
+   ],
+   "tally_empty": [
+    120,
+    47
+   ],
+   "tally_counted": [
+    196,
+    47
+   ]
+  },
+  "ear_over": 0,
+  "head_real": {
+   "before": [
+    834,
+    97
+   ],
+   "after": [
+    834,
+    97
+   ],
+   "tally_text": "\u2013 no answers yet"
+  },
+  "keys_rest": {
+   "kqhead": [
+    551,
+    1075,
+    424,
+    47
+   ],
+   "tally": [
+    855,
+    1075,
+    120,
+    47
+   ],
+   "tabs": [
+    551,
+    1075,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u25b6 Start:69x28",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_0": {
+   "kqhead": [
+    551,
+    1075,
+    424,
+    47
+   ],
+   "tally": [
+    855,
+    1075,
+    120,
+    47
+   ],
+   "tabs": [
+    551,
+    1075,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_9": {
+   "kqhead": [
+    551,
+    276,
+    424,
+    47
+   ],
+   "tally": [
+    808,
+    276,
+    167,
+    47
+   ],
+   "tabs": [
+    551,
+    276,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_48": {
+   "kqhead": [
+    551,
+    276,
+    424,
+    85
+   ],
+   "tally": [
+    763,
+    314,
+    212,
+    47
+   ],
+   "tabs": [
+    551,
+    276,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "keys_ticks_initial": [
+   true,
+   true,
+   false
+  ],
+  "keys_ticks_toggled": [
+   true,
+   false,
+   true
+  ],
+  "keys_after_toggle": {
+   "kqhead": [
+    551,
+    268,
+    424,
+    85
+   ],
+   "tally": [
+    763,
+    306,
+    212,
+    47
+   ],
+   "tabs": [
+    551,
+    268,
+    210,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini gold:Hear it \u00b7 na:114x28",
+    "mini :Sing it back:89x28",
+    "tick:up:41x18",
+    "tick:down:60x18",
+    "tick:together:80x18",
+    "mini gold:\u21bb Hear it ag:114x28",
+    "mini :Next interva:111x28",
+    "chip :m2:45x30",
+    "chip :M2:45x30",
+    "chip :m3:45x30",
+    "chip :M3:45x30",
+    "chip :P4:43x30",
+    "chip :Tritone:70x30",
+    "chip :P5:42x30",
+    "chip :m6:46x30",
+    "chip :M6:46x30",
+    "chip :m7:45x30",
+    "chip :M7:45x30",
+    "chip :P8:42x30",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 18,
+   "over": 0
+  },
+  "focus_ring": [
+   "checkbox",
+   "solid",
+   "2px",
+   "rgb(240, 212, 138)"
+  ],
+  "link_hover": [
+   "rgb(240, 212, 138)",
+   "rgb(201, 162, 74)"
+  ],
+  "keys_sing": {
+   "kqhead": [
+    551,
+    65,
+    424,
+    47
+   ],
+   "tally": [
+    855,
+    65,
+    120,
+    47
+   ],
+   "tabs": [
+    551,
+    65,
+    209,
+    28
+   ],
+   "small": [
+    "rk:C\u266f:50x24",
+    "rk:D\u266d:50x24",
+    "rk:D\u266f:50x24",
+    "rk:E\u266d:50x24",
+    "rk:F\u266f:50x24",
+    "rk:G\u266d:50x24",
+    "rk:G\u266f:50x24",
+    "rk:A\u266d:50x24",
+    "rk:A\u266f:50x24",
+    "rk:B\u266d:50x24",
+    "qp :m2minor 2nd:84x43",
+    "qp :M2major 2nd:84x43",
+    "qp :m3minor 3rd:84x43",
+    "qp on:M3major 3rd:84x43",
+    "qp :P4perfect 4t:84x43",
+    "qp :P5perfect 5t:84x43",
+    "qp :m6minor 6th:84x43",
+    "qp :M6major 6th:84x43",
+    "qp :P8octave:84x43",
+    "qp :A4augmented :101x43",
+    "qp :d5diminished:96x43",
+    "qp :m7minor 7th:84x43",
+    "qp :M7major 7th:84x43",
+    "qp :A2augmented :103x43",
+    "qp :A5augmented :100x43",
+    "qp :d7diminished:96x43",
+    "qp :A6augmented :100x43",
+    "ip on:Going up \u2191:103x32",
+    "ip :Going down \u2193:121x32",
+    "mini :Hear it \u00b7 na:112x28",
+    "mini gold:Sing it back:91x28",
+    "mini gold:Higher voice:96x28",
+    "mini :Lower voice:92x28",
+    "mini gold:Next interva:113x28",
+    "mini:\u21bb Starting n:113x28",
+    "mini:Hear the ans:118x28",
+    "sb:\u25b6 YouTube:85x26"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "14px",
+    26
+   ],
+   "box": null,
+   "boxOn": null,
+   "tickrow": null,
+   "over": 0
+  },
+  "rooms": [
+   "seed",
+   "keys",
+   "voice",
+   "climbs",
+   "forms",
+   "analysis",
+   "ear",
+   "gym",
+   "oracle"
+  ],
+  "sweep": {
+   "seed": {
+    "boxes": [],
+    "over": 0
+   },
+   "keys": {
+    "boxes": [],
+    "over": 0
+   },
+   "voice": {
+    "boxes": [],
+    "over": 0
+   },
+   "climbs": {
+    "boxes": [],
+    "over": 0
+   },
+   "forms": {
+    "boxes": [],
+    "over": 0
+   },
+   "analysis": {
+    "boxes": [
+     {
+      "lab": "note|follow",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       66,
+       20
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "note|cadences",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       91,
+       20
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "note|chord on every beat",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       165,
+       20
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     }
+    ],
+    "over": 0
+   },
+   "ear": {
+    "boxes": [],
+    "over": 0
+   },
+   "gym": {
+    "boxes": [],
+    "over": 0
+   },
+   "oracle": {
+    "boxes": [
+     {
+      "lab": "ck|start at home",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       110,
+       18
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "ck|include a colour card",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       154,
+       18
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "ck|sevenths",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       80,
+       18
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     }
+    ],
+    "over": 0
+   }
+  },
+  "errors": []
+ },
+ "390": {
+  "head_metre": {
+   "empty": [
+    328,
+    122
+   ],
+   "counted": [
+    328,
+    122
+   ],
+   "tally_empty": [
+    107,
+    62
+   ],
+   "tally_counted": [
+    113,
+    62
+   ]
+  },
+  "head_cad": {
+   "empty": [
+    328,
+    122
+   ],
+   "counted": [
+    328,
+    122
+   ],
+   "tally_empty": [
+    107,
+    62
+   ],
+   "tally_counted": [
+    113,
+    62
+   ]
+  },
+  "ear_cb_off": {
+   "box": [
+    18,
+    18
+   ],
+   "app": "none",
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "rgb(156, 146, 124)",
+   "row": 44,
+   "checked": false
+  },
+  "ear_cb_on": {
+   "bg": "rgb(201, 162, 74)",
+   "border": "rgb(201, 162, 74)",
+   "tick": "1",
+   "tickCol": "rgb(11, 9, 6)",
+   "checked": true
+  },
+  "head_mel": {
+   "empty": [
+    328,
+    122
+   ],
+   "counted": [
+    328,
+    122
+   ],
+   "tally_empty": [
+    107,
+    62
+   ],
+   "tally_counted": [
+    113,
+    62
+   ]
+  },
+  "head_bass": {
+   "empty": [
+    328,
+    122
+   ],
+   "counted": [
+    328,
+    122
+   ],
+   "tally_empty": [
+    107,
+    62
+   ],
+   "tally_counted": [
+    113,
+    62
+   ]
+  },
+  "ear_over": 0,
+  "head_real": {
+   "before": [
+    328,
+    122
+   ],
+   "after": [
+    328,
+    122
+   ],
+   "tally_text": "\u2013 no answers yet"
+  },
+  "keys_rest": {
+   "kqhead": [
+    37,
+    2086,
+    316,
+    92
+   ],
+   "tally": [
+    37,
+    2086,
+    316,
+    38
+   ],
+   "tabs": [
+    37,
+    2134,
+    316,
+    44
+   ],
+   "small": [
+    "tick:up:41x44"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "22px",
+    44
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 44,
+   "over": 0
+  },
+  "keys_0": {
+   "kqhead": [
+    37,
+    2086,
+    316,
+    92
+   ],
+   "tally": [
+    37,
+    2086,
+    316,
+    38
+   ],
+   "tabs": [
+    37,
+    2134,
+    316,
+    44
+   ],
+   "small": [
+    "tick:up:41x44"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "22px",
+    44
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 44,
+   "over": 0
+  },
+  "keys_9": {
+   "kqhead": [
+    37,
+    233,
+    316,
+    93
+   ],
+   "tally": [
+    37,
+    233,
+    316,
+    39
+   ],
+   "tabs": [
+    37,
+    282,
+    316,
+    44
+   ],
+   "small": [
+    "tick:up:41x44"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "22px",
+    44
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 44,
+   "over": 0
+  },
+  "keys_48": {
+   "kqhead": [
+    37,
+    233,
+    316,
+    93
+   ],
+   "tally": [
+    37,
+    233,
+    316,
+    39
+   ],
+   "tabs": [
+    37,
+    282,
+    316,
+    44
+   ],
+   "small": [
+    "tick:up:41x44"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "22px",
+    44
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 44,
+   "over": 0
+  },
+  "keys_ticks_initial": [
+   true,
+   true,
+   false
+  ],
+  "keys_ticks_toggled": [
+   true,
+   false,
+   true
+  ],
+  "keys_after_toggle": {
+   "kqhead": [
+    37,
+    289,
+    316,
+    93
+   ],
+   "tally": [
+    37,
+    289,
+    316,
+    39
+   ],
+   "tabs": [
+    37,
+    338,
+    316,
+    44
+   ],
+   "small": [
+    "tick:up:41x44"
+   ],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "22px",
+    44
+   ],
+   "box": [
+    "none",
+    "rgba(0, 0, 0, 0)",
+    "rgb(156, 146, 124)",
+    "5px",
+    18,
+    18
+   ],
+   "boxOn": [
+    "rgb(201, 162, 74)",
+    "rgb(201, 162, 74)",
+    "1",
+    "rgb(11, 9, 6)"
+   ],
+   "tickrow": 44,
+   "over": 0
+  },
+  "focus_ring": [
+   "checkbox",
+   "solid",
+   "2px",
+   "rgb(240, 212, 138)"
+  ],
+  "link_hover": [
+   "rgb(240, 212, 138)",
+   "rgb(201, 162, 74)"
+  ],
+  "keys_sing": {
+   "kqhead": [
+    37,
+    -229,
+    316,
+    92
+   ],
+   "tally": [
+    37,
+    -229,
+    316,
+    38
+   ],
+   "tabs": [
+    37,
+    -181,
+    316,
+    44
+   ],
+   "small": [],
+   "link": [
+    "rgb(236, 226, 200)",
+    "none",
+    "rgb(42, 36, 24)",
+    "22px",
+    44
+   ],
+   "box": null,
+   "boxOn": null,
+   "tickrow": null,
+   "over": 0
+  },
+  "rooms": [
+   "seed",
+   "keys",
+   "voice",
+   "climbs",
+   "forms",
+   "analysis",
+   "ear",
+   "gym",
+   "oracle"
+  ],
+  "sweep": {
+   "seed": {
+    "boxes": [],
+    "over": 0
+   },
+   "keys": {
+    "boxes": [],
+    "over": 0
+   },
+   "voice": {
+    "boxes": [],
+    "over": 0
+   },
+   "climbs": {
+    "boxes": [],
+    "over": 0
+   },
+   "forms": {
+    "boxes": [],
+    "over": 0
+   },
+   "analysis": {
+    "boxes": [
+     {
+      "lab": "note|follow",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       66,
+       44
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "note|cadences",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       91,
+       44
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "note|chord on every beat",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       165,
+       44
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     }
+    ],
+    "over": 0
+   },
+   "ear": {
+    "boxes": [],
+    "over": 0
+   },
+   "gym": {
+    "boxes": [],
+    "over": 0
+   },
+   "oracle": {
+    "boxes": [
+     {
+      "lab": "ck|start at home",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       110,
+       44
+      ],
+      "disp": "flex",
+      "checked": true,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "ck|include a colour card",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       154,
+       44
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     },
+     {
+      "lab": "ck|sevenths",
+      "box": [
+       18,
+       18
+      ],
+      "row": [
+       80,
+       44
+      ],
+      "disp": "flex",
+      "checked": false,
+      "app": "none",
+      "midOff": 0
+     }
+    ],
+    "over": 0
+   }
+  },
+  "errors": []
+ },
+ "top": {
+  "1440_analysis": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "crumb",
+     459,
+     119,
+     18
+    ],
+    [
+     "search",
+     646,
+     420,
+     38
+    ],
+    [
+     "lvl",
+     1084,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1318,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 420,
+   "input": 354,
+   "placeholderPx": 176,
+   "innerPx": 322,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "block",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1440_keys": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "crumb",
+     459,
+     153,
+     18
+    ],
+    [
+     "search",
+     646,
+     420,
+     38
+    ],
+    [
+     "lvl",
+     1084,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1318,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 420,
+   "input": 354,
+   "placeholderPx": 176,
+   "innerPx": 322,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "block",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1440_errors": [],
+  "1366_analysis": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "crumb",
+     459,
+     119,
+     18
+    ],
+    [
+     "search",
+     596,
+     396,
+     38
+    ],
+    [
+     "lvl",
+     1010,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1244,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 396,
+   "input": 331,
+   "placeholderPx": 176,
+   "innerPx": 299,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "block",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1366_keys": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "crumb",
+     459,
+     153,
+     18
+    ],
+    [
+     "search",
+     630,
+     362,
+     38
+    ],
+    [
+     "lvl",
+     1010,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1244,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 362,
+   "input": 296,
+   "placeholderPx": 176,
+   "innerPx": 264,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "block",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1366_errors": [],
+  "1281_analysis": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "crumb",
+     459,
+     119,
+     18
+    ],
+    [
+     "search",
+     596,
+     311,
+     38
+    ],
+    [
+     "lvl",
+     925,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1159,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 311,
+   "input": 246,
+   "placeholderPx": 176,
+   "innerPx": 214,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "block",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1281_keys": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "crumb",
+     459,
+     153,
+     18
+    ],
+    [
+     "search",
+     630,
+     277,
+     38
+    ],
+    [
+     "lvl",
+     925,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1159,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 277,
+   "input": 211,
+   "placeholderPx": 176,
+   "innerPx": 179,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "block",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1281_errors": [],
+  "1280_analysis": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "search",
+     486,
+     420,
+     38
+    ],
+    [
+     "lvl",
+     924,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1158,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 420,
+   "input": 354,
+   "placeholderPx": 176,
+   "innerPx": 322,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1280_keys": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "search",
+     486,
+     420,
+     38
+    ],
+    [
+     "lvl",
+     924,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1158,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 420,
+   "input": 354,
+   "placeholderPx": 176,
+   "innerPx": 322,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1280_typed": {
+   "val": "Bm7",
+   "scrollW": 354,
+   "clientW": 354
+  },
+  "1280_errors": [],
+  "1181_analysis": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "search",
+     459,
+     348,
+     38
+    ],
+    [
+     "lvl",
+     825,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1059,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 348,
+   "input": 283,
+   "placeholderPx": 176,
+   "innerPx": 251,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1181_keys": {
+   "kids": [
+    [
+     "t",
+     86,
+     355,
+     24
+    ],
+    [
+     "search",
+     459,
+     348,
+     38
+    ],
+    [
+     "lvl",
+     825,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1059,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -22,
+   "form": 348,
+   "input": 283,
+   "placeholderPx": 176,
+   "innerPx": 251,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1181_errors": [],
+  "1180_analysis": {
+   "kids": [
+    [
+     "t",
+     82,
+     295,
+     21
+    ],
+    [
+     "search",
+     398,
+     420,
+     38
+    ],
+    [
+     "lvl",
+     832,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1062,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 420,
+   "input": 354,
+   "placeholderPx": 176,
+   "innerPx": 326,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1180_keys": {
+   "kids": [
+    [
+     "t",
+     82,
+     295,
+     21
+    ],
+    [
+     "search",
+     398,
+     420,
+     38
+    ],
+    [
+     "lvl",
+     832,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     1062,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 420,
+   "input": 354,
+   "placeholderPx": 176,
+   "innerPx": 326,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1180_errors": [],
+  "1024_analysis": {
+   "kids": [
+    [
+     "t",
+     82,
+     295,
+     21
+    ],
+    [
+     "search",
+     391,
+     271,
+     38
+    ],
+    [
+     "lvl",
+     676,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     906,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 271,
+   "input": 206,
+   "placeholderPx": 176,
+   "innerPx": 178,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1024_keys": {
+   "kids": [
+    [
+     "t",
+     82,
+     295,
+     21
+    ],
+    [
+     "search",
+     391,
+     271,
+     38
+    ],
+    [
+     "lvl",
+     676,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     906,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 271,
+   "input": 206,
+   "placeholderPx": 176,
+   "innerPx": 178,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "1024_typed": {
+   "val": "Bm7",
+   "scrollW": 206,
+   "clientW": 206
+  },
+  "1024_errors": [],
+  "901_analysis": {
+   "kids": [
+    [
+     "t",
+     82,
+     295,
+     21
+    ],
+    [
+     "search",
+     391,
+     220,
+     38
+    ],
+    [
+     "lvl",
+     625,
+     145,
+     52
+    ],
+    [
+     "jbtn",
+     783,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 220,
+   "input": 154,
+   "placeholderPx": 176,
+   "innerPx": 126,
+   "placeholderFits": false,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "901_keys": {
+   "kids": [
+    [
+     "t",
+     82,
+     295,
+     21
+    ],
+    [
+     "search",
+     391,
+     220,
+     38
+    ],
+    [
+     "lvl",
+     625,
+     145,
+     52
+    ],
+    [
+     "jbtn",
+     783,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 220,
+   "input": 154,
+   "placeholderPx": 176,
+   "innerPx": 126,
+   "placeholderFits": false,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "COMPOSITION JUNGLE GYM"
+  },
+  "901_errors": [],
+  "900_analysis": {
+   "kids": [
+    [
+     "t",
+     82,
+     133,
+     21
+    ],
+    [
+     "search",
+     229,
+     309,
+     38
+    ],
+    [
+     "lvl",
+     552,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     782,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 309,
+   "input": 244,
+   "placeholderPx": 176,
+   "innerPx": 216,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "900_keys": {
+   "kids": [
+    [
+     "t",
+     82,
+     133,
+     21
+    ],
+    [
+     "search",
+     229,
+     309,
+     38
+    ],
+    [
+     "lvl",
+     552,
+     217,
+     34
+    ],
+    [
+     "jbtn",
+     782,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 309,
+   "input": 244,
+   "placeholderPx": 176,
+   "innerPx": 216,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "900_errors": [],
+  "800_analysis": {
+   "kids": [
+    [
+     "t",
+     82,
+     133,
+     21
+    ],
+    [
+     "search",
+     229,
+     220,
+     38
+    ],
+    [
+     "lvl",
+     463,
+     206,
+     52
+    ],
+    [
+     "jbtn",
+     682,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 220,
+   "input": 154,
+   "placeholderPx": 176,
+   "innerPx": 126,
+   "placeholderFits": false,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "800_keys": {
+   "kids": [
+    [
+     "t",
+     82,
+     133,
+     21
+    ],
+    [
+     "search",
+     229,
+     220,
+     38
+    ],
+    [
+     "lvl",
+     463,
+     206,
+     52
+    ],
+    [
+     "jbtn",
+     682,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 220,
+   "input": 154,
+   "placeholderPx": 176,
+   "innerPx": 126,
+   "placeholderFits": false,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "800_errors": [],
+  "761_analysis": {
+   "kids": [
+    [
+     "t",
+     82,
+     133,
+     21
+    ],
+    [
+     "search",
+     229,
+     220,
+     38
+    ],
+    [
+     "lvl",
+     463,
+     167,
+     52
+    ],
+    [
+     "jbtn",
+     643,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 220,
+   "input": 154,
+   "placeholderPx": 176,
+   "innerPx": 126,
+   "placeholderFits": false,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "761_keys": {
+   "kids": [
+    [
+     "t",
+     82,
+     133,
+     21
+    ],
+    [
+     "search",
+     229,
+     220,
+     38
+    ],
+    [
+     "lvl",
+     463,
+     167,
+     52
+    ],
+    [
+     "jbtn",
+     643,
+     100,
+     36
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -18,
+   "form": 220,
+   "input": 154,
+   "placeholderPx": 176,
+   "innerPx": 126,
+   "placeholderFits": false,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "761_errors": [],
+  "760_analysis": {
+   "kids": [
+    [
+     "t",
+     12,
+     543,
+     17
+    ],
+    [
+     "search",
+     12,
+     736,
+     40
+    ],
+    [
+     "lvl",
+     565,
+     183,
+     30
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -12,
+   "form": 736,
+   "input": 670,
+   "placeholderPx": 176,
+   "innerPx": 642,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "760_keys": {
+   "kids": [
+    [
+     "t",
+     12,
+     543,
+     17
+    ],
+    [
+     "search",
+     12,
+     736,
+     40
+    ],
+    [
+     "lvl",
+     565,
+     183,
+     30
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -12,
+   "form": 736,
+   "input": 670,
+   "placeholderPx": 176,
+   "innerPx": 642,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "760_errors": [],
+  "390_analysis": {
+   "kids": [
+    [
+     "t",
+     12,
+     173,
+     17
+    ],
+    [
+     "search",
+     12,
+     366,
+     40
+    ],
+    [
+     "lvl",
+     195,
+     183,
+     30
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -12,
+   "form": 366,
+   "input": 300,
+   "placeholderPx": 176,
+   "innerPx": 272,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "390_keys": {
+   "kids": [
+    [
+     "t",
+     12,
+     173,
+     17
+    ],
+    [
+     "search",
+     12,
+     366,
+     40
+    ],
+    [
+     "lvl",
+     195,
+     183,
+     30
+    ]
+   ],
+   "overlap": false,
+   "rightSpill": -12,
+   "form": 366,
+   "input": 300,
+   "placeholderPx": 176,
+   "innerPx": 272,
+   "placeholderFits": true,
+   "docOver": 0,
+   "crumb": "none",
+   "title": "JUNGLE GYM"
+  },
+  "390_errors": []
+ }
+}
