@@ -20,5 +20,8 @@ Columns: id · finding (evidence) · rule or standard · proposed change · impa
 | C12 | IC_SELF_048 S1: the incomplete tonic (5th omitted) is on 66% of rung-1 perfect cadences and never on any other cadence, so a hollow final chord predicts "perfect" (42% vs 26% chance) | Ladder rule: no tells; OQ21 O kept it on "for variety" | Cap its share and/or balance "final chord complete" across all four cadences | Ear Lab rung 1 items | earlab_test tell check on final-chord completeness | Should | Opus | Drafted (needs Justin) |
 | C13 | IC_SELF_048 S2: other rhythm tile hovers drop the count on the US side ("2 quavers · US: eighth notes") | L63 one-to-one terms | Name every component on both sides | Hover text | terms_test hover check | Should | Sonnet | Drafted |
 | C14 | IC_SELF_048 S3: hovers read "Australian · US: American", not "Australian (US: American)" as L63 specifies; app-wide format | L63 brackets | Switch all hovers to the bracket form, or confirm the dot form for hovers | All hovers | terms_test | Could | Sonnet | Drafted (needs Justin) |
+| C15 | Fable N-1: Keys piano labels are 10 px | Charter 11 px floor | Raise to 11 px | Keys room | layout_test font floor | Must | Sonnet | Drafted |
+| C16 | Fable N-2: song-card links in other rooms are 26 px tall on phones | 44 px targets | Apply the C5 pill at 44 px | Song cards | layout_test targets | Should | Sonnet | Drafted |
+| C17 | Fable N-3: `--red` serves both the dominant function and "wrong" | Colour carries one meaning | Depends on D2 (shared lift vs separate status tokens) | App-wide | contrast script | Should | Fable → Sonnet | Drafted (needs Justin) |
 
 Deferred: R19–R22 (counterpoint) — Justin 20 Nov "later".
