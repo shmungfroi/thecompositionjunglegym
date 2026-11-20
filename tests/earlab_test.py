@@ -10,7 +10,7 @@ Sections
   B  bass and numerals: every progression x key x level; 6,000 generated questions against the allow-list (E8, E9, E11);
      BHL 0.48 (IC_EAR_048 S3): no cadence model, bass progression or generated question moves ii(6) to IV or ii°(6) to iv
   C  tells: no answer predictable above chance from length, tempo or register (E10); 0.49 C3: exact-semitone register tells at rungs 2-3
-  D  pool sizes at level 1 (E11)
+  D  pool sizes at level 1 (E11); 0.49 C4: the rung 1 V–vi pool against an independent exhaustive enumeration
   E  blind analysis windows, labels and buttons (E1–E5)
   F  blind playback note lengths (E6)
   G  ranges (E14)
@@ -152,6 +152,48 @@ def pop_moves(toks):
     # a cadential 6/4 (I:2 / i:2) is a dominant-function chord, so ii6-I6/4 is the textbook approach, not ii-I
     base = [t.split(':')[0] if not t.endswith(':2') else 'cad64' for t in toks]
     return [(a, b) for a, b in zip(base, base[1:]) if (a, b) in POP]
+
+
+def vvi_enum(k, open_only=True):
+    """0.49 C4: every strict four-part V–vi in major key k (independent of the app). Voices B 40-60, T 48-67, A 55-74, S 60-79 (the app's
+    ranges), no crossing, S-A and A-T within an octave, open spacing (S-T more than an octave) unless open_only is False. V complete
+    with one leading note; vi complete with its 3rd doubled (two do). Every voice: no leap over an octave, of a 7th or a tritone; the
+    leading note rises a semitone to do. No parallel or contrary 5ths / octaves / unisons, no overlap, no hidden 5th or octave in the
+    outer voices."""
+    so, ti, re_, la, do, mi = [(k + x) % 12 for x in (7, 11, 2, 9, 0, 4)]
+
+    def voicings(bass_pc, pcs, ok):
+        out = []
+        for b in range(40, 61):
+            if b % 12 != bass_pc:
+                continue
+            for t in range(48, 68):
+                for a in range(55, 75):
+                    for s in range(60, 80):
+                        v = (b, t, a, s)
+                        if not (b <= t <= a <= s) or any(x % 12 not in pcs for x in v) or s - a > 12 or a - t > 12 or (open_only and s - t <= 12):
+                            continue
+                        if ok([x % 12 for x in v]):
+                            out.append(v)
+        return out
+    V = voicings(so, {so, ti, re_}, lambda c: c.count(ti) == 1 and set(c) == {so, ti, re_})
+    VI = voicings(la, {la, do, mi}, lambda c: set(c) == {la, do, mi} and c.count(do) == 2)
+    res = []
+    for P in V:
+        for N in VI:
+            good = all(abs(N[i] - P[i]) <= 12 and abs(N[i] - P[i]) not in (6, 10, 11) and (P[i] % 12 != ti or N[i] - P[i] == 1) for i in range(4))
+            for i in range(4):
+                for j in range(i + 1, 4):
+                    if (P[j] - P[i]) % 12 == (N[j] - N[i]) % 12 and (N[j] - N[i]) % 12 in (0, 7) and P[i] != N[i] and P[j] != N[j]:
+                        good = False
+            if any(N[i] > P[i + 1] or N[i + 1] < P[i] for i in range(3)):
+                good = False
+            mb, ms = N[0] - P[0], N[3] - P[3]
+            if mb * ms > 0 and (N[3] - N[0]) % 12 in (0, 7):
+                good = False
+            if good:
+                res.append((P, N))
+    return res
 
 
 def predict_acc(rows, feat, ans):
@@ -365,6 +407,20 @@ async def main():
             floor = 48 if k.startswith('chord quality') else 100
             if v < floor:
                 fail('D', f'level 1 {k}: {v} distinct items (floor {floor})')
+        # 0.49 C4: rung 1 interrupted cadence (V–vi). Its pool is every strict, open, complete realisation in the twelve keys; this
+        # independent enumeration (strict common-practice rules, below) finds the same set, so the 28 voicings are the honest maximum while
+        # rung 1 keeps open spacing and complete chords (EL-7 / BHL H). With close spacing allowed it would be 108 (register 0.49 C12, Drafted).
+        r1 = await pg.evaluate("()=>({vvi:earR1Pool().filter(p=>p.t==='V vi').map(p=>p.k+':'+p.ch.map(v=>v.join(',')).join('|')),by:earR1Pool().reduce((o,p)=>(o[p.t]=(o[p.t]||0)+1,o),{}),"
+                               "w:Object.fromEntries(Object.entries(earR1Weights()).map(([a,L])=>[a,L.filter(e=>e.w>=1e-4).length]))})")
+        mine = {f"{k}:{','.join(map(str, P))}|{','.join(map(str, N))}" for k in range(12) for P, N in vvi_enum(k)}
+        mine_close = sum(len(vvi_enum(k, open_only=False)) for k in range(12))
+        COUNT['C4 rung 1 V–vi: app pool / independent enumeration (open) / with close spacing'] = f"{len(r1['vvi'])} / {len(mine)} / {mine_close}"
+        COUNT['C4 rung 1 pool per model'] = json.dumps(r1['by'])
+        COUNT['C4 rung 1 pool entries with weight >= 1e-4 per answer'] = json.dumps(r1['w'])
+        if set(r1['vvi']) != mine:
+            fail('D', f"C4 rung 1 V–vi pool differs from the independent enumeration: app only {sorted(set(r1['vvi']) - mine)[:3]}, enumeration only {sorted(mine - set(r1['vvi']))[:3]}")
+        if r1['w'].get('interrupted', 0) < len(mine):
+            fail('D', f"C4 rung 1 interrupted: only {r1['w'].get('interrupted')} of {len(mine)} voicings carry weight")
 
         # ---------------- E: blind analysis ----------------
         blind = await pg.evaluate("""async()=>{await earLoadBlind();return{items:EAR.blind.map(x=>({...x})),cats:[1,2,3].map(l=>earBlindCats(l)),meta:AN.meta}}""")
