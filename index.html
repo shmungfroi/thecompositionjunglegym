@@ -7981,7 +7981,8 @@ function earJudge(q,given){if(q&&given===q.a)return'correct';if(!q||q.d!=='cad'|
  if(EAR_NEARLY&&CADPARENT[q.a]&&CADPARENT[q.a]===given)return'nearly';if(CAD64_INT_NEARLY&&given==='cad64'&&earCad64Int(q))return'nearly';return'wrong'}
 // ok: true, false, or 'nearly'; given null = "Show me"
 function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===null?'shown':ok==='nearly'?'nearly':ok?'ok':'miss';earRecord(kind);
- if(EAR.drill==='mel'||EAR.drill==='rhy'){ladRdPush(EAR.rd,EAR.drill,earLvl(),kind);earSave()}   // D10 readiness: answered onlyEAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};EAR.focus='[data-earnew]';EAR.announce=true;
+ if(EAR.drill==='mel'||EAR.drill==='rhy'){ladRdPush(EAR.rd,EAR.drill,earLvl(),kind);earSave()}   // D10 readiness: answered only
+ EAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};EAR.focus='[data-earnew]';EAR.announce=true;
  // undo and redo end once the answer is marked
  HIST.ear.u=[];HIST.ear.r=[];hBtns();
  logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${kind==='ok'?'correct':kind==='shown'?'shown':kind==='nearly'?'nearly':'missed'}`)}
