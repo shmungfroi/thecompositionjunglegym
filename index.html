@@ -1218,6 +1218,250 @@ label.ck{gap:8px;cursor:pointer}
  .top .jbtn{padding:7px 12px}
 }
 .search input{text-overflow:ellipsis}
+
+/* ===== Ear Lab 0.49 ladders: UI (Fable ladder049.css, then ladder_ui.css, lifted as written; the replaced two-step entry rules are removed as ladder_ui.css says) ===== */
+/* Ear Lab 0.49: the long ladders (melody 12 rungs, rhythm 10). Component CSS for Sonnet to lift into index.html as written.
+   Where DESIGN_049.md and this file disagree, this file wins. Existing tokens only. */
+
+/* ---- header for a long ladder: tally beside the title, picker and rung line full width beneath ---- */
+.el-head.long .el-tally{grid-row:1}
+.el-head.long .el-rungrow{grid-column:1 / -1;display:block;margin-top:14px}
+
+/* ---- rung picker: one pill per Stage band ---- */
+.el-rp{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.el-band{display:inline-flex;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden}
+.el-bandlab{display:flex;align-items:center;padding:0 11px 0 14px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);background:var(--panel2);border-right:1px solid var(--line);white-space:nowrap}
+.el-band.cur .el-bandlab{color:var(--gold)}
+.el-band button{position:relative;min-width:40px;height:34px;padding:0 4px;background:none;border:0;font-size:14px;color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums lining-nums}
+.el-band button+button{border-left:1px solid var(--line)}
+.el-band button:last-child{border-radius:0 var(--r-pill) var(--r-pill) 0}
+.el-band button:hover{color:var(--goldhi)}
+.el-band button.on{background:var(--gold);color:var(--ink);font-weight:600}
+.el-band button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+.el-band button.on:focus-visible{outline-color:var(--ink)}
+/* a rung the student has reached 8 of the last 10 on: a small dot under the numeral (a mark, not only a colour) */
+.el-band button.done::after{content:"";position:absolute;left:50%;bottom:4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--gold)}
+.el-band button.on.done::after{background:var(--ink)}
+/* the rung being suggested: a ring, held still (no pulse) */
+.el-band button.sug,.el-bandtab.sug,.el-bandmore.sug{box-shadow:inset 0 0 0 1.5px var(--goldhi);color:var(--goldhi)}
+/* bands above the Stage switch: one dashed chip that shows them all (replaces the "show all rungs" link on these two drills) */
+.el-bandmore{height:36px;padding:0 14px;border:1px dashed rgba(156,146,124,.55);border-radius:var(--r-pill);background:none;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.el-bandmore b{font-weight:400;color:var(--ivory)}
+.el-bandmore small{font-size:inherit}
+.el-bandmore:hover{border-color:var(--gold);color:var(--goldhi)}
+.el-bandtab{display:none}
+
+/* ---- the rung line: what this rung is, and the last ten answers on it ---- */
+.el-rungline{display:flex;align-items:center;gap:6px 16px;flex-wrap:wrap;margin:10px 0 0;font-size:12.5px;line-height:1.4;color:var(--muted)}
+.el-rungline b{font-weight:400;color:var(--ivory)}
+.el-last10{display:inline-flex;align-items:center;gap:8px;margin-left:auto;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
+.el-last10 i{display:inline-flex;align-items:center;gap:3px}
+.el-last10 i span{box-sizing:border-box;width:8px;height:8px;border-radius:50%;border:1px solid var(--muted)}            /* answered, not right: a ring */
+.el-last10 i span.r{background:var(--gold);border-color:var(--gold)}                                                   /* right: a filled disc */
+.el-last10 i span.e{width:8px;height:1px;border:0;border-radius:0;background:rgba(156,146,124,.45)}                      /* not answered yet: a dash */
+
+/* ---- the suggestion, inside the result panel ---- */
+.el-sug{grid-column:1 / -1;order:10;display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.el-sug .ico{flex:none;width:30px;height:30px;color:var(--goldhi)}
+.el-sug p{flex:1 1 260px;margin:0;font-size:15px;line-height:1.45}
+.el-sug p b{font-weight:400;color:var(--goldhi)}
+.el-sug p small{display:block;font-size:12.5px;color:var(--muted)}
+.el-sug .acts{display:flex;gap:8px}
+.el-btn.line{border-color:var(--gold);color:var(--goldhi)}
+.el-btn.line:hover{background:rgba(201,162,74,.14)}
+
+/* ---- melody entry with rhythm (melody rungs 4 and up) ---- */
+.melentry{grid-area:entry;min-width:0}
+.melentry .el-tiles{gap:8px}
+.melentry .el-lbl{margin-top:2px}
+.melentry .earlad{grid-area:auto}
+.el-sysmap{display:none}
+
+@media (max-width:760px){
+ .el-head.long .el-rungrow{margin-top:14px}
+ /* one band open at a time; the others fold to a two-line tab */
+ .el-rp{flex-wrap:nowrap;align-items:stretch;gap:6px}
+ .el-band{display:none;flex:1 1 0;min-width:0}
+ .el-band.open{display:flex}
+ .el-bandlab{display:none}
+ .el-band button{flex:1 1 0;min-width:44px;height:44px;font-size:15px}
+ .el-band button:first-of-type{border-radius:var(--r-pill) 0 0 var(--r-pill)}
+ .el-band button.done::after{bottom:6px}
+ .el-bandtab{flex:none;display:grid;place-content:center;justify-items:center;gap:1px;width:60px;height:46px;padding:0;border:1px solid var(--line);border-radius:var(--r-m);background:none;cursor:pointer}
+ .el-bandtab.open{display:none}
+ .el-bandtab small{font-size:11px;letter-spacing:.4px;color:var(--muted);line-height:1.2}
+ .el-bandtab b{font-size:12.5px;font-weight:400;color:var(--ivory);line-height:1.2;font-variant-numeric:lining-nums}
+ .el-bandmore{flex:none;display:grid;place-content:center;justify-items:center;gap:1px;width:72px;height:46px;padding:0;border-radius:var(--r-m);line-height:1.2}
+ .el-bandmore .sep{display:none}.el-bandmore small{font-size:11px;letter-spacing:.4px}
+ .el-rungline{margin-top:10px}
+ .el-last10{margin-left:0;flex:1 1 100%}
+ .el-sug{margin-top:14px}.el-sug p{flex:1 1 0;min-width:0}
+ .el-sug .acts{flex:1 1 100%}.el-sug .acts .el-btn{flex:1}
+ /* melody with rhythm: score (sticky, one system at a time), the two steps, then tiles or the solfa ladder */
+ .el-sysmap{display:flex;gap:6px;margin:0 0 8px}
+ .el-sysmap button{flex:1 1 0;min-width:0;height:44px;padding:0;border:1px solid var(--line);border-radius:var(--r-s);background:none;font-size:12.5px;color:var(--muted);cursor:pointer;display:grid;place-content:center;justify-items:center;gap:3px}
+ .el-sysmap button i{display:flex;gap:2px}
+ .el-sysmap button i span{width:12px;height:3px;border-radius:2px;background:var(--line)}
+ .el-sysmap button i span.rh{background:var(--muted)}              /* rhythm written */
+ .el-sysmap button i span.so{background:var(--gold)}               /* rhythm and solfa written */
+ .el-sysmap button[aria-pressed=true]{border-color:var(--gold);color:var(--goldhi);background:rgba(201,162,74,.1)}
+ .melentry .el-tiles{justify-content:flex-start}
+}
+
+/* Ear Lab 0.49: ladder UI, part 2 (Fable). For Sonnet to lift into index.html as written, after ladder049.css.
+   It REPLACES the two-step entry in ladder049.css: delete that file's `.meldesk.r4` and `.el-steps` rules and the
+   `.meldesk.r4 ...`, `.el-steps ...` lines of its phone block (the picker, rung line, last-10, suggestion and `.el-sysmap` rules stay).
+   Where SPEC.md and this file disagree, this file wins. Existing tokens only (--red and --green are the C6 values). */
+
+/* ================= 1. Melody entry from rung 4: the duration palette ================= */
+.meldesk.bylen{grid-template-areas:"pal score" "entry score" "entry res" "entry acts";grid-template-rows:auto auto auto 1fr}
+.melhold{display:contents}                      /* desktop: its two children sit in the desk grid; phones: one sticky block (below) */
+.melentry{grid-area:entry;min-width:0}
+.melentry .earlad{grid-area:auto}
+.meldesk.bylen .melscore .melfr{display:block}
+/* the reveal: the verdict first, then the two staves; no palette */
+.meldesk.bylen.done{grid-template-areas:"entry res" "entry score" "entry acts";grid-template-rows:auto auto 1fr}
+.el-palwrap{grid-area:pal;min-width:0}
+.el-palwrap .el-lbl{margin:0 0 8px}
+.el-pal{display:flex;border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden;background:var(--panel)}
+.el-len{position:relative;flex:1 1 0;min-width:40px;height:56px;padding:0;display:grid;place-items:center;background:none;border:0;border-radius:0;color:var(--ivory);cursor:pointer}
+.el-len+.el-len{border-left:1px solid var(--line)}
+.el-len svg{display:block;width:34px;height:40px}
+.el-len:hover:not([aria-disabled=true]){background:rgba(201,162,74,.06)}
+/* the chosen length stays chosen: a gold wash, a brighter glyph and a bar at the foot (a mark, not only a colour) */
+.el-len[aria-checked=true]{background:rgba(201,162,74,.13);color:var(--goldhi)}
+.el-len[aria-checked=true]::after{content:"";position:absolute;left:22%;right:22%;bottom:0;height:2px;border-radius:2px 2px 0 0;background:var(--gold)}
+/* a length that cannot go at the gold marker: dimmed, still focusable so its label can say why */
+.el-len[aria-disabled=true]{cursor:default}
+.el-len[aria-disabled=true] svg{opacity:.3}
+/* rests are keys, not choices: one tap writes the rest. They sit after the lengths, behind a double rule */
+.el-len.rest{flex:0 1 52px}
+.el-len+.el-len.rest{border-left:3px double var(--line)}
+.el-len.rest:active:not([aria-disabled=true]){background:rgba(201,162,74,.13)}
+.el-len:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+/* more than seven cells (melody rung 12 only): two rows, lengths above, rests and the rarer lengths below */
+.el-pal.two{flex-wrap:wrap}
+.el-pal.two .el-len{flex:1 1 20%;border-bottom:1px solid var(--line);margin-bottom:-1px}
+/* phones only: the bar map shares its row with a one-tap Undo, so a slip can be mended without leaving the score */
+.el-sysrow{display:none}
+.el-undo1{display:none}
+
+/* ================= 2. Result at rungs 4 and up ================= */
+.el-answer.two{display:flex;flex-wrap:wrap;gap:2px 26px}
+.el-answer.two .pt{display:inline-flex;align-items:baseline;gap:9px;white-space:nowrap}
+.el-answer.two .pt svg{align-self:center;flex:none;width:15px;height:15px}
+.el-answer.two .pt.ok svg{color:var(--green)}
+.el-answer.two .pt.bad svg{color:var(--red)}
+.el-answer.two .pt.near svg{color:var(--gold)}
+.el-answer.two .pt small{margin-left:0}
+/* the key under the two staves: what each mark means (shape first, colour second) */
+.el-markkey{display:flex;flex-wrap:wrap;gap:6px 18px;margin:10px 0 0;font-size:12.5px;line-height:1.4;color:var(--muted)}
+.el-markkey span{display:inline-flex;align-items:center;gap:7px}
+.el-markkey i{flex:none;display:inline-block}
+.el-markkey .p{width:11px;height:9px;border-radius:50%;background:var(--red);transform:rotate(-20deg)}
+.el-markkey .r{width:20px;height:2px;background:var(--red)}
+.el-markkey .n{width:14px;height:0;border-top:2px dotted var(--gold)}
+.meldesk.done .el-sysmap button i span.ok{background:var(--green)}
+.meldesk.done .el-sysmap button i span.bad{box-sizing:border-box;height:5px;margin-top:-1px;background:none;border:1px solid var(--red)}
+
+/* ================= 3. Chromatic ladder rows (melody rungs 7 to 10): names only ================= */
+/* a ladder with half rungs is a plain column: note rows as before, a half rung between the two notes it lies between */
+.meldesk .earlad.chr{display:flex;flex-direction:column;gap:3px}
+.meldesk .earlad.chr>.earstep{flex:none;height:52px;margin:0;box-sizing:border-box}
+.earhalf{position:relative;flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;height:36px}
+.meldesk .earhalf .earstep{grid-row:1;margin:0;padding:0 10px 0 14px;gap:9px;background:var(--inset);box-sizing:border-box}
+.meldesk .earhalf .earstep.fl{grid-column:1}        /* lowered notes (ra me se le te) on the left */
+.meldesk .earhalf .earstep.sh{grid-column:2}        /* raised notes (di ri fi si li) on the right */
+.meldesk .earhalf .earstep b{min-width:0}
+.earstep .of{font-size:11px;letter-spacing:.3px;color:var(--muted);white-space:nowrap}
+.earstep.chr.last{border-color:var(--gold)}
+
+/* the augmented 2nd, fa to si (rung 7): a gauge down the right of the ladder, one node per semitone */
+.earlad .a2{position:relative}
+.earlad .a2::after{content:"";position:absolute;right:17px;top:-3px;bottom:-3px;width:0;border-left:1.5px solid var(--muted);pointer-events:none}
+.earlad .a2.a2top::after{top:50%}
+.earlad .a2.a2bot::after{bottom:50%}
+.earlad .a2::before{content:"";position:absolute;z-index:1;right:13px;top:50%;width:9px;height:9px;margin-top:-4.5px;box-sizing:border-box;border-radius:50%;border:1.5px solid var(--muted);background:var(--panel);pointer-events:none}
+.earlad .a2.a2top::before,.earlad .a2.a2bot::before{background:var(--muted)}
+.earlad .a2lab{position:absolute;right:34px;top:50%;transform:translateY(-50%);font-size:11px;letter-spacing:.4px;line-height:1.25;text-align:right;color:var(--muted);pointer-events:none}
+.earlad .a2lab b{display:block;font-weight:400;color:var(--ivory)}
+/* when the melody takes that step (shown at the reveal), the gauge turns gold */
+.earlad.a2on .a2::after{border-left-color:var(--gold)}
+.earlad.a2on .a2::before{border-color:var(--gold)}
+.earlad.a2on .a2.a2top::before,.earlad.a2on .a2.a2bot::before{background:var(--gold)}
+.earlad.a2on .a2lab,.earlad.a2on .a2lab b{color:var(--goldhi)}
+.meldesk .earlad.a2on .earstep.a2[disabled],.meldesk .earlad.a2on .earhalf.a2 .earstep[disabled]{opacity:1}   /* the four rows of the step stay at full strength in the locked ladder */
+/* the same step in the feedback: two measures, a tone and the augmented 2nd, one cell per semitone */
+.el-gap{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:7px 14px;align-items:center;margin:14px 0 0;max-width:460px}
+.el-gap .nm{font-size:14px;color:var(--ivory);white-space:nowrap}
+.el-gap .gbar{display:flex;gap:3px}
+.el-gap .gbar i{width:30px;height:10px;border-radius:2px;background:rgba(156,146,124,.45)}
+.el-gap .say{font-size:12.5px;line-height:1.3;color:var(--muted)}
+.el-gap .on.nm,.el-gap .on.say{color:var(--goldhi)}
+.el-gap .on.gbar i{background:var(--gold)}
+
+/* ================= 4. Rung 9: Keep home do / Move do (mutation) ================= */
+/* settings sit in the listening options row (.el-vars) as one more group */
+.el-vars .grp.set{margin-left:auto}
+.el-gloss{display:block;margin-top:4px;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.el-gloss b{font-weight:400;color:var(--ivory)}
+.el-mut{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;margin:10px 0 0;padding:0 14px 0 12px;border:1px dashed var(--gold);border-radius:var(--r-m);background:none;font:inherit;font-size:14px;color:var(--goldhi);text-align:left;cursor:pointer}
+.el-mut svg{flex:none;width:22px;height:22px}
+.el-mut small{margin-left:auto;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.el-mut:hover:not([disabled]):not([aria-pressed=true]){background:rgba(201,162,74,.1)}
+.el-mut[aria-pressed=true]{border-style:solid;border-color:rgba(201,162,74,.55);background:rgba(201,162,74,.1);color:var(--ivory);cursor:default}
+.el-mut[aria-pressed=true] svg{color:var(--gold)}
+.el-mut[disabled]{opacity:.45;cursor:default}
+.el-mut:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
+/* after the mutation each row carries its new name, and its old one small at the right */
+.earstep .was{margin-left:auto;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.earstep .was b{min-width:0;font-size:12.5px;font-weight:400;color:var(--ivory)}
+.earstep .was+.hm{margin-left:10px}
+
+/* ================= 5. Rhythm: tile families, tuplet tiles, the names setting ================= */
+.el-tfams{display:flex;flex-wrap:wrap;gap:14px 26px;align-items:flex-start}
+.el-tfam{display:grid;gap:7px;min-width:0}
+.el-tfam>span{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted)}
+.el-tiles.named .el-tile.tup{height:auto;min-height:76px;justify-content:flex-start}
+.el-tile.tup small{margin-top:-2px;padding:0 6px 6px;line-height:13px;white-space:pre-line}
+
+@media (max-width:760px){
+ /* the score and the palette are one block that stays under the top bar; the ladder rows pass beneath it */
+ .meldesk.bylen{display:flex;flex-direction:column;gap:10px}
+ .melhold{display:block;order:-3;position:sticky;top:var(--top);z-index:3;margin:0 -16px;padding:8px 16px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+ .meldesk.bylen .melscore{position:static;order:0;margin:0;padding:0;background:none;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;align-items:center}
+ .meldesk.bylen .melscore .lbl,.meldesk.bylen .melscore .melfr{grid-column:1 / -1}
+ .el-sysrow{grid-column:1 / -1;display:flex;gap:6px;margin:0 0 8px}
+ .el-sysrow .el-sysmap{flex:1 1 0;min-width:0;margin:0}
+ .el-undo1{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:var(--r-s);background:none;color:var(--ivory);cursor:pointer}
+ .el-undo1 svg{width:18px;height:18px}
+ .el-undo1[disabled]{opacity:.4}
+ /* one system (two bars): no bar map, so the label and Undo share the line */
+ .meldesk.bylen .melscore.one .lbl{grid-column:1;margin:0}
+ .meldesk.bylen .melscore.one .el-sysrow{grid-column:2;grid-row:1;margin:0}
+ .meldesk.bylen .melscore.one .melfr{margin-top:8px}
+ /* the stave is bare on phones (class .bare on .melfr, set by the mount): the held block is its frame */
+ .meldesk.bylen .melfr.bare{padding:2px 0 0}
+ .el-palwrap{margin-top:8px}
+ .el-palwrap .el-lbl{display:none}
+ .el-len{min-width:44px;height:48px}
+ .el-len.rest{flex:1 1 0}
+ .el-mut{margin-top:8px}
+ .meldesk.bylen .melres{order:-4}
+ /* at the reveal nothing is being entered: the block lets go */
+ .meldesk.done .melhold{position:static;border-bottom:0;padding-bottom:0}
+ /* every row of a chromatic ladder is a 44 px target; a half rung keeps its half width */
+ .meldesk .earlad.chr>.earstep{height:var(--lad-row)}
+ .earhalf{height:var(--lad-row)}
+ .el-vars .grp.set{flex:1 1 100%;flex-wrap:wrap;margin-left:0;white-space:normal}
+ .el-vars .grp.set .cap{flex:1 1 100%}
+ .el-vars .grp.set .el-seg{flex:1 1 100%}
+ .el-vars .grp.set .el-seg button{flex:1 1 auto;padding:0 10px}
+ .el-gap{grid-template-columns:auto minmax(0,1fr);gap:4px 12px}
+ .el-gap .say{grid-column:1 / -1;margin-bottom:6px}
+ .el-gap .gbar i{width:26px}
+}
+
 </style></head>
 <body>
 
@@ -7870,6 +8114,7 @@ EAR.blindTonic=k=>{const L=k[0],acc=/♭/.test(k)?-1:/♯/.test(k)?1:0;let m=48+
 /* ---- Ear Lab 0.48 notation (design spec sections 6-7): the one-line rhythm stave, entry tiles, metre signatures and the beat lane.
    Drawn as inline SVG from the Bravura outlines VexFlow already ships (ELGLY), so no extra font is loaded. ---- */
 const ELGLY={"noteheadBlack":"M140 -180C268 -180 425 -62 425 60C425 134 367 180 285 180C127 180 0 63 0 -60C0 -135 62 -180 140 -180Z","noteheadHalf":"M140 -180C377 -180 425 13 425 60C425 134 366 180 282 180C68 180 0 14 0 -60C0 -137 60 -180 140 -180ZM108 -125C78 -125 60 -109 50 -92C46 -84 42 -73 42 -63C42 7 251 121 318 121C346 121 361 108 372 91C376 82 380 73 380 63C380 1 177 -125 108 -125Z","restQuarter":"M112 -55C135 -84 156 -111 174 -141C177 -147 183 -158 183 -161C183 -163 183 -166 181 -167C179 -173 173 -174 166 -174C160 -174 148 -171 143 -170C141 -170 138 -170 137 -170L125 -166C50 -166 1 -233 1 -304C1 -376 63 -446 168 -527C180 -536 194 -540 206 -540C216 -540 226 -537 228 -531C229 -527 230 -524 230 -521C230 -508 219 -497 207 -487C189 -487 173 -448 170 -435C166 -423 164 -410 164 -397C164 -338 194 -292 255 -292C297 -292 344 -308 369 -317L370 -318C376 -320 379 -320 382 -320C386 -320 389 -318 389 -314C389 -297 351 -249 336 -232C281 -166 236 -112 236 -32C236 -30 236 -29 236 -27L238 -17C238 -16 238 -14 238 -13C243 71 295 140 333 199C337 206 338 213 338 220C338 235 333 248 333 248C333 248 120 501 95 526C88 533 78 537 69 537C55 537 40 527 40 507C40 500 42 492 46 484C52 468 134 395 134 291C134 238 112 176 48 108C33 94 27 78 27 66C27 46 42 32 42 32Z","flag8thUp":"M343 -1138C343 -1138 380 -1001 380 -888C380 -708 305 -539 215 -395C141 -281 81 -157 58 -19C53 4 42 13 27 13C12 13 0 9 0 -9L0 -353C95 -370 232 -566 284 -688C305 -737 318 -819 318 -904C318 -969 308 -1037 284 -1102C281 -1110 279 -1117 279 -1123C279 -1146 294 -1159 302 -1165C311 -1171 336 -1162 343 -1138Z","augmentationDot":"M144 0C144 40 112 72 72 72C32 72 0 40 0 0C0 -40 32 -72 72 -72C112 -72 144 -40 144 0Z","timeSig0":"M648 0C648 200 510 361 338 361C167 361 29 200 29 0C29 -199 167 -360 338 -360C510 -360 648 -199 648 0ZM338 317C397 317 446 180 446 10C446 -158 397 -295 338 -295C278 -295 230 -158 230 10C230 180 278 317 338 317Z","timeSig1":"M35 19C35 19 29 10 29 0C29 -7 33 -16 45 -20C50 -22 56 -23 58 -23C72 -23 78 -10 78 -10C78 -10 140 89 156 117C161 127 167 131 170 131C176 131 179 120 179 111L179 -261C179 -294 145 -315 115 -315C105 -315 91 -320 91 -337C91 -353 104 -360 122 -360L429 -360C452 -360 452 -337 452 -337C452 -337 452 -315 431 -315C410 -315 384 -289 384 -265L384 328C384 351 376 360 356 361C336 361 300 356 281 356C253 356 228 357 206 360C203 360 200 361 199 361C184 361 179 347 173 334Z","timeSig2":"M606 -131C606 -114 599 -111 589 -111C577 -111 573 -117 570 -127L569 -128C554 -164 543 -192 513 -192C505 -192 498 -190 488 -187C469 -180 459 -179 445 -171C416 -160 348 -137 289 -137C271 -137 252 -140 236 -145C268 -94 390 -50 422 -42C523 -14 613 27 613 147C613 300 464 366 330 366C229 366 140 357 69 275C45 245 29 209 29 170C29 150 33 130 42 108C63 63 108 29 160 29C248 29 261 120 261 156C261 242 161 246 161 275C164 295 190 330 275 330C403 330 405 233 405 192C405 60 297 -39 193 -102C114 -153 58 -223 33 -317L32 -321C32 -340 48 -370 69 -370C101 -370 118 -282 203 -282C261 -282 282 -360 410 -360C472 -360 583 -354 606 -131Z","timeSig3":"M307 357C305 357 304 357 301 357L291 359C289 359 287 359 285 359C161 359 37 276 37 200C37 153 65 89 154 84L161 84C225 84 256 130 256 177L256 189C252 242 216 245 209 248C202 251 180 248 180 268L180 274C183 298 228 310 240 310C363 310 374 233 374 199L374 189C374 82 289 40 199 36C184 35 164 27 164 12C164 -6 189 -6 200 -6C366 -6 379 -118 379 -137C379 -289 301 -307 269 -307C264 -307 258 -305 256 -305C245 -304 217 -304 216 -282L216 -275C216 -243 248 -222 249 -180C249 -120 207 -76 145 -76C140 -76 135 -76 130 -78C105 -82 78 -96 60 -115C36 -137 29 -171 29 -203C32 -315 134 -359 275 -361L288 -361C431 -361 577 -288 577 -161L577 -151C575 -109 564 -82 537 -50C528 -39 517 -29 503 -20L472 -3L425 10C418 12 413 12 410 17C409 20 409 22 409 24C409 30 410 36 415 37C431 42 446 43 459 50C517 78 547 115 547 181C547 314 367 353 307 357Z","timeSig4":"M521 -107L521 202C521 213 520 226 504 226C491 226 484 223 475 213L338 48C333 40 325 32 325 14L325 -107L131 -107C246 -9 477 318 481 336L482 340C482 353 472 361 461 361C448 361 389 359 363 359C337 359 272 361 261 361C248 361 228 357 228 334C228 156 86 -45 43 -105L35 -117C35 -117 35 -118 35 -118L33 -120C30 -127 29 -132 29 -137C29 -151 40 -161 58 -161L325 -161L325 -252C325 -291 294 -302 268 -302C245 -302 235 -315 235 -330C235 -344 240 -360 262 -360L569 -360C583 -360 598 -350 598 -330C598 -310 580 -301 566 -301C552 -301 521 -292 521 -246L521 -161L626 -161C641 -161 648 -151 648 -134C648 -117 642 -107 626 -107Z","timeSig5":"M109 85C109 85 115 166 117 179C118 190 125 197 138 197L144 197C158 194 226 184 285 184C485 184 492 300 492 323C492 341 488 353 472 353C454 353 341 340 295 340C249 340 125 351 101 354C75 354 68 341 66 330L50 10L50 7C50 -12 65 -14 79 -14C94 -14 95 -1 111 14C125 29 160 62 209 62C258 62 357 35 357 -125C357 -284 272 -304 235 -304C223 -304 212 -304 202 -300C194 -295 186 -289 184 -279C184 -269 194 -264 202 -259C235 -239 256 -203 256 -163C256 -99 206 -50 144 -50C66 -50 35 -107 30 -157C29 -166 29 -174 29 -183C29 -302 107 -361 284 -361C456 -361 552 -255 552 -125C552 6 445 112 314 112C230 112 168 98 122 71C120 69 117 69 115 69C109 69 109 75 109 79Z","timeSig6":"M439 120C500 120 554 167 554 229C554 235 554 239 553 245C539 337 426 361 348 361C239 360 137 307 85 209C53 148 29 72 29 4L29 -1C30 -68 42 -143 73 -200C132 -307 203 -359 324 -359C389 -359 461 -348 513 -307C563 -266 596 -202 596 -137C596 -24 490 72 379 72C333 72 285 55 248 22C245 19 242 19 239 19C230 19 226 30 226 53C230 320 315 327 346 327C374 327 393 320 393 305C393 285 366 268 357 251C350 238 347 223 347 209C347 187 354 166 369 150C379 131 420 120 439 120ZM320 3C366 3 405 -69 405 -158C405 -248 366 -320 320 -320C274 -320 236 -248 236 -158C236 -69 274 3 320 3Z","timeSig7":"M606 294C606 333 606 351 582 351C580 351 557 346 552 336C541 318 521 236 485 236C449 236 382 359 262 359C179 359 157 325 137 307C117 288 108 282 98 281C86 281 68 301 60 315C58 321 50 325 43 325C36 325 29 321 29 308L29 71C29 71 30 48 45 48C56 48 60 60 66 76C81 112 99 196 164 196C222 196 291 88 374 88C415 88 435 109 446 118C451 121 456 124 459 124C465 124 468 120 469 111C469 71 359 -10 272 -112C217 -176 173 -259 173 -315C173 -346 173 -360 200 -360C226 -360 258 -347 294 -347C330 -347 397 -360 412 -360C426 -360 435 -348 435 -307C435 -66 606 140 606 288Z","timeSig8":"M481 52C533 85 567 132 567 204C567 351 356 373 317 373C150 373 36 297 36 176C36 76 92 23 161 -16C86 -52 29 -99 29 -190C29 -315 158 -373 301 -373C445 -373 599 -311 599 -117C599 -30 549 17 481 52ZM406 85C291 125 168 150 168 240C168 301 251 331 314 331C360 331 482 308 482 207C482 150 454 112 406 85ZM295 -325C199 -325 111 -276 111 -183C111 -125 161 -72 225 -48C330 -94 436 -124 436 -219C436 -276 392 -325 295 -325Z","timeSig9":"M186 -117C125 -117 71 -164 71 -226C71 -232 71 -236 72 -242C86 -334 199 -359 276 -359C386 -357 488 -304 540 -206C572 -145 596 -69 596 -1L596 4C595 71 583 145 552 203C492 310 422 361 301 361C236 361 164 351 112 310C62 269 29 204 29 140C29 27 135 -69 246 -69C292 -69 340 -52 377 -19C380 -16 383 -16 386 -16C395 -16 399 -27 399 -50C395 -317 310 -324 279 -324C251 -324 232 -317 232 -302C232 -282 259 -265 268 -248C275 -235 278 -220 278 -206C278 -184 271 -163 256 -147C246 -128 204 -117 186 -117ZM305 0C259 0 220 72 220 161C220 251 259 323 305 323C351 323 389 251 389 161C389 72 351 0 305 0Z"};
+Object.assign(ELGLY,{"flag16thUp":"M392 -1146C397 -1139 402 -1057 402 -988L402 -956C402 -896 386 -837 360 -783C360 -779 359 -776 359 -770C359 -768 359 -765 360 -760C364 -752 396 -665 396 -577C396 -559 395 -543 392 -526C377 -428 340 -387 236 -275C158 -192 78 -168 53 -16C50 0 33 3 24 3C16 3 0 -1 0 -12L0 -570L7 -570C96 -573 199 -576 298 -778C331 -847 344 -917 344 -992C344 -1034 340 -1077 333 -1120C331 -1126 331 -1129 331 -1133C331 -1152 343 -1171 363 -1171C373 -1171 383 -1165 392 -1146ZM301 -661C278 -625 253 -596 223 -562C156 -484 89 -449 59 -331C58 -330 58 -328 58 -327C58 -321 66 -312 78 -312L89 -312C177 -312 255 -393 302 -464C328 -501 341 -546 341 -592C341 -602 341 -611 340 -621C337 -632 337 -647 330 -658C328 -662 318 -667 311 -667C307 -667 304 -665 301 -661Z","rest8th":"M193 154C193 207 150 251 96 251C43 251 0 207 0 154C0 124 17 98 39 81C62 65 89 56 117 56C137 56 157 60 173 66C193 72 206 78 225 88C228 89 230 89 232 89C238 89 239 84 239 76C239 72 239 66 238 60C233 39 130 -248 104 -343C104 -360 137 -361 145 -361C161 -361 181 -359 196 -347C200 -344 341 161 341 161C347 187 354 210 356 217C356 232 341 239 338 240C336 240 331 240 323 235C312 226 240 140 193 140Z","noteheadWhole":"M311 180C120 180 0 101 0 3C0 -94 82 -180 297 -180C533 -180 608 -98 608 3C608 105 445 180 311 180ZM160 91C176 141 229 148 274 148C373 148 452 42 452 -45C452 -89 433 -130 386 -141C372 -145 356 -147 341 -147C289 -147 236 -112 206 -72C177 -39 156 10 156 56C156 68 157 79 160 91Z"});
 
 const ELC={IV:'#ece2c8',MUTED:'#9c927c',GOLD:'#c9a24a',GOLDHI:'#f0d48a',RED:'#c8473b',GREEN:'#8fbf6a'},ELS=.02376,ELHW=425*ELS;
 const ELICON={tick:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.6l3.3 3.2L13 4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
