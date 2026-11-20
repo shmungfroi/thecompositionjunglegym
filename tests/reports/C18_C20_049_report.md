@@ -102,3 +102,11 @@ Post-2015 songs in the data: 3 (Dance Monkey 2019, Dance to This 2018, We Don't 
 - content_lint: passed, 56 song entries, 0 failures.
 - unit_test: 959 checks, 0 failures.
 - pageerrors_test: 0 errors (n_errors 0).
+
+## After IC_SONGS2 (IC_SONGS2_049, commit 28589d2)
+Self-check. Only these four items changed.
+1. Gotye: "grew up in Melbourne" removed (unsourced). The card now says "Gotye is an Australian singer-songwriter" (the wording used for the other Australian cards; no new source added for it).
+2. Dance Monkey: the Skoove source (F#m-D-A-E, an A chord not in the recording) is replaced by https://reports.hitsongsdeconstructed.com/?p=48414 (fetched again: F# minor, F#m-D-E-C#m, one bar each, i-VI-VII-v, D and E major). Hooktheory and Wikipedia stay. Listen-for now reads "Two major chords, D then E, sit inside a minor-key loop...". The slot stays; it remains Justin's decision.
+3. Bruno: the "minor home chord" wording is gone. The card now says minor colour from Fm and Cm, G7 pulling back so the key feels as much like G7 as C minor, and little time on C minor itself (follows Ethan Hein). "not a stage show" is replaced by "from the 2021 animated film musical Encanto". The slot stays; Justin decides.
+4. Dance to This: searched once more (Hooktheory, Soundfly, Musicnotes transcriber listing, Klang auto-detection, tab sites; none usable as a second non-lyric source for G#m7: Klang is machine detection, Musicnotes' listing and tab sites give no checkable chords or carry lyrics). No second source found, so the entry is labelled single-source as other cards are: where-text says "as transcribed on Hooktheory", the Hooktheory note says the sevenths rest on a single community transcription with no second non-lyric source found yet, chordAsHeard says "per one transcription". The Soundfly note now states only what the article says: basic loop of plain triads C#m, F#, G#m, E; the sevenths and ninths are the author's own suggestions. Wikipedia still supports date, label and nationality.
+Tests: content_lint passed (0 failures); unit_test 959 checks, 0 failures. pageerrors_test not re-run (card text only; no rendering code changed).
