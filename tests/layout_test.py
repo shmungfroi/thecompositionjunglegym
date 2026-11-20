@@ -26,6 +26,19 @@ def views():
     for d in ['metre','rhy','qual','cad','bass','mel','blind']: V.append((f'ear/{d}',f"location.hash='ear';EAR.drill='{d}';room('ear')"))
     return V
 
+ISSQ="""(()=>{const out=[];
+ const rr=n=>{const r=document.createRange();r.selectNodeContents(n);return[...r.getClientRects()].filter(q=>q.width>1&&q.height>1)};
+ document.querySelectorAll('main .iss').forEach(row=>{if(!row.getClientRects().length)return;const lab=(row.textContent||'').trim().slice(0,30),boxes=[];
+  const w=document.createTreeWalker(row,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){if(!n.textContent.trim())continue;for(const q of rr(n))boxes.push({t:n.textContent.trim().slice(0,18),q,el:n.parentElement})}
+  // no text overlaps another text box in the same row
+  for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){const a=boxes[i].q,b=boxes[j].q,ix=Math.min(a.right,b.right)-Math.max(a.left,b.left),iy=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);if(ix>1&&iy>2)out.push('iss text overlap in "'+lab+'": "'+boxes[i].t+'" x "'+boxes[j].t+'"')}
+  // no span in the row narrower than its own text (a squeezed chip or gloss)
+  row.querySelectorAll('span').forEach(sp=>{const t=sp.textContent.trim();if(!t)return;const bw=sp.getBoundingClientRect().width,tw=Math.max(0,...rr(sp).map(q=>q.width));if(bw+1<tw)out.push('iss span narrower than its text in "'+lab+'": "'+t.slice(0,18)+'" box '+Math.round(bw)+' text '+Math.round(tw))});
+ });
+ // score numeral labels lie inside their frame (the SVG, which the frame clips)
+ document.querySelectorAll('main .sframe svg').forEach(svg=>{const R=svg.getBoundingClientRect();if(!R.width)return;svg.querySelectorAll('text.rnl').forEach(t=>{const r=t.getBoundingClientRect();if(!r.width)return;if(r.bottom>R.bottom+0.5||r.top<R.top-0.5||r.left<R.left-0.5||r.right>R.right+0.5)out.push('score numeral outside its frame: "'+t.textContent+'" bottom '+Math.round(r.bottom)+' > '+Math.round(R.bottom))})});
+ return out.slice(0,12)})()"""
+VOICE="""(()=>{S.level=6;K.mode='maj';K.k=10;P=[];addRomans('Imaj7 viiø7 vi7 vi7 iii7 ii7 viiø7 vi7');location.hash='voice';room('voice')})()"""
 EARQ="""(()=>{const out=[];const W=innerWidth;const tb=document.querySelector('.tabbar,#tabbar,nav.tabs');const tbTop=tb&&getComputedStyle(tb).position==='fixed'?tb.getBoundingClientRect().top:innerHeight;
 const dk=document.querySelector('.el-dock');const dkr=dk&&dk.offsetParent!==null?dk.getBoundingClientRect():null;
 const m=document.getElementById('earMain');if(!m)return{small:['no earMain'],covered:[]};
@@ -73,11 +86,17 @@ async def main():
                 await pg.evaluate(js);await pg.wait_for_timeout(1300 if name.startswith('analysis') else 500)
                 await pg.evaluate("scrollTo(0,0)")
                 r=await pg.evaluate(DET)
+                r['clipped']=list(r['clipped'])+await pg.evaluate(ISSQ)
                 sw=await pg.evaluate('document.documentElement.scrollWidth-innerWidth')
                 if sw>1: r['offscreen']=list(r['offscreen'])+[f'page scrolls sideways by {sw}px']
                 res[f'{W} {name}']=r
                 if r['overlap'] or r['clipped'] or r['offscreen']:
                     pass
+            # regression ISSFIX-049: Voices with a progression that breaks rules (checker rows) in B flat, Stage 6
+            await pg.evaluate(VOICE);await pg.wait_for_timeout(1500);await pg.evaluate("scrollTo(0,0)")
+            r=await pg.evaluate(DET);r['clipped']=list(r['clipped'])+await pg.evaluate(ISSQ)
+            if not await pg.evaluate("document.querySelectorAll('#satbCheck .iss').length"): r['clipped'].append('self-check: no checker rows rendered, the regression view is empty')
+            res[f'{W} voice/iss-rows']=r
             for name,r in (await ear_states(pg,W)).items(): res[f'{W} {name}']=r
             res[f'{W} errors']=errs
             await pg.close()
