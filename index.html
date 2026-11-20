@@ -7056,8 +7056,8 @@ const EARSAVE=LS.get('cjg_ear')||{};
 const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,all:!!EARSAVE.all,rhy:{pulse:!EARSAVE.rhy||EARSAVE.rhy.pulse!==false,bpm:EARSAVE.rhy&&(EARSAVE.rhy.bpm===72||EARSAVE.rhy.bpm===100)?EARSAVE.rhy.bpm:null},q:null,ans:[],done:false,res:null,meta:null,blind:null,
  // 0.49 ladders: rhythm names ('k' Kodály names | 'kk' Kodály with konnakol tuplets), M9 solfa ('home' Keep home do | 'move' Move do (mutation)),
  // readiness (rd[drill][rung] = the last 10 answered: 1 right, 0 wrong). Saved rungs keep their number (register 0.3).
- names:EARSAVE.names==='kk'?'kk':'k',mod:EARSAVE.mod==='move'?'move':'home',rd:EARSAVE.rd&&typeof EARSAVE.rd==='object'?EARSAVE.rd:{}};
-function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all,rhy:EAR.rhy,names:EAR.names,mod:EAR.mod,rd:EAR.rd})}
+ names:EARSAVE.names==='kk'?'kk':'k',mod:EARSAVE.mod==='move'?'move':'home',reached:EARSAVE.reached&&typeof EARSAVE.reached==='object'?EARSAVE.reached:{},band:0,sugNow:false,sugSeen:{},rd:EARSAVE.rd&&typeof EARSAVE.rd==='object'?EARSAVE.rd:{}};
+function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all,rhy:EAR.rhy,names:EAR.names,mod:EAR.mod,rd:EAR.rd,reached:EAR.reached})}
 const EDR=[['metre','Pulse and metre','4–5'],['rhy','Rhythm dictation','4–6'],['qual','Chord quality','4–6'],['cad','Cadences','5–6'],['bass','Bass and numerals','5–6'],['mel','Melodic dictation','4–6'],['blind','Blind analysis','5–6']];
 /* EL-11: each drill's levels are rungs (Rung 1, 2, 3). One Stage table, EARSTAGE (0.48 design spec, section 3): the Stage at which each
    rung starts. A drill or rung is offered when its Stage is at or below the top-bar Stage switch (4/5/6); everything else sits behind
@@ -8244,7 +8244,7 @@ function earJudge(q,given){if(q&&given===q.a)return'correct';if(!q||q.d!=='cad'|
  if(EAR_NEARLY&&CADPARENT[q.a]&&CADPARENT[q.a]===given)return'nearly';if(CAD64_INT_NEARLY&&given==='cad64'&&earCad64Int(q))return'nearly';return'wrong'}
 // ok: true, false, or 'nearly'; given null = "Show me"
 function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===null?'shown':ok==='nearly'?'nearly':ok?'ok':'miss';earRecord(kind);
- if(EAR.drill==='mel'||EAR.drill==='rhy'){ladRdPush(EAR.rd,EAR.drill,earLvl(),kind);earSave()}   // D10 readiness: answered only
+ if(EAR.drill==='mel'||EAR.drill==='rhy'){ladRdPush(EAR.rd,EAR.drill,earLvl(),kind);earSave();earUiMarked(kind)}   // D10 readiness: answered only
  EAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};EAR.focus='[data-earnew]';EAR.announce=true;
  // undo and redo end once the answer is marked
  HIST.ear.u=[];HIST.ear.r=[];hBtns();
@@ -8259,8 +8259,53 @@ function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){const m=ladRhyMar
  else if(q.d==='bass'){earMark(EAR.ans.length===3&&EAR.ans.every((x,i)=>x===q.a[i+1]),EAR.ans.slice())}
  else if(q.d==='mel'){const m=ladMelMark(q,EAR.ans,{pivot:EAR.pivot});earMark(m.ok?true:m.nearly?'nearly':false,Array.isArray(EAR.ans)?EAR.ans.slice():EAR.ans);EAR.res.mark=m}
  renderEar()}
+
+/* =====================================================================
+   EAR LAB LADDERS 0.49 · UI (Fable: DESIGN_049 2.1 and 2.2, ladder_ui/SPEC.md). Drives everything through the engine block above.
+   Order: picker, rung line, last ten and the suggestion · readiness hooks · helpers shared by the two desks
+   ===================================================================== */
+const ELLONG={mel:12,rhy:10};
+function earLong(d){return d==='mel'||d==='rhy'}
+function earBands(d){const out=[];EARSTAGE[d].forEach((s,i)=>{let b=out.find(x=>x.stage===s);if(!b)out.push(b={stage:s,rungs:[]});b.rungs.push(i+1)});return out}
+const ELRUNGMET={mel:{4:'2/4 or 4/4',5:'2/4 or 4/4',6:'2/4, 3/4, 4/4 or 6/8',7:'2/4, 3/4, 4/4 or 6/8',8:'2/4, 3/4, 4/4 or 6/8',9:'2/4, 3/4, 4/4 or 6/8',10:'2/4, 3/4, 4/4 or 6/8',11:'3/4 or 4/4'}};
+const ELNUMW=['','one','two','three','four','five','six','seven','eight'];
+/* what a rung is, in one line (from the engine's own tables: bars, metres and the rung's new thing) */
+function earRungWhat(d,l){
+ if(d==='mel'){const nw=LMNEW[l];
+  if(l===1)return'five crotchets, do to so';if(l===2)return'six crotchets, low so to la';if(l===3)return'seven or eight crotchets, adds ti';
+  if(l===12)return'phrases from real scores';
+  const bars=l<=5?2:l<=8?4:l<=10?8:'4 or 8';return`${typeof bars==='number'?ELNUMW[bars]:bars} bars of ${ELRUNGMET.mel[l]}${l===11?', two parts':''} · ${l===11?'melody and bass':nw}`}
+ const nb=LRBARS[l],mt=LRMET[l].join(', ')+(l===9?', 5/4 or 7/8':''),nw=LRNEWTXT[l];
+ if(l===1)return'one bar of 4/4: crotchets, quavers, minims and rests';
+ if(l===10)return'two bars of 4/4: a riff and a drum groove';
+ return`${ELNUMW[nb]} bars of ${mt} · adds ${nw}`}
+function earLast10HTML(d,l){const a=(EAR.rd[d]&&EAR.rd[d][l])||[],r=a.reduce((s,x)=>s+x,0),m=[...a,...Array(Math.max(0,10-a.length)).fill(null)];
+ return`<span class="el-last10" role="img" aria-label="${a.length?`Last ${a.length} answers on this rung: ${r} right`:'No answers on this rung yet'}">Last 10 <i>${m.map(x=>`<span class="${x===1?'r':x===null?'e':''}"></span>`).join('')}</i></span>`}
+/* the readiness state for the rung in use (D10: Shown, Skipped and Nearly are not in the window; the next rung counts at any Stage, D5) */
+function earReady(d,l){return ladRdState(EAR.rd,d,l,earRungs(d))}
+function earPickerHTML(d,l){const bands=earBands(d),top=earStage(),st=earReady(d,l),sug=st.ready?st.next:null,rd=EAR.reached[d]||[];
+ const stageOf=n=>EARSTAGE[d][n-1],open=EAR.band&&bands.some(b=>b.stage===EAR.band&&(EAR.all||b.stage<=top||b.rungs.includes(l)))?EAR.band:stageOf(l);let h='',hid=0;const hs=[];
+ for(const b of bands){const isCur=b.rungs.includes(l);
+  if(!(EAR.all||b.stage<=top||isCur)){hid+=b.rungs.length;hs.push(b.stage);continue}
+  const isOpen=open===b.stage,sg=b.rungs.includes(sug),a=b.rungs[0],z=b.rungs[b.rungs.length-1];
+  h+=`<button class="el-bandtab${isOpen?' open':''}${sg?' sug':''}" data-band="${b.stage}" aria-expanded="${isOpen}" aria-label="Stage ${b.stage}, rungs ${a} to ${z}${sg?', suggested next':''}"><small>Stage ${b.stage}</small><b>${a}–${z}</b></button>`;
+  h+=`<div class="el-band${isCur?' cur':''}${isOpen?' open':''}" role="group" aria-label="Stage ${b.stage}"><span class="el-bandlab" data-notm>Stage ${b.stage}</span>${b.rungs.map(n=>{const dn=rd.includes(n);
+   return`<button data-earlv="${n}" aria-pressed="${n===l}" aria-label="Rung ${n}, Stage ${b.stage}${dn?', 8 of the last 10 reached':''}${n===sug?', suggested next':''}" class="${n===l?'on':''}${dn?' done':''}${n===sug?' sug':''}">${n}</button>`}).join('')}</div>`}
+ if(hid){const lab=earStageTxt(hs[0],hs[hs.length-1]),sg=sug&&hs.includes(stageOf(sug));
+  h+=`<button class="el-bandmore${sg?' sug':''}" data-earall aria-pressed="false" aria-label="Show ${hid} more rungs, ${lab}${sg?', suggested next':''}"><b>${hid} more</b><span class="sep"> · </span><small>${lab}</small></button>`}
+ return`<div class="el-rp" role="group" aria-label="Rung">${h}</div><p class="el-rungline" data-notm><span><b>Rung ${l} of ${ELLONG[d]}</b> · ${earStageTxt(stageOf(l),stageOf(l))} · ${earRungWhat(d,l)}</span>${earLast10HTML(d,l)}</p>`}
+/* the suggestion, as the last row of the result panel */
+function earSugHTML(d,l){if(!earLong(d)||!EAR.sugNow||!EAR.done)return'';const st=earReady(d,l);if(!st.ready)return'';const n=st.next,sn=EARSTAGE[d][n-1],cross=sn>EARSTAGE[d][l-1],txt=(d==='mel'?LMNEW:LRNEWTXT)[n]||'';
+ return`<div class="el-sug" role="status" data-notm><svg class="ico" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M9 27V5M21 27V5M9 22h12M9 16h12M9 10h12"/><path d="M15 13V3m-3.2 3.2L15 3l3.2 3.2" stroke-width="1.6"/></svg>
+  <p><b>${st.ok} of your last ${st.n} right.</b> Ready for rung ${n}?<small>${cross?`Rung ${n} starts Stage ${sn}. `:''}New on rung ${n}: ${txt}.</small></p>
+  <div class="acts"><button class="el-btn line" data-earlv="${n}" data-earsug>Try rung ${n}</button><button class="el-btn" data-earstay>Stay on rung ${l}</button></div></div>`}
+/* after an answer: the dot is earned and stays; the row shows once, and not again until the count has dropped under 8 and climbed back */
+function earUiMarked(kind){const d=EAR.drill;if(!earLong(d)||(kind!=='ok'&&kind!=='miss'))return;const l=earLvl(),st=earReady(d,l),k=d+l;EAR.sugSeen=EAR.sugSeen||{};
+ if(st.ok>=8){const R=EAR.reached[d]=EAR.reached[d]||[];if(!R.includes(l)){R.push(l);earSave()}}
+ if(st.ready){if(!EAR.sugSeen[k]){EAR.sugNow=true;EAR.sugSeen[k]=true}}else EAR.sugSeen[k]=false}
+
 HIST.ear=mkHist(()=>EAR.ans,v=>{if(EAR.done)return;EAR.ans=v;renderEar()});
-function earNew(){elStop();if(earSkip())toast('Skipped. It counts as skipped, not as a miss.');EAR.done=false;EAR.res=null;EAR.ans=[];HIST.ear.u=[];HIST.ear.r=[];
+function earNew(){elStop();if(earSkip())toast('Skipped. It counts as skipped, not as a miss.');EAR.done=false;EAR.sugNow=false;EAR.res=null;EAR.ans=[];HIST.ear.u=[];HIST.ear.r=[];
  if(EAR.drill==='blind'&&!EAR.blind){EAR.q=null;renderEar();earLoadBlind().then(()=>{EAR.q=earGen('blind',earLvl());EAR.q.plays=0;EAR.focus='[data-earplay="all"]';renderEar();earPlay()}).catch(()=>{$('earMain')&&($('earMain').querySelector('.earq').innerHTML='<p class="note">The scores could not be loaded. Blind analysis needs the score files that come with the published app.</p>')});return}
  EAR.q=earGen(EAR.drill,earLvl());EAR.q.plays=0;EAR.focus='[data-earplay="all"]';renderEar();earPlay()}
 /* ---- R2: melody desk (hand-sign ladder beside the stave) ---- */
@@ -8658,8 +8703,8 @@ function renderEar(){const el=$('earMain');if(!el)return;
  let tally=earTallyHTML(s);if(fade)tally=tally.replace('<b data-ok','<b class="fade" data-ok');
  const T=q&&EAR.done&&EAR.res&&d!=='mel'?earTeach(q,EAR.res):null;
  el.innerHTML=`<div class="el-drills" role="tablist" aria-label="Ear Lab drills">${tabs.map(([k,n])=>`<button class="el-drill${d===k?' on':''}" role="tab" aria-selected="${d===k}" data-eardr="${k}"><b>${n}</b><small>${earStageTag(k)}</small></button>`).join('')}${allBtn}</div>
- <div class="el-cols"><section class="card" id="earCard"><div class="el-head"><div><div class="el-tag">${earStageTag(d)}</div><h2 class="el-title">${elDrillName(d)}</h2></div>${tally}
-  <div class="el-rungrow"><div class="el-rungs" role="group" aria-label="Rung">${rungs.map(n=>`<button data-earlv="${n}" aria-pressed="${l===n}" class="${l===n?'on':''}" title="${earRungStages(d,n)}">Rung ${n}</button>`).join('')}</div>${hidR&&!EAR.all?`<button class="el-all" data-earall aria-pressed="false">show all rungs</button>`:''}</div></div>
+ <div class="el-cols"><section class="card" id="earCard"><div class="el-head${earLong(d)?' long':''}"><div><div class="el-tag">${earStageTag(d)}</div><h2 class="el-title">${elDrillName(d)}</h2></div>${tally}
+  <div class="el-rungrow">${earLong(d)?earPickerHTML(d,l):`<div class="el-rungs" role="group" aria-label="Rung">${rungs.map(n=>`<button data-earlv="${n}" aria-pressed="${l===n}" class="${l===n?'on':''}" title="${earRungStages(d,n)}">Rung ${n}</button>`).join('')}</div>${hidR&&!EAR.all?`<button class="el-all" data-earall aria-pressed="false">show all rungs</button>`:''}</div>`}</div></div>
   <p class="el-ask">${d==='rhy'?ELASK.rhy.replace('one bar of rhythm plays on one note',(l===3?'two bars':'one bar')+(l===1?' of rhythm is clapped':l===3?' of rhythm play on one note':' of rhythm plays on one note')):ELASK[d]}</p>
   ${T?earResultHTML(q,T):d==='mel'&&q&&EAR.done?'':earStageHTML(q,l)}
   ${earAnswerAreaHTML(q,l)}${earFootHTML(s)}</section>${earTipsHTML(d)}</div>${earDockHTML(q)}`;
@@ -8707,10 +8752,12 @@ function earSounding(){return ELT.st!=='idle'&&ELT.item===EAR.q&&ELT.variant!=='
 function earPress(v,main,o){const q=EAR.q;
  if(main){if(!q){earNew();return}if(earSounding()){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,'all');return}
  if(!q)return;if(earSounding()&&ELT.variant===v){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,v,o)}
-document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earall],[data-earplay],[data-eardock],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earpulse],[data-earspd],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore]');if(!t)return;const d=t.dataset;
+document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earall],[data-earplay],[data-eardock],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earpulse],[data-earspd],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore],[data-band],[data-earstay]');if(!t)return;const d=t.dataset;
+ if(d.band){EAR.band=+d.band;renderEar();return}
+ if(d.earstay!==undefined){EAR.sugNow=false;renderEar();return}
  // EL-11: leaving a question unanswered (a change of drill or rung) records it as skipped, and says so
  if(d.eardr){if(d.eardr===EAR.drill)return;elStop();const sk=earSkip();EAR.drill=d.eardr;EAR.q=null;EAR.done=false;EAR.ans=[];EAR.resetAsk=false;earSave();renderEar();if(sk)toast('The unanswered question was recorded as skipped (not a miss).');return}
- if(d.earlv){if(+d.earlv===earLvl())return;elStop();const sk=earSkip();EAR.lvl[EAR.drill]=+d.earlv;earSave();EAR.q=null;EAR.done=false;EAR.ans=[];renderEar();if(sk)toast('Rung changed: the unanswered question was recorded as skipped (not a miss).');return}
+ if(d.earlv){if(+d.earlv===earLvl())return;elStop();const sk=earSkip();EAR.lvl[EAR.drill]=+d.earlv;EAR.band=0;EAR.sugNow=false;earSave();EAR.q=null;EAR.done=false;EAR.ans=[];renderEar();if(sk)toast('Rung changed: the unanswered question was recorded as skipped (not a miss).');return}
  if(d.earall!==undefined){EAR.all=!EAR.all;earSave();renderEar();return}
  if(d.earplay!==undefined){const o=(d.earo||'').split(':').map(Number);earPress(d.earplay,d.v==='*',{o});return}
  if(d.eardock!==undefined){if(d.eardock==='toggle')earPress('all',true);else if(d.eardock==='check'){elStop();earCheck()}else earNew();return}
