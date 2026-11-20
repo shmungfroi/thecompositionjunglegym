@@ -21,7 +21,8 @@ Sections
            cadences in, the bass on the root of the last chord from meta.json events and music21)
   T2 IC_EAR_048 S6: metre sentences say "you heard ... every bar / each beat" only when every split click sounded
   V  BHL 0.48 (IC_EAR_048 S1, S2): the strict rules (below, ic_errors) for cadences rungs 1 and 2 and for bass and numerals, as well as
-           rung 3: generated items, every rung 1 realisation the drill can draw, every rung 2 model x key x register on the question grid (earCadReg),
+           rung 3: generated items, every rung 1 realisation the drill can draw, every rung 2 and rung 3 model x key x register on the question grid
+           (earR23Index, 0.49 C3),
            every bass progression x key x register
   T  0.48 logic: Pulse and metre: answer grid per rung (2/4 from rung 1, 12/8 from rung 2), every metre against the fixture rows
            (tests/fixtures/metre_items.json) and music21, balance, and the tempo / playing-time tells
@@ -610,8 +611,9 @@ async def main():
             for(let i=0;i<4000;i++)o['cadences rung 2 items'].push(row(earGen('cad',2,R)));
             for(const l of [1,2,3])for(let i=0;i<1500;i++)o['bass and numerals items'].push(row(earGen('bass',l,R)));
             for(const e of earR1Pool())o['cadences rung 1, every realisation the drill can draw'].push({k:e.k,md:'maj',rns:e.t.split(' '),ch:e.ch});
-            for(const md of ['maj','min'])for(const c in CADT[2][md])for(const t of CADT[2][md][c])for(const k of earCadKeys(2,md))for(const b of [41,45,49,53])for(const s of [63,67,71,75,79]){
-              const P=earCadProg(2,t.split(' '),{k,mode:md},{b,s});o['cadences rung 2, every model x key x register'].push({k,md,rns:t.split(' '),ch:P.ch})}
+            // 0.49 C3: the question grid is earR23Index (every mode, answer, model, key and grid point the balanced draw can pick), rungs 2 and 3
+            o['cadences rung 3, every model x key x register']=[];
+            for(const l of [2,3])for(const e of earR23Index(l)){const P=earCadM(l,e.t.split(' '),{k:e.k,mode:e.md},{b:e.b,s:e.s});o[`cadences rung ${l}, every model x key x register`].push({k:e.k,md:e.md,rns:e.t.split(' '),ch:P.ch})}
             for(const l of [1,2,3])for(const rns of earBassProgs(l))for(const k of BKEYS)for(const reg of [{b:42,s:66},{b:52,s:74},{b:47,s:70}]){
               const P=earBassProg(rns,{k,mode:'maj'},reg);o['bass and numerals, every progression x key x register'].push({k,md:'maj',rns,ch:P.ch})}
             return o}""", RNG)
@@ -624,6 +626,14 @@ async def main():
         if any(v == 0 for v in have.values()):
             fail('V', f"rung 2 model x key with no strict realisation: {[k for k, v in have.items() if v == 0][:5]}")
         vd['cadences rung 2, every model x key x register'] = [q for q in r2 if q['ch']]
+        r3 = vd['cadences rung 3, every model x key x register']
+        have3 = collections.defaultdict(int)
+        for q in r3:
+            have3[(q['md'], q['k'], ' '.join(q['rns']))] += bool(q['ch'])
+        COUNT['V rung 3 model x key with a strict realisation on every grid register (5 x 5)'] = f"{sum(1 for v in have3.values() if v == 25)} of {len(have3)}"
+        if any(v == 0 for v in have3.values()):
+            fail('V', f"rung 3 model x key with no strict realisation: {[k for k, v in have3.items() if v == 0][:5]}")
+        vd['cadences rung 3, every model x key x register'] = [q for q in r3 if q['ch']]
         sec_V(vd)
 
         # "Without the key chord" (independent theory check 0.48): at rung 1, I–V in one key and IV–I a 5th higher can be the same two

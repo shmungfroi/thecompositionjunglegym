@@ -9,7 +9,7 @@ Sections
   A  cadence models: every template x key x level  (E8, E9, E10)
   B  bass and numerals: every progression x key x level; 6,000 generated questions against the allow-list (E8, E9, E11);
      BHL 0.48 (IC_EAR_048 S3): no cadence model, bass progression or generated question moves ii(6) to IV or ii°(6) to iv
-  C  tells: no answer predictable above chance from length, tempo or register (E10)
+  C  tells: no answer predictable above chance from length, tempo or register (E10); 0.49 C3: exact-semitone register tells at rungs 2-3
   D  pool sizes at level 1 (E11)
   E  blind analysis windows, labels and buttons (E1–E5)
   F  blind playback note lengths (E6)
@@ -275,7 +275,7 @@ async def main():
         # ---------------- C: tells ----------------
         tells = await pg.evaluate("""()=>{let s=17;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o={cad:[],metre:[],qual:[]};
             for(const l of [1,2,3])for(let i=0;i<5000;i++){const c=earGen('cad',l,R);o.cad.push({l,a:c.a,sub:c.sub||'',md:c.key.mode,n:c.ch.length,lo:Math.min(...c.ch.flat()),hi:Math.max(...c.ch.flat()),
-                s2:c.rns[1],open:c.ch[0].join(','),fin:c.ch[c.ch.length-1][3]});
+                s2:c.rns[1],open:c.ch[0].join(','),fin:c.ch[c.ch.length-1][3],fb:c.ch[0][0],lb:c.ch[c.ch.length-1][0],fs:c.ch[0][3]});
               const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
               const q=earGen('qual',l,R);o.qual.push({l,a:q.a,lo:q.notes[0],hi:q.notes[q.notes.length-1]})}return o}""")
         MARGIN = 0.05
@@ -297,6 +297,26 @@ async def main():
         tell('cadences', tells['cad'], 'mode', lambda r: r['md'], lambda r: r['a'])
         tell('cadences', tells['cad'], 'mode and number of chords', lambda r: (r['md'], r['n']), lambda r: r['a'])
         tell('cadences', tells['cad'], 'lowest and highest note (6-semitone bands)', lambda r: (r['lo'] // 6, r['hi'] // 6), lambda r: r['a'])
+        # 0.49 C3 (IC_EAR2_048 C2): exact-semitone register tells at rungs 2 and 3, alone and with the mode. Before 0.49 the exact lowest and
+        # highest note pair predicted the answer 11 (rung 2) and 14 (rung 3) points above chance, and the last bass note 11 (rung 2, 7 keys).
+        # Rung 1's are in earlab_items_test section K. The bass and soprano degrees (lowest note as do or so ...) are the cadence, not a tell.
+        EX = (('lowest note (exact)', lambda r: r['lo']), ('highest note (exact)', lambda r: r['hi']), ('lowest and highest note (exact pair)', lambda r: (r['lo'], r['hi'])),
+              ('span (exact)', lambda r: r['hi'] - r['lo']), ('first bass note (exact)', lambda r: r['fb']), ('last bass note (exact)', lambda r: r['lb']),
+              ('first soprano note (exact)', lambda r: r['fs']), ('last soprano note (exact)', lambda r: r['fin']))
+        for name, f in EX:
+            tell('cadences', tells['cad'], name, f, lambda r: r['a'], (2, 3))
+            tell('cadences', tells['cad'], 'mode and ' + name, lambda r, f=f: (r['md'], f(r)), lambda r: r['a'], (2, 3))
+        for l in (2, 3):
+            rr = [r for r in tells['cad'] if r['l'] == l]
+            for name, f in EX[:4]:
+                acc, ch = predict_acc(rr, f, lambda r: r['a'])
+                COUNT[f'info: rung {l} {name}: accuracy vs chance'] = f'{acc:.1%} vs {ch:.1%}'
+        # the balanced table is in place and current (its length matches the index; a stale or missing table falls back to the old draw)
+        t23 = await pg.evaluate("({w2:!!earR23Weights(2),w3:!!earR23Weights(3),draw:/earR23Draw\(l,mode,a,r\)/.test(earGenCad.toString()),keys2:earCadKeys(2,'maj').length+earCadKeys(2,'min').length,"
+                                "nz2:(earR23Weights(2)||[]).filter(x=>x>0).length,nz3:(earR23Weights(3)||[]).filter(x=>x>0).length})")
+        COUNT['C3 balanced table (rungs 2, 3): entries with weight > 0'] = f"{t23['nz2']}, {t23['nz3']}"
+        if not (t23['w2'] and t23['w3'] and t23['draw'] and t23['keys2'] == 24):
+            fail('C', f'C3: EAR23W missing or stale, or rung 2 not on all 24 keys (run tests/gen_cad23_weights.py): {t23}')
         # if rung 3 is marked with the refined answers (Phrygian, cadential 6/4), mode and length are reported against those as well
         for l in (3,):
             rr = [r for r in tells['cad'] if r['l'] == l]
