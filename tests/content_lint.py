@@ -8,6 +8,7 @@ Run: python3 tests/content_lint.py <repo dir>      Prints a JSON report; exits 1
  3. sources: every song entry has two sources, or one authoritative source (a URL); entries with no recorded
     sources are the known exceptions below (open question OQ6) and are counted, not failed
  3b. source links: every rendered source href is a bare URL (no spaces); the note text is shown beside it
+ 5. syllabus tags (0.49 C10): every outcome code used has NESA's wording, every code listed is used, element letters exist
  4. credits: NOTICE.md names every third-party source; the footer has a Credits link; the Credits panel (details#credits,
     not the footer line) holds the sound credits and
     include the score and hand-sign credits
@@ -35,13 +36,27 @@ def line_of(text, pos):
 # term list's us:/usp: fields, straight after "US" ("the US half cadence", "= US authentic"), or in a code comment. Ordinary English is
 # not a US term: "half" and "whole" count only with note/rest/step/cadence; "measure" only as a counted noun ("measure 4", "two measures",
 # "the next measure"), never the verb; "staff" only in a music sense ("the treble staff", "staff lines"), never people ("staff room").
+SEP = r"(?:[\s\u00a0]|&nbsp;|-)"
+NUMW = r"(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)"
+UNITS = r"(?:cm|mm|km|kg|m|g|ml|l|hz|khz|db|px|pt|ms|s|%)"
 US_ALONE = re.compile(
-    r"\bauthentic\b|\bdeceptive\b|\bhalf[ -]cadences?\b"
-    r"|\b(?:quarter|eighth|sixteenth|half|whole)[ -](?:notes?|rests?)\b"
-    r"|\b(?:whole|half)[ -]steps?\b"
+    # cadence names: "authentic" / "deceptive" only in a cadence sense (not "an authentic Baroque sound")
+    r"\bauthentic(?=\s*(?:cadences?|closes?|endings?|resolutions?|and\s+plagal|or\s+plagal)\b|\s*[.,;:)\]]|\s*$)"
+    r"|\bdeceptive(?=\s*(?:cadences?|closes?|endings?|resolutions?|progressions?|resolves?)\b|\s*[.,;:)\]]|\s*$)"
+    r"|\bhalf" + SEP + r"cadences?\b"
+    # note and rest values, spelled out or numbered ("8th note", "two sixteenths"); "whole note-for-note" is ordinary English
+    r"|\b(?:quarter|eighth|sixteenth|thirty-second|half|whole)" + SEP + r"(?:notes?(?!-for-)|rests?)\b"
+    r"|\b(?:8th|16th|32nd|64th)" + SEP + r"(?:notes?(?!-for-)|rests?)\b"
+    r"|\b(?:eighth|sixteenth)s\b"
+    r"|\b(?:whole|half)" + SEP + r"steps?\b"
     r"|\bstaffs\b|\bstaff(?=\s+(?:lines?|notation|position|paper)\b)"
     r"|\b(?:the|a|treble|bass|grand|alto|tenor|each|one|single|five-line|same|top|bottom|lower|upper)\s+staff\b(?!\s+(?:room|members?|meetings?|development|notes))"
-    r"|\bmeasures?\s+\d|\b\d+\s+measures?\b"
+    # measure as a counted noun ("measure 4", "measures 4-8", "measure one"), not the verb ("it measures 4 cm")
+    r"|\bmeasures?\s+\d+(?:\s*[-\u2013]\s*\d+)?(?!\d)(?!\s*" + UNITS + r"\b)"
+    r"|\bmeasures?\s+" + NUMW + r"\b"
+    r"|\b\d+\s+measures?\b"
+    r"|\bmeasures?\s+of\s+(?:rest|silence)\b"
+    r"|\b(?:first|last|final|opening|closing|next|previous|second|third)\s+measures?\s+of\s+the\s+(?:song|piece|phrase|tune|verse|chorus|bridge|section|melody|excerpt|score|passage)\b"
     r"|\b(?:per|each|every|this|that|next|last|first|final|one|two|three|four|eight|twelve|sixteen|the|a)\s+measures?\b(?!\s+(?:of|the|every|each|how|a|an|it|its|your)\b)",
     re.I)
 
@@ -53,6 +68,8 @@ def us_allowed(text, start):
         i = before.rfind(o)
         if i != -1 and c not in before[i:]:
             return True
+    if re.search(r"\bin the US\b[^.\n]*\b(?:called|known|named|termed|labelled|labeled)\b[^.\n]*$", before, re.I):   # "In the US this is called a half cadence."
+        return True
     if re.search(r"\bus[p]?:'[^']*$", before):        # the term list's US field
         return True
     if re.search(r"\bUS:?\s+'?(?:imperfect\s+|Phrygian\s+)?$", before):   # "the US half cadence", "= US authentic", "US 'imperfect authentic'"
@@ -71,23 +88,16 @@ def us_alone(text):
     return [m for m in US_ALONE.finditer(text) if not us_allowed(text, m.start())]
 
 
-# the lint's own cases: each must be found (or not) exactly as listed
-US_CASES = [('Play a quarter note.', 1), ('Count measure 4 again.', 1), ('Two measures later.', 1), ('Write it on the treble staff.', 1),
-            ('A deceptive cadence.', 1), ('An authentic close.', 1), ('A half cadence.', 1), ('Go up a whole step.', 1), ('An eighth rest.', 1),
-            ('Draw the staff lines.', 1), ('Both staffs.', 1),
-            ('Half the class hears it.', 0), ('Measure every interval.', 0), ('Ask the teaching staff.', 0), ('Meet in the staff room.', 0),
-            ('The whole phrase.', 0), ('A whole-tone scale.', 0), ('Half-diminished.', 0), ('Take a measure of the gap.', 0),
-            ('A crotchet (US: quarter note).', 0), ('an imperfect cadence [US: half cadence] in minor', 0), ("{k:'minim',us:'half note'}", 0),
-            ('Imperfect = US half', 0), ("US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence.", 0),
-            ('x=1; // a whole note here', 0), ('/* the staff */', 0), ('see https://example.org//quarter-note', 1)]
+# the lint's own cases live in tests/fixtures/us_probes.json (positives must be found, negatives must not); each is run through us_alone()
+_FIX = json.loads((pathlib.Path(__file__).parent / 'fixtures' / 'us_probes.json').read_text(encoding='utf-8'))
+US_CASES = [(t, 1) for t in _FIX['positive']] + [(t, 0) for t in _FIX['negative']]
 report['us_terms'] = {'failures': [], 'cases_checked': len(US_CASES)}
 for s, n in US_CASES:
     if len(us_alone(s)) != n:
         report['us_terms']['failures'].append({'lint case': s, 'expected': n, 'found': [m.group(0) for m in us_alone(s)]})
 # a US bracket gives the whole US term: "(US: half)" or "(US: deceptive)" alone is a shortened term (L8)
-US_SHORT = re.compile(r'[(\[]US: (?:authentic|half|deceptive)\s*[)\];,]|\((?:half|authentic|deceptive)\)')
-for s, n in (('imperfect cadence (US: half).', 1), ('V7/vi → IV (US: deceptive) follows', 1), ('(US: half cadence)', 0), ('(US: half step, H)', 0),
-             ('(US: imperfect authentic)', 0), ('Imperfect (half) cadence (ends on V)', 1), ('(half the class)', 0)):
+US_SHORT = re.compile(r'[(\[]US:\s*(?:authentic|half|deceptive)\s*[.)\];,]|\((?:half|authentic|deceptive)\)', re.I)
+for s, n in [(t, 1) for t in _FIX['short_positive']] + [(t, 0) for t in _FIX['short_negative']]:
     if len(US_SHORT.findall(s)) != n:
         report['us_terms']['failures'].append({'lint case (short)': s, 'expected': n})
 for name, text in (('index.html', INDEX), ('scores/meta.json', META)):
@@ -280,6 +290,74 @@ for s in WARN_TEXT:
     if QUOTED.search(s) or LYRICWORD.search(s):
         report['lyric_words']['failures'].append(s)
 
-report['passed'] = not any(report[k]['failures'] for k in ('us_terms', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words'))
+
+# ---------- 6. song rules (0.49 C11): one entry per genre slot per chord type, approved slot order, at least one post-2015 song ----------
+report['song_rules'] = {'failures': []}
+_SL = ['Blues/jazz', 'Pop', 'Rock', 'Musical theatre', 'Metal', 'Australian pick']
+for q, v in SONGS.items():
+    sl = [x['slot'] for x in v]
+    if len(set(sl)) != len(sl):
+        report['song_rules']['failures'].append(f'chord {q!r}: a slot is used twice: {sl}')
+    if any(x not in _SL for x in sl):
+        report['song_rules']['failures'].append(f'chord {q!r}: unknown slot in {sl}')
+    elif sl != sorted(sl, key=_SL.index):
+        report['song_rules']['failures'].append(f'chord {q!r}: slots are not in the approved genre order: {sl}')
+_post = sorted({(x['song'], x['year']) for _, x in entries if int(x['year']) > 2015})
+report['song_rules']['post_2015'] = [f'{a} ({b})' for a, b in _post]
+if not _post:
+    report['song_rules']['failures'].append('no song after 2015 (L70: span up to the present)')
+
+# ---------- 5. syllabus tags (0.49 C10): every code used has NESA's wording; every code listed is used; element letters exist ----------
+# NESA outcome wording, read from curriculum.nsw.edu.au outcomes pages on 20 Nov 2026 (Music 1, Music 2, Music Extension 11-12 (2025)).
+NESA_WORDING = {
+ 'MU1-11L-01': 'describes the ways Music context and Music language shape music',
+ 'MU1-11L-02': 'uses aural skills to identify and describe features of music',
+ 'MU1-11C-01': 'uses Compositional language to create musical ideas',
+ 'MU1-12L-01': 'analyses the ways Music context and Music language shape music',
+ 'MU1-12L-02': 'uses aural skills to analyse features of music',
+ 'MU2-11L-01': 'analyses the ways Music context and Music language shape meaning in musical pieces',
+ 'MU2-11L-02': 'analyses music and musical evidence to communicate ideas and perspectives',
+ 'MU2-11C-01': 'analyses and notates compositions using Music language',
+ 'MU2-11C-02': 'composes music with stylistic understanding of Compositional language and expressive intent',
+ 'MU2-12L-01': 'evaluates the ways Music context and Music language shape meaning and expressive intent in musical pieces',
+ 'MU2-12L-02': 'analyses music and musical evidence to communicate ideas and perspectives',
+ 'MU2-12C-01': 'evaluates and notates compositions using Music language',
+ 'MU2-12C-02': 'composes music with stylistic understanding of Compositional language and expressive intent',
+ 'MUE-12L-01': 'analyses musical intent and effect based on score study, recordings, composer and performer commentary'}
+report['syllabus_tags'] = {'failures': []}
+try:
+    _ts = INDEX[INDEX.index('const SYLE={'):INDEX.index('const SYLS6=')]
+    _js = _ts + '\nconsole.log(JSON.stringify({SYLE,SYLO,SYLM}))'
+    _d = json.loads(subprocess.run(['node', '-e', _js], capture_output=True, text=True, check=True).stdout)
+    _used = set()
+    for k, m in _d['SYLM'].items():
+        for c in m['o']:
+            _used.add(c)
+            if c not in _d['SYLO']:
+                report['syllabus_tags']['failures'].append(f'{k}: outcome {c} has no wording in SYLO')
+        if len(set(m['o'])) != len(m['o']):
+            report['syllabus_tags']['failures'].append(f'{k}: duplicate outcome code')
+        for x in m['e']:
+            if x not in _d['SYLE']:
+                report['syllabus_tags']['failures'].append(f'{k}: unknown element letter {x}')
+        if len(set(m['e'])) != len(m['e']):
+            report['syllabus_tags']['failures'].append(f'{k}: duplicate element letter')
+    for c in _d['SYLO']:
+        if c not in _used:
+            report['syllabus_tags']['failures'].append(f'{c} is defined but attached to nothing')
+        if c in NESA_WORDING and _d['SYLO'][c] != NESA_WORDING[c]:
+            report['syllabus_tags']['failures'].append(f'{c}: wording differs from NESA: {_d["SYLO"][c]}')
+    for c in NESA_WORDING:
+        if c not in _d['SYLO']:
+            report['syllabus_tags']['failures'].append(f'{c} is missing from SYLO')
+    for need in ('Melody', 'Harmony'):
+        if need not in _d['SYLE'].values():
+            report['syllabus_tags']['failures'].append(f'element {need} missing from SYLE')
+    report['syllabus_tags']['rooms_checked'] = len(_d['SYLM'])
+    report['syllabus_tags']['codes'] = len(_d['SYLO'])
+except Exception as e:
+    report['syllabus_tags']['failures'].append(f'tag check failed: {e}')
+
+report['passed'] = not any(report[k]['failures'] for k in ('us_terms', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words', 'syllabus_tags', 'song_rules'))
 print(json.dumps(report, ensure_ascii=False, indent=1))
 sys.exit(0 if report['passed'] else 1)

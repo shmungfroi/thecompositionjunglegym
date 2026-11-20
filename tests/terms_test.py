@@ -296,6 +296,16 @@ async def targeted(pg):
         fail('T6', f'C1 Ear Lab rung 3 cadence buttons: got {eb}, expected {want_eb}')
     else:
         ok('T6', 'C1 Ear Lab cadence buttons carry the full US term on hover')
+    # 0.49 C2: the Ear Lab rhythm card's own prompt carries the first mention of bar in the room, with both terms; later mentions only hover
+    for lv in (1, 2, 3):
+        rb = await pg.evaluate("""(lv)=>new Promise(res=>{const L0=EAR.lvl.rhy;location.hash='ear';EAR.drill='rhy';EAR.lvl.rhy=lv;room('ear');
+            setTimeout(()=>{const a=[...document.querySelectorAll('#room-ear abbr.tm[data-k="bar"]')],ask=document.querySelector('#earCard .el-ask'),
+              r={first:a[0]?!!a[0].closest('.el-ask'):false,txt:ask?ask.textContent:'',later:a.slice(1).filter(x=>x.nextSibling&&x.nextSibling.className==='tmus').length};EAR.lvl.rhy=L0;room('ear');res(r)},500)})""", lv)
+        want = ('two bars (US: measures)' if lv == 3 else 'one bar (US: measure)')
+        if not rb['first'] or want not in rb['txt'] or rb['later']:
+            fail('T3', f'C2 Ear Lab rhythm card rung {lv}: first mention of bar not bracketed in the prompt (or bracketed again later): {rb}')
+        else:
+            ok('T3', 'C2 Ear Lab rhythm card prompt: first mention of bar carries both terms (rungs 1-3)')
     # IC_TERMS_048 M1: every Ear Lab cadence and blind result panel (rungs 1-3, every given answer, shown, Nearly on and off), as drawn by
     # the card, with its clean headline: the US term must be on screen in the panel (M1i in __chk)
     np = await pg.evaluate("""async()=>{await earLoadBlind();const N0=EAR_NEARLY,o=[];
