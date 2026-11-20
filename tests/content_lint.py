@@ -328,6 +328,11 @@ for q, v in SONGS.items():
     for g in SONGGAPS.get(q, []):
         if g in filled:
             report['song_rules']['failures'].append(f'chord {q!r}: slot {g!r} is both filled and declared a gap')
+# 0.49 L106: an optional card label (shown as a chip) must be non-empty text of at most 40 characters
+for q, v in SONGS.items():
+    for x in v:
+        if 'label' in x and not (isinstance(x['label'], str) and 0 < len(x['label'].strip()) <= 40):
+            report['song_rules']['failures'].append(f'chord {q!r}: {x["song"]!r} label must be 1 to 40 characters')
 # fixtures: each case must give the stated verdict (guards against the check going dead again)
 for _c in json.loads((pathlib.Path(__file__).parent / 'fixtures' / 'slot_honesty.json').read_text(encoding='utf-8')):
     if metal_slot_dishonest(_c['entry']) != _c['must_fail']:
