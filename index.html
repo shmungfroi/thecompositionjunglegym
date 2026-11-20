@@ -6635,7 +6635,7 @@ document.addEventListener('click',e=>{if(ROOM!=='forms'||F.open!=='phrase')retur
 /* =====================================================================
    SYLLABUS TAGS (NSW Music 7–10 2024; Music 2 11–12 2025)
    ===================================================================== */
-const SYLE={D:'Duration',P:'Pitch',T:'Texture',M:'Performing media and timbre',X:'Dynamics and expression',S:'Structure'};
+const SYLE={D:'Duration',P:'Pitch',Y:'Melody',H:'Harmony',T:'Texture',M:'Performing media and timbre',X:'Dynamics and expression',S:'Structure'};   // Y = melodY (Stage 4 content lists Melody and Harmony as elements)
 const SYLL={T:'Theoretical language',C:'Compositional language',N:'Notational language'};
 const SYLO={
  'MU4-PER-01':'uses performance skills to demonstrate understanding of the elements of music and communicate musical ideas',
@@ -6645,55 +6645,63 @@ const SYLO={
  'MU5-LIS-02':'uses listening skills to evaluate how the elements of music are manipulated and combined',
  'MU5-COM-01':'improvises, arranges or composes with stylistic understanding and musical expression',
  'MU5-COM-02':'manipulates and combines the elements of music to create musical ideas',
+ 'MU1-11L-01':'describes the ways Music context and Music language shape music',
+ 'MU1-11L-02':'uses aural skills to identify and describe features of music',
+ 'MU1-11C-01':'uses Compositional language to create musical ideas',
+ 'MU1-12L-01':'analyses the ways Music context and Music language shape music',
+ 'MU1-12L-02':'uses aural skills to analyse features of music',
+ 'MU2-11L-01':'analyses the ways Music context and Music language shape meaning in musical pieces',
  'MU2-11L-02':'analyses music and musical evidence to communicate ideas and perspectives',
  'MU2-11C-01':'analyses and notates compositions using Music language',
+ 'MU2-11C-02':'composes music with stylistic understanding of Compositional language and expressive intent',
  'MU2-12L-01':'evaluates the ways Music context and Music language shape meaning and expressive intent in musical pieces',
  'MU2-12L-02':'analyses music and musical evidence to communicate ideas and perspectives',
  'MU2-12C-01':'evaluates and notates compositions using Music language',
- 'MU2-12C-02':'composes music with stylistic understanding of Compositional language and expressive intent'};
+ 'MU2-12C-02':'composes music with stylistic understanding of Compositional language and expressive intent',
+ 'MUE-12L-01':'analyses musical intent and effect based on score study, recordings, composer and performer commentary'};
 // e: elements, l: Music language strands, o: outcomes, ear: the Ear Lab drill that trains it
 const SYLM={
- seed:{n:'Chords',e:'PM',l:'TN',o:['MU4-COM-01','MU4-PER-01','MU2-11C-01'],ear:'qual'},
- keys:{n:'Keys and scales',e:'P',l:'T',o:['MU4-LIS-01','MU4-COM-01'],ear:'mel'},
- voice:{n:'Voices',e:'PT',l:'TCN',o:['MU5-COM-02','MU2-11C-01'],ear:'bass'},
- gym:{n:'The Gym',e:'PDS',l:'C',o:['MU4-COM-01','MU5-COM-02'],ear:'bass'},
- oracle:{n:'The Oracle',e:'PS',l:'C',o:['MU4-COM-01','MU5-COM-01'],ear:'bass'},
- climbs:{n:'The Climbs',e:'PS',l:'TC',o:['MU4-COM-01','MU5-COM-01','MU5-COM-02'],ear:'cad'},
- c0:{n:'Climb 1 · Drones and modes',e:'PT',l:'TC',o:['MU4-COM-01','MU4-LIS-01'],ear:'mel'},
- c1:{n:'Climb 2 · Modal polyphony',e:'PTD',l:'TCN',o:['MU5-COM-01','MU5-COM-02','MU2-11C-01','MU2-12C-02'],ear:'mel'},
- c2:{n:'Climb 3 · Tonal architecture',e:'PS',l:'T',o:['MU4-COM-01','MU4-LIS-01'],ear:'cad'},
- c3:{n:'Climb 4 · I–IV–V',e:'PS',l:'TC',o:['MU4-COM-01'],ear:'bass'},
- c4:{n:'Climb 5 · The four-chord loop',e:'PSD',l:'C',o:['MU4-COM-01','MU5-COM-01'],ear:'bass'},
- c5:{n:'Climb 6 · The cycle of 5ths',e:'PS',l:'TC',o:['MU5-COM-02'],ear:'bass'},
- c6:{n:'Climb 7 · Secondary dominants',e:'P',l:'T',o:['MU5-COM-02','MU2-11C-01'],ear:'bass'},
- c7:{n:'Climb 8 · Borrowed and chromatic chords',e:'P',l:'T',o:['MU5-COM-02','MU2-12C-02'],ear:'qual'},
- c8:{n:'Climb 9 · ii–V–I',e:'PT',l:'TC',o:['MU5-COM-01'],ear:'qual'},
- c9:{n:'Climb 10 · Tritone substitution',e:'P',l:'TC',o:['MU2-12C-02'],ear:'qual'},
- c10:{n:'Climb 11 · Reharmonisation',e:'P',l:'C',o:['MU5-COM-01','MU2-12C-02'],ear:'bass'},
- c11:{n:'Climb 12 · Beyond function',e:'PTS',l:'C',o:['MU5-COM-01','MU2-12C-02'],ear:'qual'},
- c12:{n:'Climb 13 · Imitation and fugue',e:'TSP',l:'CN',o:['MU5-COM-01','MU2-11C-01','MU2-12C-02'],ear:'mel'},
+ seed:{n:'Chords',e:'PHM',l:'TN',o:['MU4-COM-01','MU4-PER-01','MU2-11C-01'],ear:'qual'},
+ keys:{n:'Keys and scales',e:'PY',l:'T',o:['MU4-LIS-01','MU4-COM-01'],ear:'mel'},
+ voice:{n:'Voices',e:'PHT',l:'TCN',o:['MU5-COM-02','MU2-11C-01'],ear:'bass'},
+ gym:{n:'The Gym',e:'PHDS',l:'C',o:['MU4-COM-01','MU5-COM-02','MU1-11C-01'],ear:'bass'},
+ oracle:{n:'The Oracle',e:'PHS',l:'C',o:['MU4-COM-01','MU5-COM-01','MU1-11C-01'],ear:'bass'},
+ climbs:{n:'The Climbs',e:'PHS',l:'TC',o:['MU4-COM-01','MU5-COM-01','MU5-COM-02'],ear:'cad'},
+ c0:{n:'Climb 1 · Drones and modes',e:'PHT',l:'TC',o:['MU4-COM-01','MU4-LIS-01'],ear:'mel'},
+ c1:{n:'Climb 2 · Modal polyphony',e:'PYTD',l:'TCN',o:['MU5-COM-01','MU5-COM-02','MU2-11C-01','MU2-12C-02','MU2-11C-02','MU2-12C-01'],ear:'mel'},
+ c2:{n:'Climb 3 · Tonal architecture',e:'PHS',l:'T',o:['MU4-COM-01','MU4-LIS-01'],ear:'cad'},
+ c3:{n:'Climb 4 · I–IV–V',e:'PHS',l:'TC',o:['MU4-COM-01','MU1-11C-01'],ear:'bass'},
+ c4:{n:'Climb 5 · The four-chord loop',e:'PHSD',l:'C',o:['MU4-COM-01','MU5-COM-01','MU1-11C-01'],ear:'bass'},
+ c5:{n:'Climb 6 · The cycle of 5ths',e:'PHS',l:'TC',o:['MU5-COM-02'],ear:'bass'},
+ c6:{n:'Climb 7 · Secondary dominants',e:'PH',l:'T',o:['MU5-COM-02','MU2-11C-01'],ear:'bass'},
+ c7:{n:'Climb 8 · Borrowed and chromatic chords',e:'PH',l:'T',o:['MU5-COM-02','MU2-12C-02','MU2-11C-02'],ear:'qual'},
+ c8:{n:'Climb 9 · ii–V–I',e:'PHT',l:'TC',o:['MU5-COM-01'],ear:'qual'},
+ c9:{n:'Climb 10 · Tritone substitution',e:'PH',l:'TC',o:['MU2-12C-02','MU2-11C-02'],ear:'qual'},
+ c10:{n:'Climb 11 · Reharmonisation',e:'PH',l:'C',o:['MU5-COM-01','MU2-12C-02','MU2-11C-02'],ear:'bass'},
+ c11:{n:'Climb 12 · Beyond function',e:'PHTS',l:'C',o:['MU5-COM-01','MU2-12C-02','MU2-11C-02'],ear:'qual'},
+ c12:{n:'Climb 13 · Imitation and fugue',e:'TSPY',l:'CN',o:['MU5-COM-01','MU2-11C-01','MU2-12C-02','MU2-11C-02','MU2-12C-01'],ear:'mel'},
  forms:{n:'Forms',e:'S',l:'C',o:['MU4-COM-01','MU5-COM-01'],ear:'cad'},
- 'f:phrase':{n:'Form · Phrase, period and sentence',e:'SPD',l:'C',o:['MU4-COM-01','MU5-COM-01'],ear:'cad'},
- 'f:blues12':{n:'Form · 12-bar blues',e:'SPD',l:'C',o:['MU4-COM-01'],ear:'bass'},
- 'f:jazzblues':{n:'Form · Jazz blues',e:'SP',l:'C',o:['MU5-COM-01'],ear:'qual'},
- 'f:minblues':{n:'Form · Minor blues',e:'SP',l:'C',o:['MU5-COM-01'],ear:'qual'},
- 'f:rhythm':{n:'Form · Rhythm changes',e:'SP',l:'C',o:['MU5-COM-01','MU2-12C-02'],ear:'bass'},
+ 'f:phrase':{n:'Form · Phrase, period and sentence',e:'SPDY',l:'C',o:['MU4-COM-01','MU5-COM-01','MU1-11C-01'],ear:'cad'},
+ 'f:blues12':{n:'Form · 12-bar blues',e:'SPDH',l:'C',o:['MU4-COM-01'],ear:'bass'},
+ 'f:jazzblues':{n:'Form · Jazz blues',e:'SPH',l:'C',o:['MU5-COM-01'],ear:'qual'},
+ 'f:minblues':{n:'Form · Minor blues',e:'SPH',l:'C',o:['MU5-COM-01'],ear:'qual'},
+ 'f:rhythm':{n:'Form · Rhythm changes',e:'SPH',l:'C',o:['MU5-COM-01','MU2-12C-02','MU2-11C-02'],ear:'bass'},
  'f:rag':{n:'Form · Rag',e:'SDT',l:'C',o:['MU5-COM-01','MU5-LIS-01'],ear:'rhy'},
  'f:rondo':{n:'Form · Rondo',e:'SP',l:'C',o:['MU5-COM-01','MU5-LIS-01'],ear:'cad'},
- 'f:tv':{n:'Form · Theme and variations',e:'SPDT',l:'C',o:['MU5-COM-01','MU5-COM-02','MU5-LIS-02'],ear:'rhy'},
- 'f:sonata':{n:'Form · Sonata form',e:'SP',l:'C',o:['MU5-COM-01','MU2-11L-02','MU2-12C-02'],ear:'blind'},
- 'f:sonrondo':{n:'Form · Sonata-rondo',e:'SP',l:'C',o:['MU5-COM-01','MU2-11L-02'],ear:'blind'},
- analysis:{n:'Analysis',e:'SPT',l:'TN',o:['MU4-LIS-01','MU5-LIS-01','MU5-LIS-02','MU2-11L-02','MU2-12L-02'],ear:'blind'},
- ear:{n:'Ear Lab',e:'DPS',l:'TN',o:['MU4-LIS-01','MU5-LIS-02','MU2-11L-02'],ear:null}
+ 'f:tv':{n:'Form · Theme and variations',e:'SPDTY',l:'C',o:['MU5-COM-01','MU5-COM-02','MU5-LIS-02'],ear:'rhy'},
+ 'f:sonata':{n:'Form · Sonata form',e:'SPH',l:'C',o:['MU5-COM-01','MU2-11L-02','MU2-12C-02','MU2-11C-02'],ear:'blind'},
+ 'f:sonrondo':{n:'Form · Sonata-rondo',e:'SPH',l:'C',o:['MU5-COM-01','MU2-11L-02'],ear:'blind'},
+ analysis:{n:'Analysis',e:'SPHT',l:'TN',o:['MU4-LIS-01','MU5-LIS-01','MU5-LIS-02','MU1-11L-01','MU1-12L-01','MU2-11L-02','MU2-12L-02','MU2-11L-01','MU2-12L-01','MUE-12L-01'],ear:'blind'},
+ ear:{n:'Ear Lab',e:'DPHYS',l:'TN',o:['MU4-LIS-01','MU5-LIS-02','MU1-11L-02','MU1-12L-02','MU2-11L-02'],ear:null}
 };
-const SYLS6='Stage 6 (2025): the Music 2 Year 11 content asks students to identify and transcribe melodic, harmonic and rhythmic patterns and describe structural and textural devices in scores and recordings. Music 1 is mapped by Music language strand only; its outcome codes are not listed here yet.';
+const SYLS6='Stage 6 (2025): the Music 2 Year 11 content asks students to identify and transcribe melodic, harmonic and rhythmic patterns and describe structural and textural devices in scores and recordings. Music 1 and Music Extension codes are listed only where the room's content matches their wording.';
 let SYLOPEN=false,SYLLAST='';
 function sylCtx(){if(typeof ROOM==='undefined')return'seed';if(ROOM==='climbs')return CL.open===null?'climbs':'c'+CL.open;if(ROOM==='forms')return F.open?'f:'+F.open:'forms';return ROOM}
 const EARN={metre:'pulse and metre',rhy:'rhythm dictation',qual:'chord quality',cad:'cadences',bass:'bass and Roman numerals',mel:'melodic dictation',blind:'blind analysis'};
 function sylBar(c){const m=SYLM[c];if(!m)return'';const els=[...m.e].map(x=>SYLE[x]),ls=[...m.l].map(x=>SYLL[x]);
  return`<details class="syl" ${SYLOPEN?'open':''}><summary><span class="sylk">Syllabus</span><span>${els.join(' · ')}</span><span class="sylsep">|</span><span>${[...m.l].map(x=>SYLL[x].split(' ')[0]).join(' · ')}</span><span class="sylmore">${m.o.length} outcome${m.o.length>1?'s':''}</span></summary>
  <div class="sylbody"><div><b>Elements of music (7–10, 2024)</b> ${els.join(', ')}</div><div><b>Music language (11–12, 2025)</b> ${ls.join(', ')}</div>
- <ul>${m.o.map(o=>`<li><code>${o}</code> ${SYLO[o]}</li>`).join('')}</ul><p class="note">${c==='ear'?SYLS6:'Codes from the NESA Music 7–10 (2024) and Music 2 11–12 (2025) syllabuses. Music 1 (2025) is mapped by Music language strand only.'}</p></div></details>
+ <ul>${m.o.map(o=>`<li><code>${o}</code> ${SYLO[o]}</li>`).join('')}</ul><p class="note">${c==='ear'?SYLS6:'Codes from the NESA Music 7–10 (2024), Music 1, Music 2 and Music Extension 11–12 (2025) syllabuses. Music 1 and Extension codes appear only where the room's content matches their wording.'}</p></div></details>
  ${m.ear?`<button class="mini" data-eargo="${m.ear}" title="Train the ear for this">♫ Ear Lab: ${EARN[m.ear]}</button>`:''}`}
 function sylMount(force){const c=sylCtx();const sec=document.getElementById('room-'+(typeof ROOM==='undefined'?'seed':ROOM));if(!sec)return;
  let b=sec.querySelector(':scope > .sylbar');if(!force&&b&&b.dataset.c===c)return;

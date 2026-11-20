@@ -8,6 +8,7 @@ Run: python3 tests/content_lint.py <repo dir>      Prints a JSON report; exits 1
  3. sources: every song entry has two sources, or one authoritative source (a URL); entries with no recorded
     sources are the known exceptions below (open question OQ6) and are counted, not failed
  3b. source links: every rendered source href is a bare URL (no spaces); the note text is shown beside it
+ 5. syllabus tags (0.49 C10): every outcome code used has NESA's wording, every code listed is used, element letters exist
  4. credits: NOTICE.md names every third-party source; the footer has a Credits link; the Credits panel (details#credits,
     not the footer line) holds the sound credits and
     include the score and hand-sign credits
@@ -289,6 +290,58 @@ for s in WARN_TEXT:
     if QUOTED.search(s) or LYRICWORD.search(s):
         report['lyric_words']['failures'].append(s)
 
-report['passed'] = not any(report[k]['failures'] for k in ('us_terms', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words'))
+
+# ---------- 5. syllabus tags (0.49 C10): every code used has NESA's wording; every code listed is used; element letters exist ----------
+# NESA outcome wording, read from curriculum.nsw.edu.au outcomes pages on 20 Nov 2026 (Music 1, Music 2, Music Extension 11-12 (2025)).
+NESA_WORDING = {
+ 'MU1-11L-01': 'describes the ways Music context and Music language shape music',
+ 'MU1-11L-02': 'uses aural skills to identify and describe features of music',
+ 'MU1-11C-01': 'uses Compositional language to create musical ideas',
+ 'MU1-12L-01': 'analyses the ways Music context and Music language shape music',
+ 'MU1-12L-02': 'uses aural skills to analyse features of music',
+ 'MU2-11L-01': 'analyses the ways Music context and Music language shape meaning in musical pieces',
+ 'MU2-11L-02': 'analyses music and musical evidence to communicate ideas and perspectives',
+ 'MU2-11C-01': 'analyses and notates compositions using Music language',
+ 'MU2-11C-02': 'composes music with stylistic understanding of Compositional language and expressive intent',
+ 'MU2-12L-01': 'evaluates the ways Music context and Music language shape meaning and expressive intent in musical pieces',
+ 'MU2-12L-02': 'analyses music and musical evidence to communicate ideas and perspectives',
+ 'MU2-12C-01': 'evaluates and notates compositions using Music language',
+ 'MU2-12C-02': 'composes music with stylistic understanding of Compositional language and expressive intent',
+ 'MUE-12L-01': 'analyses musical intent and effect based on score study, recordings, composer and performer commentary'}
+report['syllabus_tags'] = {'failures': []}
+try:
+    _ts = INDEX[INDEX.index('const SYLE={'):INDEX.index('const SYLS6=')]
+    _js = _ts + '\nconsole.log(JSON.stringify({SYLE,SYLO,SYLM}))'
+    _d = json.loads(subprocess.run(['node', '-e', _js], capture_output=True, text=True, check=True).stdout)
+    _used = set()
+    for k, m in _d['SYLM'].items():
+        for c in m['o']:
+            _used.add(c)
+            if c not in _d['SYLO']:
+                report['syllabus_tags']['failures'].append(f'{k}: outcome {c} has no wording in SYLO')
+        if len(set(m['o'])) != len(m['o']):
+            report['syllabus_tags']['failures'].append(f'{k}: duplicate outcome code')
+        for x in m['e']:
+            if x not in _d['SYLE']:
+                report['syllabus_tags']['failures'].append(f'{k}: unknown element letter {x}')
+        if len(set(m['e'])) != len(m['e']):
+            report['syllabus_tags']['failures'].append(f'{k}: duplicate element letter')
+    for c in _d['SYLO']:
+        if c not in _used:
+            report['syllabus_tags']['failures'].append(f'{c} is defined but attached to nothing')
+        if c in NESA_WORDING and _d['SYLO'][c] != NESA_WORDING[c]:
+            report['syllabus_tags']['failures'].append(f'{c}: wording differs from NESA: {_d["SYLO"][c]}')
+    for c in NESA_WORDING:
+        if c not in _d['SYLO']:
+            report['syllabus_tags']['failures'].append(f'{c} is missing from SYLO')
+    for need in ('Melody', 'Harmony'):
+        if need not in _d['SYLE'].values():
+            report['syllabus_tags']['failures'].append(f'element {need} missing from SYLE')
+    report['syllabus_tags']['rooms_checked'] = len(_d['SYLM'])
+    report['syllabus_tags']['codes'] = len(_d['SYLO'])
+except Exception as e:
+    report['syllabus_tags']['failures'].append(f'tag check failed: {e}')
+
+report['passed'] = not any(report[k]['failures'] for k in ('us_terms', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words', 'syllabus_tags'))
 print(json.dumps(report, ensure_ascii=False, indent=1))
 sys.exit(0 if report['passed'] else 1)
