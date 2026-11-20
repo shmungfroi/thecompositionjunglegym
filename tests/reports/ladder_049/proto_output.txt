@@ -1,0 +1,112 @@
+MELODY
+  M1  St4 distinct    256 / 20000 draws (pitch lines 256), new 100%, MIDI [60, 77], notes {5: 20000}, tells 36 checked, 0 failed
+       e.g. m m r m m
+       e.g. d m m r d
+       e.g. d r r d d
+  M2  St4 distinct   1091 / 20000 draws (pitch lines 1091), new 67%, MIDI [55, 79], notes {6: 20000}, tells 36 checked, 0 failed
+       e.g. s, m s l s d
+       e.g. s f f m s d
+       e.g. s s d m r d
+  M3  St4 distinct  10948 / 20000 draws (pitch lines 10948), new 67%, MIDI [55, 82], notes {7: 10033, 8: 9967}, tells 36 checked, 0 failed
+       e.g. s l s l d' m d'
+       e.g. m d' d' t d' s d
+       e.g. m d' m s, d t, d
+  M4  St4 distinct  15334 / 20000 draws (pitch lines 12737), new 67%, MIDI [55, 82], notes (5, 13), tells 42 checked, 0 failed
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'rhythm of bar 1', 'acc': 0.219, 'base': 0.13, 'fail': False, 'info_only': True}
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'note 4 solfa', 'acc': 0.21, 'base': 0.164, 'fail': False, 'info_only': True}
+       e.g. d t, l, l, t, d  [2/4 e2 e2 | q q]
+       e.g. m s d' t l t d'  [4/4 e2 q h | q q h]
+       e.g. s d' s d t, t, d t, d  [4/4 e2 q h | e2 e2 h]
+  M5  St5 distinct  17348 / 20000 draws (pitch lines 14910), new 66%, MIDI [55, 82], notes (5, 13), tells 42 checked, 0 failed
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'rhythm of bar 1', 'acc': 0.219, 'base': 0.13, 'fail': False, 'info_only': True}
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'note 4 solfa', 'acc': 0.225, 'base': 0.221, 'fail': False, 'info_only': True}
+       e.g. s s f s d  [2/4 e2 e2 | h]
+       e.g. l d l m d l l s l  [4/4 h q e2 | e2 e2 h]
+       e.g. m m r d m m l,  [4/4 h q e2 | q q h]
+  M6  St5 distinct  20000 / 20000 draws (pitch lines 19996), new 67%, MIDI [55, 82], notes (9, 28), tells 42 checked, 0 failed
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'rhythm of bar 1', 'acc': 0.086, 'base': 0.053, 'fail': False, 'info_only': True}
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'note 4 solfa', 'acc': 0.141, 'base': 0.14, 'fail': False, 'info_only': True}
+       e.g. l s m d s, t, d f r m s, d m d t, l,  [3/4 e2 e2 q | e2 e2 q | h e2 | e2 h]
+       e.g. d s, s d f m s, m l f s l l d d f s f m l m f r d s, l,  [4/4 e2 e2 e2 q | q e2 e2 e2 | e2 q e2 e2 | q e2 h anac 12]
+       e.g. s, d s, m d t, m t d'  [3/4 hd | q e2 e2 | h q | hd]
+  M7  St5 distinct  20000 / 20000 draws (pitch lines 19999), new 66%, MIDI [55, 79], notes (9, 28), tells 42 checked, 0 failed
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'rhythm of bar 1', 'acc': 0.088, 'base': 0.053, 'fail': False, 'info_only': True}
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'note 4 solfa', 'acc': 0.141, 'base': 0.136, 'fail': False, 'info_only': True}
+       e.g. m d d s, m s, r t, l,  [2/4 e2 e2 | h | e2 q | h]
+       e.g. l d l m f m si l m l l, l  [6/8 c3 cqe | cD cD | c3 cD | cDD]
+       e.g. l d s d si, m t, si, l, r l, si, t, d si, l,  [4/4 h h | q q e2 q | q e2 e2 q | q q h]
+  M8  St5 distinct  20000 / 20000 draws (pitch lines 20000), new 66%, MIDI [55, 82], notes (9, 28), tells 42 checked, 0 failed
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'rhythm of bar 1', 'acc': 0.087, 'base': 0.054, 'fail': False, 'info_only': True}
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'note 4 solfa', 'acc': 0.122, 'base': 0.118, 'fail': False, 'info_only': True}
+       e.g. t, t, s, t, m d' f d l r d s  [2/4 q e2 | e2 e2 | e2 e2 | h]
+       e.g. t d' f l d m d' d' f s  [6/8 cDD | cDD | cqe c3 | cqe cD]
+       e.g. t s t, l, s, l, f d s,  [2/4 e2 q | h | q e2 | h anac 12]
+  M9  St6 distinct  20000 / 20000 draws (pitch lines 20000), new 67%, MIDI [55, 83], notes (16, 49), tells 42 checked, 0 failed
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'rhythm of bar 1', 'acc': 0.113, 'base': 0.063, 'fail': False, 'info_only': True}
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'note 4 solfa', 'acc': 0.189, 'base': 0.181, 'fail': False, 'info_only': True}
+       e.g. m l m r m d l, d t, l, m t m m' d' l s fi ri' m'  [3/4 e2 q q | hd | hd | h e2 | h e2 | dq e2 | h q | hd anac 6]
+       e.g. s, m s d' d' t t d' d' l d l si l s t, d l  [3/4 hd | hd | hd | e2 e2 e2 | e2 q q | hd | dq q | hd]
+       e.g. m s, m s, m f s d' t d' d' m d' m s l s d' l d si, d f d m t, l, si, l, d t, r l s r f l,  [4/4 dq dq | e2 q dq | q q q q | dq e2 q | q q q e2 | q q dq | e2 e2 dq | q e2 h]
+  M10 St6 distinct  20000 / 20000 draws (pitch lines 20000), new 66%, MIDI [55, 83], notes (16, 52), tells 42 checked, 0 failed
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'rhythm of bar 1', 'acc': 0.119, 'base': 0.061, 'fail': False, 'info_only': True}
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'note 4 solfa', 'acc': 0.129, 'base': 0.121, 'fail': False, 'info_only': True}
+       e.g. m l d' t s r t t, s, m f l, l m s, r m t r l, d  [6/8 cD cD | cqe cqe | cD cqe | cD c3 | cDD | cDD | cqe cD | cqe cD]
+       e.g. d s, l, t, l, f m d s f d s r d f d l m l,  [2/4 q e2 | dq | h | q q | q e2 | q q | q e2 | q q anac 12]
+       e.g. l f d f l, l l, f d l, t, l, d t, r d l d f l r s f s l s s f f m l d l, r d s, l,  [4/4 q e2 h | e2 e2 q q | dq e2 e2 | q e2 e2 e2 | dq e2 q | h h | dq h | q q h anac 12]
+  M11 St6 distinct  20000 / 20000 draws (pitch lines 20000), new 67%, MIDI [55, 83], notes (8, 54), tells 42 checked, 0 failed
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'rhythm of bar 1', 'acc': 0.15, 'base': 0.119, 'fail': False, 'info_only': True}
+       info: {'feature': 'number of notes, IF shown (it is not, from rung 4)', 'given': 'none', 'target': 'note 4 solfa', 'acc': 0.139, 'base': 0.129, 'fail': False, 'info_only': True}
+       e.g. d' l f d' d' m l, t, m d r l, l t r l d f d' t s d d'  [3/4 e2 e2 e2 | h q | q q q | hd | q q q | hd | e2 q e2 | q h]
+       e.g. s r r l, f d d' t r t d' d  [3/4 e2 e2 q | hd | q e2 q | hd anac 6]
+       e.g. l m f s t, m f l, r s, r l l,  [3/4 e2 e2 q | hd | e2 e2 q | hd anac 6]
+  M1 exact (as built): 274
+RHYTHM
+  R1  St4 distinct     99 / 20000 draws, new 100%, metres {'4/4': 20000}, tells 20 checked, 0 failed
+       info (metre is shown on screen): {'feature': 'tempo (8-bpm bands), metre not given', 'given': 'none', 'target': 'metre', 'acc': 1.0, 'base': 1.0, 'fail': False, 'info_only': True}
+       e.g. 4/4: ta sa sa ti-ti
+       e.g. 4/4: ta ta sa sa
+       e.g. 4/4: ti-ti ti-ti ta-a
+  R2  St4 distinct   5658 / 20000 draws, new 67%, metres {'3/4': 5342, '2/4': 5166, '4/4': 9492}, tells 25 checked, 0 failed
+       info (metre is shown on screen): {'feature': 'tempo (8-bpm bands), metre not given', 'given': 'none', 'target': 'metre', 'acc': 0.475, 'base': 0.475, 'fail': False, 'info_only': True}
+       e.g. 3/4: sa ta ta | ta ta ta
+       e.g. 3/4: ta ta ti-ti | ti-ti ta ti-ti
+       e.g. 3/4: sa ti-ti ti-ti | sa ti-ti sa
+  R3  St4 distinct   7649 / 20000 draws, new 66%, metres {'3/4': 6700, '2/4': 6595, '4/4': 6705}, tells 25 checked, 0 failed
+       info (metre is shown on screen): {'feature': 'tempo (8-bpm bands), metre not given', 'given': 'none', 'target': 'metre', 'acc': 0.339, 'base': 0.335, 'fail': False, 'info_only': True}
+       e.g. 3/4: ti-ti ti-ti sa | sa ti-ti ti-ti
+       e.g. 2/4: ti-ti ti-ti | ta sa
+       e.g. 2/4: ta ti-ti | tika-tika ti-ti
+  R4  St5 distinct  12311 / 20000 draws, new 66%, metres {'4/4': 6007, '3/4': 6490, '2/4': 7503}, tells 25 checked, 0 failed
+       info (metre is shown on screen): {'feature': 'tempo (8-bpm bands), metre not given', 'given': 'none', 'target': 'metre', 'acc': 0.375, 'base': 0.375, 'fail': False, 'info_only': True}
+       e.g. 4/4: ta-a-a ti-ti | ta-a ta-a
+       e.g. 4/4: ta-a-a-a | ta ta sa ta
+       e.g. 3/4: tika-tika tika-ti ti-tika | tika-ti tika-ti tika-ti
+  R5  St5 distinct   6981 / 20000 draws, new 67%, metres {'2/4': 2225, '3/4': 2220, '6/8': 13376, '4/4': 2179}, tells 25 checked, 0 failed
+       info (metre is shown on screen): {'feature': 'tempo (8-bpm bands), metre not given', 'given': 'none', 'target': 'metre', 'acc': 0.669, 'base': 0.669, 'fail': False, 'info_only': True}
+       e.g. 2/4: ti sa ta | ti-ti ti-ti
+       e.g. 3/4: ti-tika tika-tika tika-tika | ti-ti ti-tika ta
+       e.g. 6/8: tika-tika-tika ti-ti-ti | tam ti-ti-ti
+  R6  St5 distinct  13795 / 20000 draws, new 68%, metres {'2/4': 4932, '6/8': 1972, '3/4': 4710, '4/4': 8386}, tells 25 checked, 0 failed
+       info (metre is shown on screen): {'feature': 'tempo (8-bpm bands), metre not given', 'given': 'none', 'target': 'metre', 'acc': 0.419, 'base': 0.419, 'fail': False, 'info_only': True}
+       e.g. 2/4: ta ti-tika | ti-tika tika-ti
+       e.g. 6/8: tika-tika-tika ti ta | tika-tika-tika ti-ti-ti
+       e.g. 3/4: sa ti ti-ti ti-tika | syn-co-pa tika-tika
+  R7  St5 distinct  16589 / 20000 draws, new 66%, metres {'6/8': 4125, '2/4': 4082, '12/8': 3799, '3/4': 3953, '4/4': 4041}, tells 25 checked, 0 failed
+       info (metre is shown on screen): {'feature': 'tempo (8-bpm bands), metre not given', 'given': 'none', 'target': 'metre', 'acc': 0.211, 'base': 0.206, 'fail': False, 'info_only': True}
+       e.g. 6/8: ti ta ti-ti-ti | ti ta tim-ka-ti
+       e.g. 6/8: tim-ka-ti tam | ta-a-a
+       e.g. 2/4: tam-ti | syn-co-pa
+  R8  St6 distinct  18935 / 20000 draws, new 67%, metres {'4/4': 20000}, tells 25 checked, 0 failed
+       info (metre is shown on screen): {'feature': 'tempo (8-bpm bands), metre not given', 'given': 'none', 'target': 'metre', 'acc': 1.0, 'base': 1.0, 'fail': False, 'info_only': True}
+       e.g. 4/4: sa ti ti-ti tri-o-la ti sa | tika-tika ta sa ti tim-ka
+       e.g. 4/4: tam-ti syn-co-pa | sa ti ti-ti tika-ti sa ti
+       e.g. 4/4: sa ti ti-ti tika-tika sa ti | ti sa tri-o-la ti sa sa ti
+  R9  St6 distinct  19989 / 20000 draws, new 67%, metres {'5/4': 6709, '7/8': 6660, '2/4': 1661, '4/4': 1636, '3/4': 1654, '6/8': 1680}, tells 25 checked, 0 failed
+       info (metre is shown on screen): {'feature': 'tempo (8-bpm bands), metre not given', 'given': 'none', 'target': 'metre', 'acc': 0.34, 'base': 0.335, 'fail': False, 'info_only': True}
+       e.g. 5/4: ta-a syn-co-pa tri-o-la | tika-ti sa ti tika-tika sa ti-ti | ta-a ta-a ta | tika-ti ta tika-ti sa ti sa ti
+       e.g. 7/8: g2_lr g2_lr g3_all | g2_lr g2_long g3_all | g2_long g2_all g3_all | g2_all g2_all g3_all
+       e.g. 5/4: ti-tika tim-ka tim-ka ti-ti sa ti | ti-ti tim-ka sa tim-ka ti-ti | syn-co-pa syn-co-pa ta | tika-ti sa tika-tika tri-o-la sa
+  R10 {'stage': 6, 'kick_patterns_per_bar': 32, 'snare_patterns_per_bar': 2, 'riff_bars_sampled': 3977, 'distinct_two_bar_grooves_lower_bound': 4096}
+  R1 exact: {'one_bar_rest_anywhere': 99, 'one_bar_no_rest_first_or_last': 49, 'as_built_048_no_rest': 25, 'two_bars_rest_anywhere': 9801}
+tell failures: 0
+done

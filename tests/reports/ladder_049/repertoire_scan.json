@@ -1,0 +1,2671 @@
+{
+ "per_score": {
+  "chorale": {
+   "2 bars, rung 3": 2,
+   "2 bars, rung 6": 1,
+   "2 bars, rung 7": 4,
+   "4 bars, rung 3": 10,
+   "4 bars, rung 6": 2
+  },
+  "ohaupt": {
+   "2 bars, rung 3": 1,
+   "2 bars, rung 6": 4,
+   "2 bars, rung 7": 2,
+   "4 bars, rung 7": 4,
+   "4 bars, rung 8": 2
+  },
+  "jesu": {
+   "2 bars, rung 3": 2,
+   "2 bars, rung 6": 1,
+   "2 bars, rung 7": 4,
+   "2 bars, rung 8": 1,
+   "2 bars, rung 10": 1,
+   "4 bars, rung 7": 3,
+   "4 bars, rung 8": 3,
+   "4 bars, rung 10": 1
+  },
+  "k545": {
+   "2 bars, rung 3": 3,
+   "2 bars, rung 6": 14,
+   "2 bars, rung 7": 5,
+   "2 bars, rung 8": 8,
+   "2 bars, rung 10": 3,
+   "4 bars, rung 6": 2,
+   "4 bars, rung 7": 1,
+   "4 bars, rung 10": 1
+  },
+  "k331a": {
+   "2 bars, rung 3": 4,
+   "2 bars, rung 7": 8,
+   "2 bars, rung 8": 1,
+   "4 bars, rung 6": 5,
+   "4 bars, rung 7": 2
+  },
+  "k331d": {
+   "2 bars, rung 10": 5
+  },
+  "maple": {
+   "2 bars, rung 3": 2,
+   "2 bars, rung 6": 29,
+   "2 bars, rung 7": 23,
+   "2 bars, rung 8": 4,
+   "2 bars, rung 10": 9,
+   "4 bars, rung 6": 15,
+   "4 bars, rung 7": 14,
+   "4 bars, rung 8": 8,
+   "4 bars, rung 10": 17
+  },
+  "entertainer": {
+   "2 bars, rung 6": 8,
+   "2 bars, rung 7": 11,
+   "2 bars, rung 8": 8,
+   "2 bars, rung 10": 7,
+   "4 bars, rung 6": 4,
+   "4 bars, rung 7": 4,
+   "4 bars, rung 8": 9,
+   "4 bars, rung 10": 5
+  },
+  "chopin7": {
+   "2 bars, rung 6": 2,
+   "2 bars, rung 7": 6,
+   "2 bars, rung 8": 1,
+   "2 bars, rung 10": 2,
+   "4 bars, rung 7": 4,
+   "4 bars, rung 8": 2,
+   "4 bars, rung 10": 3
+  },
+  "chopin20": {
+   "2 bars, rung 7": 3,
+   "2 bars, rung 8": 3,
+   "2 bars, rung 10": 4,
+   "4 bars, rung 8": 1,
+   "4 bars, rung 10": 5
+  }
+ },
+ "kept": [
+  {
+   "score": "chorale",
+   "bars": "1-2",
+   "w": 2,
+   "key": "G major",
+   "level": 6,
+   "solfa": "d s m r d"
+  },
+  {
+   "score": "chorale",
+   "bars": "2-3",
+   "w": 2,
+   "key": "e minor",
+   "level": 7,
+   "solfa": "m r d d r m"
+  },
+  {
+   "score": "chorale",
+   "bars": "3-4",
+   "w": 2,
+   "key": "e minor",
+   "level": 7,
+   "solfa": "d r m r m"
+  },
+  {
+   "score": "chorale",
+   "bars": "8-9",
+   "w": 2,
+   "key": "G major",
+   "level": 3,
+   "solfa": "m f s s f m"
+  },
+  {
+   "score": "chorale",
+   "bars": "9-10",
+   "w": 2,
+   "key": "G major",
+   "level": 3,
+   "solfa": "s f m r d"
+  },
+  {
+   "score": "chorale",
+   "bars": "16-17",
+   "w": 2,
+   "key": "e minor",
+   "level": 7,
+   "solfa": "m r d r m"
+  },
+  {
+   "score": "chorale",
+   "bars": "17-18",
+   "w": 2,
+   "key": "e minor",
+   "level": 7,
+   "solfa": "d r m r m"
+  },
+  {
+   "score": "chorale",
+   "bars": "0-3",
+   "w": 4,
+   "key": "G major",
+   "level": 6,
+   "solfa": "d d s m r d d r m"
+  },
+  {
+   "score": "chorale",
+   "bars": "1-4",
+   "w": 4,
+   "key": "G major",
+   "level": 6,
+   "solfa": "d s m r d d r m r m"
+  },
+  {
+   "score": "chorale",
+   "bars": "4-7",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "r m s f m r d"
+  },
+  {
+   "score": "chorale",
+   "bars": "5-0",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "s f m r d m"
+  },
+  {
+   "score": "chorale",
+   "bars": "6-8",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "m r d m m f s"
+  },
+  {
+   "score": "chorale",
+   "bars": "7-9",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "d m m f s s f m"
+  },
+  {
+   "score": "chorale",
+   "bars": "0-10",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "m m f s s f m r d"
+  },
+  {
+   "score": "chorale",
+   "bars": "10-13",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "r d m f s f m"
+  },
+  {
+   "score": "chorale",
+   "bars": "11-14",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "m f s f m d m"
+  },
+  {
+   "score": "chorale",
+   "bars": "14-17",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "d m s f m r d r m"
+  },
+  {
+   "score": "chorale",
+   "bars": "15-18",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "s f m r d r m r m"
+  },
+  {
+   "score": "chorale",
+   "bars": "18-21",
+   "w": 4,
+   "key": "G major",
+   "level": 3,
+   "solfa": "r m s f m r d"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "3-4",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "d d t l t l"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "0-5",
+   "w": 2,
+   "key": "A major",
+   "level": 3,
+   "solfa": "f m r d r m"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "5-6",
+   "w": 2,
+   "key": "A major",
+   "level": 6,
+   "solfa": "m r d r m f f d"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "6-7",
+   "w": 2,
+   "key": "G major",
+   "level": 6,
+   "solfa": "s s r m r d d"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "7-8",
+   "w": 2,
+   "key": "G major",
+   "level": 6,
+   "solfa": "m r d d t s"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "9-10",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "t d r d t l t m"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "11-12",
+   "w": 2,
+   "key": "D major",
+   "level": 6,
+   "solfa": "f m r s m"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "1-4",
+   "w": 4,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "l s f m r m t d d t l t l"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "2-0",
+   "w": 4,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "r m t d d t l t l d"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "0-7",
+   "w": 4,
+   "key": "G major",
+   "level": 8,
+   "solfa": "s fi/se m r m fi/se s s r m r d d"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "5-8",
+   "w": 4,
+   "key": "G major",
+   "level": 8,
+   "solfa": "fi/se m r m fi/se s s r m r d d t s"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "7-10",
+   "w": 4,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "l s f f m d t d r d t l t m"
+  },
+  {
+   "score": "ohaupt",
+   "bars": "9-12",
+   "w": 4,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "t d r d t l t m f m r s m"
+  },
+  {
+   "score": "jesu",
+   "bars": "1-2",
+   "w": 2,
+   "key": "e minor",
+   "level": 7,
+   "solfa": "m m r d t l"
+  },
+  {
+   "score": "jesu",
+   "bars": "2-3",
+   "w": 2,
+   "key": "B major",
+   "level": 6,
+   "solfa": "s f d d r m"
+  },
+  {
+   "score": "jesu",
+   "bars": "3-4",
+   "w": 2,
+   "key": "B major",
+   "level": 3,
+   "solfa": "d d r m f m"
+  },
+  {
+   "score": "jesu",
+   "bars": "4-5",
+   "w": 2,
+   "key": "e minor",
+   "level": 7,
+   "solfa": "l si l d t l"
+  },
+  {
+   "score": "jesu",
+   "bars": "5-6",
+   "w": 2,
+   "key": "e minor",
+   "level": 7,
+   "solfa": "l d t l l"
+  },
+  {
+   "score": "jesu",
+   "bars": "6-7",
+   "w": 2,
+   "key": "E major",
+   "level": 10,
+   "solfa": "d s s si/le s"
+  },
+  {
+   "score": "jesu",
+   "bars": "7-8",
+   "w": 2,
+   "key": "G major",
+   "level": 3,
+   "solfa": "m m f m r d d"
+  },
+  {
+   "score": "jesu",
+   "bars": "8-9",
+   "w": 2,
+   "key": "G major",
+   "level": 8,
+   "solfa": "r d d m fi/se s m"
+  },
+  {
+   "score": "jesu",
+   "bars": "10-11",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "r d t l l l"
+  },
+  {
+   "score": "jesu",
+   "bars": "1-4",
+   "w": 4,
+   "key": "B major",
+   "level": 10,
+   "solfa": "d d li/te si/le s f d d r m f m"
+  },
+  {
+   "score": "jesu",
+   "bars": "4-7",
+   "w": 4,
+   "key": "e minor",
+   "level": 7,
+   "solfa": "l si l d t l l m m f m"
+  },
+  {
+   "score": "jesu",
+   "bars": "5-8",
+   "w": 4,
+   "key": "e minor",
+   "level": 7,
+   "solfa": "l d t l l m m f m r d d"
+  },
+  {
+   "score": "jesu",
+   "bars": "6-9",
+   "w": 4,
+   "key": "G major",
+   "level": 8,
+   "solfa": "l m m f m r d d m fi/se s m"
+  },
+  {
+   "score": "jesu",
+   "bars": "8-11",
+   "w": 4,
+   "key": "G major",
+   "level": 8,
+   "solfa": "r d d m fi/se s m l s fi/se m m m"
+  },
+  {
+   "score": "jesu",
+   "bars": "9-12",
+   "w": 4,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "l t d l r d t l l l s f m"
+  },
+  {
+   "score": "jesu",
+   "bars": "10-13",
+   "w": 4,
+   "key": "e minor",
+   "level": 8,
+   "solfa": "l s fi/se m m m r d t l"
+  },
+  {
+   "score": "k545",
+   "bars": "1-2",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "d m s t d r d"
+  },
+  {
+   "score": "k545",
+   "bars": "2-3",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "t d r d l s d"
+  },
+  {
+   "score": "k545",
+   "bars": "3-4",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "l s d s f m f m"
+  },
+  {
+   "score": "k545",
+   "bars": "4-5",
+   "w": 2,
+   "key": "d minor",
+   "level": 8,
+   "solfa": "r d t d t m fi/se s l t d r m r d t l s fi/se m"
+  },
+  {
+   "score": "k545",
+   "bars": "10-11",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "l t d t l s f m f s l s f m r d t s m d r s m d"
+  },
+  {
+   "score": "k545",
+   "bars": "11-12",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "t s m d r s m d r s s"
+  },
+  {
+   "score": "k545",
+   "bars": "13-14",
+   "w": 2,
+   "key": "G major",
+   "level": 3,
+   "solfa": "s m d r m r d"
+  },
+  {
+   "score": "k545",
+   "bars": "18-19",
+   "w": 2,
+   "key": "G major",
+   "level": 6,
+   "solfa": "s s m d l l d l f f r t s s t s"
+  },
+  {
+   "score": "k545",
+   "bars": "19-20",
+   "w": 2,
+   "key": "a minor",
+   "level": 8,
+   "solfa": "d d l fi/se r r fi/se r t t s m d d m d"
+  },
+  {
+   "score": "k545",
+   "bars": "20-21",
+   "w": 2,
+   "key": "G major",
+   "level": 6,
+   "solfa": "m m d l f f l f r r t s m d s m"
+  },
+  {
+   "score": "k545",
+   "bars": "22-23",
+   "w": 2,
+   "key": "a minor",
+   "level": 10,
+   "solfa": "l t d ri/me m si l t l s l d l d l"
+  },
+  {
+   "score": "k545",
+   "bars": "23-24",
+   "w": 2,
+   "key": "G major",
+   "level": 10,
+   "solfa": "di/ra r m r d r f r f r m d s f m r d"
+  },
+  {
+   "score": "k545",
+   "bars": "30-31",
+   "w": 2,
+   "key": "g minor",
+   "level": 8,
+   "solfa": "l l m l d m d l d r t si t l l d t l s fi/se m"
+  },
+  {
+   "score": "k545",
+   "bars": "34-35",
+   "w": 2,
+   "key": "d minor",
+   "level": 8,
+   "solfa": "l l m l d m d l d r t si t l t d r m fi/se si l"
+  },
+  {
+   "score": "k545",
+   "bars": "35-36",
+   "w": 2,
+   "key": "G major",
+   "level": 10,
+   "solfa": "s l li/te d r m fi/se s m f s l t di/ra r m"
+  },
+  {
+   "score": "k545",
+   "bars": "37-38",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "l m r d t l s f s r d t l s f m"
+  },
+  {
+   "score": "k545",
+   "bars": "39-40",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "f d t l s f m r m t l si f m r d"
+  },
+  {
+   "score": "k545",
+   "bars": "41-42",
+   "w": 2,
+   "key": "F major",
+   "level": 3,
+   "solfa": "f l s f m r d t d r m f s l t d m s"
+  },
+  {
+   "score": "k545",
+   "bars": "42-43",
+   "w": 2,
+   "key": "F major",
+   "level": 6,
+   "solfa": "d m s t d r d"
+  },
+  {
+   "score": "k545",
+   "bars": "43-44",
+   "w": 2,
+   "key": "d minor",
+   "level": 7,
+   "solfa": "t d r d l s d"
+  },
+  {
+   "score": "k545",
+   "bars": "44-45",
+   "w": 2,
+   "key": "F major",
+   "level": 6,
+   "solfa": "l s d s f m f m"
+  },
+  {
+   "score": "k545",
+   "bars": "45-46",
+   "w": 2,
+   "key": "g minor",
+   "level": 8,
+   "solfa": "r d t d t m fi/se s l t d r m r d t l s fi/se m"
+  },
+  {
+   "score": "k545",
+   "bars": "49-50",
+   "w": 2,
+   "key": "d minor",
+   "level": 7,
+   "solfa": "m f s l t d r m r d t l s f m m m"
+  },
+  {
+   "score": "k545",
+   "bars": "55-56",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "l t d t l s f m f s l s f m r d t s m d r s m d"
+  },
+  {
+   "score": "k545",
+   "bars": "56-57",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "t s m d r s m d r s s"
+  },
+  {
+   "score": "k545",
+   "bars": "58-59",
+   "w": 2,
+   "key": "C major",
+   "level": 3,
+   "solfa": "s m d r m r d"
+  },
+  {
+   "score": "k545",
+   "bars": "63-64",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "s s m d l l d l f f r t s s t s"
+  },
+  {
+   "score": "k545",
+   "bars": "64-65",
+   "w": 2,
+   "key": "d minor",
+   "level": 8,
+   "solfa": "d d l fi/se r r fi/se r t t s m d d m d"
+  },
+  {
+   "score": "k545",
+   "bars": "65-66",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "m m d l f f l f r r t s m d s m"
+  },
+  {
+   "score": "k545",
+   "bars": "66-67",
+   "w": 2,
+   "key": "G major",
+   "level": 8,
+   "solfa": "s s m d l f d l s fi/se s fi/se s"
+  },
+  {
+   "score": "k545",
+   "bars": "67-68",
+   "w": 2,
+   "key": "A major",
+   "level": 6,
+   "solfa": "f m f m f d t d t d"
+  },
+  {
+   "score": "k545",
+   "bars": "68-69",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "l si l si l s l t d r m r d t l s f m r d"
+  },
+  {
+   "score": "k545",
+   "bars": "69-70",
+   "w": 2,
+   "key": "G major",
+   "level": 8,
+   "solfa": "d r m f s l s f m r d li/te l s f s s"
+  },
+  {
+   "score": "k545",
+   "bars": "1-4",
+   "w": 4,
+   "key": "C major",
+   "level": 6,
+   "solfa": "d m s t d r d l s d s f m f m"
+  },
+  {
+   "score": "k545",
+   "bars": "22-25",
+   "w": 4,
+   "key": "a minor",
+   "level": 10,
+   "solfa": "l t d ri/me m si l t l s l d l d l t s r d t l s l l"
+  },
+  {
+   "score": "k545",
+   "bars": "42-45",
+   "w": 4,
+   "key": "F major",
+   "level": 6,
+   "solfa": "d m s t d r d l s d s f m f m"
+  },
+  {
+   "score": "k545",
+   "bars": "49-52",
+   "w": 4,
+   "key": "d minor",
+   "level": 7,
+   "solfa": "m f s l t d r m r d t l s f m m m r r d d"
+  },
+  {
+   "score": "k331a",
+   "bars": "1-2",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "t d t r r l t l d d"
+  },
+  {
+   "score": "k331a",
+   "bars": "2-3",
+   "w": 2,
+   "key": "G major",
+   "level": 8,
+   "solfa": "m fi/se m s s r r m m"
+  },
+  {
+   "score": "k331a",
+   "bars": "4-5",
+   "w": 2,
+   "key": "A major",
+   "level": 3,
+   "solfa": "m s f m r m f m s s"
+  },
+  {
+   "score": "k331a",
+   "bars": "5-6",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "t d t r r l t l d d"
+  },
+  {
+   "score": "k331a",
+   "bars": "6-7",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "l t l d d s l t d"
+  },
+  {
+   "score": "k331a",
+   "bars": "7-8",
+   "w": 2,
+   "key": "A major",
+   "level": 3,
+   "solfa": "d r m f m r d"
+  },
+  {
+   "score": "k331a",
+   "bars": "8-9",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "t l s r m r m m"
+  },
+  {
+   "score": "k331a",
+   "bars": "12-13",
+   "w": 2,
+   "key": "A major",
+   "level": 3,
+   "solfa": "s m d m r m f m s s"
+  },
+  {
+   "score": "k331a",
+   "bars": "13-14",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "t d t r r l t l d d"
+  },
+  {
+   "score": "k331a",
+   "bars": "14-15",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "l t l d d s l t d"
+  },
+  {
+   "score": "k331a",
+   "bars": "15-16",
+   "w": 2,
+   "key": "A major",
+   "level": 3,
+   "solfa": "d r m f m r r m"
+  },
+  {
+   "score": "k331a",
+   "bars": "16-17",
+   "w": 2,
+   "key": "f# minor",
+   "level": 7,
+   "solfa": "m r r m m f s l t d"
+  },
+  {
+   "score": "k331a",
+   "bars": "17-18",
+   "w": 2,
+   "key": "f# minor",
+   "level": 7,
+   "solfa": "m f s l t d d m r d"
+  },
+  {
+   "score": "k331a",
+   "bars": "2-5",
+   "w": 4,
+   "key": "A major",
+   "level": 6,
+   "solfa": "r m r f f d d r r m s f m r m f m s s"
+  },
+  {
+   "score": "k331a",
+   "bars": "5-8",
+   "w": 4,
+   "key": "A major",
+   "level": 6,
+   "solfa": "m f m s s r m r f f d r m f m r d"
+  },
+  {
+   "score": "k331a",
+   "bars": "6-9",
+   "w": 4,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "l t l d d s l t d t l s r m r m m"
+  },
+  {
+   "score": "k331a",
+   "bars": "10-13",
+   "w": 4,
+   "key": "A major",
+   "level": 6,
+   "solfa": "d t l l s s s m d s f r s m d m r m f m s s"
+  },
+  {
+   "score": "k331a",
+   "bars": "13-16",
+   "w": 4,
+   "key": "A major",
+   "level": 6,
+   "solfa": "m f m s s r m r f f d r m f m r r m"
+  },
+  {
+   "score": "k331a",
+   "bars": "15-18",
+   "w": 4,
+   "key": "A major",
+   "level": 6,
+   "solfa": "d r m f m r r m m f s l t d d m r d"
+  },
+  {
+   "score": "k331a",
+   "bars": "16-0",
+   "w": 4,
+   "key": "f# minor",
+   "level": 7,
+   "solfa": "m r r m m f s l t d d m r d"
+  },
+  {
+   "score": "k331d",
+   "bars": "7-8",
+   "w": 2,
+   "key": "a minor",
+   "level": 10,
+   "solfa": "l si l d t r d t d m r f m ri/me m m fi/se si l"
+  },
+  {
+   "score": "k331d",
+   "bars": "8-9",
+   "w": 2,
+   "key": "d minor",
+   "level": 10,
+   "solfa": "t li/te t t di/ra ri/me m m ri/me m m ri/me r r d t d t d"
+  },
+  {
+   "score": "k331d",
+   "bars": "12-13",
+   "w": 2,
+   "key": "a minor",
+   "level": 10,
+   "solfa": "t l d t r d r t d t l t d r m ri/me f m r d"
+  },
+  {
+   "score": "k331d",
+   "bars": "15-16",
+   "w": 2,
+   "key": "a minor",
+   "level": 10,
+   "solfa": "l si l d t r d t d m r f m ri/me m m fi/se si l si l m d m"
+  },
+  {
+   "score": "k331d",
+   "bars": "17-18",
+   "w": 2,
+   "key": "a minor",
+   "level": 10,
+   "solfa": "l si l d t r d t d m r f m ri/me m m fi/se si l"
+  },
+  {
+   "score": "maple",
+   "bars": "1-2",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d s d m s t s t r s"
+  },
+  {
+   "score": "maple",
+   "bars": "3-4",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d s d m s t s t r s s"
+  },
+  {
+   "score": "maple",
+   "bars": "4-5",
+   "w": 2,
+   "key": "g# minor",
+   "level": 7,
+   "solfa": "m si t m m l d f m m"
+  },
+  {
+   "score": "maple",
+   "bars": "5-6",
+   "w": 2,
+   "key": "g# minor",
+   "level": 7,
+   "solfa": "l d f m m l d f m"
+  },
+  {
+   "score": "maple",
+   "bars": "7-8",
+   "w": 2,
+   "key": "E major",
+   "level": 6,
+   "solfa": "m s m m s m"
+  },
+  {
+   "score": "maple",
+   "bars": "8-9",
+   "w": 2,
+   "key": "E major",
+   "level": 6,
+   "solfa": "m s m m s m m m m m m"
+  },
+  {
+   "score": "maple",
+   "bars": "9-10",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s s s s s r m t r m s"
+  },
+  {
+   "score": "maple",
+   "bars": "10-11",
+   "w": 2,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "s l m s l d r ri/me d r m d"
+  },
+  {
+   "score": "maple",
+   "bars": "11-12",
+   "w": 2,
+   "key": "f minor",
+   "level": 10,
+   "solfa": "r ri/me d r m d m d r d d"
+  },
+  {
+   "score": "maple",
+   "bars": "12-13",
+   "w": 2,
+   "key": "C# major",
+   "level": 3,
+   "solfa": "t s l s s s s s s"
+  },
+  {
+   "score": "maple",
+   "bars": "13-14",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s s s s r m t r m s"
+  },
+  {
+   "score": "maple",
+   "bars": "14-15",
+   "w": 2,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "s l m s l d r ri/me d r m d"
+  },
+  {
+   "score": "maple",
+   "bars": "15-16",
+   "w": 2,
+   "key": "f minor",
+   "level": 10,
+   "solfa": "r ri/me d r m d m d r d"
+  },
+  {
+   "score": "maple",
+   "bars": "16-17",
+   "w": 2,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "m d r d m d r d"
+  },
+  {
+   "score": "maple",
+   "bars": "17-18",
+   "w": 2,
+   "key": "E- major",
+   "level": 6,
+   "solfa": "l f s f m d m s t m"
+  },
+  {
+   "score": "maple",
+   "bars": "18-19",
+   "w": 2,
+   "key": "E- major",
+   "level": 8,
+   "solfa": "m d m s t m li/te m s l d s d"
+  },
+  {
+   "score": "maple",
+   "bars": "19-20",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "f t r m s r s m d m s l m"
+  },
+  {
+   "score": "maple",
+   "bars": "20-21",
+   "w": 2,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "m d m s l m d m s l m l"
+  },
+  {
+   "score": "maple",
+   "bars": "22-23",
+   "w": 2,
+   "key": "b- minor",
+   "level": 8,
+   "solfa": "r fi/se l d m r fi/se l d m d m"
+  },
+  {
+   "score": "maple",
+   "bars": "24-25",
+   "w": 2,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "m d m s l m d m s l m l"
+  },
+  {
+   "score": "maple",
+   "bars": "25-26",
+   "w": 2,
+   "key": "c minor",
+   "level": 7,
+   "solfa": "f l d r l r m d m s t m"
+  },
+  {
+   "score": "maple",
+   "bars": "26-27",
+   "w": 2,
+   "key": "E- major",
+   "level": 8,
+   "solfa": "m d m s t m li/te m s l d s d"
+  },
+  {
+   "score": "maple",
+   "bars": "27-28",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "f t r m s r s m d m s l m"
+  },
+  {
+   "score": "maple",
+   "bars": "30-31",
+   "w": 2,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "m si t m t si m m l d m d"
+  },
+  {
+   "score": "maple",
+   "bars": "32-33",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "m m r s d s s s"
+  },
+  {
+   "score": "maple",
+   "bars": "33-34",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d s s s d m s d"
+  },
+  {
+   "score": "maple",
+   "bars": "35-36",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d s d m s t s t r s"
+  },
+  {
+   "score": "maple",
+   "bars": "37-38",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d s d m s t s t r s s"
+  },
+  {
+   "score": "maple",
+   "bars": "38-39",
+   "w": 2,
+   "key": "g# minor",
+   "level": 7,
+   "solfa": "m si t m m l d f m m"
+  },
+  {
+   "score": "maple",
+   "bars": "39-40",
+   "w": 2,
+   "key": "g# minor",
+   "level": 7,
+   "solfa": "l d f m m l d f m"
+  },
+  {
+   "score": "maple",
+   "bars": "41-42",
+   "w": 2,
+   "key": "E major",
+   "level": 6,
+   "solfa": "m s m m s m"
+  },
+  {
+   "score": "maple",
+   "bars": "42-43",
+   "w": 2,
+   "key": "E major",
+   "level": 6,
+   "solfa": "m s m m s m m m m m m"
+  },
+  {
+   "score": "maple",
+   "bars": "43-44",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s s s s s r m t r m s"
+  },
+  {
+   "score": "maple",
+   "bars": "44-45",
+   "w": 2,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "s l m s l d r ri/me d r m d"
+  },
+  {
+   "score": "maple",
+   "bars": "45-46",
+   "w": 2,
+   "key": "f minor",
+   "level": 10,
+   "solfa": "r ri/me d r m d m d r d d"
+  },
+  {
+   "score": "maple",
+   "bars": "46-47",
+   "w": 2,
+   "key": "C# major",
+   "level": 3,
+   "solfa": "t s l s s s s s s"
+  },
+  {
+   "score": "maple",
+   "bars": "47-48",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s s s s r m t r m s"
+  },
+  {
+   "score": "maple",
+   "bars": "48-49",
+   "w": 2,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "s l m s l d r ri/me d r m d"
+  },
+  {
+   "score": "maple",
+   "bars": "49-50",
+   "w": 2,
+   "key": "f minor",
+   "level": 10,
+   "solfa": "r ri/me d r m d m d r d d"
+  },
+  {
+   "score": "maple",
+   "bars": "51-52",
+   "w": 2,
+   "key": "g# minor",
+   "level": 7,
+   "solfa": "l l m t l l m t m"
+  },
+  {
+   "score": "maple",
+   "bars": "52-53",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s s r l r s d l d m s d m"
+  },
+  {
+   "score": "maple",
+   "bars": "53-54",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s d l d m s d m l d m s m l m"
+  },
+  {
+   "score": "maple",
+   "bars": "55-56",
+   "w": 2,
+   "key": "g# minor",
+   "level": 7,
+   "solfa": "l l m t l l m t m"
+  },
+  {
+   "score": "maple",
+   "bars": "56-57",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s s r l r s d l d m s d m"
+  },
+  {
+   "score": "maple",
+   "bars": "57-58",
+   "w": 2,
+   "key": "C# major",
+   "level": 10,
+   "solfa": "s d l d m s d m l d m s m si/le m"
+  },
+  {
+   "score": "maple",
+   "bars": "59-60",
+   "w": 2,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "l l m t l l m t m"
+  },
+  {
+   "score": "maple",
+   "bars": "61-62",
+   "w": 2,
+   "key": "e- minor",
+   "level": 8,
+   "solfa": "l m l d fi/se l m l d fi/se l m"
+  },
+  {
+   "score": "maple",
+   "bars": "62-63",
+   "w": 2,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "l r f t r l d d t l"
+  },
+  {
+   "score": "maple",
+   "bars": "63-64",
+   "w": 2,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "d d t l m d r f l m"
+  },
+  {
+   "score": "maple",
+   "bars": "64-65",
+   "w": 2,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "m d r f l m m d r m t r d"
+  },
+  {
+   "score": "maple",
+   "bars": "65-66",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "m d r m t r d s m s m s m"
+  },
+  {
+   "score": "maple",
+   "bars": "66-67",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s m s m s m d m s d"
+  },
+  {
+   "score": "maple",
+   "bars": "67-68",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "d m s d s m s m"
+  },
+  {
+   "score": "maple",
+   "bars": "68-69",
+   "w": 2,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "d l d l d r m r d l"
+  },
+  {
+   "score": "maple",
+   "bars": "69-70",
+   "w": 2,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "d r m r d l s l m"
+  },
+  {
+   "score": "maple",
+   "bars": "70-71",
+   "w": 2,
+   "key": "c minor",
+   "level": 7,
+   "solfa": "d r l d r l d r l"
+  },
+  {
+   "score": "maple",
+   "bars": "71-72",
+   "w": 2,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "r m t r m t r m l"
+  },
+  {
+   "score": "maple",
+   "bars": "74-75",
+   "w": 2,
+   "key": "c minor",
+   "level": 7,
+   "solfa": "d r l d r l d r l d r d"
+  },
+  {
+   "score": "maple",
+   "bars": "75-76",
+   "w": 2,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "r m t r m r s m s m"
+  },
+  {
+   "score": "maple",
+   "bars": "76-77",
+   "w": 2,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "d l d l d r m r d l"
+  },
+  {
+   "score": "maple",
+   "bars": "77-78",
+   "w": 2,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "d r m r d l d l s d m"
+  },
+  {
+   "score": "maple",
+   "bars": "78-79",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d l s d m s l m s l d"
+  },
+  {
+   "score": "maple",
+   "bars": "79-80",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "s l m s l d r d d r d"
+  },
+  {
+   "score": "maple",
+   "bars": "80-81",
+   "w": 2,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "r d d r d r m d r m d"
+  },
+  {
+   "score": "maple",
+   "bars": "81-82",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "r m d r m d r m d r s"
+  },
+  {
+   "score": "maple",
+   "bars": "82-83",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "r m d r s d s s s"
+  },
+  {
+   "score": "maple",
+   "bars": "83-84",
+   "w": 2,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d s s s d s d"
+  },
+  {
+   "score": "maple",
+   "bars": "1-4",
+   "w": 4,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d s d m s t s t r s d s d m s t s t r s s"
+  },
+  {
+   "score": "maple",
+   "bars": "2-5",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "s t r s d s d m s t s t r s s d ri/me si/le s s"
+  },
+  {
+   "score": "maple",
+   "bars": "3-6",
+   "w": 4,
+   "key": "g# minor",
+   "level": 10,
+   "solfa": "l m l di/ra m si m si t m m l d f m m l d f m"
+  },
+  {
+   "score": "maple",
+   "bars": "4-7",
+   "w": 4,
+   "key": "g# minor",
+   "level": 7,
+   "solfa": "m si t m m l d f m m l d f m"
+  },
+  {
+   "score": "maple",
+   "bars": "7-10",
+   "w": 4,
+   "key": "C# major",
+   "level": 8,
+   "solfa": "s li/te s s li/te s s s s s s r m t r m s"
+  },
+  {
+   "score": "maple",
+   "bars": "8-11",
+   "w": 4,
+   "key": "C# major",
+   "level": 8,
+   "solfa": "s li/te s s li/te s s s s s s r m t r m s l li/te s l t s"
+  },
+  {
+   "score": "maple",
+   "bars": "9-12",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "d d d d d s l m s l d r ri/me d r m d m d r d d"
+  },
+  {
+   "score": "maple",
+   "bars": "10-13",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "s l m s l d r ri/me d r m d m d r d d d d d d"
+  },
+  {
+   "score": "maple",
+   "bars": "11-14",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "r ri/me d r m d m d r d d d d d d s l m s l d"
+  },
+  {
+   "score": "maple",
+   "bars": "12-15",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "m d r d d d d d d s l m s l d r ri/me d r m d"
+  },
+  {
+   "score": "maple",
+   "bars": "13-16",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "d d d d s l m s l d r ri/me d r m d m d r d"
+  },
+  {
+   "score": "maple",
+   "bars": "14-17",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "s l m s l d r ri/me d r m d m d r d m d r d"
+  },
+  {
+   "score": "maple",
+   "bars": "16-19",
+   "w": 4,
+   "key": "E- major",
+   "level": 8,
+   "solfa": "l f s f l f s f m d m s t m li/te m s l d s d"
+  },
+  {
+   "score": "maple",
+   "bars": "17-20",
+   "w": 4,
+   "key": "A- major",
+   "level": 8,
+   "solfa": "m d r d t s t r fi/se t f t r m s r s m d m s l m"
+  },
+  {
+   "score": "maple",
+   "bars": "20-23",
+   "w": 4,
+   "key": "b- minor",
+   "level": 8,
+   "solfa": "t s t r m t s t r m t m r fi/se l d m r fi/se l d m d m"
+  },
+  {
+   "score": "maple",
+   "bars": "22-25",
+   "w": 4,
+   "key": "b- minor",
+   "level": 8,
+   "solfa": "r fi/se l d m r fi/se l d m d m t s t r m t s t r m t m"
+  },
+  {
+   "score": "maple",
+   "bars": "31-34",
+   "w": 4,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "l r f l f m m r s d s s s d m s d"
+  },
+  {
+   "score": "maple",
+   "bars": "33-36",
+   "w": 4,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d s s s d m s d d s d m s t s t r s"
+  },
+  {
+   "score": "maple",
+   "bars": "35-38",
+   "w": 4,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d s d m s t s t r s d s d m s t s t r s s"
+  },
+  {
+   "score": "maple",
+   "bars": "36-39",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "s t r s d s d m s t s t r s s d ri/me si/le s s"
+  },
+  {
+   "score": "maple",
+   "bars": "37-40",
+   "w": 4,
+   "key": "g# minor",
+   "level": 10,
+   "solfa": "l m l di/ra m si m si t m m l d f m m l d f m"
+  },
+  {
+   "score": "maple",
+   "bars": "38-41",
+   "w": 4,
+   "key": "g# minor",
+   "level": 7,
+   "solfa": "m si t m m l d f m m l d f m"
+  },
+  {
+   "score": "maple",
+   "bars": "41-44",
+   "w": 4,
+   "key": "C# major",
+   "level": 8,
+   "solfa": "s li/te s s li/te s s s s s s r m t r m s"
+  },
+  {
+   "score": "maple",
+   "bars": "42-45",
+   "w": 4,
+   "key": "C# major",
+   "level": 8,
+   "solfa": "s li/te s s li/te s s s s s s r m t r m s l li/te s l t s"
+  },
+  {
+   "score": "maple",
+   "bars": "43-46",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "d d d d d s l m s l d r ri/me d r m d m d r d d"
+  },
+  {
+   "score": "maple",
+   "bars": "44-47",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "s l m s l d r ri/me d r m d m d r d d d d d d"
+  },
+  {
+   "score": "maple",
+   "bars": "45-48",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "r ri/me d r m d m d r d d d d d d s l m s l d"
+  },
+  {
+   "score": "maple",
+   "bars": "46-49",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "m d r d d d d d d s l m s l d r ri/me d r m d"
+  },
+  {
+   "score": "maple",
+   "bars": "47-50",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "d d d d s l m s l d r ri/me d r m d m d r d d"
+  },
+  {
+   "score": "maple",
+   "bars": "49-52",
+   "w": 4,
+   "key": "A- major",
+   "level": 10,
+   "solfa": "r ri/me d r m d m d r d d d d s r d d s r s"
+  },
+  {
+   "score": "maple",
+   "bars": "50-53",
+   "w": 4,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "t s l s s s s r l s s r l r s d l d m s d m"
+  },
+  {
+   "score": "maple",
+   "bars": "51-54",
+   "w": 4,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s s r l s s r l r s d l d m s d m l d m s m l m"
+  },
+  {
+   "score": "maple",
+   "bars": "54-57",
+   "w": 4,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "l d m s m l m s s r l s s r l r s d l d m s d m"
+  },
+  {
+   "score": "maple",
+   "bars": "55-58",
+   "w": 4,
+   "key": "C# major",
+   "level": 10,
+   "solfa": "s s r l s s r l r s d l d m s d m l d m s m si/le m"
+  },
+  {
+   "score": "maple",
+   "bars": "57-60",
+   "w": 4,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "s d l d m s d m l d m s m si m l l m t l l m t m"
+  },
+  {
+   "score": "maple",
+   "bars": "59-62",
+   "w": 4,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "l l m t l l m t m r l r f t r l r f t r l"
+  },
+  {
+   "score": "maple",
+   "bars": "60-63",
+   "w": 4,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "l l m t m r l r f t r l r f t r l d d t l"
+  },
+  {
+   "score": "maple",
+   "bars": "61-64",
+   "w": 4,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "r l r f t r l r f t r l d d t l m d r f l m"
+  },
+  {
+   "score": "maple",
+   "bars": "62-65",
+   "w": 4,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "l r f t r l d d t l m d r f l m m d r m t r d"
+  },
+  {
+   "score": "maple",
+   "bars": "63-66",
+   "w": 4,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "d d t l m d r f l m m d r m t r d s m s m s m"
+  },
+  {
+   "score": "maple",
+   "bars": "64-67",
+   "w": 4,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "m d r f l m m d r m t r d s m s m s m d m s d"
+  },
+  {
+   "score": "maple",
+   "bars": "65-68",
+   "w": 4,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "m d r m t r d s m s m s m d m s d s m s m"
+  },
+  {
+   "score": "maple",
+   "bars": "66-69",
+   "w": 4,
+   "key": "C# major",
+   "level": 6,
+   "solfa": "s m s m s m d m s d s m s m s l t l s m"
+  },
+  {
+   "score": "maple",
+   "bars": "68-71",
+   "w": 4,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "d l d l d r m r d l s l m s l m s l m"
+  },
+  {
+   "score": "maple",
+   "bars": "69-72",
+   "w": 4,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "s l t l s m r m t r m t r m t r m l"
+  },
+  {
+   "score": "maple",
+   "bars": "73-76",
+   "w": 4,
+   "key": "b- minor",
+   "level": 7,
+   "solfa": "d m l d m t r m t r m t r m t r m r s m s m"
+  },
+  {
+   "score": "maple",
+   "bars": "74-77",
+   "w": 4,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "s l m s l m s l m s l s d l d l d r m r d l"
+  },
+  {
+   "score": "maple",
+   "bars": "75-78",
+   "w": 4,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "s l m s l s d l d l d r m r d l d l s d m"
+  },
+  {
+   "score": "maple",
+   "bars": "76-79",
+   "w": 4,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "d l d l d r m r d l d l s d m s l m s l d"
+  },
+  {
+   "score": "maple",
+   "bars": "77-80",
+   "w": 4,
+   "key": "f minor",
+   "level": 7,
+   "solfa": "d r m r d l d l s d m s l m s l d r d d r d"
+  },
+  {
+   "score": "maple",
+   "bars": "78-81",
+   "w": 4,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "d l s d m s l m s l d r d d r d r m d r m d"
+  },
+  {
+   "score": "maple",
+   "bars": "79-82",
+   "w": 4,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "s l m s l d r d d r d r m d r m d r m d r s"
+  },
+  {
+   "score": "maple",
+   "bars": "80-83",
+   "w": 4,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "r d d r d r m d r m d r m d r s d s s s"
+  },
+  {
+   "score": "maple",
+   "bars": "81-84",
+   "w": 4,
+   "key": "A- major",
+   "level": 6,
+   "solfa": "r m d r m d r m d r s d s s s d s d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "9-10",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "m d m d m d l s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "10-11",
+   "w": 2,
+   "key": "a minor",
+   "level": 8,
+   "solfa": "l s fi/se l d m r d l"
+  },
+  {
+   "score": "entertainer",
+   "bars": "16-17",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "d d r m d r m d r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "17-18",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "m d r m d r d m d r m d r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "22-23",
+   "w": 2,
+   "key": "C major",
+   "level": 8,
+   "solfa": "s l s m f fi/se s l s m d s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "27-28",
+   "w": 2,
+   "key": "G major",
+   "level": 10,
+   "solfa": "d r d d r ri/me m m m r t s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "30-31",
+   "w": 2,
+   "key": "C major",
+   "level": 8,
+   "solfa": "s l s m f fi/se s l s m d s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "32-33",
+   "w": 2,
+   "key": "G major",
+   "level": 6,
+   "solfa": "r m f s l s f s f d t d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "33-34",
+   "w": 2,
+   "key": "F major",
+   "level": 10,
+   "solfa": "s r di/ra r s m s m s m"
+  },
+  {
+   "score": "entertainer",
+   "bars": "35-36",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "s d m s m d s l d m r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "38-39",
+   "w": 2,
+   "key": "a minor",
+   "level": 10,
+   "solfa": "d r ri/me m d m d m d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "43-44",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "m d m d m d l s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "44-45",
+   "w": 2,
+   "key": "a minor",
+   "level": 8,
+   "solfa": "l s fi/se l d m r d l"
+  },
+  {
+   "score": "entertainer",
+   "bars": "50-51",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "d d r m d r m d r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "51-52",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "m d r m d r d m d r m d r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "53-54",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "m d r m t r d d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "54-55",
+   "w": 2,
+   "key": "F major",
+   "level": 10,
+   "solfa": "s s m ri/me m s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "60-61",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "d f m si t m r t d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "62-63",
+   "w": 2,
+   "key": "F major",
+   "level": 10,
+   "solfa": "m f m ri/me m s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "69-70",
+   "w": 2,
+   "key": "C major",
+   "level": 8,
+   "solfa": "l d s d r m f li/te d r m f s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "70-71",
+   "w": 2,
+   "key": "B- major",
+   "level": 8,
+   "solfa": "s d r m fi/se s l s s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "73-74",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "s d m s m d s l d m r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "74-75",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "l d m r d d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "76-77",
+   "w": 2,
+   "key": "d minor",
+   "level": 7,
+   "solfa": "d t d t d m l m s l s m"
+  },
+  {
+   "score": "entertainer",
+   "bars": "78-79",
+   "w": 2,
+   "key": "C major",
+   "level": 8,
+   "solfa": "s fi/se s fi/se s d m d r m r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "80-81",
+   "w": 2,
+   "key": "d minor",
+   "level": 7,
+   "solfa": "l si l si l d m d r m r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "81-82",
+   "w": 2,
+   "key": "F major",
+   "level": 6,
+   "solfa": "d m d r m r d s s s m"
+  },
+  {
+   "score": "entertainer",
+   "bars": "82-83",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "d d d l s s s s s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "84-85",
+   "w": 2,
+   "key": "d minor",
+   "level": 7,
+   "solfa": "d t d t d m l m s l s m"
+  },
+  {
+   "score": "entertainer",
+   "bars": "86-87",
+   "w": 2,
+   "key": "C major",
+   "level": 8,
+   "solfa": "s fi/se s fi/se s d m d r m r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "87-88",
+   "w": 2,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "d m d r m r d l si l s f d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "88-89",
+   "w": 2,
+   "key": "C major",
+   "level": 10,
+   "solfa": "l si/le l s f d m ri/me m l d s m"
+  },
+  {
+   "score": "entertainer",
+   "bars": "89-90",
+   "w": 2,
+   "key": "C major",
+   "level": 10,
+   "solfa": "m ri/me m l d s m d d m r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "90-91",
+   "w": 2,
+   "key": "C major",
+   "level": 6,
+   "solfa": "d d m r d s s s s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "14-17",
+   "w": 4,
+   "key": "a minor",
+   "level": 10,
+   "solfa": "d r ri/me m d r m t r d d r m d r m d r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "15-18",
+   "w": 4,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "m d r m t r d d r m d r m d r d m d r m d r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "28-31",
+   "w": 4,
+   "key": "e minor",
+   "level": 8,
+   "solfa": "m m m r t s d l li/te t d r d l li/te t d r d l f d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "30-33",
+   "w": 4,
+   "key": "C major",
+   "level": 8,
+   "solfa": "s l s m f fi/se s l s m d s l t d r m r d r d s fi/se s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "33-36",
+   "w": 4,
+   "key": "C major",
+   "level": 8,
+   "solfa": "d s fi/se s d l d l d l s d m s m d s l d m r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "48-51",
+   "w": 4,
+   "key": "a minor",
+   "level": 10,
+   "solfa": "d r ri/me m d r m t r d d r m d r m d r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "49-52",
+   "w": 4,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "m d r m t r d d r m d r m d r d m d r m d r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "51-54",
+   "w": 4,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "m d r m d r d m d r m d r d m d r m t r d d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "52-55",
+   "w": 4,
+   "key": "a minor",
+   "level": 7,
+   "solfa": "m d r m d r d m d r m t r d d l si l d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "60-63",
+   "w": 4,
+   "key": "a minor",
+   "level": 8,
+   "solfa": "d f m si t m r t d l li/te l si l d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "67-70",
+   "w": 4,
+   "key": "C major",
+   "level": 8,
+   "solfa": "r s r s r d f f l d s d r m f li/te d r m f s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "68-71",
+   "w": 4,
+   "key": "F major",
+   "level": 6,
+   "solfa": "s d d m s r s l t d f s l t d r d d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "72-75",
+   "w": 4,
+   "key": "F major",
+   "level": 6,
+   "solfa": "s m s m s m r s t r t s r m s t l s s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "76-79",
+   "w": 4,
+   "key": "C major",
+   "level": 8,
+   "solfa": "f m f m f l r l d r d l s fi/se s fi/se s d m d r m r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "77-80",
+   "w": 4,
+   "key": "G major",
+   "level": 8,
+   "solfa": "r s r f s f r d t d t d f l f s l s f s fi/se s fi/se s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "79-82",
+   "w": 4,
+   "key": "F major",
+   "level": 10,
+   "solfa": "s t s l t l s l si/le l si/le l d m d r m r d s s s m"
+  },
+  {
+   "score": "entertainer",
+   "bars": "80-83",
+   "w": 4,
+   "key": "C major",
+   "level": 10,
+   "solfa": "r di/ra r di/ra r f l f s l s f d d d l s s s s s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "81-84",
+   "w": 4,
+   "key": "F major",
+   "level": 6,
+   "solfa": "d m d r m r d s s s m r r r r r d t d t d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "82-85",
+   "w": 4,
+   "key": "F major",
+   "level": 6,
+   "solfa": "s s s m r r r r r d t d t d m l m s l s m"
+  },
+  {
+   "score": "entertainer",
+   "bars": "83-86",
+   "w": 4,
+   "key": "C major",
+   "level": 8,
+   "solfa": "s s s s s f m f m f l r l d r d l s fi/se s fi/se s"
+  },
+  {
+   "score": "entertainer",
+   "bars": "84-87",
+   "w": 4,
+   "key": "C major",
+   "level": 8,
+   "solfa": "f m f m f l r l d r d l s fi/se s fi/se s d m d r m r d"
+  },
+  {
+   "score": "entertainer",
+   "bars": "88-91",
+   "w": 4,
+   "key": "C major",
+   "level": 10,
+   "solfa": "l si/le l s f d m ri/me m l d s m d d m r d s s s s"
+  },
+  {
+   "score": "chopin7",
+   "bars": "0-1",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "r t d l l"
+  },
+  {
+   "score": "chopin7",
+   "bars": "1-2",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "t d l l l m"
+  },
+  {
+   "score": "chopin7",
+   "bars": "2-3",
+   "w": 2,
+   "key": "D major",
+   "level": 10,
+   "solfa": "l m di/ra r s s"
+  },
+  {
+   "score": "chopin7",
+   "bars": "3-4",
+   "w": 2,
+   "key": "A major",
+   "level": 8,
+   "solfa": "fi/se s d d d m"
+  },
+  {
+   "score": "chopin7",
+   "bars": "4-5",
+   "w": 2,
+   "key": "G major",
+   "level": 10,
+   "solfa": "r fi/se ri/me m s s"
+  },
+  {
+   "score": "chopin7",
+   "bars": "6-7",
+   "w": 2,
+   "key": "f# minor",
+   "level": 7,
+   "solfa": "f t t d m m"
+  },
+  {
+   "score": "chopin7",
+   "bars": "7-8",
+   "w": 2,
+   "key": "A major",
+   "level": 6,
+   "solfa": "t d m m m s"
+  },
+  {
+   "score": "chopin7",
+   "bars": "9-10",
+   "w": 2,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "t d l l l m"
+  },
+  {
+   "score": "chopin7",
+   "bars": "11-12",
+   "w": 2,
+   "key": "A major",
+   "level": 6,
+   "solfa": "f s m m m m"
+  },
+  {
+   "score": "chopin7",
+   "bars": "12-13",
+   "w": 2,
+   "key": "f# minor",
+   "level": 7,
+   "solfa": "m m m f l l"
+  },
+  {
+   "score": "chopin7",
+   "bars": "14-15",
+   "w": 2,
+   "key": "f# minor",
+   "level": 7,
+   "solfa": "l t r d d d"
+  },
+  {
+   "score": "chopin7",
+   "bars": "0-3",
+   "w": 4,
+   "key": "A major",
+   "level": 8,
+   "solfa": "s m f r r r l fi/se s d d"
+  },
+  {
+   "score": "chopin7",
+   "bars": "1-4",
+   "w": 4,
+   "key": "A major",
+   "level": 8,
+   "solfa": "m f r r r l fi/se s d d d m"
+  },
+  {
+   "score": "chopin7",
+   "bars": "2-5",
+   "w": 4,
+   "key": "D major",
+   "level": 10,
+   "solfa": "l m di/ra r s s s t si/le l d d"
+  },
+  {
+   "score": "chopin7",
+   "bars": "4-7",
+   "w": 4,
+   "key": "A major",
+   "level": 10,
+   "solfa": "d m di/ra r f f f t t d m m"
+  },
+  {
+   "score": "chopin7",
+   "bars": "5-8",
+   "w": 4,
+   "key": "A major",
+   "level": 10,
+   "solfa": "di/ra r f f f t t d m m m s"
+  },
+  {
+   "score": "chopin7",
+   "bars": "7-10",
+   "w": 4,
+   "key": "f# minor",
+   "level": 7,
+   "solfa": "t d m m m s m f r r r l"
+  },
+  {
+   "score": "chopin7",
+   "bars": "10-13",
+   "w": 4,
+   "key": "b minor",
+   "level": 7,
+   "solfa": "l m d r t t t t t d m m"
+  },
+  {
+   "score": "chopin7",
+   "bars": "12-15",
+   "w": 4,
+   "key": "f# minor",
+   "level": 7,
+   "solfa": "m m m f l l l t r d d d"
+  },
+  {
+   "score": "chopin7",
+   "bars": "13-16",
+   "w": 4,
+   "key": "f# minor",
+   "level": 7,
+   "solfa": "m f l l l t r d d d"
+  },
+  {
+   "score": "chopin20",
+   "bars": "1-2",
+   "w": 2,
+   "key": "c minor",
+   "level": 8,
+   "solfa": "m f m r d d r d li/te l"
+  },
+  {
+   "score": "chopin20",
+   "bars": "3-4",
+   "w": 2,
+   "key": "C major",
+   "level": 10,
+   "solfa": "r m s f m r s t si/le s"
+  },
+  {
+   "score": "chopin20",
+   "bars": "4-5",
+   "w": 2,
+   "key": "G major",
+   "level": 10,
+   "solfa": "s d m di/ra d si/le si/le s t s"
+  },
+  {
+   "score": "chopin20",
+   "bars": "5-6",
+   "w": 2,
+   "key": "G major",
+   "level": 10,
+   "solfa": "si/le si/le s t s f s m r d"
+  },
+  {
+   "score": "chopin20",
+   "bars": "6-7",
+   "w": 2,
+   "key": "c minor",
+   "level": 8,
+   "solfa": "l t si fi/se m l f m r d"
+  },
+  {
+   "score": "chopin20",
+   "bars": "7-8",
+   "w": 2,
+   "key": "c minor",
+   "level": 7,
+   "solfa": "l f m r d d r d t l"
+  },
+  {
+   "score": "chopin20",
+   "bars": "9-10",
+   "w": 2,
+   "key": "G major",
+   "level": 10,
+   "solfa": "si/le si/le s t s f s m r d"
+  },
+  {
+   "score": "chopin20",
+   "bars": "10-11",
+   "w": 2,
+   "key": "c minor",
+   "level": 8,
+   "solfa": "l t si fi/se m l f m r d"
+  },
+  {
+   "score": "chopin20",
+   "bars": "11-12",
+   "w": 2,
+   "key": "c minor",
+   "level": 7,
+   "solfa": "l f m r d d r d t l"
+  },
+  {
+   "score": "chopin20",
+   "bars": "12-13",
+   "w": 2,
+   "key": "c minor",
+   "level": 7,
+   "solfa": "d r d t l l"
+  },
+  {
+   "score": "chopin20",
+   "bars": "1-4",
+   "w": 4,
+   "key": "c minor",
+   "level": 10,
+   "solfa": "m f m r d d r d li/te l t di/ra m r di/ra t m si f m"
+  },
+  {
+   "score": "chopin20",
+   "bars": "3-6",
+   "w": 4,
+   "key": "G major",
+   "level": 10,
+   "solfa": "s l d li/te l s d m di/ra d si/le si/le s t s f s m r d"
+  },
+  {
+   "score": "chopin20",
+   "bars": "4-7",
+   "w": 4,
+   "key": "c minor",
+   "level": 10,
+   "solfa": "t m si f m d d t ri/me t l t si fi/se m l f m r d"
+  },
+  {
+   "score": "chopin20",
+   "bars": "5-8",
+   "w": 4,
+   "key": "c minor",
+   "level": 10,
+   "solfa": "d d t ri/me t l t si fi/se m l f m r d d r d t l"
+  },
+  {
+   "score": "chopin20",
+   "bars": "9-12",
+   "w": 4,
+   "key": "c minor",
+   "level": 10,
+   "solfa": "d d t ri/me t l t si fi/se m l f m r d d r d t l"
+  },
+  {
+   "score": "chopin20",
+   "bars": "10-13",
+   "w": 4,
+   "key": "c minor",
+   "level": 8,
+   "solfa": "l t si fi/se m l f m r d d r d t l l"
+  }
+ ]
+}
