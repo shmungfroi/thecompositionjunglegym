@@ -307,6 +307,40 @@ report['song_rules']['post_2015'] = [f'{a} ({b})' for a, b in _post]
 if not _post:
     report['song_rules']['failures'].append('no song after 2015 (L70: span up to the present)')
 
+# 0.49 C18 slot honesty: a song in the Metal slot must be metal, not a genre fallback; a slot is either filled or a declared gap, never both.
+_FB = re.compile(r"fallback|stand-in|not (?:a )?metal|isn.t metal|rather than metal|no (?:famous|clean)[^.]*metal|hard rock|britpop|jazz", re.I)
+def metal_slot_dishonest(x):
+    """True if a Metal-slot entry is a labelled stand-in: it has a fallback note, or its own fallback, recording or suitability text says it is not metal."""
+    if x.get('slot') != 'Metal':
+        return False
+    if x.get('fallback'):
+        return True
+    return bool(_FB.search(' '.join(str(x.get(k) or '') for k in ('fallback', 'recording', 'suitability'))))
+_mg = re.search(r'^const SONGGAPS=(\{.*?\});', INDEX, re.M)
+SONGGAPS = json.loads(_mg.group(1)) if _mg else {}
+if not _mg:
+    report['song_rules']['failures'].append('SONGGAPS data not found')
+for q, v in SONGS.items():
+    for x in v:
+        if metal_slot_dishonest(x):
+            report['song_rules']['failures'].append(f'chord {q!r}: Metal slot holds a genre fallback ({x["song"]}); show it as a SONGGAPS gap instead')
+    filled = {x['slot'] for x in v}
+    for g in SONGGAPS.get(q, []):
+        if g in filled:
+            report['song_rules']['failures'].append(f'chord {q!r}: slot {g!r} is both filled and declared a gap')
+# 0.49 L106: an optional card label (shown as a chip) must be non-empty text of at most 40 characters
+for q, v in SONGS.items():
+    for x in v:
+        if 'label' in x and not (isinstance(x['label'], str) and 0 < len(x['label'].strip()) <= 40):
+            report['song_rules']['failures'].append(f'chord {q!r}: {x["song"]!r} label must be 1 to 40 characters')
+# fixtures: each case must give the stated verdict (guards against the check going dead again)
+for _c in json.loads((pathlib.Path(__file__).parent / 'fixtures' / 'slot_honesty.json').read_text(encoding='utf-8')):
+    if metal_slot_dishonest(_c['entry']) != _c['must_fail']:
+        report['song_rules']['failures'].append(f'slot-honesty fixture {_c["name"]!r}: expected must_fail={_c["must_fail"]}')
+for q, g in SONGGAPS.items():
+    if q not in SONGS or any(x not in _SL for x in g):
+        report['song_rules']['failures'].append(f'SONGGAPS has an unknown chord type or slot: {q!r} {g}')
+
 # ---------- 5. syllabus tags (0.49 C10): every code used has NESA's wording; every code listed is used; element letters exist ----------
 # NESA outcome wording, read from curriculum.nsw.edu.au outcomes pages on 20 Nov 2026 (Music 1, Music 2, Music Extension 11-12 (2025)).
 NESA_WORDING = {
