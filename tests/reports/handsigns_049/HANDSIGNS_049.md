@@ -2,7 +2,9 @@
 
 Design step for approval. Nothing in `index.html` has changed. Branch `049-handsigns`, 20 Nov 2026. Design lead: Fable.
 
-**Round 2 (after Justin, 21:36: "the illustrations are awful. make them much more human").** The round 1 glove-like outlines are gone (git keeps them at `6705031`). All 17 signs are redrawn as naturalistic hands; gestures, viewpoint and heights are unchanged. Sections 1 and 5 describe the new drawings; section 5.3 says what changed per sign and which ones I am still unhappy with.
+**Round 2 (after Justin, 21:36: "the illustrations are awful. make them much more human").** The round 1 glove-like outlines are gone (git keeps them at `6705031`). All 17 signs are redrawn as naturalistic hands; gestures, viewpoint and heights are unchanged. Sections 1 and 5 describe the new drawings; section 5.3 says what changed per sign.
+
+**Round 3 (coordinator review).** The four weak signs are redone: do and do′, di, li, le. Also fixed: the stray patch of tone on so's palm, the te thumb, and small specks in crease lines. All other poses are unchanged.
 
 Justin's brief (20 Nov 21:16): "these are just examples, we must build our own based on these. the principles are common property only the actual art is a possible IP issue."
 
@@ -30,18 +32,18 @@ One right hand. Heights: do at the waist, ti at eye level, do′ at the forehead
 | do′ | The do fist again | forehead | [C1] [K] [J] |
 | ti | Fist with the first finger pointing up and forward (about 40° above level) | eye level | [C1] [C2] "the upturned hand, pointing with the forefinger" [K] [J] |
 | la | Hand hangs loose from the wrist, palm down, all fingers drooping | chin | [C1] [K] [J] |
-| so | Open hand on its edge, fingers together pointing across, palm towards the signer, thumb on top | shoulder | [C2] "the open hand, pointing outwards, with the thumb upwards" [K] [J] |
+| so | Open hand on its edge, palm to the eye with its three creases, thumb up (stray tone patch removed in round 3) | The best drawing. The thumb is slightly long |
 | fa | Loose fist, thumb pointing down (towards mi) | upper chest | [C1] [K] [J] [T] |
 | mi | Flat hand, level, palm down | lower chest | [C2] "the open hand with the palm downwards" [K] [J] |
 | re | Flat hand slanting upward (about 30°), palm down | stomach | [K] [J] [T]; Curwen differs, see 2.1 |
 | do | Closed fist, palm down, knuckles forward | waist | [C2] "the closed hand" [K] [J] |
-| di | The do fist tipped up | between do and re | [J] |
+| di | Round 3: the same fist tipped up 33°: the knuckles rise and the wrist drops, so it differs from do by angle and by silhouette | Good |
 | ri | The re slant, steeper (about 50°) | between re and mi | [J] |
 | fi | The fa hand turned over: thumb up | between fa and so | [J] [CK] "Flip fa around" |
 | si | The so hand lifted, fingers opening | between so and la | [J] [CK] |
-| li | The la hand turned up: palm cupped upward, fingers curling up | between la and ti | [J] |
-| te | The ti finger pointing down and forward | between la and ti | [J]; Curwen differs, see 2.1 |
-| le | The la hand dropped further: fingers hang straight down | between so and la | [J] |
+| li | Round 3: palm up and gently cupped, seen from the side and a little above: the palm hollow with its creases, the fingertips curling up without overlapping, the thumb beyond | Good |
+| te | The ti hand pointing down about 36°; round 3 tucks the thumb against the curled fingers | Good |
+| le | Round 3: the wrist bent about 82°, fingers hanging close to vertical, with a longer forearm. The frame is enlarged for this sign so the drop fits, which makes this hand about 10% smaller than the others | Good; cannot be taken for la. Say if the smaller scale bothers you |
 | se | The so hand tipped down, palm open | between fa and so | [J] |
 | me | The mi hand sloping down | between re and mi | [J] |
 | ra | The re hand with the thumb let fall (pointing down) | between do and re | [J], my reading of a small drawing: decision 4 |
@@ -112,7 +114,7 @@ The gestures are Curwen's and common property. The artwork is ours: the hand is 
 
 | Sign | Round 2 | Honest verdict |
 |---|---|---|
-| do, do′ | A real fist seen from the thumb side and above: knuckle bumps on top, the thumb closed across the front underneath, nail showing | Reads as a human fist, but it is the weakest of the diatonic signs: the thumb is tucked low and the small mark by the index curl is not clear. Small size is a compact shape |
+| do, do′ | Round 3: the fist is turned about 45° on the forearm and 28° towards the eye, so the curled fingers show stacked on the front with the folds between them, knuckle heads on top, and the thumb closed across the middle phalanges of the index and middle fingers, nail showing | Now reads as a real fist. The flat tone on the forearm is a larger patch than on the other signs. At ladder size it is a compact shape |
 | re | Flat relaxed hand slanting up about 28°, fingers slightly staggered, thumb resting below | Good |
 | mi | The same hand, level | Good |
 | fa | Loose fist, thumb straight down with its nail | Good; the curled index is a little busy |
@@ -132,7 +134,7 @@ The gestures are Curwen's and common property. The artwork is ours: the hand is 
 
 General limits. (1) These are drawings computed from a model, not drawn by a person with a pen from a sitter; they read as fine-ink life drawings, but the model's skin is smooth: no veins, tendons or wrinkles beyond the main creases. (2) Hatching was not used; the form is carried by line weight and one flat tone. (3) A full drawing is about 20 kB of path data (about 340 kB for the set, 65 kB for the small set). The app today carries the KMEIA PNGs as data URIs, so this is a like-for-like weight, but it should be a conscious choice at build time: the ladders need only the small set.
 
-**Small sizes.** Checked at 42 × 34 on the sheet ("signs that must not be confused") and in `png/ladder_mock_390.png`, small drawings: re and ti differ in mass (flat hand against fist with a finger); fa and ti in direction; re, ri, me by slope, ra by its thumb; so, si, se by fan and tilt; la is a slanting droop, le upright, li cupped upward; fa and fi, ti and te point opposite ways; do and di differ only by tilt, which is the weakest pair.
+**Small sizes.** Checked at 42 × 34 on the sheet ("signs that must not be confused") and in `png/ladder_mock_390.png`, small drawings: re and ti differ in mass (flat hand against fist with a finger); fa and ti in direction; re, ri, me by slope, ra by its thumb; so, si, se by fan and tilt; la is a slanting droop, le a vertical hand under a right-angle wrist, li cupped upward; fa and fi, ti and te point opposite ways; do and di differ by tilt and outline (round 3), still the closest pair.
 
 ## 6. Decisions for Justin
 
@@ -144,7 +146,7 @@ General limits. (1) These are drawings computed from a model, not drawn by a per
 6. **Spellings.** Your chart has me and te; the app's scale data has `ma` and `ta`. Recommend **me and te app-wide** (le, se, ra are already so), as a register item with a test, since the Ear Lab and the Keys room both read that data. so stays "so" (not "sol").
 7. **Viewpoint.** One right hand, wrist from the right, as in section 4. Recommend **yes**. Say if you want the left-hand mirror offered as a setting.
 8. **Where the signs appear.** Recommend the Ear Lab ladder (as now) **and** the Keys room "Sing it" rows, where today there are only words, beside the words. Sizes as in section 3.
-9. **The drawings themselves (round 2).** Approve the naturalistic hands as the direction, with a further pass on do/di, li and le (section 5.3), or name the signs you want redone. Recommend **approve the direction, redo those four**. Two options if you want more: restrained hatching instead of the flat tone, and a sleeve cuff instead of the open forearm.
+9. **The drawings themselves.** Approve the naturalistic hands (rounds 2 and 3), or name any sign you want redone. Recommend **approve**. Two options if you want more: restrained hatching instead of the flat tone, and a sleeve cuff instead of the open forearm.
 10. **Two drawings per sign.** Full drawing on cards, teaching screens and print; the simplified small drawing on the ladders (under about 60 px). Recommend **yes**: the full drawing clogs at 34 px.
 
 ## 7. Not done in this step
@@ -152,5 +154,4 @@ General limits. (1) These are drawings computed from a model, not drawn by a per
 - No change to `index.html`, `NOTICE.md` or the tests. Building it is a register item after approval (Sonnet for the wiring, a unit test that every syllable in `SCALES` has a sign, layout test at 390).
 - The Curwen quotations in [C2] come from OCR text and want checking against the page scan.
 - No independent check of the drawings by a second model or by a Kodály colleague yet; decision 4 in particular rests on one small picture.
-- do/di, li and le want another pass (section 5.3).
 - The approval cards in `/home/claude/cards` were re-rendered from the new `png/` files (outside this repository).

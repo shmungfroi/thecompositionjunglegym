@@ -56,7 +56,7 @@ def decals(h):
     return D
 
 def draw(n, small=False, ppm=3.0):
-    fr = poses.frame(n, small); h = poses.hand(n, arm=fr['arm']); R = h.render(win=fr['win'], ppm=ppm, centre=fr['centre'])
+    fr = poses.frame(n, small); h = poses.hand(n, arm=fr['arm']); ppm = ppm / fr['k']; R = h.render(win=fr['win'], ppm=ppm, centre=fr['centre'])
     Z, ID, N = R['Z'], R['ID'], R['N']; M = ~np.isnan(Z); Zf = np.where(M, Z, -1e4); Hh, W = M.shape; px = ppm
     rad = np.zeros((Hh, W), np.float32)                                    # half line width in mm, per edge pixel
     def put(mask, r): np.maximum(rad, np.where(mask, r, 0).astype(np.float32), out=rad)
@@ -73,6 +73,7 @@ def draw(n, small=False, ppm=3.0):
         Ns = np.roll(N, (dy, dx), (0, 1)); Zs = np.roll(Zf, (dy, dx), (0, 1)); Ms = np.roll(M, (dy, dx), (0, 1))
         cre |= M & Ms & (np.abs(Zf - Zs) < 2.5) & (np.einsum('ijk,ijk->ij', N, Ns) < .45)
     cre = ndi.binary_opening(cre, np.ones((2, 2)))
+    lab, k = ndi.label(cre, np.ones((3, 3))); sz = ndi.sum(cre, lab, range(1, k + 1)); cre = np.isin(lab, [j + 1 for j, v in enumerate(sz) if v >= 14])   # no specks
     if small:
         put(occ > .45, 1.5 + .5 * occ)
     else:
@@ -100,7 +101,7 @@ def draw(n, small=False, ppm=3.0):
     if small: tone = cv2.GaussianBlur(cv2.resize(M.astype(np.float32), (W * UP, Hh * UP)), (0, 0), 2)
     else:
         sh = (M & ((N @ L3) < -.02) & (R['armx'] < h.arm - 1.5)).astype(np.float32); sh = cv2.GaussianBlur(cv2.resize(sh, (W * UP, Hh * UP)), (0, 0), 5); t = sh > .5
-        lab, k = ndi.label(t); sizes = ndi.sum(t, lab, range(1, k + 1)); t = np.isin(lab, [i + 1 for i, a in enumerate(sizes) if a > (9 * S) ** 2])
+        lab, k = ndi.label(t); sizes = ndi.sum(t, lab, range(1, k + 1)); t = np.isin(lab, [i + 1 for i, a in enumerate(sizes) if a > 130 * S * S])
         tone = cv2.GaussianBlur(t.astype(np.float32), (0, 0), 2)
     k = 80.0 / (W * UP)
     return path(inkf, k, .55 if not small else 1.2), path(tone, k, .9 if not small else 1.6), M
