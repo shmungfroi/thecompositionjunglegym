@@ -18,6 +18,10 @@ D12   (0.48 decision 12) homes() (the Keys room) and analyse() agree: minor v / 
       both, V / V7 / vii° / vii°7 stay D; the borrowed v and ♭VII of a major key are MD; MD is coloured madder rose
       #bd6b97 (--md) in FN, FNHEX and the gym/SATB numeral colours; no function colour is the old blue-grey #7fb3c8;
       the deepened #9e4776 is defined for ivory; MD text reaches at least 4.5:1 on every ground it is drawn on.
+C9    (0.49) the Ear Lab function map (earNumFn) agrees with analyse(): minor v / v7 and VII / VII7 are MD, and so are the
+      borrowed v / ♭VII of a major key while MD_MAJOR is on (X when it is off); V, V7, vii°, vii°7 stay D; MD draws in var(--md).
+C8    (0.49) the Chord Library's augmented and diminished 7th texts say "symmetrical" only for equal temperament and name the
+      wrap-round interval (diminished 4th / augmented 2nd); the dim7 is vii°7 of four minor keys.
 """
 import sys, asyncio, json, pathlib, collections
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
@@ -107,6 +111,35 @@ async def main():
                 FAIL.append(f"{tag}: analyse {r['an']}, homes {r['homes']}, expected {r['want']}")
             if r['want'] == 'MD' and (r['col'] != 'var(--md)' or (not r.get('maj') and r['kcol'] != 'var(--md)') or r['dom']):
                 FAIL.append(f"{tag}: colour {r['col']} / {r.get('kcol')}, dom {r['dom']}")
+        # ---- C9 (0.49): the Ear Lab function map agrees with Analysis on the modal dominant ----
+        c9 = await pg.evaluate("""()=>{const o=[];
+            const L={min:[['v','MD'],['v7','MD'],['VII','MD'],['VII7','MD'],['V','D'],['V7','D'],['vii°','D'],['vii°7','D'],['i','T'],['III','T'],['VI','T'],['iv','PD'],['ii°','PD']],
+                     maj:[['v','MD'],['v7','MD'],['♭VII','MD'],['♭VII7','MD'],['V','D'],['V7','D'],['vii°','D'],['I','T'],['vi','T'],['ii','PD'],['IV','PD']]};
+            for(const md of ['min','maj'])for(const k of md==='min'?[9,4,2,0]:[0,7,2,5])for(const [rn,want] of L[md]){const key={k,mode:md},p=parseRoman(rn.replace('♭','b'),key);
+              const an=p?withKey(key,()=>analyse(p,key)).f:null,e=earNumFn(rn,md),e2=earNumFn(rn+':1',md);
+              o.push({md,k,rn,want:want==='MD'&&md==='maj'&&!MD_MAJOR?'X':want,an:an==='C'?'X':an,e,e2,col:ELFN[e]&&ELFN[e][1]})}
+            return o}""")
+        for r in c9:
+            n += 1
+            tag = f"C9 {r['md']}{r['k']} {r['rn']}"
+            if r['e'] != r['want'] or r['e2'] != r['want']:
+                FAIL.append(f"{tag}: Ear Lab map {r['e']} / inverted {r['e2']}, expected {r['want']}")
+            if r['an'] != r['e']:
+                FAIL.append(f"{tag}: Ear Lab {r['e']} but Analysis {r['an']}")
+            if r['e'] == 'MD' and r['col'] != 'var(--md)':
+                FAIL.append(f"{tag}: MD colour {r['col']}")
+        # ---- C8 (0.49): the Chord Library 'symmetrical' sentences name the enharmonic wrap-round interval and stay in equal temperament ----
+        c8 = await pg.evaluate("()=>({lib:Object.fromEntries(Q.filter(x=>x.k==='aug'||x.k==='dim7').map(x=>[x.k,x.t])),sym:QSYM})")
+        for k, need in (('aug', ('equal temperament', 'diminished 4th', 'major 3rd', 'three equal parts')),
+                        ('dim7', ('equal temperament', 'augmented 2nd', 'minor 3rd', 'four equal parts', 'four different minor keys'))):
+            n += 1
+            t = c8['lib'].get(k, '')
+            miss = [w for w in need if w not in t]
+            if miss or 'leading-note 7th of four different keys' in t:
+                FAIL.append(f'C8 Chord Library {k}: missing {miss}: {t!r}')
+            n += 1
+            if 'each note is a' in c8['sym'].get(k, '') or ('diminished 4th' if k == 'aug' else 'augmented 2nd') not in c8['sym'].get(k, ''):
+                FAIL.append(f"C8 QSYM {k}: {c8['sym'].get(k)!r}")
         css = await pg.evaluate("""()=>{const cs=getComputedStyle(document.documentElement);return{md:cs.getPropertyValue('--md').trim(),mdi:cs.getPropertyValue('--md-ivory').trim(),
             hex:FNHEX.MD,cols:COLS['var(--md)'],fname:FNAME.MD,suit:SUIT.MD,legend:[...document.querySelectorAll('.flegend span')].map(s=>s.textContent+'|'+s.getAttribute('style')).join(' ')}}""")
         n += 1

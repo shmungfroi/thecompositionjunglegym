@@ -1084,12 +1084,11 @@ async def main():
                 name, gen, q, s = _ivname(a, bb)
                 got_name, got_cls = app_iv[k].split('|'); k += 1
                 COUNT['interval names (all pitch pairs)'] += 1
-                if q in ('P', 'M', 'm', 'A', 'd'):
-                    exp_cls = Iv(P(*a), P(*bb)).cls
-                    if got_name != name or got_cls != exp_cls:
-                        fail('A', f'c2Iv{P(*a), P(*bb)}: app {got_name}/{got_cls}, music21 {name}/{exp_cls}')
-                elif not got_name.startswith('x') or got_cls != 'D':
-                    fail('A', f'c2Iv{P(*a), P(*bb)}: music21 {name} (doubly altered), app {got_name}/{got_cls}')
+                # 0.49 C7 (IC_CP_048 C-1): doubly (triply) augmented and diminished intervals are named as music21 names them (AA5, dd4),
+                # no longer 'x' ("doubly altered")
+                exp_cls = Iv(P(*a), P(*bb)).cls
+                if got_name != name or got_cls != exp_cls:
+                    fail('A', f'c2Iv{P(*a), P(*bb)}: app {got_name}/{got_cls}, music21 {name}/{exp_cls}')
 
         # ---------------- B: rhythm layouts ----------------
         lay_jobs = []
@@ -1458,6 +1457,27 @@ async def main():
                         fail('N', f'{what} in a {src} message: {raw}')
         COUNT['distinct checker messages'] = len({m[1] for m in msgs})
         reg('N-10', f'interval names spelled out, articles right, in all {len(msgs)} checker messages of the corpus', not bad_m and len(msgs) > 50000, dict(bad_m))
+        # 0.49 C7 (IC_CP_048 Coulds C-1 to C-4), over the same corpus: no "doubly altered", no "a 15th" (a double octave), no "Bars 10–10"
+        c7bad = collections.Counter()
+        for src, raw, stripped in msgs:
+            for what, rx in (('doubly altered', re.compile(r'doubly altered')), ('a 15th', re.compile(r'\ba 15th\b')), ('Bars n–n', re.compile(r'\bBars (\d+)–\1\b'))):
+                if rx.search(raw):
+                    c7bad[what] += 1
+                    if c7bad[what] <= 3:
+                        fail('N', f'C7 {what} in a {src} message: {raw}')
+        reg('C7', f'no "doubly altered", "a 15th" or "Bars n–n" in the {len(msgs)} corpus messages', not c7bad, dict(c7bad))
+        # C-3: S3d in fifth species says "the notes in between" (minims, ties), in third species "the crotchets"; an octave and a unison is named so
+        s3w = await pg.evaluate("""(L)=>{const o={5:{notes:0,crot:0},3:{notes:0,crot:0},ou:0,ouBad:0};for(const c of L){if(c.sp!==3&&c.sp!==5)continue;const M=c.k==='own'?{k:'own',cf:c.cf}:c2Mode(c.k);
+              const r=c2Check(M,c.sp,c.pos,c.cp,c.br);for(const x of r.iss){if(x.rule!=='qbeat')continue;if(/The notes in between/.test(x.msg))o[c.sp].notes++;if(/The crotchets in between/.test(x.msg))o[c.sp].crot++;
+              if(/an octave and a unison/.test(x.msg))o.ou++}}
+            const p=(n,a)=>{const q=c2Parse(n);return c2Pitch(q.dn,a||0)};o.pair=[c2PerfPair(c2Iv(p('C4'),p('C5')),c2Iv(p('D4'),p('D4'))),c2PerfPair(c2Iv(p('C4'),p('C5')),c2Iv(p('D4'),p('D5'))),c2PerfPair(c2Iv(p('C4'),p('G4')),c2Iv(p('D4'),p('A4')))];
+            o.bars=[c2Bars(9,9),c2Bars(9,10)];o.span=[c2Span(15),c2Span(12),c2Span(8)];return o}""",
+                                [{k: c[k] for k in ('k', 'cf', 'sp', 'pos', 'cp', 'br')} for c in cases])
+        COUNT['C7: S3d messages, species 5 (notes / crotchets), species 3 (notes / crotchets)'] = f"{s3w['5']['notes']}/{s3w['5']['crot']}, {s3w['3']['notes']}/{s3w['3']['crot']}"
+        reg('C7', 'S3d wording: species 5 says "the notes in between", species 3 "the crotchets in between"',
+            s3w['5']['notes'] > 0 and s3w['5']['crot'] == 0 and s3w['3']['crot'] > 0 and s3w['3']['notes'] == 0, s3w)
+        reg('C7', 'S3d names an octave and a unison as such; Bar n for one bar; a 15th span is a double octave',
+            s3w['pair'] == ['an octave and a unison', 'octaves', '5ths'] and s3w['bars'] == ['Bar 10', 'Bars 10–11'] and s3w['span'] == ['double octave', '12th', 'octave'], s3w)
         # the spelled-out name of every ordered pair of section A's 105 pitches, against music21's own interval name
         app_nm = await pg.evaluate("(P)=>{const out=[];for(const a of P)for(const b of P)out.push(typeof c2IvA==='function'?c2IvA(c2Iv(c2Pitch(a[0],a[1]),c2Pitch(b[0],b[1]))):'(no c2IvA)');return out}", pitches)
         ORD = lambda n: f"{n}{'th' if 11 <= n % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
@@ -1468,8 +1488,8 @@ async def main():
                 lo, hi = (pa, pb) if (pa.midi, pa.dn) <= (pb.midi, pb.dn) else (pb, pa)
                 m = m21interval.Interval(noteStart=m21pitch.Pitch(lo.m21()), noteEnd=m21pitch.Pitch(hi.m21()))
                 g = m.generic.undirected
-                ql = m.niceName.rsplit(' ', 1)[0].lower()
-                ql = 'doubly altered' if ql.startswith(('doubly', 'triply')) else ql
+                ql = m.niceName.rsplit(' ', 1)[0].lower().replace('-', ' ')
+                # 0.49 C7: doubly / triply augmented and diminished are named as music21 names them
                 base = {1: 'unison', 8: 'octave', 15: 'double octave'}.get(g, ORD(g))
                 want = base if (ql == 'perfect' and g in (1, 8, 15)) else f'{ql} {base}'
                 want = ('an ' if re.match(r'(augmented|octave)', want) else 'a ') + want
@@ -1603,8 +1623,8 @@ async def main():
             """the app's wording of the interval lo -> hi (music21 pitch names), built from music21's own interval"""
             m = m21interval.Interval(noteStart=m21pitch.Pitch(lo), noteEnd=m21pitch.Pitch(hi))
             g = m.generic.undirected
-            ql = m.niceName.rsplit(' ', 1)[0].lower()
-            ql = 'doubly altered' if ql.startswith(('doubly', 'triply')) else ql
+            ql = m.niceName.rsplit(' ', 1)[0].lower().replace('-', ' ')
+            # 0.49 C7: doubly / triply augmented and diminished are named as music21 names them
             o = f"{g}{'th' if 11 <= g % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(g % 10, 'th')}"
             base = {1: 'unison', 8: 'octave', 15: 'double octave'}.get(g, o)
             w = base if (ql == 'perfect' and g in (1, 8, 15)) else f'{ql} {base}'
