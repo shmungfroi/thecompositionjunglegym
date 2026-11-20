@@ -48,7 +48,7 @@ Deferred: R19–R22 (counterpoint) — Justin 20 Nov "later".
 | C16 | (a) fix in 0.49 | Approved → building (Sonnet) |
 | C17 | closed by Fable D2 (a) | Approved |
 | C18 | (a) honest gaps + search for real metal examples | Approved → building (Sonnet), IC after |
-| C19 | not answered: Justin asked why Gotye was replaced (C11 swapped it for Dance Monkey, contrary to L88 (13) "keep song") | Open |
+| C19 | (a) source more post-2015 songs in 0.49, IC after; Gotye restored to the minor-triad Australian slot (L104); Shape of You listening only | Approved → building (Sonnet) |
 | C20 | (a) settle in the 0.49 source check | Approved → research (Sonnet), IC after |
 | C21–C22 | (a) defer, no action (tags reference only, L94) | Deferred |
 | C24 | (a) fix in 0.49 | Approved → building (Opus) |
@@ -59,7 +59,7 @@ Deferred: R19–R22 (counterpoint) — Justin 20 Nov "later".
 ## New rows from IC_C18_C20_049 (21 Nov, independent check), status Drafted
 | id | finding (evidence) | rule | proposed change | impact | regression test | pri | owner | status |
 |---|---|---|---|---|---|---|---|---|
-| C27 | "Nothing Else Matters" fills three Metal slots (minor, 7, add9) but is listed as soft rock / power ballad (Wikipedia; Louder: "metal power ballad") | L05 one per genre | Justin to rule: keep (metal band, part of the genre) or treat as gaps | Song cards | content_lint slot honesty | Should | Justin | Drafted (needs Justin) |
+| C27 | "Nothing Else Matters" fills three Metal slots (minor, 7, add9) but is listed as soft rock / power ballad (Wikipedia; Louder: "metal power ballad") | L05 one per genre | Justin: keep (L104) | Song cards | content_lint slot honesty | Should | Justin | Closed: keep |
 | C28 | Slot-honesty lint covers the Metal slot only; rock fillers in Blues/jazz (Learn to Fly sus2, Free Fallin' sus4) are not flagged | L05 honest gaps | Apply the check to every genre slot | Song cards | content_lint | Should | Sonnet | Drafted |
 | C29 | 17 chord types have empty genre slots not declared as gaps, so no gap card shows | Honest gaps | Lint that every slot is filled or a declared gap; add the cards | Song cards | content_lint | Should | Sonnet | Drafted |
 | C30 | Two Nothing Else Matters entries (minor, add9) rest on Hooktheory alone | Two sources or one authoritative | Find a second source or label honestly | Song cards | content_lint source rule | Could | Sonnet + IC | Drafted |

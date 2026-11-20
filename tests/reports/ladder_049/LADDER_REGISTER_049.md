@@ -427,7 +427,7 @@ Each has a recommendation. Everything else in this register follows from the app
 | D3 (= Fable D6) | **Duration palette** (Fable sheet option b = this register's D3 (a)): choose a length, then tap the ladder (L103) | Approved |
 | D4 (= Fable D7) | (a) both halves right; per-half report; Nearly only for M10 spelling | Approved |
 | D5 | (a) allow f–si once per item as a step, **with visual support** (the gap shown on the ladder and in feedback) | Approved |
-| D6 | Justin asked for an explicit step-by-step explanation | Pending |
+| D6 | (a) 3rds–6ths and the octave from any note; tritone only in a resolving dominant-7th outline; 7ths later (L104) | Approved |
 | D7 | (a) the mode's own tonic chord as cue, mode named | Approved |
 | D8 | (a) all four kinds, plus a learner setting "Keep home do" (default; dominant stays so, new note fi) / "Move do" (do re-assigned at the pivot); marking by pitch; pivot asked only under "Move do" (L102). "Mutation" used with Move do only: setting "Move do (mutation)", pivot button "Mutation here: so = do", feedback names the mutation (L102) | Approved |
 | D9 | (a) anacrusis shown as a short first bar | Approved |
