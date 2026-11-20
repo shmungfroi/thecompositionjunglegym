@@ -25,8 +25,44 @@ def views():
     V.append(('analysis/map',"location.hash='analysis';AN.tab='map';room('analysis')"))
     for d in ['metre','rhy','qual','cad','bass','mel','blind']: V.append((f'ear/{d}',f"location.hash='ear';EAR.drill='{d}';room('ear')"))
     return V
+
+EARQ="""(()=>{const out=[];const W=innerWidth;const tb=document.querySelector('.tabbar,#tabbar,nav.tabs');const tbTop=tb&&getComputedStyle(tb).position==='fixed'?tb.getBoundingClientRect().top:innerHeight;
+const dk=document.querySelector('.el-dock');const dkr=dk&&dk.offsetParent!==null?dk.getBoundingClientRect():null;
+const m=document.getElementById('earMain');if(!m)return{small:['no earMain'],covered:[]};
+const small=[],covered=[];
+for(const e of m.querySelectorAll('button,[role=button],[role=radio],[data-earopt],input,select')){const r=(e.tagName==='INPUT'&&e.closest('label')?e.closest('label'):e).getBoundingClientRect();if(!r.width||!r.height||e.offsetParent===null)continue;
+ if(W<=500&&(r.height<43.5||r.width<43.5)&&!e.closest('.earladder'))small.push((e.className||e.tagName)+' '+(e.textContent||'').trim().slice(0,18)+' '+Math.round(r.width)+'x'+Math.round(r.height));
+ if(W<=500&&e.closest('.earladder')&&r.height<43.5&&r.width<43.5)small.push('ladder '+(e.textContent||'').trim().slice(0,10)+' '+Math.round(r.width)+'x'+Math.round(r.height));}
+return{small,covered}})()"""
+async def ear_states(pg,W):
+    """Ear Lab with a question open and answered, per drill: targets >=44px on phones, no sideways scroll, nothing under the tab bar or dock."""
+    out={}
+    for d in ['metre','rhy','qual','cad','bass','mel','blind']:
+        await pg.evaluate(f"location.hash='ear';EAR.drill='{d}';room('ear')");await pg.wait_for_timeout(350)
+        await pg.evaluate("(()=>{const b=document.querySelector('[data-earplay=\"all\"]');b&&b.click()})()");await pg.wait_for_timeout(400)
+        await pg.evaluate("elStop&&elStop()")
+        for stage in ['asked','answered']:
+            if stage=='answered':
+                await pg.evaluate("document.querySelector('[data-earshow]')?.click()")
+                await pg.wait_for_timeout(300)
+            await pg.evaluate("scrollTo(0,0)")
+            # the dock is a fixed overlay that by design (V-1) covers the panel while its Next button is not fully visible: measure the card without it
+            await pg.evaluate("document.querySelectorAll('.el-dock').forEach(e=>e.style.visibility='hidden')")
+            r=await pg.evaluate(DET)
+            sw=await pg.evaluate('document.documentElement.scrollWidth-innerWidth')
+            q=await pg.evaluate(EARQ)
+            await pg.evaluate("document.querySelectorAll('.el-dock').forEach(e=>e.style.visibility='')")
+            off=list(r['offscreen'])
+            if sw>1: off.append(f'page scrolls sideways by {sw}px')
+            off+=['target under 44px: '+x for x in q['small']]
+            # nothing hidden behind the fixed tab bar or dock: the last control must be reachable by scrolling
+            await pg.evaluate("scrollTo(0,document.documentElement.scrollHeight)")
+            cov=await pg.evaluate("""(()=>{const m=document.getElementById('earMain');if(!m)return[];const f=[...document.querySelectorAll('.tabbar,nav.tabs,.el-dock')].filter(e=>e.offsetParent!==null&&getComputedStyle(e).position==='fixed');const top=Math.min(innerHeight,...f.map(e=>e.getBoundingClientRect().top));const bad=[];for(const e of m.querySelectorAll('button,.el-result,.el-foot')){const r=e.getBoundingClientRect();if(r.height&&r.bottom>top+1&&r.top<innerHeight-1&&e.offsetParent!==null&&f.length)bad.push((e.className||e.tagName)+' under bar')}return bad.slice(0,3)})()""")
+            off+=cov
+            out[f'ear-card/{d}/{stage}']={'overlap':r['overlap'],'clipped':r['clipped'],'offscreen':off}
+    return out
 async def main():
-    widths=[int(w) for w in (sys.argv_w if False else ['1440','1024','390'])]
+    widths=[int(w) for w in (sys.argv_w if False else ['1440','1366','1024','390'])]
     res={}
     async with async_playwright() as p:
         b=await cjg.launch(p,args=[])
@@ -42,6 +78,7 @@ async def main():
                 res[f'{W} {name}']=r
                 if r['overlap'] or r['clipped'] or r['offscreen']:
                     pass
+            for name,r in (await ear_states(pg,W)).items(): res[f'{W} {name}']=r
             res[f'{W} errors']=errs
             await pg.close()
         await b.close()
