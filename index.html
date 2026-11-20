@@ -7523,11 +7523,18 @@ const ELMETN={'2/4':'Simple duple','3/4':'Simple triple','4/4':'Simple quadruple
 /* the function colour of an Ear Lab numeral in a key of mode `mode`. 0.49 C9: as Analysis colours them (analyse(), L91 decision 12), the minor v (v7)
    and the subtonic VII (VII7) of a minor key have no leading note, so they are the modal dominant MD, a soft pull, not D; the borrowed v and ♭VII
    of a major key are MD when MD_MAJOR is on (otherwise outside the key, X, as Analysis then colours them). V, V7, vii°, vii°7 stay D. */
-function earNumFn(rn,mode='maj'){const r=rn.replace(/:\d/,'');if(r.includes('/'))return'X';const acc=/^[♭♯]/.test(r),n=r.replace(/^[♭♯]/,'').replace(/[°ø7]/g,''),dim=/[°ø]/.test(r),b=n.toLowerCase(),maj=mode==='maj';
- if(n==='v'&&!acc)return maj?(MD_MAJOR?'MD':'X'):'MD';
- if(n==='VII'&&!dim)return maj?(MD_MAJOR&&r.startsWith('♭')?'MD':'X'):acc?'X':'MD';
- if(acc)return'X';
- return b==='ii'||b==='iv'?'PD':b==='v'||b==='vii'?'D':'T'}
+/* 0.49 C24 (L101): every numeral is read as Analysis reads it (analyse(), in C major or C minor), so case, accidental, quality and mode all
+   count: a numeral outside the key (borrowed iv in major, major II or III, I in minor, i in major, ♭II ...) is X (outside the key: the
+   chromatic / colour colour, analyse()'s 'C', also for a numeral analyse() takes as diatonic only by pitch class, below); minor v / VII and, while MD_MAJOR is on, borrowed v / ♭VII in major are MD; V, V7, vii°,
+   vii°7 are D. Secondary chords (with '/') are X. A numeral Analysis cannot read is X. */
+const EARNUMFN=new Map();
+function earNumFn(rn,mode='maj'){const r=rn.replace(/:\d/,'');if(r.includes('/'))return'X';const mk=r+'|'+mode+'|'+MD_MAJOR;if(EARNUMFN.has(mk))return EARNUMFN.get(mk);
+ const key={k:0,mode},f=withKey(key,()=>{const p=parseRoman(r,key);if(!p)return'C';const a=analyse(p,key);if(!a.dia)return a.f;
+  // analyse() tests the key by pitch class only; a numeral is in the key only if every note is spelled on its own degree (in minor the
+  // 7th may be raised), so minor vi (A♭–C♭–E♭ in C minor: C♭ is not the leading note B) is outside the key
+  const tl=tonicLetter(key),sc=scaleOf(key),ok=chordOf(p.root,p.q).tones.every(t=>{const d=mod(LET.indexOf(t.name[0])-tl,7),pc=mod(t.midi,12);
+   return pc===mod(key.k+sc[d],12)||(mode==='min'&&d===6&&pc===mod(key.k+11,12))});return ok?a.f:'C'});
+ const out=f==='C'?'X':f;EARNUMFN.set(mk,out);return out}
 function earRnHTML(rn){const m=rn.match(/^([^:]*)(?::(\d))?$/),b=m[1];return m[2]==='1'?`${b}<sup>6</sup>`:m[2]==='2'?`${b}<span class="fig"><i>6</i><i>4</i></span>`:b}
 function earRnTxt(rn){return rn.replace(':2','⁶₄').replace(':1','⁶')}
 function earSolOfMidi(m,key){return{0:'do',1:'di',2:'re',3:'ri',4:'mi',5:'fa',6:'fi',7:'so',8:'si',9:'la',10:'ta',11:'ti'}[mod(m-earDo(key).m,12)]}
