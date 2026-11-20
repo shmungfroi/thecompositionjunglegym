@@ -436,7 +436,7 @@ footer a{color:var(--gold)}footer .sylpanel{margin:12px 0 0;max-width:600px}foot
 @media(max-width:700px){.c6box{grid-template-columns:1fr}}
 /* climb 7 */
 .c7grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
-#climbDetail .bar.sec{border-color:rgba(164,147,216,.5);background:rgba(164,147,216,.08)}
+#climbDetail .bar.sec{border-color:rgba(164,147,216,.5);background:rgba(164,147,216,.08)}#climbDetail .bar.sec.md{border-color:rgba(189,107,151,.5);background:rgba(189,107,151,.08)}
 #climbDetail .bar em.nn{display:block;font-style:normal;font-size:12.5px;color:var(--goldhi);margin-top:3px}
 #climbDetail .bar em.nn i,.c7tab i.so{font-style:italic;color:var(--goldhi)}
 #c7Staff,#c7bStaff{overflow-x:auto;margin-top:10px}
@@ -1669,8 +1669,11 @@ function termBtnSync(b){
  const tw=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);let txt='',n,m;while((n=tw.nextNode()))if(!n.parentElement.closest('[data-notm]'))txt+=n.nodeValue+' ';
  // IC_TERMS_048 M3: a button whose visible face is not the term (a rhythm tile shows "ta") names the term in its own title: data-tt
  // marks that title as text to read, so "crotchet" gets "crotchet · US: quarter note"
- if(b.hasAttribute('data-tt')){const c0=b.getAttribute('title')||'';txt+=' '+(b.dataset.tset===undefined||c0!==b.dataset.tset?c0:b.dataset.t0||'')}
- const L=(b.dataset.tk||'').split(',').map(k=>termUS(k.trim())).filter(Boolean);TM_RX.lastIndex=0;while((m=TM_RX.exec(txt))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUSw(k,m[0]);if(u&&!L.includes(u))L.push(u)}
+ // R2 S-T1: the title's values are mapped one for one, in order, repeats kept ("quaver, crotchet, quaver" -> "eighth note, quarter note, eighth note")
+ let ttx='';if(b.hasAttribute('data-tt')){const c0=b.getAttribute('title')||'';ttx=b.dataset.tset===undefined||c0!==b.dataset.tset?c0:b.dataset.t0||''}
+ const L=(b.dataset.tk||'').split(',').map(k=>termUS(k.trim())).filter(Boolean);
+ if(ttx){TM_RX.lastIndex=0;while((m=TM_RX.exec(ttx))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUSw(k,m[0]);if(u)L.push(u)}}
+ TM_RX.lastIndex=0;while((m=TM_RX.exec(txt))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUSw(k,m[0]);if(u&&!L.includes(u))L.push(u)}
  if(!L.length&&b.dataset.tset===undefined)return;
  const cur=b.getAttribute('title')||'';if(b.dataset.tset===undefined||cur!==b.dataset.tset)b.dataset.t0=cur;   // the app's own title (kept, and refreshed if the app changed it)
  const t0=b.dataset.t0,nt=L.length?(t0?t0+' · ':'')+'US: '+L.join(', ')+(L.includes(TERMSBY.iac.us)?' · '+TERM_NOTE:''):t0;
@@ -2012,10 +2015,15 @@ const ROM=['I','II','III','IV','V','VI','VII'];
    (#9e4776 if it ever sits on ivory). S and W are the pre-0.48 codes for the same chords, kept as aliases for old data. */
 const FN={T:'var(--green)',PD:'var(--gold)',D:'var(--red)',MD:'var(--md)',S:'var(--md)',W:'var(--md)'};
 const FNHEX={T:'#8fbf6a',PD:'#c9a24a',D:'#c8473b',MD:'#bd6b97',C:'#a493d8'};
-/* is this chord a modal dominant in key k (tonic pc k)? judged by content, not by what it does in the phrase: a root on the 5th with no
-   leading note (v, v7, and the bare 5th or sus chords there), or a root on the unraised 7th (VII, VII7, ♭VII, ♭VII7). The callers
-   have already checked that the chord belongs to the key (or, in a major key, to the parallel minor). */
-function isMD(rpc,pcs,k){const r=mod(rpc-k,12);return(r===7&&!pcs.includes(mod(k+11,12)))||r===10}
+/* is this chord a modal dominant in key k (tonic pc k)? judged by content, not by what it does in the phrase: a root on the 5th with the
+   minor 3rd above it (v, v7: no leading note), or a root on the unraised 7th (VII, VII7, ♭VII, ♭VII7, and their sus / bare-5th forms).
+   A sus or bare-5th chord on the 5th has no 3rd at all, so no leading note and no minor 3rd: it stays D in both modes, as in major,
+   and the Keys room says the V-or-v question is open (R2 M-12). The callers have already checked that the chord belongs to the key
+   (or, in a major key, to the parallel minor). */
+function isMD(rpc,pcs,k){const r=mod(rpc-k,12);return(r===7&&pcs.includes(mod(rpc+3,12)))||r===10}
+/* MD for the borrowed v and ♭VII of a MAJOR key (builder's reading of decision 12, pending Justin). false = MD in minor keys only:
+   analyse() then gives them C (colour) again, climb 8 draws them violet, and the key texts drop "borrowed into major". */
+const MD_MAJOR=true;
 function homes(c){const pcs=c.tones.map(t=>mod(t.midi,12)),out=[];
  for(let k=0;k<12;k++){
   [['maj',MAJ],['min',MIN]].forEach(([mode,sc])=>{let deg=sc.indexOf(mod(c.rpc-k,12));if(deg<0&&mode==='min'&&mod(c.rpc-k,12)===11)deg=6;if(deg<0)return;
@@ -2028,6 +2036,7 @@ function homes(c){const pcs=c.tones.map(t=>mod(t.midi,12)),out=[];
 function numeral(c,deg){if(/\+6$/.test(c.q.k))return c.q.k.replace('+6','')+'⁺⁶';const q=c.q.k,lower=/^(m|dim|m7|m6|m9|m7b5|dim7|madd9)$/.test(q);let r=ROM[deg];if(lower)r=r.toLowerCase();
  const suf={'5':'5','':'','m':'','7':'7','sus2':'sus2','sus4':'sus4','dim':'°','aug':'+','maj7':'maj7','m7':'7','6':'6','add9':'add9','madd9':'add9','m6':'6','m7b5':'ø7','dim7':'°7','9':'9','maj9':'maj9','m9':'9','7sus4':'7sus4'}[q];return r+suf}
 const FTXT={T:'a tonic-function chord: it feels like home, or a close relative of home, and can open or close a phrase',PD:'a predominant-function chord: it moves the music away from home and sets up the dominant',D:'a dominant-function chord: it builds tension that wants to resolve to the tonic',MD:'a modal dominant, a soft pull: built on the dominant side of the key but without the leading note',
+ D5:'a dominant-function chord with no 3rd, so it has no leading note either. In common-practice harmony a suspended V (Vsus4) is heard as a dominant whose 4th will fall to the 3rd, and a bare 5th takes its major or minor quality from the music around it; on its own it is open whether it will act as V (with the leading note) or as the softer minor v. In rock and folk the sus or power chord on the 5th often stands for either',
  MDv:'a modal dominant, a soft pull: the minor v, built on the 5th of the natural minor. In common-practice minor it lacks the leading note (the raised 7th), so it pulls to the tonic more softly than V; composers in that style raise the 7th to make V at cadences and use v mostly in passing, as in a falling bass (i–v⁶–iv⁶–V). In modal, folk and rock harmony v–i is an ordinary close',
  MDVII:'a modal dominant, a soft pull: the subtonic VII, built on the unraised 7th. In common-practice minor it lacks the leading note, so it pulls to the tonic only softly; there it most often leads to III, acting as the dominant of the relative major. In modal, folk and rock harmony VII–i (often written ♭VII–i) is an ordinary close'};
 function renderKeys(c){const h=homes(c);
@@ -2035,7 +2044,7 @@ function renderKeys(c){const h=homes(c);
  if(!S.key||!h.find(x=>x.k===S.key.k&&x.mode===S.key.mode))S.key=h[0];
  $('keys').innerHTML=h.map(x=>`<button class="kchip ${x.k===S.key.k&&x.mode===S.key.mode?'on':''}" style="--c:${FN[x.f]}" data-k="${x.k}" data-mode="${x.mode}">${x.name} <em>${x.num}</em></button>`).join('');
  const k=h.find(x=>x.k===S.key.k&&x.mode===S.key.mode);
- $('ctx').innerHTML=`In <b style="--c:${FN[k.f]}">${k.name}</b>, ${pretty(c.sym)} is <b style="--c:${FN[k.f]}">${k.num}</b>, ${k.mode==='maj'&&k.deg===2?'a weak tonic-function chord: it shares two notes with I and can stand in for it, though in some progressions it leans towards the dominant':k.f==='MD'?FTXT[k.deg===4?'MDv':'MDVII']:FTXT[k.f]}.`;
+ $('ctx').innerHTML=`In <b style="--c:${FN[k.f]}">${k.name}</b>, ${pretty(c.sym)} is <b style="--c:${FN[k.f]}">${k.num}</b>, ${k.mode==='maj'&&k.deg===2?'a weak tonic-function chord: it shares two notes with I and can stand in for it, though in some progressions it leans towards the dominant':k.f==='MD'?FTXT[k.deg===4?'MDv':'MDVII']:k.f==='D'&&k.deg===4&&!c.tones.some(t=>[3,4].includes(mod(t.midi-c.rpc,12)))?FTXT.D5:FTXT[k.f]}.`;
 }
 /* instruments */
 function renderInst(c){
@@ -2388,7 +2397,7 @@ function analyse(ch,k){
  // borrowed from the parallel major or minor
  const par=(k.mode==='maj'?MIN:MAJ).map(x=>mod(x+k.k,12));if(k.mode==='maj')par.push(mod(k.k+11,12));
  if(pcs.every(p=>par.includes(p))){const pd=(k.mode==='maj'?MIN:MAJ)[d],pacc=mod(c.rpc-(k.k+pd)+6,12)-6;
-  if(pacc===0||(k.mode==='maj'&&d===6&&pacc===1))return{num:(acc<0?'♭':acc>0?'♯':'')+numeral(c,d),f:k.mode==='maj'&&d===6&&acc===0&&pcs.includes(LT)&&/^dim/.test(c.q.k)?'D':k.mode==='maj'&&pacc===0&&(d===4||d===6)&&isMD(c.rpc,pcs,k.k)?'MD':'C',d,dia:false,borrowed:true}}
+  if(pacc===0||(k.mode==='maj'&&d===6&&pacc===1))return{num:(acc<0?'♭':acc>0?'♯':'')+numeral(c,d),f:k.mode==='maj'&&d===6&&acc===0&&pcs.includes(LT)&&/^dim/.test(c.q.k)?'D':MD_MAJOR&&k.mode==='maj'&&pacc===0&&(d===4||d===6)&&isMD(c.rpc,pcs,k.k)?'MD':'C',d,dia:false,borrowed:true}}
  // secondary dominant: a major or dominant chord a 5th above a diatonic chord
  if(['','7','9'].includes(c.q.k)){const t=mod(d+3,7),tr=mod(k.k+sc[t],12);
   if(t!==0&&mod(c.rpc-tr,12)===7){const th=mod(sc[(t+2)%7]-sc[t],12),fi=mod(sc[(t+4)%7]-sc[t],12);
@@ -3849,8 +3858,8 @@ function c8Choice(mode){const ch=C8SW[mode].map((alts,i)=>{const A=alts.filter(a
  const forced=/^(It6|bII:1)$/.test(ch[2]);if(forced)ch[3]=['V',mode==='maj'?'I:2 V':'i:2 V'][(C8.sw[mode+'f']||0)%2];return{ch,forced}}
 function c8Built(mode){return c8Choice(mode).ch.join(' ')}
 function c8NewNotes(ch,key){const set=c7Scale(key);return chordOf(ch.root,ch.q,0).tones.filter(t=>!set.includes(mod(t.midi,12)))}
-function c8Bars(L,key,id){return`<div class="bargrid c7grid" ${id?`id="${id}"`:''}>${L.map(c=>{const nw=c8NewNotes(c,key),f=nw.length?'C':fnOf(c,key);const ch=chordOf(c.root,c.q,c.inv||0),aug=/\+6/.test(c.q);
-  return`<div class="bar ${nw.length?'sec':''}" style="--c:${FN[f]||'var(--violet)'}"><b>${aug?pretty(c.root)+'<small class="a6"> '+c.q.replace('+6','⁺⁶')+'</small>':pretty(ch.sym)+(c.inv?'/'+pretty(ch.bass.name):'')}</b><span>${c8Rn(c.rn)}</span>${nw.length?`<em class="nn">${nw.map(t=>`${pretty(t.name)} <i>${c7Sol(t.name,key)}</i>`).join(' · ')}</em>`:''}</div>`}).join('')}</div>`}
+function c8Bars(L,key,id){return`<div class="bargrid c7grid" ${id?`id="${id}"`:''}>${L.map(c=>{const nw=c8NewNotes(c,key),f0=fnOf(c,key),f=nw.length&&!(MD_MAJOR&&f0==='MD')?'C':f0;const ch=chordOf(c.root,c.q,c.inv||0),aug=/\+6/.test(c.q);
+  return`<div class="bar ${nw.length?'sec':''} ${f==='MD'?'md':''}" style="--c:${FN[f]||'var(--violet)'}"><b>${aug?pretty(c.root)+'<small class="a6"> '+c.q.replace('+6','⁺⁶')+'</small>':pretty(ch.sym)+(c.inv?'/'+pretty(ch.bass.name):'')}</b><span>${c8Rn(c.rn)}</span>${nw.length?`<em class="nn">${nw.map(t=>`${pretty(t.name)} <i>${c7Sol(t.name,key)}</i>`).join(' · ')}</em>`:''}</div>`}).join('')}</div>`}
 function c8PlayEx(){const ex=C8EX.find(x=>x.k===C8.ex),r=realise(ex[C8.key.mode],C8.key);playCols(r.sat,'climb',i=>document.querySelectorAll('#c8Bars .bar').forEach((b,j)=>b.classList.toggle('now',j===i)))}
 function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.filter(x=>x.l<=S.level&&x[mode]);
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
@@ -3875,7 +3884,7 @@ function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.f
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Sing the borrowed note (le, ta, ma, ra…) and where it goes next.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c8play>▶ Play</button><button class="mini" data-load="${ex[mode]}|${mode}">⤴ Open in the Gym</button></h3>
    ${c8Bars(L,key,'c8Bars')}
-   <div class="legend"><span style="--c:var(--violet)">borrowed or chromatic chord</span><span style="--c:var(--goldhi)">its new note, with solfa</span></div>
+   <div class="legend"><span style="--c:var(--violet)">borrowed or chromatic chord</span>${MD_MAJOR&&key.mode==='maj'&&L.some(c=>fnOf(c,key)==='MD')?'<span style="--c:var(--md)">borrowed v or ♭VII: a modal dominant, soft pull (no leading note)</span>':''}<span style="--c:var(--goldhi)">its new note, with solfa</span></div>
    <div class="staff" id="c8Staff"></div>
    <p class="note" style="margin:8px 0 0">${({iv:'la sinks to le and then to so: a falling semitone that sounds like a sigh.',bVII:'♭VII brings in ta, the lowered 7th. Without a leading note, ♭VII–IV–I is the Mixolydian sound of rock and Celtic music.',bVI:'♭VI and ♭VII bring le and ta. Their roots climb by step to do, so the arrival on I feels triumphant rather than resolved.',pic:'In minor the final chord should be i. Raising its 3rd (do → di in la-based solfa) makes it major: the Picardy 3rd.',dec:'The leading note still rises to do, but the bass steps up from so to le instead of falling to do.',N6:'The Neapolitan is a major chord on ra, the flattened 2nd. In first inversion the bass is fa, so it behaves like a darker iv or ii⁶. ra falls to ti (a diminished 3rd) as it moves to V.',It:'Watch the outer pair: le in the bass falls to so, fi in an upper voice rises to so. do is the doubled note.',Fr:'The French sixth adds re, which simply stays on as the 5th of V.',Ger:'The German sixth adds ma (the flattened 3rd). Going straight to V would make parallel 5ths, so it passes through the cadential 6/4 first.'})[ex.k]}</p></section>
  </div>
@@ -6057,12 +6066,19 @@ function c13SubCheck(cells,ctx){const iss=[],add=(sev,code,msg)=>iss.push({sev,c
  for(let i=1;i<ns.length;i++){const m=Math.abs(ns[i]-ns[i-1]);if(m>5&&m!==7)add('err','M1','A leap bigger than a 6th. Keep the subject singable.')}
  return iss}
 /* ---------- countersubject: generate one that works against the subject in both positions ---------- */
-/* a perfect 4th (or compound: 11th) between the voices: in the inverted position that is a 5th of the upper position turned into a 4th.
-   Tested on the interval the pair checker attached to the issue (x.iv), not on the message text (0.48). */
+/* a perfect 4th (or compound: 11th) between the voices, tested on the interval the pair checker attached to the issue (x.iv), not on the
+   message text (0.48). */
 function c13P4(x){return!!(x.iv&&x.iv.g7===4&&x.iv.q==='P')}
-function c13CSCheck(sub,cs,ctx){const S=c13Line(sub,ctx),C=c13Line(cs,ctx,-7),C2=c13Line(cs,ctx);const a=c13Pair(C2,S).map(x=>({...x,pos:'above'})),b=c13Pair(S,C).map(x=>({...x,pos:'below'}));
+/* where the countersubject sits against the subject at cell i, by sounding pitch (R2 S-F1: the list it is in does not say) */
+function c13Reg(c,s){return!c||!s?'against':c.midi>s.midi?'above':c.midi<s.midi?'below':'on the same note as'}
+/* the countersubject is checked as written (C2) and an octave lower (C). IC1 and its note are for the one case invertible counterpoint
+   at the octave is about: a strong-beat perfect 4th (or 11th) in the lower position that was a perfect 5th (or 12th) as written
+   (R2 S-F1). A 4th that was already a 4th, or one that came from an 11th, is reported as I1 in both positions. Weak-beat I2 issues
+   never get the note: it is advice about strong beats (R2 S-F2). */
+function c13CSCheck(sub,cs,ctx){const S=c13Line(sub,ctx),C=c13Line(cs,ctx,-7),C2=c13Line(cs,ctx);const a=c13Pair(C2,S).map(x=>({...x,pos:'written'})),b=c13Pair(S,C).map(x=>({...x,pos:'inverted'}));
  const An=c13Answer(sub,ctx,C13.ans),CA=C2.map(p=>p?(ctx.modal?{...c2Pitch(p.dn+4),on:p.on}:{...c13Tr(p,4,7),on:p.on}):null),ans=An.some(p=>p&&p.mut)?c13Pair(CA,An).map(x=>({...x,msg:'CS with the '+C13.ans+' answer: '+x.msg+' (the changed notes of the tonal answer need the countersubject to fit them too).'})):[];
- const iss=a.map(x=>({...x,msg:'CS above: '+x.msg})).concat(b.map(x=>({...x,code:x.code==='I1'&&c13P4(x)?'IC1':x.code,msg:'CS below (inverted): '+x.msg+(c13P4(x)?' This is a 5th that became a 4th when the voices swapped: avoid 5ths on strong beats in invertible counterpoint.':'')})));
+ const was5=i=>{const c=C2[i],s=S[i];if(!c||!s)return false;const v=c.midi>=s.midi?c2Iv(s,c):c2Iv(c,s);return v.cls==='P'&&v.g7===5},ic1=x=>x.code==='I1'&&c13P4(x)&&was5(x.cells[0]);
+ const iss=a.map(x=>({...x,msg:`CS ${c13Reg(C2[x.cells[0]],S[x.cells[0]])} the subject: `+x.msg})).concat(b.map(x=>({...x,code:ic1(x)?'IC1':x.code,msg:`CS an octave lower, ${c13Reg(C[x.cells[0]],S[x.cells[0]])} the subject: `+x.msg+(ic1(x)?' This 4th was a 5th before the voices swapped: avoid 5ths on strong beats in invertible counterpoint.':'')})));
  iss.push(...ans);const pp=[];for(let i=0;i<sub.length;i++){if(sub[i]!=null&&sub[i]!=='h'&&cs[i]!=null&&cs[i]!=='h')pp.push(i)}if(pp.length>sub.length*.7)iss.push({sev:'warn',code:'CS1',msg:'The countersubject moves on almost every beat together with the subject. Give it its own rhythm: move when the subject holds, hold when it moves.'});
  return iss}
 function c13CSGen(sub,ctx,seed){const n=sub.length,rng=c2Rng(seed||3),cs=Array(n).fill(null),S=c13Line(sub,ctx);let res=null,nodes=0;
@@ -6152,7 +6168,7 @@ function c13RenderFugue(ctx,ctxName,sd){const sub=c13Sub(),S=c13Line(sub,ctx),A=
   <div class="c13desk"><div class="staff" id="c13Ans"></div><div class="c13txt"><p class="desc" style="margin-top:0">${ctx.modal?'In the modal answer the subject moves up a 5th within the mode (no new sharps or flats), and at the start the final and co-final are exchanged: the co-final (5th) is answered by the final, not by the note a 5th above.':'The <b>real answer</b> is the subject transposed exactly up a 5th, into the dominant key. The <b>tonal answer</b> changes the opening: when the subject starts with do and so (or so first), the answer swaps them, so so is answered by do. This keeps the music anchored in the home key while the answer enters.'} ${C13.ans==='tonal'?(muts?`<b>Here ${muts} note${muts>1?'s change':' changes'}</b> (shown in violet).`:'<b>Here no notes need to change</b>: the tonal and real answers are the same.'):''}</p>
   <p class="note" style="margin:6px 0 0">Real answer: ${Areal.filter(p=>p&&p.on).map(p=>pretty(p.name)).join(' ')} · Tonal answer: ${c13Answer(sub,ctx,'tonal').filter(p=>p&&p.on).map(p=>(p.mut?'<b style="color:var(--violet)">':'')+pretty(p.name)+(p.mut?'</b>':'')).join(' ')}</p></div></div></section>
  <section class="card"><h3>3 · The countersubject<span class="sp"></span><button class="mini" data-c13csgen>✦ Compose one for me</button><button class="mini gold" data-c13play="cs">▶ Subject + countersubject</button><button class="mini" data-c13play="csinv">▶ Inverted</button><button class="mini" data-hist="c13:u">↶ Undo</button><button class="mini" data-c13clear="cs">Clear</button></h3>
-  <p class="note" style="margin:0 0 8px">The countersubject accompanies the subject (and the answer) throughout the fugue, sometimes above, sometimes below. It must work both ways round: <b>invertible counterpoint at the octave</b>. The checker tests it above the subject and an octave lower, below it. A 5th becomes a 4th when inverted, so avoid 5ths on strong beats.</p>
+  <p class="note" style="margin:0 0 8px">The countersubject accompanies the subject (and the answer) throughout the fugue, sometimes above, sometimes below. It must work both ways round: <b>invertible counterpoint at the octave</b>. The checker tests it as you write it (normally above the subject) and an octave lower (normally below it), and each message says where the countersubject is. A 5th above becomes a 4th below when inverted, so avoid 5ths on strong beats.</p>
   <div class="c13desk grid3"><div class="c13grid" style="overflow-x:auto">${c13LadderHTML(cs,ctx,'cs',[{lab:'subject',L:S}],[11,10,9,8,7,6,5,4,3,2,1,0,-1])}</div><div class="staff" id="c13CS"></div></div>
   ${csFull&&!csIss.some(x=>x.sev==='err')?'<div class="ok" style="margin-top:8px">✓ An invertible countersubject: it works above and below the subject.</div>':''}${c13Iss(csIss)}</section>
  <section class="card"><h3>4 · The exposition<span class="sp"></span><button class="mini gold" data-c13play="expo">▶ Play the exposition</button></h3>
@@ -6412,7 +6428,7 @@ function renderAnalysis(){const el=$('anMain');if(!el)return;const t=AN.tab;
   anShowScore().catch(()=>{$('anScore').innerHTML='<div class="empty">The score files could not be loaded. They load from the published app; open it online to see them.</div>'});
   $('anInfo').innerHTML=`${m.sections.length?`<table class="cadtab"><tr><th>Section</th><th>Bars</th><th>Key and notes</th></tr>${m.sections.map(s=>`<tr><td><b style="color:${ANLINE[s[3]]}">${s[0]}</b></td><td>${s[1]}–${s[2]}</td><td>${s[4]}</td></tr>`).join('')}</table>`:''}
    ${m.cads.length?`<table class="cadtab"><tr><th>Phrase</th><th>Last chords</th><th>Cadence</th></tr>${m.cads.map((c,i)=>`<tr><td>${c.bar?'ends bar '+c.bar:(i+1)+' (fermata)'}</td><td>${c.ch}</td><td>${c.t}</td></tr>`).join('')}</table><p class="note">${m.cads[0].bar?`Cadences at bars ${m.cads.map(c=>c.bar).join(', ')}.`:'Each fermata marks the end of a line of the hymn.'} The cadence labels are computed by the app from the notes${m.labels.length?'; the "chord on every beat" layer is computed too and can be confused by passing notes':''}: check them against your own ears and eyes.</p>`:''}
-   ${m.labels.length?`<p class="note anfn">Numeral colours: <b style="color:${FN.T}">tonic</b> · <b style="color:${FN.PD}">predominant</b> · <b style="color:${FN.D}">dominant</b> (V and vii°, with the leading note) · <b style="color:${FN.C}">colour</b> (applied and chromatic chords, such as V/V) · <b style="color:${FN.MD}">modal dominant</b>, a soft pull (the minor v and the subtonic VII of a minor key: in common-practice minor they lack the leading note, so they pull more softly than V). (7) marks a passing 7th; (4–3), (7–6), (9–8) a suspension (a held note that falls to a chord note); (2–3) a bass suspension (the bass is held and falls).</p>`:''}
+   ${m.labels.length?`<p class="note anfn">Numeral colours: <b style="color:${FN.T}">tonic</b> · <b style="color:${FN.PD}">predominant</b> · <b style="color:${FN.D}">dominant</b> (V and vii°, with the leading note) · <b style="color:${FN.C}">colour</b> (applied and chromatic chords, such as V/V) · <b style="color:${FN.MD}">modal dominant</b>, a soft pull (the minor v and the subtonic VII in a minor key${MD_MAJOR?', and borrowed into major (v, ♭VII)':''}: no leading note, so in common-practice minor they pull more softly than V). (7) marks a passing 7th; (4–3), (7–6), (9–8) a suspension (a held note that falls to a chord note); (2–3) a bass suspension (the bass is held and falls).</p>`:''}
    <p class="note" style="margin-top:10px">${m.src}</p>`}).catch(()=>{$('anScore').innerHTML='<div class="empty">The score files could not be loaded. They load from the published app; open it online to see them.</div>'})}
 document.addEventListener('click',e=>{if(ROOM!=='analysis')return;const t=e.target.closest('[data-antab],[data-ansc],[data-anplay],[data-anrep],[data-anmadd],[data-anmx],[data-anmsave],[data-anjump]');if(!t)return;const d=t.dataset;
  if(d.anjump!==undefined){anJump(+d.anjump);return}

@@ -322,7 +322,7 @@ async def targeted(pg):
     want_t = {'q': 'crotchet · US: quarter note', 'e2': '2 quavers · US: eighth notes', 'h': 'minim · US: half note', 's4': '4 semiquavers · US: sixteenth notes',
               'qr': 'crotchet rest · US: quarter rest', 'dq': 'dotted crotchet, quaver · US: dotted quarter note, eighth note',
               'es2': 'quaver, 2 semiquavers · US: eighth note, sixteenth notes', 's2e': '2 semiquavers, quaver · US: sixteenth notes, eighth note',
-              'syn': 'quaver, crotchet, quaver · US: eighth note, quarter note'}
+              'syn': 'quaver, crotchet, quaver · US: eighth note, quarter note, eighth note'}  # R2 S-T1: one US name per value
     bad_t = {k: v for k, v in tiles.items() if want_t.get(k) != v}
     if bad_t or not tiles:
         fail('T6', f'M3i rhythm tile hovers: {bad_t or tiles}')
