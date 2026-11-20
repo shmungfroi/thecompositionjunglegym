@@ -1,0 +1,105 @@
+/* Ear Lab 0.49: the long ladders (melody 12 rungs, rhythm 10). Component CSS for Sonnet to lift into index.html as written.
+   Where DESIGN_049.md and this file disagree, this file wins. Existing tokens only. */
+
+/* ---- header for a long ladder: tally beside the title, picker and rung line full width beneath ---- */
+.el-head.long .el-tally{grid-row:1}
+.el-head.long .el-rungrow{grid-column:1 / -1;display:block;margin-top:14px}
+
+/* ---- rung picker: one pill per Stage band ---- */
+.el-rp{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.el-band{display:inline-flex;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden}
+.el-bandlab{display:flex;align-items:center;padding:0 11px 0 14px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);background:var(--panel2);border-right:1px solid var(--line);white-space:nowrap}
+.el-band.cur .el-bandlab{color:var(--gold)}
+.el-band button{position:relative;min-width:40px;height:34px;padding:0 4px;background:none;border:0;font-size:14px;color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums lining-nums}
+.el-band button+button{border-left:1px solid var(--line)}
+.el-band button:last-child{border-radius:0 var(--r-pill) var(--r-pill) 0}
+.el-band button:hover{color:var(--goldhi)}
+.el-band button.on{background:var(--gold);color:var(--ink);font-weight:600}
+.el-band button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+.el-band button.on:focus-visible{outline-color:var(--ink)}
+/* a rung the student has reached 8 of the last 10 on: a small dot under the numeral (a mark, not only a colour) */
+.el-band button.done::after{content:"";position:absolute;left:50%;bottom:4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--gold)}
+.el-band button.on.done::after{background:var(--ink)}
+/* the rung being suggested: a ring, held still (no pulse) */
+.el-band button.sug,.el-bandtab.sug,.el-bandmore.sug{box-shadow:inset 0 0 0 1.5px var(--goldhi);color:var(--goldhi)}
+/* bands above the Stage switch: one dashed chip that shows them all (replaces the "show all rungs" link on these two drills) */
+.el-bandmore{height:36px;padding:0 14px;border:1px dashed rgba(156,146,124,.55);border-radius:var(--r-pill);background:none;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.el-bandmore b{font-weight:400;color:var(--ivory)}
+.el-bandmore small{font-size:inherit}
+.el-bandmore:hover{border-color:var(--gold);color:var(--goldhi)}
+.el-bandtab{display:none}
+
+/* ---- the rung line: what this rung is, and the last ten answers on it ---- */
+.el-rungline{display:flex;align-items:center;gap:6px 16px;flex-wrap:wrap;margin:10px 0 0;font-size:12.5px;line-height:1.4;color:var(--muted)}
+.el-rungline b{font-weight:400;color:var(--ivory)}
+.el-last10{display:inline-flex;align-items:center;gap:8px;margin-left:auto;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
+.el-last10 i{display:inline-flex;align-items:center;gap:3px}
+.el-last10 i span{box-sizing:border-box;width:8px;height:8px;border-radius:50%;border:1px solid var(--muted)}            /* answered, not right: a ring */
+.el-last10 i span.r{background:var(--gold);border-color:var(--gold)}                                                   /* right: a filled disc */
+.el-last10 i span.e{width:8px;height:1px;border:0;border-radius:0;background:rgba(156,146,124,.45)}                      /* not answered yet: a dash */
+
+/* ---- the suggestion, inside the result panel ---- */
+.el-sug{grid-column:1 / -1;order:10;display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.el-sug .ico{flex:none;width:30px;height:30px;color:var(--goldhi)}
+.el-sug p{flex:1 1 260px;margin:0;font-size:15px;line-height:1.45}
+.el-sug p b{font-weight:400;color:var(--goldhi)}
+.el-sug p small{display:block;font-size:12.5px;color:var(--muted)}
+.el-sug .acts{display:flex;gap:8px}
+.el-btn.line{border-color:var(--gold);color:var(--goldhi)}
+.el-btn.line:hover{background:rgba(201,162,74,.14)}
+
+/* ---- melody entry with rhythm (melody rungs 4 and up) ---- */
+.meldesk.r4{grid-template-areas:"steps score" "entry score" "entry res" "entry acts";grid-template-rows:auto auto auto 1fr}
+.el-steps{grid-area:steps;display:flex;border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden}
+.el-steps button{flex:1 1 0;min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 10px;align-items:center;text-align:left;min-height:52px;padding:7px 12px;background:none;border:0;color:var(--muted);cursor:pointer}
+.el-steps button+button{border-left:1px solid var(--line)}
+.el-steps .n{grid-row:1 / span 2;font-family:"Poiret One",Outfit,sans-serif;font-size:24px;line-height:1;color:var(--muted)}
+.el-steps b{font-size:14px;font-weight:400;color:var(--ivory);white-space:nowrap}
+.el-steps small{font-size:11px;letter-spacing:.3px;color:var(--muted);white-space:nowrap}
+.el-steps button[aria-pressed=true]{background:rgba(201,162,74,.13)}
+.el-steps button[aria-pressed=true] .n,.el-steps button[aria-pressed=true] b{color:var(--goldhi)}
+.el-steps button.full small{color:var(--gold)}
+.el-steps button[disabled]{cursor:default;opacity:.5}
+.el-steps button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+.melentry{grid-area:entry;min-width:0}
+.melentry .el-tiles{gap:8px}
+.melentry .el-lbl{margin-top:2px}
+.melentry .earlad{grid-area:auto}
+.meldesk.r4 .melscore .melfr{display:block}
+.el-sysmap{display:none}
+
+@media (max-width:760px){
+ .el-head.long .el-rungrow{margin-top:14px}
+ /* one band open at a time; the others fold to a two-line tab */
+ .el-rp{flex-wrap:nowrap;align-items:stretch;gap:6px}
+ .el-band{display:none;flex:1 1 0;min-width:0}
+ .el-band.open{display:flex}
+ .el-bandlab{display:none}
+ .el-band button{flex:1 1 0;min-width:44px;height:44px;font-size:15px}
+ .el-band button:first-of-type{border-radius:var(--r-pill) 0 0 var(--r-pill)}
+ .el-band button.done::after{bottom:6px}
+ .el-bandtab{flex:none;display:grid;place-content:center;justify-items:center;gap:1px;width:60px;height:46px;padding:0;border:1px solid var(--line);border-radius:var(--r-m);background:none;cursor:pointer}
+ .el-bandtab.open{display:none}
+ .el-bandtab small{font-size:11px;letter-spacing:.4px;color:var(--muted);line-height:1.2}
+ .el-bandtab b{font-size:12.5px;font-weight:400;color:var(--ivory);line-height:1.2;font-variant-numeric:lining-nums}
+ .el-bandmore{flex:none;display:grid;place-content:center;justify-items:center;gap:1px;width:72px;height:46px;padding:0;border-radius:var(--r-m);line-height:1.2}
+ .el-bandmore .sep{display:none}.el-bandmore small{font-size:11px;letter-spacing:.4px}
+ .el-rungline{margin-top:10px}
+ .el-last10{margin-left:0;flex:1 1 100%}
+ .el-sug{margin-top:14px}.el-sug p{flex:1 1 0;min-width:0}
+ .el-sug .acts{flex:1 1 100%}.el-sug .acts .el-btn{flex:1}
+ /* melody with rhythm: score (sticky, one system at a time), the two steps, then tiles or the solfa ladder */
+ .meldesk.r4{display:flex;flex-direction:column;gap:12px}
+ .meldesk.r4 .melscore{order:-3;position:sticky;top:var(--top);z-index:3;margin:0 -16px;padding:8px 16px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+ .meldesk.r4 .melres{order:-2}
+ .el-steps{order:-1}
+ .el-steps button{min-height:52px}
+ .el-sysmap{display:flex;gap:6px;margin:0 0 8px}
+ .el-sysmap button{flex:1 1 0;min-width:0;height:44px;padding:0;border:1px solid var(--line);border-radius:var(--r-s);background:none;font-size:12.5px;color:var(--muted);cursor:pointer;display:grid;place-content:center;justify-items:center;gap:3px}
+ .el-sysmap button i{display:flex;gap:2px}
+ .el-sysmap button i span{width:12px;height:3px;border-radius:2px;background:var(--line)}
+ .el-sysmap button i span.rh{background:var(--muted)}              /* rhythm written */
+ .el-sysmap button i span.so{background:var(--gold)}               /* rhythm and solfa written */
+ .el-sysmap button[aria-pressed=true]{border-color:var(--gold);color:var(--goldhi);background:rgba(201,162,74,.1)}
+ .melentry .el-tiles{justify-content:flex-start}
+}

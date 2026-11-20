@@ -1,0 +1,20 @@
+/* Register 0.49, row C6: function colours and the non-colour cue. For Sonnet to lift into index.html as written. */
+
+/* 1. Tokens (replace the values in :root; --gold and --violet stay) */
+:root{--green:#9dc995;--red:#d15e5d;--md:#b1729d;--md-ivory:#8b4978}
+/* also in script: FNHEX {T:'#9dc995',PD:'#c9a24a',D:'#d15e5d',MD:'#b1729d',C:'#a493d8'}; COLS keys for --green, --red, --md the same;
+   earMelMount RED '#c8473b' -> '#d15e5d'; .gans .chip.wrong and .el-opt.is-mine washes rgba(200,71,59,..) -> rgba(209,94,93,..) */
+
+/* 2. The function letter: every chip that shows a function by colour also carries its letter (T, PD, D, MD, C).
+      Markup: add data-fn="T|PD|D|MD|C" beside the existing style="--c:..." */
+.bar[data-fn],.clrn span[data-fn]{position:relative}
+.bar[data-fn]::after,.clrn span[data-fn]::after{content:attr(data-fn);position:absolute;right:8px;bottom:5px;font-size:11px;font-weight:600;letter-spacing:1px;line-height:1;color:var(--c)}
+.clrn span[data-fn]{padding-right:34px}
+.clrn span[data-fn]::after{bottom:auto;top:7px}
+/* circle-of-fifths wheel: <text class="f" x="${x+25}" y="${y-21}" text-anchor="middle">${f}</text> inside each g.wn */
+.wheel .wn .f{font-family:Outfit;font-size:11px;font-weight:600;letter-spacing:.5px}
+/* Ear Lab chord chips: <small><b class="fn" style="color:var(--fc)">D</b> bass s</small> */
+.el-ch small .fn{font-weight:600;letter-spacing:.6px;margin-right:3px}
+/* one legend line wherever functions are coloured (Climbs with a bar grid, Analysis, Ear Lab bass/blind results) */
+.fnkey{display:flex;flex-wrap:wrap;gap:4px 14px;margin:8px 0 0;font-size:12.5px;color:var(--muted)}
+.fnkey b{font-weight:600;letter-spacing:.6px;margin-right:4px}

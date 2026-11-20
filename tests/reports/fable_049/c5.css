@@ -1,0 +1,61 @@
+/* Register 0.49, row C5: Fable's carried Shoulds. Append to the end of the main <style> in index.html, as written.
+   Markup changes that go with it are listed in DESIGN_049.md, section 1. */
+
+/* C5-1  Phone header no longer grows at the first answer: the empty tally holds the counted height. */
+@media (max-width:760px){
+ #earCard .el-tally{min-height:62px}
+ #earCard .el-tally.is-new{justify-content:flex-start}
+}
+
+/* C5-2  Checkboxes drawn in the app's own hand, ticked and unticked, everywhere. */
+input[type=checkbox]{-webkit-appearance:none;appearance:none;flex:none;display:inline-grid;place-content:center;width:18px;height:18px;margin:0;vertical-align:-4px;
+ border:1px solid var(--muted);border-radius:5px;background:transparent;cursor:pointer;transition:background-color .12s,border-color .12s}
+input[type=checkbox]::after{content:"";width:9px;height:5px;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:translateY(-1px) rotate(-45deg);opacity:0}
+input[type=checkbox]:hover{border-color:var(--gold)}
+input[type=checkbox]:checked{background:var(--gold);border-color:var(--gold)}
+input[type=checkbox]:checked::after{opacity:1}
+input[type=checkbox]:disabled{opacity:.4;cursor:default}
+input[type=checkbox]:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
+#earMain input[type=checkbox],.melacts label.note input{width:18px;height:18px;accent-color:auto}
+.tick{gap:8px;margin-right:14px;cursor:pointer}
+label.ck,label.tick{display:inline-flex;align-items:center}
+label.ck{gap:8px;cursor:pointer}
+@media (max-width:760px){label.tick,label.ck,label.note:has(input[type=checkbox]){min-height:44px}}
+
+/* C5-3  Keys, Aural gym: when the tally wraps under the mode buttons (two-digit scores at 1024) it stays on the right. */
+.kqhead .el-tally{margin-left:auto}
+
+/* C5-4  Keys, Song starters: links in the same pill as the song cards elsewhere (was browser blue, underlined). */
+.istart .sb{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.istart .sb a{font-size:12.5px;border:1px solid var(--line);border-radius:14px;padding:4px 11px;color:var(--ivory);text-decoration:none}
+.istart .sb a:hover{border-color:var(--gold);color:var(--goldhi)}
+.istart .sb a:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
+@media (max-width:760px){.istart .sb{gap:8px}.istart .sb a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:22px;font-size:14px}}
+
+/* C5-5  Keys, Intervals and Aural gym on phones: every control at least 44 px. */
+@media (max-width:760px){
+ #kp-intervals .rp{height:91px;align-items:flex-end;padding-bottom:12px}
+ #kp-intervals .rk{height:91px}
+ #kp-intervals .qp{min-height:48px;padding:6px 12px 5px}
+ #kp-intervals .ip{min-height:44px;padding:0 18px;border-radius:22px}
+ #kp-intervals .invs{gap:8px}
+ #ivGym .mini{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:22px;font-size:14px}
+ #ivGym .gtabs{flex:1 1 100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ #ivGym .gq{flex-wrap:wrap;margin:10px 0 12px}
+ #ivGym .gq .mini{flex:1 1 0;white-space:nowrap}
+ #ivGym .gans{gap:8px}
+ #ivGym .gans .chip{min-width:56px;min-height:44px;padding:0 14px;border-radius:22px;font-size:15px}
+ #ivGym .ctrl{row-gap:0}
+ #ivGym .ctrl .note:not(:first-child){flex:1 1 100%;margin-left:0}
+}
+
+/* C5-6  Top bar between the phone layout and 1280 px: the chord search keeps a usable width (never under 220 px). */
+.search{min-width:0}
+@media (min-width:761px) and (max-width:1280px){.top .crumb{display:none}}
+@media (min-width:761px) and (max-width:1180px){
+ .top{gap:14px;padding:0 18px}
+ .top .t{font-size:18px;letter-spacing:3px}
+ .search{flex:1 1 220px;min-width:220px}
+ .search input{padding:8px 12px 8px 16px}
+}
+@media (min-width:761px) and (max-width:900px){.top .tw{display:none}}

@@ -1,0 +1,853 @@
+{
+ "mel_r6_rhythm_1366": {
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "band": [
+   242,
+   36
+  ],
+  "rungbtn": [
+   40,
+   34
+  ],
+  "tab": null,
+  "more": null,
+  "rungline": [
+   796,
+   18
+  ],
+  "steps": [
+   292,
+   54
+  ],
+  "score": [
+   476,
+   254
+  ],
+  "svg": [
+   442,
+   198
+  ],
+  "lad": null,
+  "step": null,
+  "tile": [
+   56,
+   76
+  ],
+  "sug": null,
+  "desk": [
+   796,
+   358
+  ],
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   "on:6:40x34",
+   "el-band cur open:7:40x34",
+   "el-band cur open:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-band:11:40x34",
+   "el-band:12:40x34",
+   "el-var:Without th:147x30",
+   "el-var:First note:78x30",
+   "el-btn:Show me:86x34",
+   "el-btn:Skip \u2192:72x34",
+   "el-btn sm:\u21b6 Undo:69x30",
+   "el-btn sm:\u21b7 Redo:68x30",
+   "el-btn sm:Clear:57x30",
+   "el-btn gold:Check:69x34"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "mel_r6_rhythm_390": {
+  "head": [
+   328,
+   188
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "band": null,
+  "rungbtn": null,
+  "tab": [
+   60,
+   46
+  ],
+  "more": null,
+  "rungline": [
+   328,
+   56
+  ],
+  "steps": [
+   328,
+   54
+  ],
+  "score": [
+   360,
+   218
+  ],
+  "svg": [
+   294,
+   91
+  ],
+  "lad": null,
+  "step": null,
+  "tile": [
+   56,
+   76
+  ],
+  "sug": null,
+  "desk": [
+   328,
+   518
+  ],
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "errors": [],
+  "sticky": {
+   "score_top": 370,
+   "score_bottom": 588,
+   "rows_fully_visible": 3,
+   "room": 188
+  }
+ },
+ "mel_r6_solfa_1366": {
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "band": [
+   242,
+   36
+  ],
+  "rungbtn": [
+   40,
+   34
+  ],
+  "tab": null,
+  "more": null,
+  "rungline": [
+   796,
+   18
+  ],
+  "steps": [
+   292,
+   54
+  ],
+  "score": [
+   476,
+   254
+  ],
+  "svg": [
+   442,
+   198
+  ],
+  "lad": [
+   292,
+   468
+  ],
+  "step": [
+   292,
+   49
+  ],
+  "tile": null,
+  "sug": null,
+  "desk": [
+   796,
+   536
+  ],
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   "on:6:40x34",
+   "el-band cur open:7:40x34",
+   "el-band cur open:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-band:11:40x34",
+   "el-band:12:40x34",
+   "el-var:Without th:147x30",
+   "el-var:First note:78x30",
+   "el-btn:Show me:86x34",
+   "el-btn:Skip \u2192:72x34",
+   "el-btn sm:\u21b6 Undo:69x30",
+   "el-btn sm:\u21b7 Redo:68x30",
+   "el-btn sm:Clear:57x30",
+   "el-btn gold:Check:69x34"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "mel_r6_solfa_390": {
+  "head": [
+   328,
+   188
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "band": null,
+  "rungbtn": null,
+  "tab": [
+   60,
+   46
+  ],
+  "more": null,
+  "rungline": [
+   328,
+   56
+  ],
+  "steps": [
+   328,
+   54
+  ],
+  "score": [
+   360,
+   218
+  ],
+  "svg": [
+   294,
+   91
+  ],
+  "lad": [
+   328,
+   396
+  ],
+  "step": [
+   328,
+   44
+  ],
+  "tile": null,
+  "sug": null,
+  "desk": [
+   328,
+   814
+  ],
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "errors": [],
+  "sticky": {
+   "score_top": 96,
+   "score_bottom": 314,
+   "rows_fully_visible": 9,
+   "room": 462
+  }
+ },
+ "mel_r11_8bars_1366": {
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "band": [
+   242,
+   36
+  ],
+  "rungbtn": [
+   40,
+   34
+  ],
+  "tab": null,
+  "more": null,
+  "rungline": [
+   796,
+   18
+  ],
+  "steps": [
+   292,
+   54
+  ],
+  "score": [
+   476,
+   462
+  ],
+  "svg": [
+   442,
+   406
+  ],
+  "lad": [
+   292,
+   468
+  ],
+  "step": [
+   292,
+   49
+  ],
+  "tile": null,
+  "sug": null,
+  "desk": [
+   796,
+   566
+  ],
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   " done:6:40x34",
+   " done:7:40x34",
+   " done:8:40x34",
+   " done:9:40x34",
+   "el-band cur open:10:40x34",
+   "on:11:40x34",
+   "el-band cur open:12:40x34",
+   "el-var:Without th:147x30",
+   "el-var:First note:78x30",
+   "el-btn:Show me:86x34",
+   "el-btn:Skip \u2192:72x34",
+   "el-btn sm:\u21b6 Undo:69x30",
+   "el-btn sm:\u21b7 Redo:68x30",
+   "el-btn sm:Clear:57x30",
+   "el-btn gold:Check:69x34"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "mel_r11_8bars_390": {
+  "head": [
+   328,
+   188
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "band": null,
+  "rungbtn": null,
+  "tab": [
+   60,
+   46
+  ],
+  "more": null,
+  "rungline": [
+   328,
+   56
+  ],
+  "steps": [
+   328,
+   54
+  ],
+  "score": [
+   360,
+   218
+  ],
+  "svg": [
+   294,
+   91
+  ],
+  "lad": [
+   328,
+   396
+  ],
+  "step": [
+   328,
+   44
+  ],
+  "tile": null,
+  "sug": null,
+  "desk": [
+   328,
+   814
+  ],
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "errors": [],
+  "sticky": {
+   "score_top": 96,
+   "score_bottom": 314,
+   "rows_fully_visible": 9,
+   "room": 462
+  }
+ },
+ "rhy_stage4_1366": {
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "band": [
+   202,
+   36
+  ],
+  "rungbtn": [
+   40,
+   34
+  ],
+  "tab": null,
+  "more": [
+   131,
+   36
+  ],
+  "rungline": [
+   796,
+   18
+  ],
+  "steps": null,
+  "score": null,
+  "svg": null,
+  "lad": null,
+  "step": null,
+  "tile": null,
+  "sug": null,
+  "desk": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   "on:2:40x34",
+   "el-band cur open:3:40x34",
+   "el-bandmore:7 more \u00b7 S:131x36",
+   "el-seg:On:44x30",
+   "el-seg:Off:44x30",
+   "el-seg:Steady \u00b7 7:83x30",
+   "el-seg:Normal \u00b7 1:94x30",
+   "el-btn:Show me:86x34",
+   "el-btn:Skip \u2192:72x34",
+   "el-btn sm:\u21b6 Undo:69x30",
+   "el-btn sm:\u21b7 Redo:68x30",
+   "el-btn sm:Clear:57x30",
+   "el-btn gold:Check:69x34"
+  ],
+  "tiny": [
+   ":1:0.0",
+   ":2:0.0",
+   ":3:0.0",
+   ":4:0.0"
+  ],
+  "errors": []
+ },
+ "rhy_stage4_390": {
+  "head": [
+   328,
+   188
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "band": [
+   250,
+   46
+  ],
+  "rungbtn": [
+   82,
+   44
+  ],
+  "tab": null,
+  "more": [
+   72,
+   46
+  ],
+  "rungline": [
+   328,
+   56
+  ],
+  "steps": null,
+  "score": null,
+  "svg": null,
+  "lad": null,
+  "step": null,
+  "tile": null,
+  "sug": null,
+  "desk": null,
+  "over": 0,
+  "small": [],
+  "tiny": [
+   ":1:0.0",
+   ":2:0.0",
+   ":3:0.0",
+   ":4:0.0"
+  ],
+  "errors": []
+ },
+ "suggest_rhy_1366": {
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "band": [
+   202,
+   36
+  ],
+  "rungbtn": [
+   40,
+   34
+  ],
+  "tab": null,
+  "more": null,
+  "rungline": [
+   796,
+   18
+  ],
+  "steps": null,
+  "score": null,
+  "svg": null,
+  "lad": null,
+  "step": null,
+  "tile": null,
+  "sug": [
+   762,
+   55
+  ],
+  "desk": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   "on done:3:40x34",
+   " sug:4:40x34",
+   "el-band:5:40x34",
+   "el-band:6:40x34",
+   "el-band:7:40x34",
+   "el-band:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-btn gold:Next \u2192:76x34",
+   "el-replay:Hear it al:232x40",
+   "el-btn line:Try rung 4:93x34",
+   "el-btn:Stay on ru:118x34"
+  ],
+  "tiny": [
+   ":1:0.0",
+   ":2:0.0",
+   ":3:0.0",
+   ":4:0.0"
+  ],
+  "errors": []
+ },
+ "suggest_rhy_390": {
+  "head": [
+   328,
+   171
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "band": [
+   196,
+   46
+  ],
+  "rungbtn": [
+   64,
+   44
+  ],
+  "tab": [
+   60,
+   46
+  ],
+  "more": null,
+  "rungline": [
+   328,
+   39
+  ],
+  "steps": null,
+  "score": null,
+  "svg": null,
+  "lad": null,
+  "step": null,
+  "tile": null,
+  "sug": [
+   302,
+   133
+  ],
+  "desk": null,
+  "over": 0,
+  "small": [],
+  "tiny": [
+   ":1:0.0",
+   ":2:0.0",
+   ":3:0.0",
+   ":4:0.0"
+  ],
+  "errors": []
+ },
+ "picker_states_1440": {
+  "head": [
+   796,
+   567
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "band": [
+   242,
+   36
+  ],
+  "rungbtn": [
+   40,
+   34
+  ],
+  "tab": null,
+  "more": [
+   118,
+   36
+  ],
+  "rungline": null,
+  "steps": null,
+  "score": null,
+  "svg": null,
+  "lad": null,
+  "step": null,
+  "tile": null,
+  "sug": null,
+  "desk": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   "on:6:40x34",
+   "el-band cur open:7:40x34",
+   "el-band cur open:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-band:11:40x34",
+   "el-band:12:40x34",
+   " done:6:40x34",
+   " done:7:40x34",
+   "on done:8:40x34",
+   "el-bandmore sug:4 more \u00b7 S:118x36",
+   "on:2:40x34",
+   "el-band cur open:3:40x34",
+   "el-band cur open:4:40x34",
+   "el-bandmore:8 more \u00b7 S:131x36",
+   " done:8:40x34",
+   " done:9:40x34",
+   " done:10:40x34",
+   " done:11:40x34",
+   "on:12:40x34",
+   "on done:3:40x34",
+   " sug:4:40x34",
+   "el-band:5:40x34",
+   "el-band:6:40x34",
+   "el-band:7:40x34",
+   "el-band:8:40x34",
+   "el-band cur open:9:40x34",
+   "on:10:40x34",
+   "on:1:40x34",
+   "el-band cur open:2:40x34",
+   "el-bandmore:7 more \u00b7 S:131x36"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "picker_states_1366": {
+  "head": [
+   796,
+   567
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "band": [
+   242,
+   36
+  ],
+  "rungbtn": [
+   40,
+   34
+  ],
+  "tab": null,
+  "more": [
+   118,
+   36
+  ],
+  "rungline": null,
+  "steps": null,
+  "score": null,
+  "svg": null,
+  "lad": null,
+  "step": null,
+  "tile": null,
+  "sug": null,
+  "desk": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   "on:6:40x34",
+   "el-band cur open:7:40x34",
+   "el-band cur open:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-band:11:40x34",
+   "el-band:12:40x34",
+   " done:6:40x34",
+   " done:7:40x34",
+   "on done:8:40x34",
+   "el-bandmore sug:4 more \u00b7 S:118x36",
+   "on:2:40x34",
+   "el-band cur open:3:40x34",
+   "el-band cur open:4:40x34",
+   "el-bandmore:8 more \u00b7 S:131x36",
+   " done:8:40x34",
+   " done:9:40x34",
+   " done:10:40x34",
+   " done:11:40x34",
+   "on:12:40x34",
+   "on done:3:40x34",
+   " sug:4:40x34",
+   "el-band:5:40x34",
+   "el-band:6:40x34",
+   "el-band:7:40x34",
+   "el-band:8:40x34",
+   "el-band cur open:9:40x34",
+   "on:10:40x34",
+   "on:1:40x34",
+   "el-band cur open:2:40x34",
+   "el-bandmore:7 more \u00b7 S:131x36"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "picker_states_1024": {
+  "head": [
+   834,
+   567
+  ],
+  "rp": [
+   834,
+   36
+  ],
+  "band": [
+   242,
+   36
+  ],
+  "rungbtn": [
+   40,
+   34
+  ],
+  "tab": null,
+  "more": [
+   118,
+   36
+  ],
+  "rungline": null,
+  "steps": null,
+  "score": null,
+  "svg": null,
+  "lad": null,
+  "step": null,
+  "tile": null,
+  "sug": null,
+  "desk": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   "on:6:40x34",
+   "el-band cur open:7:40x34",
+   "el-band cur open:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-band:11:40x34",
+   "el-band:12:40x34",
+   " done:6:40x34",
+   " done:7:40x34",
+   "on done:8:40x34",
+   "el-bandmore sug:4 more \u00b7 S:118x36",
+   "on:2:40x34",
+   "el-band cur open:3:40x34",
+   "el-band cur open:4:40x34",
+   "el-bandmore:8 more \u00b7 S:131x36",
+   " done:8:40x34",
+   " done:9:40x34",
+   " done:10:40x34",
+   " done:11:40x34",
+   "on:12:40x34",
+   "on done:3:40x34",
+   " sug:4:40x34",
+   "el-band:5:40x34",
+   "el-band:6:40x34",
+   "el-band:7:40x34",
+   "el-band:8:40x34",
+   "el-band cur open:9:40x34",
+   "on:10:40x34",
+   "on:1:40x34",
+   "el-band cur open:2:40x34",
+   "el-bandmore:7 more \u00b7 S:131x36"
+  ],
+  "tiny": [],
+  "errors": []
+ },
+ "picker_states_390": {
+  "head": [
+   328,
+   720
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "band": null,
+  "rungbtn": null,
+  "tab": [
+   60,
+   46
+  ],
+  "more": [
+   72,
+   46
+  ],
+  "rungline": null,
+  "steps": null,
+  "score": null,
+  "svg": null,
+  "lad": null,
+  "step": null,
+  "tile": null,
+  "sug": null,
+  "desk": null,
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "errors": []
+ }
+}
