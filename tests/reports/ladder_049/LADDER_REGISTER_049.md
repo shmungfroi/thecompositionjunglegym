@@ -416,3 +416,23 @@ Each has a recommendation. Everything else in this register follows from the app
 **D13 · Recordings: transcriptions and playback.** Contemporary items in M12 and R10 need a stored transcription (a few bars of solfa and rhythm) to mark against, and the student plays the link in another tab. Storing short melodic transcriptions for non-commercial education is likely within fair dealing for education, but it is a legal judgement, not mine ⚠. **Recommend:** store only the excerpt's notes (no lyrics, no audio), one phrase per song, credit the recording, and have the IC check each one; or leave contemporary items as "listen and compare with the shown answer" (unmarked) until checked.
 
 **D14 · Backbeat at rung 8.** The approved row lists "backbeat patterns" for a one-line rung, while two-part rhythm is rung 10. (a) The backbeat is context: snare on 2 and 4 (kick on 1 and 3) plays under the line the student writes. (b) The student writes the backbeat itself (kick and snare) on the one line, as a two-sound line. **Recommend (a):** it keeps rung 8 one-line and leaves writing drum parts to rung 10.
+
+---
+
+## 8. Justin's answers, 21 Nov 2026 05:53 (decision log L101)
+| D | answer | status |
+|---|---|---|
+| D1 | (a) one bar, 99 items, no repeat within 30. **Plus:** "if we create up to 18 rungs these can be differentiated even more and I'd like that for all these recognition and skill tools" — wants detail to confirm before approving | Approved in part; 18-rung framework pending |
+| D2 | (a) 2/3 new thing | Approved |
+| D3 (= Fable D6) | Justin asked for image previews of (a) rhythm-first and (b) duration palette | Pending (Fable mock-ups) |
+| D4 (= Fable D7) | (a) both halves right; per-half report; Nearly only for M10 spelling | Approved |
+| D5 | (a) allow f–si once per item as a step, **with visual support** (the gap shown on the ladder and in feedback) | Approved |
+| D6 | Justin asked for an explicit step-by-step explanation | Pending |
+| D7 | (a) the mode's own tonic chord as cue, mode named | Approved |
+| D8 | Justin asked for an explicit explanation | Pending |
+| D9 | (a) anacrusis shown as a short first bar | Approved |
+| D10 | (a) answered only; Shown, Skipped and Nearly left out (supersedes Fable's "Nearly = not right" in DESIGN_049 2.2) | Approved |
+| D11 | (a) "ti ti-i ti" by notation; plain syn-co-pa = Nearly | Approved |
+| D12 open point | (b) konnakol names on 5- and 7-tuplet tiles in both settings | Approved |
+| D13 | (a) store short transcriptions, marked, each independently checked | Approved |
+| D14 | (a) backbeat as context under the line | Approved |

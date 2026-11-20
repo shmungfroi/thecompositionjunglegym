@@ -34,3 +34,24 @@ Columns: id · finding (evidence) · rule or standard · proposed change · impa
 | C26 | IC_REG_049 S2: rung 3 residual register tell +4.8 (worst pair +11 on 1.3% of items) | Ladder rule: no tells | Re-weight rung 3 registers further | Ear Lab rung 3 | earlab_test tell threshold | Should | Opus | Drafted |
 
 Deferred: R19–R22 (counterpoint) — Justin 20 Nov "later".
+
+## Justin's answers, 21 Nov 2026 05:53 (decision log L101)
+| id | answer | status |
+|---|---|---|
+| C12 | "always use the complete chord": incomplete tonic off on every cadence (supersedes L95 O) | Approved → building (Opus) |
+| C13 | (a) fix: count on both sides | Approved → building (Sonnet) |
+| C14 | (a) brackets in every hover, app-wide | Approved → building (Sonnet) |
+| C3 follow-up | rung 2 keeps all 24 keys | Approved (as built) |
+| C23 | (a) close spacing at rung 1 for all five models | Approved → building (Opus) |
+| C6 | Fable D1 (a) colours moved + function letters; D2 (a) shared red/green | Approved → building (Sonnet), Fable verify |
+| C15 | (a) fix in 0.49 | Approved → building (Sonnet) |
+| C16 | (a) fix in 0.49 | Approved → building (Sonnet) |
+| C17 | closed by Fable D2 (a) | Approved |
+| C18 | (a) honest gaps + search for real metal examples | Approved → building (Sonnet), IC after |
+| C19 | not answered: Justin asked why Gotye was replaced (C11 swapped it for Dance Monkey, contrary to L88 (13) "keep song") | Open |
+| C20 | (a) settle in the 0.49 source check | Approved → research (Sonnet), IC after |
+| C21–C22 | (a) defer, no action (tags reference only, L94) | Deferred |
+| C24 | (a) fix in 0.49 | Approved → building (Opus) |
+| C25 | (a) re-voice with root or 5th doubled | Approved → building (Opus) |
+| C26 | (a) defer to the 0.51 cadence ladder | Deferred |
+| Tally | (b) build the link hidden; switch on when the URL arrives | Approved |
