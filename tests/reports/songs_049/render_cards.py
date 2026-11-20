@@ -18,8 +18,8 @@ async def main():
             await pg.goto('http://app/index.html#seed'); await pg.wait_for_timeout(1500)
             for name, q, song in CARDS:
                 r = await pg.evaluate("""([q,song])=>{S.q=q;renderSongs();const c=[...document.querySelectorAll('#songs .song')].find(e=>e.querySelector('.t').textContent===song);
-                  c.scrollIntoView({block:'center'});const chip=c.querySelector('.gt .lw.th');const fs=[...c.querySelectorAll('.gt,.gt *')].map(e=>parseFloat(getComputedStyle(e).fontSize));
-                  return {chip:chip&&chip.textContent,chipFont:chip&&getComputedStyle(chip).fontSize,minFont:Math.min(...fs),docW:document.documentElement.scrollWidth,winW:innerWidth,cardW:c.scrollWidth,cardCW:c.clientWidth}}""", [q, song])
+                  c.scrollIntoView({block:'center'});const chip=c.querySelector('.gt .nb');const fs=[...c.querySelectorAll('.gt,.gt *')].map(e=>parseFloat(getComputedStyle(e).fontSize));
+                  return {label:chip&&chip.textContent,labelFont:chip&&getComputedStyle(chip).fontSize,warnStyled:!!c.querySelector('.gt .lw'),minFont:Math.min(...fs),docW:document.documentElement.scrollWidth,winW:innerWidth,cardW:c.scrollWidth,cardCW:c.clientWidth}}""", [q, song])
                 el = pg.locator('#songs .song', has=pg.locator('.t', has_text=song)).first
                 await el.screenshot(path=str(out / f'{name}_{w}.png'))
                 print(w, song, r)

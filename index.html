@@ -542,6 +542,7 @@ small.a6{font-size:12.5px;color:var(--violet);font-weight:600}
 .song:first-child{border-top:0;padding-top:2px}
 .song .gt{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600}
 .song .gt .st{color:var(--goldhi);margin-left:4px}
+.song .gt .nb{color:var(--ivory);font-weight:400;letter-spacing:.4px;text-transform:none}
 .song .t{font-size:16px;font-weight:600;color:var(--ivory);margin-top:3px}
 .song .a{font-size:14px;color:var(--muted)}
 .song .lf{font-size:14px;line-height:1.5;margin:6px 0 4px}
@@ -2877,7 +2878,7 @@ function renderSongs(){const el=$('songs');if(!el)return;const L=(SONGS[S.q]||[]
  if(!L.length){el.innerHTML=`<div class="songcount">Songs for the ${nm} are still being checked. Add one you know below.</div>`+(SONGGAPS[S.q]||[]).slice().sort((a,b)=>SLOTS.indexOf(a)-SLOTS.indexOf(b)).map(g=>`<div class="song"><div class="gt">${esc(g)}</div><div class="t">Gap: no verified example yet</div><div class="lf">An example is still being checked against two sources. Add one you know below.</div></div>`).join('')}
  else el.innerHTML=((n=>n<5?`<div class="songcount">${n} of 5 checked so far · more being verified</div>`:'')(L.filter(x=>x.slot!=='Australian pick').length))+L.map(x=>({s:x.slot,x})).concat((SONGGAPS[S.q]||[]).map(g=>({s:g,g}))).sort((a,b)=>SLOTS.indexOf(a.s)-SLOTS.indexOf(b.s)).map(({x,g})=>{if(!x)return`<div class="song"><div class="gt">${esc(g)}</div><div class="t">Gap: no verified example yet</div><div class="lf">An example is still being checked against two sources. Add one you know below.</div></div>`;const qy=encodeURIComponent(x.song+' '+x.artist);
   const aus=x.slot==='Australian pick'?(/Crowded House/.test(x.artist)?' · Australian/NZ':''):'';
-  return`<div class="song"><div class="gt">${esc(x.slot)}${aus}${x.prime?'<span class="st">★ play this first</span>':''}${warnTags(x)}${x.label?`<span class="lw th" title="${esc(x.label)}">${esc(x.label)}</span>`:''}</div>
+  return`<div class="song"><div class="gt">${esc(x.slot)}${aus}${x.label?` · <span class="nb">${esc(x.label)}</span>`:''}${x.prime?'<span class="st">★ play this first</span>':''}${warnTags(x)}</div>
   <div class="t">${esc(x.song)}</div><div class="a">${esc(x.artist)} · ${esc(x.year)}</div>
   <div class="lf"><b>${esc(x.where)}.</b> ${esc(x.listenFor)}</div>
   <div class="hd">Chord heard: ${esc(x.chordAsHeard)}${x.key?' · key '+esc(x.key):''}</div>
