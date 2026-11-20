@@ -1,0 +1,153 @@
+/* Ear Lab 0.49: ladder UI, part 2 (Fable). For Sonnet to lift into index.html as written, after ladder049.css.
+   It REPLACES the two-step entry in ladder049.css: delete that file's `.meldesk.r4` and `.el-steps` rules and the
+   `.meldesk.r4 ...`, `.el-steps ...` lines of its phone block (the picker, rung line, last-10, suggestion and `.el-sysmap` rules stay).
+   Where SPEC.md and this file disagree, this file wins. Existing tokens only (--red and --green are the C6 values). */
+
+/* ================= 1. Melody entry from rung 4: the duration palette ================= */
+.meldesk.bylen{grid-template-areas:"pal score" "entry score" "entry res" "entry acts";grid-template-rows:auto auto auto 1fr}
+.melhold{display:contents}                      /* desktop: its two children sit in the desk grid; phones: one sticky block (below) */
+.melentry{grid-area:entry;min-width:0}
+.melentry .earlad{grid-area:auto}
+.meldesk.bylen .melscore .melfr{display:block}
+/* the reveal: the verdict first, then the two staves; no palette */
+.meldesk.bylen.done{grid-template-areas:"entry res" "entry score" "entry acts";grid-template-rows:auto auto 1fr}
+.el-palwrap{grid-area:pal;min-width:0}
+.el-palwrap .el-lbl{margin:0 0 8px}
+.el-pal{display:flex;border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden;background:var(--panel)}
+.el-len{position:relative;flex:1 1 0;min-width:40px;height:56px;padding:0;display:grid;place-items:center;background:none;border:0;border-radius:0;color:var(--ivory);cursor:pointer}
+.el-len+.el-len{border-left:1px solid var(--line)}
+.el-len svg{display:block;width:34px;height:40px}
+.el-len:hover:not([aria-disabled=true]){background:rgba(201,162,74,.06)}
+/* the chosen length stays chosen: a gold wash, a brighter glyph and a bar at the foot (a mark, not only a colour) */
+.el-len[aria-checked=true]{background:rgba(201,162,74,.13);color:var(--goldhi)}
+.el-len[aria-checked=true]::after{content:"";position:absolute;left:22%;right:22%;bottom:0;height:2px;border-radius:2px 2px 0 0;background:var(--gold)}
+/* a length that cannot go at the gold marker: dimmed, still focusable so its label can say why */
+.el-len[aria-disabled=true]{cursor:default}
+.el-len[aria-disabled=true] svg{opacity:.3}
+/* rests are keys, not choices: one tap writes the rest. They sit after the lengths, behind a double rule */
+.el-len.rest{flex:0 1 52px}
+.el-len+.el-len.rest{border-left:3px double var(--line)}
+.el-len.rest:active:not([aria-disabled=true]){background:rgba(201,162,74,.13)}
+.el-len:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+/* more than seven cells (melody rung 12 only): two rows, lengths above, rests and the rarer lengths below */
+.el-pal.two{flex-wrap:wrap}
+.el-pal.two .el-len{flex:1 1 20%;border-bottom:1px solid var(--line);margin-bottom:-1px}
+/* phones only: the bar map shares its row with a one-tap Undo, so a slip can be mended without leaving the score */
+.el-sysrow{display:none}
+.el-undo1{display:none}
+
+/* ================= 2. Result at rungs 4 and up ================= */
+.el-answer.two{display:flex;flex-wrap:wrap;gap:2px 26px}
+.el-answer.two .pt{display:inline-flex;align-items:baseline;gap:9px;white-space:nowrap}
+.el-answer.two .pt svg{align-self:center;flex:none;width:15px;height:15px}
+.el-answer.two .pt.ok svg{color:var(--green)}
+.el-answer.two .pt.bad svg{color:var(--red)}
+.el-answer.two .pt.near svg{color:var(--gold)}
+.el-answer.two .pt small{margin-left:0}
+/* the key under the two staves: what each mark means (shape first, colour second) */
+.el-markkey{display:flex;flex-wrap:wrap;gap:6px 18px;margin:10px 0 0;font-size:12.5px;line-height:1.4;color:var(--muted)}
+.el-markkey span{display:inline-flex;align-items:center;gap:7px}
+.el-markkey i{flex:none;display:inline-block}
+.el-markkey .p{width:11px;height:9px;border-radius:50%;background:var(--red);transform:rotate(-20deg)}
+.el-markkey .r{width:20px;height:2px;background:var(--red)}
+.el-markkey .n{width:14px;height:0;border-top:2px dotted var(--gold)}
+.meldesk.done .el-sysmap button i span.ok{background:var(--green)}
+.meldesk.done .el-sysmap button i span.bad{box-sizing:border-box;height:5px;margin-top:-1px;background:none;border:1px solid var(--red)}
+
+/* ================= 3. Chromatic ladder rows (melody rungs 7 to 10): names only ================= */
+/* a ladder with half rungs is a plain column: note rows as before, a half rung between the two notes it lies between */
+.meldesk .earlad.chr{display:flex;flex-direction:column;gap:3px}
+.meldesk .earlad.chr>.earstep{flex:none;height:52px;margin:0;box-sizing:border-box}
+.earhalf{position:relative;flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;height:36px}
+.meldesk .earhalf .earstep{grid-row:1;margin:0;padding:0 10px 0 14px;gap:9px;background:var(--inset);box-sizing:border-box}
+.meldesk .earhalf .earstep.fl{grid-column:1}        /* lowered notes (ra me se le te) on the left */
+.meldesk .earhalf .earstep.sh{grid-column:2}        /* raised notes (di ri fi si li) on the right */
+.meldesk .earhalf .earstep b{min-width:0}
+.earstep .of{font-size:11px;letter-spacing:.3px;color:var(--muted);white-space:nowrap}
+.earstep.chr.last{border-color:var(--gold)}
+
+/* the augmented 2nd, fa to si (rung 7): a gauge down the right of the ladder, one node per semitone */
+.earlad .a2{position:relative}
+.earlad .a2::after{content:"";position:absolute;right:17px;top:-3px;bottom:-3px;width:0;border-left:1.5px solid var(--muted);pointer-events:none}
+.earlad .a2.a2top::after{top:50%}
+.earlad .a2.a2bot::after{bottom:50%}
+.earlad .a2::before{content:"";position:absolute;z-index:1;right:13px;top:50%;width:9px;height:9px;margin-top:-4.5px;box-sizing:border-box;border-radius:50%;border:1.5px solid var(--muted);background:var(--panel);pointer-events:none}
+.earlad .a2.a2top::before,.earlad .a2.a2bot::before{background:var(--muted)}
+.earlad .a2lab{position:absolute;right:34px;top:50%;transform:translateY(-50%);font-size:11px;letter-spacing:.4px;line-height:1.25;text-align:right;color:var(--muted);pointer-events:none}
+.earlad .a2lab b{display:block;font-weight:400;color:var(--ivory)}
+/* when the melody takes that step (shown at the reveal), the gauge turns gold */
+.earlad.a2on .a2::after{border-left-color:var(--gold)}
+.earlad.a2on .a2::before{border-color:var(--gold)}
+.earlad.a2on .a2.a2top::before,.earlad.a2on .a2.a2bot::before{background:var(--gold)}
+.earlad.a2on .a2lab,.earlad.a2on .a2lab b{color:var(--goldhi)}
+.meldesk .earlad.a2on .earstep.a2[disabled],.meldesk .earlad.a2on .earhalf.a2 .earstep[disabled]{opacity:1}   /* the four rows of the step stay at full strength in the locked ladder */
+/* the same step in the feedback: two measures, a tone and the augmented 2nd, one cell per semitone */
+.el-gap{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:7px 14px;align-items:center;margin:14px 0 0;max-width:460px}
+.el-gap .nm{font-size:14px;color:var(--ivory);white-space:nowrap}
+.el-gap .gbar{display:flex;gap:3px}
+.el-gap .gbar i{width:30px;height:10px;border-radius:2px;background:rgba(156,146,124,.45)}
+.el-gap .say{font-size:12.5px;line-height:1.3;color:var(--muted)}
+.el-gap .on.nm,.el-gap .on.say{color:var(--goldhi)}
+.el-gap .on.gbar i{background:var(--gold)}
+
+/* ================= 4. Rung 9: Keep home do / Move do (mutation) ================= */
+/* settings sit in the listening options row (.el-vars) as one more group */
+.el-vars .grp.set{margin-left:auto}
+.el-gloss{display:block;margin-top:4px;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.el-gloss b{font-weight:400;color:var(--ivory)}
+.el-mut{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;margin:10px 0 0;padding:0 14px 0 12px;border:1px dashed var(--gold);border-radius:var(--r-m);background:none;font:inherit;font-size:14px;color:var(--goldhi);text-align:left;cursor:pointer}
+.el-mut svg{flex:none;width:22px;height:22px}
+.el-mut small{margin-left:auto;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.el-mut:hover:not([disabled]):not([aria-pressed=true]){background:rgba(201,162,74,.1)}
+.el-mut[aria-pressed=true]{border-style:solid;border-color:rgba(201,162,74,.55);background:rgba(201,162,74,.1);color:var(--ivory);cursor:default}
+.el-mut[aria-pressed=true] svg{color:var(--gold)}
+.el-mut[disabled]{opacity:.45;cursor:default}
+.el-mut:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
+/* after the mutation each row carries its new name, and its old one small at the right */
+.earstep .was{margin-left:auto;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.earstep .was b{min-width:0;font-size:12.5px;font-weight:400;color:var(--ivory)}
+.earstep .was+.hm{margin-left:10px}
+
+/* ================= 5. Rhythm: tile families, tuplet tiles, the names setting ================= */
+.el-tfams{display:flex;flex-wrap:wrap;gap:14px 26px;align-items:flex-start}
+.el-tfam{display:grid;gap:7px;min-width:0}
+.el-tfam>span{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted)}
+.el-tiles.named .el-tile.tup{height:auto;min-height:76px;justify-content:flex-start}
+.el-tile.tup small{margin-top:-2px;padding:0 6px 6px;line-height:13px;white-space:pre-line}
+
+@media (max-width:760px){
+ /* the score and the palette are one block that stays under the top bar; the ladder rows pass beneath it */
+ .meldesk.bylen{display:flex;flex-direction:column;gap:10px}
+ .melhold{display:block;order:-3;position:sticky;top:var(--top);z-index:3;margin:0 -16px;padding:8px 16px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+ .meldesk.bylen .melscore{position:static;order:0;margin:0;padding:0;background:none;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;align-items:center}
+ .meldesk.bylen .melscore .lbl,.meldesk.bylen .melscore .melfr{grid-column:1 / -1}
+ .el-sysrow{grid-column:1 / -1;display:flex;gap:6px;margin:0 0 8px}
+ .el-sysrow .el-sysmap{flex:1 1 0;min-width:0;margin:0}
+ .el-undo1{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:var(--r-s);background:none;color:var(--ivory);cursor:pointer}
+ .el-undo1 svg{width:18px;height:18px}
+ .el-undo1[disabled]{opacity:.4}
+ /* one system (two bars): no bar map, so the label and Undo share the line */
+ .meldesk.bylen .melscore.one .lbl{grid-column:1;margin:0}
+ .meldesk.bylen .melscore.one .el-sysrow{grid-column:2;grid-row:1;margin:0}
+ .meldesk.bylen .melscore.one .melfr{margin-top:8px}
+ /* the stave is bare on phones (class .bare on .melfr, set by the mount): the held block is its frame */
+ .meldesk.bylen .melfr.bare{padding:2px 0 0}
+ .el-palwrap{margin-top:8px}
+ .el-palwrap .el-lbl{display:none}
+ .el-len{min-width:44px;height:48px}
+ .el-len.rest{flex:1 1 0}
+ .el-mut{margin-top:8px}
+ .meldesk.bylen .melres{order:-4}
+ /* at the reveal nothing is being entered: the block lets go */
+ .meldesk.done .melhold{position:static;border-bottom:0;padding-bottom:0}
+ /* every row of a chromatic ladder is a 44 px target; a half rung keeps its half width */
+ .meldesk .earlad.chr>.earstep{height:var(--lad-row)}
+ .earhalf{height:var(--lad-row)}
+ .el-vars .grp.set{flex:1 1 100%;flex-wrap:wrap;margin-left:0;white-space:normal}
+ .el-vars .grp.set .cap{flex:1 1 100%}
+ .el-vars .grp.set .el-seg{flex:1 1 100%}
+ .el-vars .grp.set .el-seg button{flex:1 1 auto;padding:0 10px}
+ .el-gap{grid-template-columns:auto minmax(0,1fr);gap:4px 12px}
+ .el-gap .say{grid-column:1 / -1;margin-bottom:6px}
+ .el-gap .gbar i{width:26px}
+}

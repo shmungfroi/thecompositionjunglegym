@@ -1,0 +1,1271 @@
+{
+ "pal_r6_24_1366": {
+  "card": [
+   842,
+   1097
+  ],
+  "head": [
+   796,
+   126
+  ],
+  "desk": [
+   796,
+   666
+  ],
+  "hold": null,
+  "score": [
+   476,
+   259
+  ],
+  "svg": [
+   442,
+   203
+  ],
+  "pal": [
+   292,
+   58
+  ],
+  "len": [
+   "96x56",
+   "97x56"
+  ],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [],
+  "lad": [
+   292,
+   572
+  ],
+  "row": [
+   "292x49"
+  ],
+  "half": [],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [],
+  "set": null,
+  "vars": [
+   704,
+   39
+  ],
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   "on:6:40x34",
+   "el-band cur open:7:40x34",
+   "el-band cur open:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-band:11:40x34",
+   "el-band:12:40x34",
+   "el-var:Without th:147x30",
+   "el-var:First note:78x30",
+   "el-btn:Show me:86x34",
+   "el-btn:Skip \u2192:72x34",
+   "el-btn sm:\u21b6 Undo:69x30",
+   "el-btn sm:\u21b7 Redo:68x30",
+   "el-btn sm:Clear:57x30",
+   "el-btn gold:Check:69x34",
+   "note:show lette:155x20"
+  ],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "pal_r6_24_390": {
+  "card": [
+   362,
+   1526
+  ],
+  "head": [
+   328,
+   188
+  ],
+  "desk": [
+   328,
+   856
+  ],
+  "hold": [
+   360,
+   242
+  ],
+  "score": [
+   328,
+   165
+  ],
+  "svg": [
+   328,
+   91
+  ],
+  "pal": [
+   328,
+   50
+  ],
+  "len": [
+   "108x48",
+   "109x48"
+  ],
+  "mut": null,
+  "undo1": [
+   44,
+   44
+  ],
+  "sysmap": [
+   "136x44"
+  ],
+  "lad": [
+   328,
+   484
+  ],
+  "row": [
+   "328x44"
+  ],
+  "half": [],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [],
+  "set": null,
+  "vars": [
+   302,
+   103
+  ],
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": [],
+  "sticky": {
+   "hold_top": 96,
+   "hold_bottom": 338,
+   "hold_h": 242,
+   "room_above_tabs": 438,
+   "rows_total": 11,
+   "rows_above_tabs": 9,
+   "rows_clear_of_play_bar": 8
+  }
+ },
+ "pal_r6_68_1366": {
+  "card": [
+   842,
+   1097
+  ],
+  "head": [
+   796,
+   126
+  ],
+  "desk": [
+   796,
+   666
+  ],
+  "hold": null,
+  "score": [
+   476,
+   259
+  ],
+  "svg": [
+   442,
+   203
+  ],
+  "pal": [
+   292,
+   58
+  ],
+  "len": [
+   "72x56",
+   "73x56"
+  ],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [],
+  "lad": [
+   292,
+   572
+  ],
+  "row": [
+   "292x49"
+  ],
+  "half": [],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [],
+  "set": null,
+  "vars": [
+   704,
+   39
+  ],
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   "on:6:40x34",
+   "el-band cur open:7:40x34",
+   "el-band cur open:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-band:11:40x34",
+   "el-band:12:40x34",
+   "el-var:Without th:147x30",
+   "el-var:First note:78x30",
+   "el-btn:Show me:86x34",
+   "el-btn:Skip \u2192:72x34",
+   "el-btn sm:\u21b6 Undo:69x30",
+   "el-btn sm:\u21b7 Redo:68x30",
+   "el-btn sm:Clear:57x30",
+   "el-btn gold:Check:69x34",
+   "note:show lette:155x20"
+  ],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "pal_r6_68_390": {
+  "card": [
+   362,
+   1549
+  ],
+  "head": [
+   328,
+   188
+  ],
+  "desk": [
+   328,
+   856
+  ],
+  "hold": [
+   360,
+   242
+  ],
+  "score": [
+   328,
+   165
+  ],
+  "svg": [
+   328,
+   91
+  ],
+  "pal": [
+   328,
+   50
+  ],
+  "len": [
+   "81x48",
+   "82x48"
+  ],
+  "mut": null,
+  "undo1": [
+   44,
+   44
+  ],
+  "sysmap": [
+   "136x44"
+  ],
+  "lad": [
+   328,
+   484
+  ],
+  "row": [
+   "328x44"
+  ],
+  "half": [],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [],
+  "set": null,
+  "vars": [
+   302,
+   103
+  ],
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": [],
+  "sticky": {
+   "hold_top": 96,
+   "hold_bottom": 338,
+   "hold_h": 242,
+   "room_above_tabs": 438,
+   "rows_total": 11,
+   "rows_above_tabs": 9,
+   "rows_clear_of_play_bar": 8
+  }
+ },
+ "res_r6_1366": {
+  "card": [
+   842,
+   1215
+  ],
+  "head": [
+   796,
+   126
+  ],
+  "desk": [
+   796,
+   909
+  ],
+  "hold": null,
+  "score": [
+   476,
+   517
+  ],
+  "svg": [
+   442,
+   433
+  ],
+  "pal": null,
+  "len": [],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [],
+  "lad": [
+   292,
+   572
+  ],
+  "row": [
+   "292x49"
+  ],
+  "half": [],
+  "res": [
+   476,
+   335
+  ],
+  "answer": [
+   396,
+   66
+  ],
+  "gap": null,
+  "markkey": [
+   476,
+   18
+  ],
+  "seg": [],
+  "set": null,
+  "vars": null,
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   "on:6:40x34",
+   "el-band cur open:7:40x34",
+   "el-band cur open:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-band:11:40x34",
+   "el-band:12:40x34",
+   "el-btn gold:Next \u2192:76x34",
+   "el-replay:Hear bar 2:263x40",
+   "el-btn:Hear it al:210x34",
+   "note:show lette:155x20"
+  ],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "res_r6_390": {
+  "card": [
+   362,
+   1699
+  ],
+  "head": [
+   328,
+   188
+  ],
+  "desk": [
+   328,
+   1278
+  ],
+  "hold": [
+   360,
+   316
+  ],
+  "score": [
+   328,
+   308
+  ],
+  "svg": [
+   328,
+   206
+  ],
+  "pal": null,
+  "len": [],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [
+   "161x44"
+  ],
+  "lad": [
+   328,
+   484
+  ],
+  "row": [
+   "328x44"
+  ],
+  "half": [],
+  "res": [
+   328,
+   394
+  ],
+  "answer": [
+   256,
+   57
+  ],
+  "gap": null,
+  "markkey": [
+   320,
+   18
+  ],
+  "seg": [],
+  "set": null,
+  "vars": null,
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "a2_r7_1366": {
+  "card": [
+   842,
+   1305
+  ],
+  "head": [
+   796,
+   126
+  ],
+  "desk": [
+   796,
+   999
+  ],
+  "hold": null,
+  "score": [
+   476,
+   527
+  ],
+  "svg": [
+   442,
+   443
+  ],
+  "pal": null,
+  "len": [],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [],
+  "lad": [
+   292,
+   609
+  ],
+  "row": [
+   "292x52"
+  ],
+  "half": [
+   "145x36"
+  ],
+  "res": [
+   476,
+   414
+  ],
+  "answer": [
+   396,
+   66
+  ],
+  "gap": [
+   396,
+   43
+  ],
+  "markkey": [
+   476,
+   18
+  ],
+  "seg": [],
+  "set": null,
+  "vars": null,
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   " done:6:40x34",
+   "on:7:40x34",
+   "el-band cur open:8:40x34",
+   "el-band:9:40x34",
+   "el-band:10:40x34",
+   "el-band:11:40x34",
+   "el-band:12:40x34",
+   "el-btn gold:Next \u2192:76x34",
+   "el-replay:Hear fa to:209x40",
+   "el-btn:Hear it al:210x34",
+   "earstep chr sh:siraised s:145x36",
+   "earstep chr sh:firaised f:145x36",
+   "earstep chr sh:si,raised :145x36",
+   "note:show lette:155x20"
+  ],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "a2_r7_390": {
+  "card": [
+   362,
+   1915
+  ],
+  "head": [
+   328,
+   188
+  ],
+  "desk": [
+   328,
+   1494
+  ],
+  "hold": [
+   360,
+   326
+  ],
+  "score": [
+   328,
+   318
+  ],
+  "svg": [
+   328,
+   216
+  ],
+  "pal": null,
+  "len": [],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [
+   "161x44"
+  ],
+  "lad": [
+   328,
+   561
+  ],
+  "row": [
+   "328x44"
+  ],
+  "half": [
+   "163x44"
+  ],
+  "res": [
+   328,
+   523
+  ],
+  "answer": [
+   256,
+   57
+  ],
+  "gap": [
+   302,
+   93
+  ],
+  "markkey": [
+   320,
+   18
+  ],
+  "seg": [],
+  "set": null,
+  "vars": null,
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "mut_r9_1366": {
+  "card": [
+   842,
+   1244
+  ],
+  "head": [
+   796,
+   126
+  ],
+  "desk": [
+   796,
+   789
+  ],
+  "hold": null,
+  "score": [
+   476,
+   475
+  ],
+  "svg": [
+   442,
+   419
+  ],
+  "pal": [
+   292,
+   58
+  ],
+  "len": [
+   "72x56",
+   "73x56"
+  ],
+  "mut": [
+   292,
+   44
+  ],
+  "undo1": null,
+  "sysmap": [],
+  "lad": [
+   292,
+   641
+  ],
+  "row": [
+   "292x52"
+  ],
+  "half": [
+   "145x36"
+  ],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [
+   "103x30",
+   "132x30"
+  ],
+  "set": [
+   289,
+   32
+  ],
+  "vars": [
+   704,
+   41
+  ],
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   " done:6:40x34",
+   " done:7:40x34",
+   " done:8:40x34",
+   "on:9:40x34",
+   "el-band cur open:10:40x34",
+   "el-band cur open:11:40x34",
+   "el-band cur open:12:40x34",
+   "el-var:Without th:147x30",
+   "el-var:First note:78x30",
+   "el-seg:Keep home :103x30",
+   "el-seg:Move do (m:132x30",
+   "el-btn:Show me:86x34",
+   "el-btn:Skip \u2192:72x34",
+   "earstep chr sh:si,raised :145x36",
+   "el-btn sm:\u21b6 Undo:69x30",
+   "el-btn sm:\u21b7 Redo:68x30",
+   "el-btn sm:Clear:57x30",
+   "el-btn gold:Check:69x34",
+   "note:show lette:155x20"
+  ],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "mut_r9_390": {
+  "card": [
+   362,
+   1773
+  ],
+  "head": [
+   328,
+   171
+  ],
+  "desk": [
+   328,
+   985
+  ],
+  "hold": [
+   360,
+   294
+  ],
+  "score": [
+   328,
+   165
+  ],
+  "svg": [
+   328,
+   91
+  ],
+  "pal": [
+   328,
+   50
+  ],
+  "len": [
+   "81x48",
+   "82x48"
+  ],
+  "mut": [
+   328,
+   44
+  ],
+  "undo1": [
+   44,
+   44
+  ],
+  "sysmap": [
+   "65x44"
+  ],
+  "lad": [
+   328,
+   561
+  ],
+  "row": [
+   "328x44"
+  ],
+  "half": [
+   "163x44"
+  ],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [
+   "136x44",
+   "164x44"
+  ],
+  "set": [
+   302,
+   66
+  ],
+  "vars": [
+   302,
+   175
+  ],
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": [],
+  "sticky": {
+   "hold_top": 96,
+   "hold_bottom": 390,
+   "hold_h": 294,
+   "room_above_tabs": 386,
+   "rows_total": 12,
+   "rows_above_tabs": 8,
+   "rows_clear_of_play_bar": 6
+  }
+ },
+ "rhy_r9_1366": {
+  "card": [
+   842,
+   993
+  ],
+  "head": [
+   796,
+   126
+  ],
+  "desk": null,
+  "hold": null,
+  "score": null,
+  "svg": null,
+  "pal": null,
+  "len": [],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [],
+  "lad": null,
+  "row": [],
+  "half": [],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [
+   "102x30",
+   "181x30"
+  ],
+  "set": [
+   339,
+   32
+  ],
+  "vars": [
+   704,
+   79
+  ],
+  "tiles": [
+   "56x76",
+   "112x76",
+   "56x88",
+   "112x88",
+   "96x88"
+  ],
+  "tup": [
+   "56x88",
+   "112x88",
+   "96x88"
+  ],
+  "rsvg": [
+   "393x90",
+   "324x90"
+  ],
+  "tfams": [
+   796,
+   220
+  ],
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   " done:6:40x34",
+   " done:7:40x34",
+   " done:8:40x34",
+   "on:9:40x34",
+   "el-band cur open:10:40x34",
+   "el-seg:On:44x30",
+   "el-seg:Off:44x30",
+   "el-seg:Steady \u00b7 7:83x30",
+   "el-seg:Normal \u00b7 1:94x30",
+   "el-seg:Kod\u00e1ly nam:102x30",
+   "el-seg:Kod\u00e1ly wit:181x30",
+   "el-btn:Show me:86x34",
+   "el-btn:Skip \u2192:72x34",
+   "el-btn sm:\u21b6 Undo:69x30",
+   "el-btn sm:\u21b7 Redo:68x30",
+   "el-btn sm:Clear:57x30",
+   "el-btn gold:Check:69x34"
+  ],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "rhy_r9_390": {
+  "card": [
+   362,
+   1861
+  ],
+  "head": [
+   328,
+   188
+  ],
+  "desk": null,
+  "hold": null,
+  "score": null,
+  "svg": null,
+  "pal": null,
+  "len": [],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [],
+  "lad": null,
+  "row": [],
+  "half": [],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [
+   "111x44",
+   "189x44"
+  ],
+  "set": [
+   302,
+   66
+  ],
+  "vars": [
+   302,
+   201
+  ],
+  "tiles": [
+   "56x76",
+   "112x76",
+   "56x88",
+   "112x88",
+   "96x88"
+  ],
+  "tup": [
+   "56x88",
+   "112x88",
+   "96x88"
+  ],
+  "rsvg": [
+   "322x90",
+   "254x90"
+  ],
+  "tfams": [
+   328,
+   595
+  ],
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "pal7_r12_1366": {
+  "card": [
+   842,
+   1097
+  ],
+  "head": [
+   796,
+   126
+  ],
+  "desk": [
+   796,
+   666
+  ],
+  "hold": null,
+  "score": [
+   476,
+   259
+  ],
+  "svg": [
+   442,
+   203
+  ],
+  "pal": [
+   292,
+   58
+  ],
+  "len": [
+   "40x56",
+   "50x56"
+  ],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [],
+  "lad": [
+   292,
+   572
+  ],
+  "row": [
+   "292x49"
+  ],
+  "half": [],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [],
+  "set": null,
+  "vars": [
+   704,
+   39
+  ],
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   " done:6:40x34",
+   " done:7:40x34",
+   " done:8:40x34",
+   " done:9:40x34",
+   " done:10:40x34",
+   " done:11:40x34",
+   "on:12:40x34",
+   "el-var:Without th:147x30",
+   "el-var:First note:78x30",
+   "el-btn:Show me:86x34",
+   "el-btn:Skip \u2192:72x34",
+   "el-len::40x56",
+   "el-btn sm:\u21b6 Undo:69x30",
+   "el-btn sm:\u21b7 Redo:68x30",
+   "el-btn sm:Clear:57x30",
+   "el-btn gold:Check:69x34",
+   "note:show lette:155x20"
+  ],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "pal7_r12_390": {
+  "card": [
+   362,
+   1508
+  ],
+  "head": [
+   328,
+   171
+  ],
+  "desk": [
+   328,
+   856
+  ],
+  "hold": [
+   360,
+   242
+  ],
+  "score": [
+   328,
+   165
+  ],
+  "svg": [
+   328,
+   91
+  ],
+  "pal": [
+   328,
+   50
+  ],
+  "len": [
+   "45x48",
+   "46x48",
+   "48x48"
+  ],
+  "mut": null,
+  "undo1": [
+   44,
+   44
+  ],
+  "sysmap": [
+   "136x44"
+  ],
+  "lad": [
+   328,
+   484
+  ],
+  "row": [
+   "328x44"
+  ],
+  "half": [],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [],
+  "set": null,
+  "vars": [
+   302,
+   103
+  ],
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": [],
+  "sticky": {
+   "hold_top": 96,
+   "hold_bottom": 338,
+   "hold_h": 242,
+   "room_above_tabs": 438,
+   "rows_total": 11,
+   "rows_above_tabs": 9,
+   "rows_clear_of_play_bar": 8
+  }
+ },
+ "lad_chr_1366": {
+  "card": [
+   842,
+   1113
+  ],
+  "head": [
+   796,
+   126
+  ],
+  "desk": [
+   796,
+   927
+  ],
+  "hold": null,
+  "score": null,
+  "svg": null,
+  "pal": null,
+  "len": [],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [],
+  "lad": [
+   251,
+   609
+  ],
+  "lads": [
+   "251x609",
+   "251x719",
+   "251x875"
+  ],
+  "row": [
+   "251x52"
+  ],
+  "half": [
+   "124x36"
+  ],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [],
+  "set": null,
+  "vars": null,
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [
+   " done:1:40x34",
+   " done:2:40x34",
+   " done:3:40x34",
+   " done:4:40x34",
+   " done:5:40x34",
+   " done:6:40x34",
+   " done:7:40x34",
+   " done:8:40x34",
+   " done:9:40x34",
+   "on:10:40x34",
+   "el-band cur open:11:40x34",
+   "el-band cur open:12:40x34",
+   "earstep chr sh:siraised s:124x36",
+   "earstep chr sh:firaised f:124x36",
+   "earstep chr sh:si,raised :124x36",
+   "earstep chr fl:telowered :124x36",
+   "earstep chr fl:te,lowered:124x36",
+   "earstep chr sh:liraised l:124x36",
+   "earstep chr fl:lelowered :124x36",
+   "earstep chr fl:selowered :124x36",
+   "earstep chr sh last:firaised f:124x36",
+   "earstep chr fl:melowered :124x36",
+   "earstep chr sh:riraised r:124x36",
+   "earstep chr fl:ralowered :124x36",
+   "earstep chr sh:diraised d:124x36",
+   "earstep chr sh:li,raised :124x36",
+   "earstep chr fl:le,lowered:124x36"
+  ],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ },
+ "lad_chr_390": {
+  "card": [
+   362,
+   1109
+  ],
+  "head": [
+   328,
+   188
+  ],
+  "desk": [
+   328,
+   867
+  ],
+  "hold": null,
+  "score": null,
+  "svg": null,
+  "pal": null,
+  "len": [],
+  "mut": null,
+  "undo1": null,
+  "sysmap": [],
+  "lad": [
+   328,
+   843
+  ],
+  "lads": [
+   "328x843"
+  ],
+  "row": [
+   "328x44"
+  ],
+  "half": [
+   "163x44"
+  ],
+  "res": null,
+  "answer": null,
+  "gap": null,
+  "markkey": null,
+  "seg": [],
+  "set": null,
+  "vars": null,
+  "tiles": [],
+  "tup": [],
+  "rsvg": [],
+  "tfams": null,
+  "over": 0,
+  "small": [],
+  "tiny": [],
+  "clip": [],
+  "outside": [],
+  "errors": []
+ }
+}
