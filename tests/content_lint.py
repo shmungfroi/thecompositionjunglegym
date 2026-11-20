@@ -291,6 +291,22 @@ for s in WARN_TEXT:
         report['lyric_words']['failures'].append(s)
 
 
+# ---------- 6. song rules (0.49 C11): one entry per genre slot per chord type, approved slot order, at least one post-2015 song ----------
+report['song_rules'] = {'failures': []}
+_SL = ['Blues/jazz', 'Pop', 'Rock', 'Musical theatre', 'Metal', 'Australian pick']
+for q, v in SONGS.items():
+    sl = [x['slot'] for x in v]
+    if len(set(sl)) != len(sl):
+        report['song_rules']['failures'].append(f'chord {q!r}: a slot is used twice: {sl}')
+    if any(x not in _SL for x in sl):
+        report['song_rules']['failures'].append(f'chord {q!r}: unknown slot in {sl}')
+    elif sl != sorted(sl, key=_SL.index):
+        report['song_rules']['failures'].append(f'chord {q!r}: slots are not in the approved genre order: {sl}')
+_post = sorted({(x['song'], x['year']) for _, x in entries if int(x['year']) > 2015})
+report['song_rules']['post_2015'] = [f'{a} ({b})' for a, b in _post]
+if not _post:
+    report['song_rules']['failures'].append('no song after 2015 (L70: span up to the present)')
+
 # ---------- 5. syllabus tags (0.49 C10): every code used has NESA's wording; every code listed is used; element letters exist ----------
 # NESA outcome wording, read from curriculum.nsw.edu.au outcomes pages on 20 Nov 2026 (Music 1, Music 2, Music Extension 11-12 (2025)).
 NESA_WORDING = {
@@ -342,6 +358,6 @@ try:
 except Exception as e:
     report['syllabus_tags']['failures'].append(f'tag check failed: {e}')
 
-report['passed'] = not any(report[k]['failures'] for k in ('us_terms', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words', 'syllabus_tags'))
+report['passed'] = not any(report[k]['failures'] for k in ('us_terms', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words', 'syllabus_tags', 'song_rules'))
 print(json.dumps(report, ensure_ascii=False, indent=1))
 sys.exit(0 if report['passed'] else 1)
