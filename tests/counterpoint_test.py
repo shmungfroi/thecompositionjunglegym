@@ -49,6 +49,11 @@ Sections:
      (around the first note, and 1<->5: same rhythm, every step reversed), augmentation (every value doubled), the
      drawn lines (moved by whole octaves, within a tritone of the subject), and the playback buttons (subject,
      inversion, augmentation, diminution = exactly half the subject's onsets and lengths)
+  O  0.48 item F: climb 13's canon, countersubject and stretto messages (500 random subjects, countersubjects and
+     canons, tonal and modal) name every interval in words with the right article, as music21 names it (no "a P4",
+     no "(M2)"); the inverted-countersubject code IC1 and its note follow the interval data (a perfect 4th), not the
+     message text; the rendered issue lists of both tabs; and every hover of the climb 2 ladder (all modes, species,
+     positions) against music21
 
 Not covered: climb 13's beat-by-beat pair checker (c13Pair) and what uses it (canon, stretto finder,
 countersubject, transformation tables), the fugue planner, ladders, score drawing, and whether a counterpoint exists
@@ -1588,6 +1593,125 @@ async def main():
                 while s0m - (L[0][0].midi + o) > 6: o += 12
                 if [m for m, t, d in I_] != [x[0].midi + o for x in L]:
                     fail('G', f'inversion playback ({axis}) {sysk} {sub} {own_s}: {[m for m, t, d in I_]} vs {[x[0].midi + o for x in L]}')
+        # ---------------- O: climb 13 messages and the climb 2 ladder hovers name intervals in words (0.48 item F) ----------------
+        ACCS = {'♯': '#', '♭': '-', '𝄪': '##', '𝄫': '--', '#': '#', 'b': '-'}
+
+        def m21_of(li, acc, octv):
+            return LET[li] + ('#' * acc if acc > 0 else '-' * (-acc)) + str(octv)
+
+        def spelled(lo, hi, article=True):
+            """the app's wording of the interval lo -> hi (music21 pitch names), built from music21's own interval"""
+            m = m21interval.Interval(noteStart=m21pitch.Pitch(lo), noteEnd=m21pitch.Pitch(hi))
+            g = m.generic.undirected
+            ql = m.niceName.rsplit(' ', 1)[0].lower()
+            ql = 'doubly altered' if ql.startswith(('doubly', 'triply')) else ql
+            o = f"{g}{'th' if 11 <= g % 100 <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(g % 10, 'th')}"
+            base = {1: 'unison', 8: 'octave', 15: 'double octave'}.get(g, o)
+            w = base if (ql == 'perfect' and g in (1, 8, 15)) else f'{ql} {base}'
+            return (('an ' if re.match(r'(augmented|octave)', w) else 'a ') + w) if article else w, m
+
+        ABBR_PAREN = re.compile(r'\(\s*(?:a|an)?\s*[dAPMm]\d+\s*\)')            # "(M2)", the old weak-beat and suspension wording
+        ABBR_O = re.compile(r'\b[dAPMm]\d+\b')
+        WRONG_A_O = re.compile(r'\ba\s+(?:augmented|octave|11th|18th)\b')
+        WRONG_AN_O = re.compile(r'\ban\s+(?:perfect|major|minor|diminished|doubly|unison|double|[2-79]|1[02-7])')
+        await pg.evaluate("""()=>{if(!window.__c13PairRaw){window.__c13PairRaw=c13Pair;c13Pair=function(A,B,o){const r=__c13PairRaw(A,B,o);
+            r.forEach(x=>{if(x.iv){const a=A[x.cells[0]],b=B[x.cells[0]];x.__p=[a,b].map(p=>({li:p.li,acc:p.acc||0,oct:p.oct,midi:p.midi,dn:p.dn,txt:p.txt}))}});return r}}}""")
+        jobs13 = []
+        for _ in range(500):
+            n = rng.choice([8, 12, 16])
+            cells = [rng.randrange(-3, 10) if (i == 0 or rng.random() > .25) else 'h' for i in range(n)]
+            cs = [rng.randrange(-1, 11) if (i == 0 or rng.random() > .3) else 'h' for i in range(n)]
+            if rng.random() < .3:
+                ctx = ['modal', rng.choice(['dor', 'phr', 'lyd', 'mix', 'aeo', 'ion'])]
+            else:
+                ctx = ['tonal', rng.randrange(12), rng.choice(['maj', 'min'])]
+            jobs13.append([cells, cs, ctx, rng.choice([-7, -4, 7, 4, -3]), rng.choice([2, 4]), rng.choice(['tonal', 'real'])])
+        out13 = await pg.evaluate("""(J)=>{const o=[];for(const [cells,cs,cx,iv,dl,ans] of J){
+            const ctx=cx[0]==='modal'?(()=>{const M=c2Mode(cx[1])||C2M[0];return{modal:true,M,fin:c2Fin(M)}})():{modal:false,key:{k:cx[1],mode:cx[2]}};
+            C13.ans=ans;const rows=[];
+            const canon=c13CanonCheck(cells,ctx,dl,iv).iss.map(x=>['canon',x]);
+            const csi=c13CSCheck(cells,cs,ctx).map(x=>['countersubject',x]);
+            const S=c13Line(cells,ctx),st=[];for(const d of [1,2,3])for(const [v,s] of [[7,12],[4,7],[-3,-5],[-7,-12],[-4,-7]]){
+              const B=Array(d).fill(null).concat(S.map(p=>p?(ctx.modal?{...c2Pitch(p.dn+v),on:p.on}:{...c13Tr(p,v,s),on:p.on}):null)),A=S.concat(Array(d).fill(null));
+              c13Pair(A,B).forEach(x=>st.push(['stretto',x]))}
+            for(const [src,x] of canon.concat(csi,st))o.push({src,code:x.code,msg:x.msg,p:x.__p||null,below:/^CS below/.test(x.msg)})}return o}""", jobs13)
+        # stretto finder counts must not change with the wording (it counts errors, not text)
+        bad_o = collections.Counter()
+        for r in out13:
+            COUNT[f'climb 13 messages read ({r["src"]})'] += 1
+            msg = r['msg']
+            stripped = msg
+            if r['p']:
+                for q in r['p']:
+                    stripped = stripped.replace(q['txt'], '♪')
+            for what, rx, txt in (('abbreviated interval', ABBR_O, stripped), ('abbreviated interval in brackets', ABBR_PAREN, msg),
+                                  ("'a' before a vowel sound", WRONG_A_O, msg), ("'an' before a consonant sound", WRONG_AN_O, msg)):
+                if rx.search(txt):
+                    bad_o[what] += 1
+                    if bad_o[what] <= 3:
+                        fail('O', f'{what} in a climb 13 {r["src"]} message: {msg}')
+            if r['p']:
+                a, b2 = r['p']
+                lo, hi = (a, b2) if (a['midi'], a['dn']) <= (b2['midi'], b2['dn']) else (b2, a)
+                want, m = spelled(m21_of(lo['li'], lo['acc'], lo['oct']), m21_of(hi['li'], hi['acc'], hi['oct']))
+                COUNT['climb 13 interval names vs music21'] += 1
+                if want not in msg:
+                    bad_o['name differs from music21'] += 1
+                    if bad_o['name differs from music21'] <= 3:
+                        fail('O', f'climb 13 {r["src"]} message does not name {want!r} (music21 {m.name}): {msg}')
+                # the inverted-countersubject code and note follow the interval itself (a perfect 4th or 11th), not the wording
+                if r['below']:
+                    p4 = m.generic.undirected % 7 == 4 and m.name.startswith('P')
+                    COUNT['climb 13 inverted-countersubject issues checked for IC1'] += 1
+                    note = 'This is a 5th that became a 4th' in msg
+                    if (r['code'] == 'IC1') != (p4 and r['code'] in ('I1', 'IC1')) or note != p4:
+                        bad_o['IC1 code or note wrong'] += 1
+                        if bad_o['IC1 code or note wrong'] <= 3:
+                            fail('O', f'inverted countersubject: {m.name}, code {r["code"]}, note {note}: {msg}')
+        reg('O-1', f'climb 13 canon, countersubject and stretto messages ({len(out13)}) name intervals in words, with the right article, as music21 names them',
+            not bad_o and len(out13) > 2000 and COUNT['climb 13 interval names vs music21'] > 500, dict(bad_o))
+        src13 = (REPO / 'index.html').read_text(encoding='utf-8')
+        reg('O-2', 'climb 13 no longer reads its own message text to find a 4th (/a P4|4th/.test(x.msg) gone; c13P4 tests x.iv)',
+            '/a P4|4th/.test(x.msg)' not in src13 and '/P4|4th/.test(x.msg)' not in src13 and 'function c13P4(x){return!!(x.iv&&x.iv.g7===4&&x.iv.q===\'P\')}' in src13)
+        # the rendered climb 13 pages (canon and fugue tabs, random material): no abbreviation in the issue lists
+        dom13 = await pg.evaluate("""(J)=>{const o=[];S.level=6;for(const [cells,cs,cx,iv,dl,ans] of J.slice(0,40)){C13.sys='tonal';C13.ownOn=false;C13.tab='canon';
+            C13.canon={delay:dl,iv:[-7,-4,7,4].includes(iv)?iv:-7,dux:cells.slice(0,cells.length).concat(Array(Math.max(0,24-cells.length)).fill(null)).slice(0,24)};renderClimb13();
+            o.push([...document.querySelectorAll('#c13Body .c2iss li')].map(l=>l.textContent));
+            C13.tab='fugue';C13.ownOn=true;C13.own=cells.slice(0,12).concat(Array(Math.max(0,12-cells.length)).fill(null)).slice(0,12);C13.key={k:cx[0]==='tonal'?cx[1]:0,mode:cx[0]==='tonal'?cx[2]:'maj'};
+            const ctx=c13Ctx(),k=(C13.ownOn?'own':C13.sys+C13.sub)+':'+(ctx.modal?ctx.M.k:ctx.key.k+ctx.key.mode);C13.cs[k]=cs.slice(0,12).concat(Array(12).fill(0)).slice(0,12);renderClimb13();
+            o.push([...document.querySelectorAll('#c13Body .c2iss li')].map(l=>l.textContent))}C13.tab='canon';return o}""", jobs13)
+        lis = [t for grp in dom13 for t in grp]
+        COUNT['climb 13 rendered issue lines read'] = len(lis)
+        bad_dom = [t for t in lis if ABBR_PAREN.search(t) or re.search(r'\b(?:a|an|is a|dissonance \()\s*[dAPMm]\d+\b', t)]
+        reg('O-3', f'rendered climb 13 issue lists ({len(lis)} lines) show no abbreviated interval', not bad_dom and len(lis) > 50, bad_dom[:3])
+        # climb 2: the ladder's hover text names the interval with the cantus in words, as music21 does
+        await pg.goto('http://app/index.html#climbs/2')
+        await pg.wait_for_timeout(1200)
+        titles = await pg.evaluate("""()=>{const o=[];S.level=6;for(const M of C2M)for(const sp of [1,2,3,4,5])for(const pos of ['above','below']){C2.mode=M.k;C2.sp=sp;C2.pos=pos;renderClimb2();
+            document.querySelectorAll('#c2LadW button.c2c[title]').forEach(b=>o.push(b.title))}return o}""")
+        PIT = re.compile(r'^([A-G])((?:♯|♭|𝄪|𝄫)*)(-?\d+)$')
+
+        def m21_txt(t):
+            mm = PIT.match(t)
+            return mm.group(1) + ''.join(ACCS[c] for c in mm.group(2)) + mm.group(3)
+        bad_t = collections.Counter()
+        for t in titles:
+            COUNT['climb 2 ladder hovers checked'] += 1
+            mm = re.match(r'^(\S+) against (\S+): (.+)$', t)
+            if not mm or not PIT.match(mm.group(1)) or not PIT.match(mm.group(2)):
+                bad_t['unparsed'] += 1
+                if bad_t['unparsed'] <= 3:
+                    fail('O', f'ladder hover not understood: {t!r}')
+                continue
+            a, c = m21pitch.Pitch(m21_txt(mm.group(1))), m21pitch.Pitch(m21_txt(mm.group(2)))
+            lo, hi = (a, c) if (a.midi, a.diatonicNoteNum) <= (c.midi, c.diatonicNoteNum) else (c, a)
+            want, m = spelled(lo.nameWithOctave, hi.nameWithOctave, article=False)
+            if ABBR_O.search(mm.group(3)) or mm.group(3) != want:
+                bad_t['name'] += 1
+                if bad_t['name'] <= 3:
+                    fail('O', f'ladder hover {t!r}: music21 says {want!r} ({m.name})')
+        reg('O-4', f'climb 2 ladder hovers ({len(titles)}, every mode, species and position) name the interval in words as music21 does',
+            not bad_t and len(titles) > 1000, dict(bad_t))
         await pg.evaluate("()=>{C13.ownOn=false;C13.sys='tonal';C13.sub='A'}")
         await b.close()
 
