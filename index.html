@@ -577,7 +577,7 @@ body.teacher .song .tn{display:block}
 .checker{margin-top:14px;display:flex;flex-direction:column;gap:6px}
 .checker .ok{color:var(--green);font-size:15px}
 .iss{font-size:14px;line-height:1.5;padding:7px 12px;border-radius:8px;background:#0e0c08;border-left:3px solid var(--c)}
-.iss span{display:inline-block;width:18px;color:var(--c);font-weight:700}
+.iss span.ic{display:inline-block;width:18px;color:var(--c);font-weight:700}
 .iss b{color:var(--ivory);font-weight:600;margin-right:4px}
 .iss.error{--c:var(--red)}.iss.warn{--c:var(--gold)}.iss.info{--c:var(--muted)}
 
@@ -3073,7 +3073,7 @@ function renderCoach(){const L=vcList(),labels=L.map(ch=>analyse(ch,K).num);
 function renderSATB(L,labels){
  const key=JSON.stringify([L.map(c=>[c.root,c.q,c.inv||0]),K]);
  if(VL.satbKey!==key){const r=satbRealise(L,K);VL.satbKey=key;VL.sel=null;VL.satb=r;VL.satbModel=r?r.map(v=>v.slice()):null}
- if(!VL.satb){$('satbFrame').innerHTML='';$('satbStaff').innerHTML='';$('satbTools').innerHTML='';$('satbCheck').innerHTML='<div class="iss warn"><span>!</span>One chord in this progression can\'t be spelled completely by four voices (usually a 9th chord with its 5th in the bass). Change its inversion in the Gym and come back.</div>';return}
+ if(!VL.satb){$('satbFrame').innerHTML='';$('satbStaff').innerHTML='';$('satbTools').innerHTML='';$('satbCheck').innerHTML='<div class="iss warn"><span class="ic">!</span>One chord in this progression can\'t be spelled completely by four voices (usually a 9th chord with its 5th in the bass). Change its inversion in the Gym and come back.</div>';return}
  const S4=VL.satb,iss=checkSATB(S4,L),bad=iss.filter(e=>e.sev==='error'&&e.at.length===2).map(e=>({i:e.at[0],v:e.v}));
  const names=S4.map((V,i)=>{const c=chordOf(L[i].root,L[i].q,L[i].inv||0);return V.map(m=>{const t=c.tones.find(t=>mod(t.midi,12)===mod(m,12));return t?pretty(spell(t.li,m).name):'?'})});
  $('satbFrame').innerHTML=frameSVG(S4,labels,{fixed:true,click:true,sel:VL.sel,names,bad,solo:VL.solo,cw:84,h:300,hl:[...new Set(iss.filter(e=>e.sev==='error').flatMap(e=>e.at))]});
@@ -3081,7 +3081,7 @@ function renderSATB(L,labels){
   (VL.sel?`<span class="seltxt">Selected: <b>${VN[VL.sel.v]}</b>, chord ${VL.sel.i+1}</span><button class="mini" data-nudge="1">↑ next chord note up</button><button class="mini" data-nudge="-1">↓ next chord note down</button>`:'<span class="seltxt">Click a note to select it</span>')+'<button class="mini" data-hist="voice:u" title="Undo (Ctrl/⌘ Z)">↶ Undo</button><button class="mini" data-hist="voice:r" title="Redo">↷ Redo</button>';
  const err=iss.filter(e=>e.sev==='error'),warn=iss.filter(e=>e.sev==='warn'),info=iss.filter(e=>e.sev==='info');
  $('satbCheck').innerHTML=(err.length?'':`<div class="ok">✓ No rule broken. ${warn.length?'A few style points below.':'Clean four-part writing.'}</div>`)+
-  [...err,...warn,...info].map(e=>`<div class="iss ${e.sev}"><span>${e.sev==='error'?'✗':e.sev==='warn'?'!':'i'}</span><b>${e.at.length===2?`Chords ${e.at[0]+1}→${e.at[1]+1}`:`Chord ${e.at[0]+1}`}</b> ${e.text}</div>`).join('');
+  [...err,...warn,...info].map(e=>`<div class="iss ${e.sev}"><span class="ic">${e.sev==='error'?'✗':e.sev==='warn'?'!':'i'}</span><b>${e.at.length===2?`Chords ${e.at[0]+1}→${e.at[1]+1}`:`Chord ${e.at[0]+1}`}</b> ${e.text}</div>`).join('');
  drawSATB($('satbStaff'),S4,L)}
 function drawSATB(el,S4,L){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,drawSATB,arguments);
  const VF=Vex.Flow,N=S4.length,nb=Math.ceil(N/2),ksig=KEYN[K.mode][K.k]+(K.mode==='min'?'m':''),key={k:K.k,mode:K.mode},k=ENG.space('exercise')/10;
@@ -3091,7 +3091,7 @@ function drawSATB(el,S4,L){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,dra
  const build=b=>{const ch=[2*b,2*b+1].filter(i=>i<N),dur=ch.length===1&&N%2?'w':'h';
   const mk=(v,clef,stem)=>{const ns=ch.map(i=>{ENG.note(SP[i][v]);return new VF.StaveNote({clef,keys:[SP[i][v].key],duration:dur,stem_direction:stem})});return new VF.Voice({num_beats:4,beat_value:4}).setMode(VF.Voice.Mode.SOFT).addTickables(ns)};
   const vS=mk(3,'treble',1),vA=mk(2,'treble',-1),vT=mk(1,'bass',1),vB=mk(0,'bass',-1);VF.Accidental.applyAccidentals([vS,vA],ksig);VF.Accidental.applyAccidentals([vT,vB],ksig);return[{voices:[vS,vA]},{voices:[vT,vB]}]};
- const bot=20+14/k,S=ENG.score(el,{task:'exercise',n:nb,staves:[{clef:'treble',ks:ksig},{clef:'bass',ks:ksig}],gap:8,conn:'brace',time:'4/4',top:34,bottom:bot,build,
+ const bot=20+28/k,S=ENG.score(el,{task:'exercise',n:nb,staves:[{clef:'treble',ks:ksig},{clef:'bass',ks:ksig}],gap:8,conn:'brace',time:'4/4',top:34,bottom:bot,build,
   beats:()=>4,minBar:b=>[2*b,2*b+1].filter(i=>i<N).reduce((s,i)=>s+rnW[i],0)+20});
  // romans under each chord, centred on the bass note, one row per system
  S.sys.forEach(sy=>{let lo=-1e9;for(let b=sy.from;b<sy.to;b++){const bv=S.bars[b].data[1].voices[1].getTickables();lo=Math.max(lo,ENG.ext(S.bars[b].data[1].voices.flatMap(v=>v.getTickables())).lo)}
@@ -3358,7 +3358,7 @@ async function singScale(){const T=scaleTones(KS.tonic,KS.sc,KS.desc),box=$('ksS
   const t=T[i];box.innerHTML=`<div class="singtask">Sing <b class="so">${solTxt(t.sol)}</b> <span class="note">(${pretty(t.name)} · ${degPretty(t.d)} · ${HANDS[t.sol]||'chromatic'})</span> <button class="mini" data-kss="stop">Stop</button></div><div class="meter" id="ksMeter"><div class="tgt"></div><div class="needle" id="ksNeedle"></div><span id="ksHeard">Listening…</span></div>`;
   document.querySelectorAll('#ksTiles .stile').forEach((e,j)=>e.classList.toggle('now',j===i));
   if(i===0)play([t.midi],0,'piano');
-  singListen(t.midi,()=>{tone(t.midi,ac().currentTime,'piano');i++;setTimeout(step,250)}).then(ok=>{if(!ok){box.innerHTML=`<div class="iss warn"><span>!</span>${MICFAIL}</div>`;KS.sing=null}})};
+  singListen(t.midi,()=>{tone(t.midi,ac().currentTime,'piano');i++;setTimeout(step,250)}).then(ok=>{if(!ok){box.innerHTML=`<div class="iss warn"><span class="ic">!</span>${MICFAIL}</div>`;KS.sing=null}})};
  step()}
 /* ---------- tabs & events ---------- */
 function renderKeysRoom(){document.querySelectorAll('#ksTabbar button').forEach(b=>b.classList.toggle('on',b.dataset.ktab===KS.tab));
@@ -3388,7 +3388,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-ktab],[dat
  if(d.kgq==='again'){playQ();return}
  if(d.kga&&G.q&&!G.q.ans){G.q.ans=d.kga;gymRec(d.kga===gymLabel(G.q.iv));renderGymUI();if(G.n%10===0)logIt(`aural gym: named ${G.right}/${G.n} intervals`);return}
  if(d.kgq==='snew'){G.dirs.harm=false;newQ();if(G.q.dir==='harm')G.q.dir='up';renderGymUI();play([G.q.m0],0,'piano');const q=G.q;
-  setTimeout(()=>singListen(q.m1,()=>{if(G.q!==q)return;gymRec(true);micStop();tone(q.m1,ac().currentTime,'piano');const el=$('ksMeter');if(el)el.outerHTML=`<div class="ok" style="margin-top:10px">✓ In tune: ${q.iv.n}. ${q.iv.so}.</div>`;gymTallyRefresh()}).then(ok=>{if(!ok){const el=$('ksMeter');if(el)el.outerHTML=`<div class="iss warn"><span>!</span>${MICFAIL}</div>`}}),900);return}
+  setTimeout(()=>singListen(q.m1,()=>{if(G.q!==q)return;gymRec(true);micStop();tone(q.m1,ac().currentTime,'piano');const el=$('ksMeter');if(el)el.outerHTML=`<div class="ok" style="margin-top:10px">✓ In tune: ${q.iv.n}. ${q.iv.so}.</div>`;gymTallyRefresh()}).then(ok=>{if(!ok){const el=$('ksMeter');if(el)el.outerHTML=`<div class="iss warn"><span class="ic">!</span>${MICFAIL}</div>`}}),900);return}
  if(d.kgq==='sref'&&G.q){play([G.q.m0],0,'piano');return}
  if(d.kgq==='shint'&&G.q){play([G.q.m0,G.q.m1],.7,'piano');if(!G.q.counted){G.q.counted=1;gymRec(false);gymTallyRefresh()}return}
 });
@@ -3569,7 +3569,7 @@ function renderClimb4(){const key=C4.key,kn=keyName(key),EX=C4EX.filter(x=>x.l<=
 function c4Check(){const key=C4.key;let ok=0,done=0;C4MEL.forEach((b,i)=>{const r=C4.melody[i],el=$('c4m'+i);if(!r){el.textContent='';return}done++;
   const p=parseRoman(r,key),pcs=chordOf(p.root,p.q,0).tones.map(t=>mod(t.midi,12)),fit=C4.notes[i].every(n=>pcs.includes(mod(n.midi,12)));if(fit)ok++;
   el.innerHTML=fit?'<span style="color:var(--green)">✓ fits</span>':`<span style="color:var(--red)">✗ ${C4.notes[i].filter(n=>!pcs.includes(mod(n.midi,12))).map(n=>pretty(n.name)).join(', ')} not in ${r}</span>`});
- $('c4Res').innerHTML=done<8?`<div class="note">${8-done} bar${8-done>1?'s':''} still to choose.</div>`:ok===8?`<div class="ok">✓ All eight bars fit. Notice where you used V: bar 4 is a question (imperfect cadence) and bars 7–8 are the answer (perfect cadence).</div>`:`<div class="iss warn"><span>!</span>${ok} of 8 bars fit. Look at the red notes: which chord contains them?</div>`;
+ $('c4Res').innerHTML=done<8?`<div class="note">${8-done} bar${8-done>1?'s':''} still to choose.</div>`:ok===8?`<div class="ok">✓ All eight bars fit. Notice where you used V: bar 4 is a question (imperfect cadence) and bars 7–8 are the answer (perfect cadence).</div>`:`<div class="iss warn"><span class="ic">!</span>${ok} of 8 bars fit. Look at the red notes: which chord contains them?</div>`;
  if(done===8)logIt(`harmonised the I–IV–V tune: ${ok}/8 bars`)}
 function c4PlayMel(){stopAll();const key=C4.key,a=ac(),spb=60/G.tempo;MAST.gain.value=.42;let t=a.currentTime+.1;PLAY.on=true;
  C4MEL.forEach((b,i)=>{const r=C4.melody[i];if(r){const p=parseRoman(r,key),c=chordOf(p.root,p.q,0);const root=48+mod(c.tones[0].midi,12);tone(root-12,t,'piano');c.tones.forEach(x=>tone(48+mod(x.midi,12)+(mod(x.midi,12)<mod(c.tones[0].midi,12)?12:0),t,'piano'))}
@@ -3876,7 +3876,7 @@ function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.f
    <div class="c7build">${base.map((rn,i)=>{const can=i>0&&rn!==base[0]&&!/°/.test(rn),on=C7.ins[mode+i];const p=parseRoman(rn,key),sp=on?parseRoman('V7/'+rn,key):null;
      return`${can?`<button class="c7plus ${on?'on':''}" data-c7i="${i}" title="${on?'Remove':'Add'} V7/${rn}">${on?`V7/${rn}<small>${pretty(chordOf(sp.root,sp.q,0).sym)}</small>`:'⊕'}</button>`:''}<span>${rn}<small>${pretty(chordOf(p.root,p.q,0).sym)}</small></span>`}).join('')}</div>
    <div class="staff" id="c7bStaff"></div>
-   <div class="checker">${!B.sat?'<div class="iss warn"><span>!</span>The four voices can\'t be realised for this combination. Remove one secondary dominant.</div>':bErr.length?bErr.map(e=>`<div class="iss error"><span>✗</span>Chords ${e.at.map(x=>x+1).join('–')}: ${e.text}</div>`).join(''):`<div class="ok">✓ ${nIns?`${nIns} secondary dominant${nIns>1?'s':''}, no rule broken.`:'Add a secondary dominant to start.'}${bWarn.length?' Style points:':''}</div>${bWarn.map(e=>`<div class="iss warn"><span>!</span>Chords ${e.at.map(x=>x+1).join('–')}: ${e.text}</div>`).join('')}`}</div>
+   <div class="checker">${!B.sat?'<div class="iss warn"><span class="ic">!</span>The four voices can\'t be realised for this combination. Remove one secondary dominant.</div>':bErr.length?bErr.map(e=>`<div class="iss error"><span class="ic">✗</span>Chords ${e.at.map(x=>x+1).join('–')}: ${e.text}</div>`).join(''):`<div class="ok">✓ ${nIns?`${nIns} secondary dominant${nIns>1?'s':''}, no rule broken.`:'Add a secondary dominant to start.'}${bWarn.length?' Style points:':''}</div>${bWarn.map(e=>`<div class="iss warn"><span class="ic">!</span>Chords ${e.at.map(x=>x+1).join('–')}: ${e.text}</div>`).join('')}`}</div>
    <p class="note" style="margin:10px 0 0">Challenge: add all of them. The phrase becomes a chain of small arrivals. Then keep only the one you like most: which chord deserved the spotlight?</p></section>
  </div>
  <section class="card"><h3>Make · a phrase with a detour</h3>
@@ -3985,7 +3985,7 @@ function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.f
    ${CH8.forced?'<p class="note" style="margin:8px 0 0">A Neapolitan or augmented 6th has one job: to lead into V. It can go straight to V, or through the cadential 6/4 (I⁶₄ → V), the other standard path in common-practice harmony. Tap ⟲ to choose.</p>':''}
    ${B.sat?c8Bars(B.L,key,'c8bBars'):''}
    <div class="staff" id="c8bStaff"></div>
-   <div class="checker">${!B.sat?'<div class="iss warn"><span>!</span>The four voices can\'t be realised for this combination. Swap one chord back.</div>':bErr.length?bErr.map(e=>`<div class="iss error"><span>✗</span>Chords ${e.at.map(x=>x+1).join('–')}: ${e.text}</div>`).join(''):`<div class="ok">✓ ${nSw?`${nSw} chord${nSw>1?'s':''} swapped, no rule broken.`:'Tap a chord with ⟲ to start.'}${bWarn.length?' Style points:':''}</div>${bWarn.map(e=>`<div class="iss warn"><span>!</span>Chords ${e.at.map(x=>x+1).join('–')}: ${e.text}</div>`).join('')}`}</div>
+   <div class="checker">${!B.sat?'<div class="iss warn"><span class="ic">!</span>The four voices can\'t be realised for this combination. Swap one chord back.</div>':bErr.length?bErr.map(e=>`<div class="iss error"><span class="ic">✗</span>Chords ${e.at.map(x=>x+1).join('–')}: ${e.text}</div>`).join(''):`<div class="ok">✓ ${nSw?`${nSw} chord${nSw>1?'s':''} swapped, no rule broken.`:'Tap a chord with ⟲ to start.'}${bWarn.length?' Style points:':''}</div>${bWarn.map(e=>`<div class="iss warn"><span class="ic">!</span>Chords ${e.at.map(x=>x+1).join('–')}: ${e.text}</div>`).join('')}`}</div>
   </section>
  </div>
  <section class="card"><h3>Make · change the light</h3>
@@ -4082,7 +4082,7 @@ function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.f
  const mv=c9Move(V);
  const tKey=mode==='maj'?key:{k:mod(key.k+3,12),mode:'maj'},GL=c9GtList(),GLine=c9GtLine();
  const gtDone=GLine.every(Boolean);let gtMsg='';
- if(gtDone){const mvs=GLine.slice(1).map((n,i)=>Math.abs(n.midi-GLine[i].midi));const lp=mvs.filter(x=>x>2).length,ct=mvs.filter(x=>x===0).length;gtMsg=lp?`<div class="iss warn"><span>!</span>${lp} leap${lp>1?'s':''} (bigger than a tone). Try the other guide tone in the bar after each leap: one of them is always a step or a common tone away.</div>`:`<div class="ok">✓ A smooth guide-tone line: every move is a step or a held note (${ct} common tone${ct===1?'':'s'}). Sing it, then decorate it into a melody.</div>`}
+ if(gtDone){const mvs=GLine.slice(1).map((n,i)=>Math.abs(n.midi-GLine[i].midi));const lp=mvs.filter(x=>x>2).length,ct=mvs.filter(x=>x===0).length;gtMsg=lp?`<div class="iss warn"><span class="ic">!</span>${lp} leap${lp>1?'s':''} (bigger than a tone). Try the other guide tone in the bar after each leap: one of them is always a step or a common tone away.</div>`:`<div class="ok">✓ A smooth guide-tone line: every move is a step or a held note (${ct} common tone${ct===1?'':'s'}). Sing it, then decorate it into a melody.</div>`}
  const minTab=mode==='min';
  $('climbDetail').innerHTML=`
  <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 9 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c9Key">${keySel}</select></label></div>
@@ -4363,7 +4363,7 @@ function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V.filter(v=>v.l
   <section class="card"><h3>Try · your reharmonisation<span class="sp"></span><button class="mini gold" data-c11m="play">▶ Play</button><button class="mini" data-c11m="reset">Start again</button><button class="mini" data-load="${mine.join(' ')}|maj">⤴ Gym</button></h3>
    <p class="note" style="margin:0 0 10px">For each half bar, only the chords that fit the melody note are offered (Stage ${S.level} vocabulary). Choose one in every slot, then listen.</p>
    <div class="c11mine">${mine.map((r,i)=>{const ch=ML[i],O=c11Opts(i,key,mel);return`<div class="mb"><small>slot ${i+1} · melody ${pretty(mel[i].name)}${i?` · ${c11Motion(ML[i-1],ch)}`:''}</small><b>${pretty(chordOf(ch.root,ch.q,ch.inv).sym)}${ch.inv?'/'+pretty(chordOf(ch.root,ch.q,ch.inv).bass.name):''} <span class="note">${c11Rn(r)}</span></b><div>${O.map(o=>`<button class="chip ${o===r?'on':''}" data-c11o="${i}|${o}">${c11Rn(o)}</button>`).join('')}</div></div>`}).join('')}</div>
-   <div class="checker"><div class="ok">${rev.strong} strong move${rev.strong===1?'':'s'} (a root falling a 5th, or a dominant sliding down a semitone).</div>${rev.notes.map(n=>`<div class="iss warn"><span>!</span>${n}</div>`).join('')}</div>
+   <div class="checker"><div class="ok">${rev.strong} strong move${rev.strong===1?'':'s'} (a root falling a 5th, or a dominant sliding down a semitone).</div>${rev.notes.map(n=>`<div class="iss warn"><span class="ic">!</span>${n}</div>`).join('')}</div>
    <div class="staff" id="c11mStaff"></div></section>
  </div>
  <section class="card"><h3>Make · three tellings of one tune</h3>
