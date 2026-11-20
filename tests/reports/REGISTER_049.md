@@ -55,3 +55,11 @@ Deferred: R19–R22 (counterpoint) — Justin 20 Nov "later".
 | C25 | (a) re-voice with root or 5th doubled | Approved → building (Opus) |
 | C26 | (a) defer to the 0.51 cadence ladder | Deferred |
 | Tally | (b) build the link hidden; switch on when the URL arrives | Approved |
+
+## New rows from IC_C18_C20_049 (21 Nov, independent check), status Drafted
+| id | finding (evidence) | rule | proposed change | impact | regression test | pri | owner | status |
+|---|---|---|---|---|---|---|---|---|
+| C27 | "Nothing Else Matters" fills three Metal slots (minor, 7, add9) but is listed as soft rock / power ballad (Wikipedia; Louder: "metal power ballad") | L05 one per genre | Justin to rule: keep (metal band, part of the genre) or treat as gaps | Song cards | content_lint slot honesty | Should | Justin | Drafted (needs Justin) |
+| C28 | Slot-honesty lint covers the Metal slot only; rock fillers in Blues/jazz (Learn to Fly sus2, Free Fallin' sus4) are not flagged | L05 honest gaps | Apply the check to every genre slot | Song cards | content_lint | Should | Sonnet | Drafted |
+| C29 | 17 chord types have empty genre slots not declared as gaps, so no gap card shows | Honest gaps | Lint that every slot is filled or a declared gap; add the cards | Song cards | content_lint | Should | Sonnet | Drafted |
+| C30 | Two Nothing Else Matters entries (minor, add9) rest on Hooktheory alone | Two sources or one authoritative | Find a second source or label honestly | Song cards | content_lint source rule | Could | Sonnet + IC | Drafted |
