@@ -68,4 +68,4 @@ Not run: a real Tab press (the test sends the key event; the browser's own focus
 - No real phone, no screen reader, no student.
 - Drawn on melodic dictation only. The Keys interval quiz and Sing it back have a different header (`.kqhead`); neither option is drawn there.
 - The Stage switch on 4 or 5 (the "more" chip of 0.49) is not drawn for either option. In A the chip would take the place of the hidden groups; in B a hidden Stage's button would go dashed.
-- The 18 descriptions are mine, to test line length; the longest is 38 characters and wraps to two lines in B's phone list. The card under the header is the 0.48 melody drill, there as a backdrop.
+- The 18 descriptions are mine, to test line length; the longest is 41 characters, and the longer ones wrap to two lines in B's phone list. The card under the header is the 0.48 melody drill, there as a backdrop.
