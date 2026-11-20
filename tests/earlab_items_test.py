@@ -8,6 +8,8 @@ Sections
   Q  EL-6  chord quality: root position only at rungs 1-3, >= 1,000 seeded items per rung, spacing, two registers, register tell,
            augmented and diminished 7th answers name no inversion and say the chord is symmetrical
   K  EL-7  cadences rung 1: four basic cadences, two chords after the key chord, open voicing, SATB checker, balance, tells
+  K2 EL S2 / S1 (IC_EAR2_048): rung 1 model share inside imperfect (I–V and IV–V about half each), the IV-first ambiguity, the soprano
+           tells, and the RUNG1_SOP_BALANCE switch (default off; on: strict, soprano tells lower, register tells still near chance)
   S  R4    cadences rung 3: six answers, family feedback, SATB checker, mode tell, the 6/4 bass motion, >= 100 distinct items per answer
   M  EL-10 stats model (unit) and a scoring flow in the page
   U  EL-11 rung wording, Stage switch, show all, Stage tags, rung change mid-question, page errors at Stages 4, 5, 6
@@ -277,6 +279,61 @@ def sec_K(items, real):
 SIX = ['perfect', 'plagal', 'imperfect', 'interrupted', 'phrygian', 'cad64']
 
 
+def r1_sop(r):
+    return ((r['ch'][0][3] - r['k']) % 12, (r['ch'][1][3] - r['k']) % 12)
+
+
+def sec_K2(off, on, flag_default):
+    """EL S2 and S1 (IC_EAR2_048). off / on: rung 1 items with RUNG1_SOP_BALANCE off (default) / on."""
+    if flag_default is not False:
+        fail('K2', f'RUNG1_SOP_BALANCE defaults to {flag_default}, not false (Justin has not ruled)')
+    A = lambda r: r['a']
+    acc_sop = {}
+    for name, items in (('off', off), ('on', on)):
+        imp = [q for q in items if q['a'] == 'imperfect']
+        share = sum(q['rns'][0] == 'IV' for q in imp) / len(imp)
+        COUNT[f'K2 IV–V share of imperfect (switch {name})'] = f'{share:.1%}'
+        if not .42 <= share <= .58:
+            fail('K2', f'switch {name}: IV–V is {share:.0%} of imperfect items (want about half)')
+        ivf = [q for q in items if q['rns'][0] == 'IV']
+        pl = sum(q['a'] == 'plagal' for q in ivf) / len(ivf)
+        COUNT[f'K2 first chord IV -> plagal (switch {name})'] = f'{pl:.1%}'
+        # plagal (all IV–I) against imperfect IV–V (half of imperfect): 2/3 is the floor the four basic models allow
+        if pl > .72:
+            fail('K2', f'switch {name}: a first chord of IV means plagal {pl:.0%} of the time')
+        a, c = predict_acc(items, lambda r: r['rns'][0], A)
+        COUNT[f'K2 first chord alone: accuracy vs chance (switch {name})'] = f'{a:.1%} vs {c:.1%}'
+        if a > .66:
+            fail('K2', f'switch {name}: the first chord alone gives the answer {a:.0%} of the time')
+        for fn, f in (('soprano solfa path', r1_sop), ('soprano degree, first chord', lambda r: r1_sop(r)[0]), ('soprano degree, last chord', lambda r: r1_sop(r)[1])):
+            a, c = predict_acc(items, f, A)
+            COUNT[f'K2 {fn}: accuracy vs chance (switch {name})'] = f'{a:.1%} vs {c:.1%}'
+            acc_sop[(name, fn)] = a
+        # the register tells stay near chance either way
+        lo = lambda r: min(map(min, r['ch'])); hi = lambda r: max(map(max, r['ch']))
+        for w in (1, 2, 3, 4, 6):
+            tell('K2', items, f'switch {name}: lowest and highest note ({w}-semitone bands)', (lambda w: lambda r: (lo(r) // w, hi(r) // w))(w), A, 'cadences rung 1')
+        tell('K2', items, f'switch {name}: span', lambda r: hi(r) - lo(r), A, 'cadences rung 1')
+        for fn, f in (('first bass', lambda r: r['ch'][0][0]), ('last bass', lambda r: r['ch'][1][0]), ('first soprano', lambda r: r['ch'][0][3]),
+                      ('last soprano', lambda r: r['ch'][1][3]), ('key', lambda r: r['k'])):
+            tell('K2', items, f'switch {name}: {fn}', f, A, 'cadences rung 1')
+        # strict rules, every item
+        errs = collections.Counter(e.split(': ', 1)[-1] for q in items for e in ic_errors(dict(q, md='maj')))
+        COUNT[f'K2 strict rules, items checked (switch {name})'] = len(items)
+        if errs:
+            fail('K2', f'switch {name}: strict errors {dict(errs.most_common(5))}')
+        for q in items:
+            if q['ch'] and any(c[3] - c[1] <= 12 for c in q['ch']):
+                fail('K2', f'switch {name}: not open spacing {q["ch"]}')
+                break
+    # with the switch on, the top line tells less (soprano solfa path 82% -> 78% measured; the cadence's last top note is content)
+    for fn in ('soprano solfa path', 'soprano degree, first chord', 'soprano degree, last chord'):
+        if acc_sop[('on', fn)] > acc_sop[('off', fn)] + .005:
+            fail('K2', f'{fn}: switch on {acc_sop[("on", fn)]:.1%} is not below switch off {acc_sop[("off", fn)]:.1%}')
+    if acc_sop[('off', 'soprano solfa path')] > .86:
+        fail('K2', f'soprano solfa path predicts {acc_sop[("off", "soprano solfa path")]:.0%} with the switch off (82% measured, 91% before EL S2)')
+
+
 def sec_V(d):
     """BHL 0.48: strict rules (ic_errors) beyond rung 3: cadences rungs 1-2 and bass and numerals. d: lists of {k, md, rns, ch, where}."""
     for name, rows in d.items():
@@ -520,6 +577,12 @@ async def main():
         if any(n != 3 for n in cue):
             fail('K', f'rung 1 playback is not key chord + two chords: onsets {collections.Counter(cue)}')
         sec_K(k1, k1r)
+
+        # ---------------- K2: EL S2 / S1 (IC_EAR2_048) ----------------
+        k2 = await pg.evaluate("""(mk)=>{const o={def:RUNG1_SOP_BALANCE};const run=(flag,seed)=>{RUNG1_SOP_BALANCE=flag;const R=eval(mk)(seed),a=[];
+              for(let i=0;i<6000;i++){const q=earGen('cad',1,R);a.push({a:q.a,rns:q.rns,k:q.key.k,ch:q.ch})}return a};
+            try{o.off=run(false,73);o.on=run(true,79)}finally{RUNG1_SOP_BALANCE=false}return o}""", RNG)
+        sec_K2(k2['off'], k2['on'], k2['def'])
 
         # ---------------- S: R4 cadences rung 3 ----------------
         k3 = await pg.evaluate("""(mk)=>{const R=eval(mk)(43),o=[];for(let i=0;i<12000;i++){const q=earGen('cad',3,R);o.push({a:q.a,md:q.key.mode,k:q.key.k,rns:q.rns,ch:q.ch,opts:q.opts})}return o}""", RNG)
