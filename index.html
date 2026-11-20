@@ -1205,6 +1205,18 @@ label.ck{gap:8px;cursor:pointer}
  .search input{padding:8px 12px 8px 16px}
 }
 @media (min-width:761px) and (max-width:900px){.top .tw{display:none}}
+
+/* C5-6a (Fable, verification of C5). Amends C5-6: between 761 and 1000 px the Stage switch was left to shrink,
+   so it wrapped to two rows and the chosen stage was cut off. Append after the C5-6 block. */
+@media (min-width:761px) and (max-width:1180px){.top .lvl{flex:none}.top .lvl button{white-space:nowrap}}
+@media (min-width:761px) and (max-width:1023px){.top .tw{display:none}}
+@media (min-width:761px) and (max-width:860px){
+ .top{gap:12px}
+ .top .t{letter-spacing:2px}
+ .top .lvl button{padding:7px 8px;font-size:13px}
+ .top .jbtn{padding:7px 12px}
+}
+.search input{text-overflow:ellipsis}
 </style></head>
 <body>
 
