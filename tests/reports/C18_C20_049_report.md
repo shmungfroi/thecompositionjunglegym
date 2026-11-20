@@ -69,3 +69,36 @@ Fixed, within C18 scope only (self-check):
 2. Gap cards render in slot order. `renderSongs()` merges song cards and SONGGAPS cards and sorts by the slot order. Checked in the page: sus4 shows Blues/jazz, Pop, Rock, Musical theatre, Metal (gap), Australian pick; major triad shows Pop, Rock, Metal (gap); maj7 shows Blues/jazz, Pop, Rock, Metal (gap); 5 shows the Musical theatre gap between Rock and Metal. No page errors.
 Not done, by instruction (for Justin first): other genre slots, gap cards for the 17 other unfilled slots, Nothing Else Matters (checker M1: infobox genre soft rock, power ballad), Gotye / Dance Monkey. Checker S4 (single-source Nothing Else Matters in m and add9) also left as is.
 Tests: content_lint passed; unit_test 959 checks, 0 failures; pageerrors_test: 881 random clicks, 0 errors (n_errors 0).
+
+## Gotye and C19 (L104)
+All checks self-check.
+
+### 1. Gotye restored (minor triad, Australian pick)
+"Somebody That I Used to Know", Gotye (feat. Kimbra), 2011, single version, restored from commit 6d8449d (the last version before the C11 swap). That entry never carried a capo claim or capo link, so nothing was dropped; the key is D minor and the chord is Dm alternating with C. Its single-Hooktheory labels are removed because it now has three sources:
+1. https://hooktheory.com/theorytab/view/gotye/somebody-that-i-used-to-know : D minor, i VII in the intro and verse.
+2. https://rebelmusicteacher.squarespace.com/blog/2017/10/22/aeolian-mode-jazz-samples-in-goytes-somebody-that-i-used-to-know : D minor; verses move between Dm and C; the chorus adds B-flat.
+3. https://secretsofsongwriting.com/?p=5418 : verse on two chords, Dm and C; chorus adds B-flat (key implied, not named outright).
+Rejected: https://digitalspace.bradfordcollege.ac.uk/10626277/somebody-that-i-used-to-know-song-analysis/ (gives the key as C, no chords); https://www.thestranger.com/pullout/ask-a-musicologist-14596738/ (key only, a stand-in C; no chords).
+
+### 2. Dance Monkey
+It qualifies for another slot: the major-triad Australian pick (that slot was empty). The sources agree on D and E (VI and VII) as major chords in the F-sharp minor loop: Hooktheory (https://www.hooktheory.com/theorytab/view/tones-and-i/dance-monkey) and Skoove (https://skoove.com/blog/dance-monkey), plus Wikipedia (https://en.wikipedia.org/wiki/Dance_Monkey) for release date and nationality. Its card text was rewritten for that chord claim (D and E major triads), not the F-sharp minor tonic. Caveat for the checker: this is a minor-key song, so it is a modest major-triad example (VI and VII only); if that is not acceptable the entry should simply be deleted and the slot stays open.
+
+### 3. C19 additions (empty or Australian slots only; nothing displaced)
+Post-2015 songs in the data: 3 (Dance Monkey 2019, Dance to This 2018, We Don't Talk About Bruno 2021), up from 1.
+- Minor triad, Musical theatre (was empty): "We Don't Talk About Bruno", Encanto cast, 2021. Sources: https://hooktheory.com/theorytab/view/encanto/we-dont-talk-about-bruno (C harmonic minor; i iv V verse); https://ethanhein.substack.com/p/we-dont-talk-about-bruno (nominally C minor; Cm and Fm triads, Ab, G7); https://en.wikipedia.org/wiki/We_Don%27t_Talk_About_Bruno (19 Nov 2021 release, cast). Caveat: from a Disney animated film musical, not a stage show; the card says so. No content tag (none raised in the sources; described, no lyric quoted).
+- Minor seventh, Australian pick (was empty): "Dance to This", Troye Sivan feat. Ariana Grande, 2018. Sources: https://www.hooktheory.com/theorytab/view/troye-sivan/dance-to-this (G-sharp minor, iv7 VII i7 VI); https://flypaper.soundfly.com/produce/on-voice-leading-and-tresillo-in-troye-sivan-ariana-grandes-dance-to-this/ (G-sharp minor, loop C#m9, F#6, G#m7(9), E9); https://en.wikipedia.org/wiki/Dance_to_This (13 June 2018, EMI Music Australia, Bloom; Troye Sivan Australian). The two chord sources agree on the minor-seventh home chord; the card names G#m7, C#m7, F#, E and does not claim the added ninths. https://www.sbs.com.au/voices/article/watch-troye-sivan-debuts-new-music-video-featuring-ariana-grande/8zr4rx68x also calls him an Australian pop singer.
+- Shape of You was not added (listening example only, per L104).
+
+### Candidates checked and rejected
+- Bruno Mars "24K Magic" (2016): MusicRadar article names Fm9/Fm11 and Bbm9; Hooktheory has i11 and iv7, so no agreement on m9 (https://www.musicradar.com/artists/we-wrote-24k-magic-when-uptown-funk-was-no-1-so-if-you-hear-the-same-spirit-in-that-song-thats-why-a-decade-on-we-look-back-at-the-musical-theory-and-retro-gear-that-shaped-bruno-mars-2016-classic; https://www.hooktheory.com/theorytab/view/bruno-mars/24k-magic); themixreview names no chords.
+- Silk Sonic "Leave the Door Open" (2021): robinfrederick.com names no chords; earlier finding stands.
+- Silk Sonic "Blast Off" (2021): Stereogum names maj7, 13sus and 7sus chords (https://stereogum.com/2168033/silk-sonic-blast-off-music-theory-explained/columns), one source, and its slots are filled except where it would displace.
+- Tame Impala "The Less I Know the Better" (2015): Hooktheory (https://hooktheory.com/theorytab/view/tame-impala/the-less-i-know-the-better) names no maj7, 9 or sus chord.
+- Greatest Showman "This Is Me" (2017): ClassicFM (https://www.classicfm.com/discover-music/music-theory/this-is-me-greatest-showman-analysis/) names only a D major final chorus, no chords.
+- Hamilton and Dear Evan Hansen songs: only Hooktheory pages located, no second source.
+- Kylie Minogue "Padam Padam" (2023): Hooktheory page only, not opened further; no second source found.
+
+### Tests
+- content_lint: passed, 56 song entries, 0 failures.
+- unit_test: 959 checks, 0 failures.
+- pageerrors_test: 0 errors (n_errors 0).
