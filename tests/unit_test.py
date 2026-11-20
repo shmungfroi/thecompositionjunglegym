@@ -10,6 +10,10 @@ R9    chordInfo() on every degree of a major and a minor key (triads and 7th cho
       (analyse().f, shown through FNAME) and chordInfo().dom. vii° and vii°7 in a major key are dominant (D); the minor
       v / v7 and VII / VII7 of a minor key are the modal dominant (MD, "soft pull · modal dominant"; 0.48 decision 12,
       formerly W and S), never dominant; dom is true exactly for the D chords (consistent with P2-4).
+M-12  (R2) a chord on the 5th with no 3rd (sus4, 5, 7sus4) is D in major and minor, in homes() and analyse(), and the Keys
+      text says it has no 3rd (not "the minor v"); v / v7 stay MD; VIIsus4 / VII5 in minor are MD.
+X-12  (R2) climb 8 draws a borrowed ♭VII rose when MD_MAJOR is on; the Analysis key text names "borrowed into major".
+S-T1  (R2) every Ear Lab rhythm tile hover pairs its values one to one with the US names (syn: three of each).
 D12   (0.48 decision 12) homes() (the Keys room) and analyse() agree: minor v / v7 and minor-key VII / VII7 are MD in
       both, V / V7 / vii° / vii°7 stay D; the borrowed v and ♭VII of a major key are MD; MD is coloured madder rose
       #bd6b97 (--md) in FN, FNHEX and the gym/SATB numeral colours; no function colour is the old blue-grey #7fb3c8;
@@ -149,6 +153,57 @@ async def main():
         if len(cr) < 5:
             FAIL.append(f'D12 contrast scan found only {len(cr)} MD elements: {rooms}')
         print('D12 contrast scan:', dict(rooms), 'lowest', min((x['cr'] for x in cr), default=None), file=sys.stderr)
+        # ---- R2 (0.48 re-check) M-12: chords on the 5th with no 3rd stay D in both modes; v / v7 are MD; the Keys text says what is open ----
+        m12 = await pg.evaluate("""()=>{const o=[];location.hash='seed';
+            for(const k of [0,9,4,7,2,5,10,3])for(const mode of ['maj','min'])for(const [q,want] of [['sus4','D'],['5','D'],['7sus4','D'],['','?'],['m','MD'],['m7','MD']]){
+              const r=LET[0];const key={k,mode},root=spell(mod(tonicLetter(key)+4,7),60+mod(k+7,12)).name,ch={root,q,inv:0};
+              let c;try{c=chordOf(root,q,0)}catch(e){continue}const h=homes(c).find(x=>x.k===k&&x.mode===mode),a=withKey(key,()=>analyse(ch,key));
+              S.root=root;S.q=q;S.inv=0;S.key={k,mode};try{render()}catch(e){}const ctx=(document.getElementById('ctx')||{}).textContent||'';
+              o.push({k,mode,q,want:want==='?'?(mode==='min'?'D':'D'):want,homes:h?h.f:null,an:a.f,ctx})}return o}""")
+        for r in m12:
+            if r['mode'] == 'maj' and r['q'] in ('m', 'm7'):
+                continue  # minor v in a major key is not diatonic (homes has no entry); analyse() covers it in D12
+            n += 1
+            tag = f"M-12 {r['mode']}{r['k']} V{r['q']}"
+            if r['homes'] != r['want'] or r['an'] != r['want']:
+                FAIL.append(f"{tag}: homes {r['homes']}, analyse {r['an']}, expected {r['want']}")
+            if r['q'] in ('sus4', '5', '7sus4') and ('the minor v,' in r['ctx'] or 'modal dominant' in r['ctx'] or 'no 3rd' not in r['ctx']):
+                FAIL.append(f"{tag}: Keys text {r['ctx'][:160]!r}")
+            if r['q'] in ('m', 'm7') and 'the minor v' not in r['ctx']:
+                FAIL.append(f"{tag}: Keys text {r['ctx'][:160]!r}")
+        m12b = await pg.evaluate("""()=>{const o=[];for(const k of [9,4,0])for(const q of ['sus4','5']){const key={k,mode:'min'},root=spell(mod(tonicLetter(key)+6,7),60+mod(k+10,12)).name;
+            o.push([k,q,withKey(key,()=>analyse({root,q,inv:0},key)).f])}return o}""")
+        for k, q, f in m12b:
+            n += 1
+            if f != 'MD':
+                FAIL.append(f'M-12 min{k} VII{q}: {f}, expected MD (subtonic, no leading note)')
+        # ---- R2 X-12: borrowed v / ♭VII in major follow MD_MAJOR in climb 8 and in the Analysis key text ----
+        x12 = await pg.evaluate("""async()=>{location.hash='climbs/8';await new Promise(r=>setTimeout(r,500));const o={md_major:MD_MAJOR};S.level=6;K={k:0,mode:'maj'};
+            const L='I bVII IV I'.split(' ').map(r=>({...parseRoman(r,K),rn:r,inv:0}));const h=c8Bars(L,K,'x');const d=document.createElement('div');d.innerHTML=h;
+            o.bars=[...d.querySelectorAll('.bar')].map(b=>[b.querySelector('span').textContent,b.getAttribute('style'),b.className]);
+            o.src=document.documentElement.innerHTML.length;return o}""")
+        n += 1
+        bvii = [b for b in x12['bars'] if '♭VII' in b[0]]
+        if not bvii or 'var(--md)' not in bvii[0][1] or ' md' not in bvii[0][2]:
+            FAIL.append(f"X-12 climb 8 ♭VII bar: {x12['bars']}")
+        n += 1
+        if "${MD_MAJOR?', and borrowed into major (v, ♭VII)':''}" not in src or 'const MD_MAJOR=true;' not in src or src.count('MD_MAJOR') < 4:
+            FAIL.append('X-12: Analysis key text or the MD_MAJOR switch missing')
+        # ---- R2 S-T1: every rhythm tile hover pairs its values one to one with the US names ----
+        tiles = await pg.evaluate("""()=>{const d=document.createElement('div');document.body.appendChild(d);d.innerHTML=Object.keys(ELTITLE).map(k=>earRhyTile(k)).join('');
+            d.querySelectorAll('[data-tt]').forEach(termBtnSync);const o=[...d.querySelectorAll('[data-tt]')].map(b=>[b.dataset.earcell,b.title]);d.remove();return o}""")
+        for k, t in tiles:
+            n += 1
+            mm = t.split(' · US: ')
+            if len(mm) != 2:
+                FAIL.append(f'S-T1 tile {k}: hover {t!r}'); continue
+            gb, us = mm[0].split(', '), mm[1].split(', ')
+            if len(gb) != len(us):
+                FAIL.append(f'S-T1 tile {k}: {len(gb)} values but {len(us)} US names: {t!r}')
+        n += 1
+        syn = dict(tiles).get('syn')
+        if syn != 'quaver, crotchet, quaver · US: eighth note, quarter note, eighth note':
+            FAIL.append(f'S-T1 syn tile: {syn!r}')
         # ---- P2-6 ----
         rows = await pg.evaluate("""async(T)=>{location.hash='keys';await new Promise(r=>setTimeout(r,400));const o=[];
             for(const sc of ['maj','nmin','hmin','mmin'])for(const t of T){KS.tonic=t;KS.sc=sc;KS.desc=false;renderScales();

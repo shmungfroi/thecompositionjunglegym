@@ -1634,7 +1634,7 @@ async def main():
             const S=c13Line(cells,ctx),st=[];for(const d of [1,2,3])for(const [v,s] of [[7,12],[4,7],[-3,-5],[-7,-12],[-4,-7]]){
               const B=Array(d).fill(null).concat(S.map(p=>p?(ctx.modal?{...c2Pitch(p.dn+v),on:p.on}:{...c13Tr(p,v,s),on:p.on}):null)),A=S.concat(Array(d).fill(null));
               c13Pair(A,B).forEach(x=>st.push(['stretto',x]))}
-            for(const [src,x] of canon.concat(csi,st))o.push({src,code:x.code,msg:x.msg,p:x.__p||null,below:/^CS below/.test(x.msg)})}return o}""", jobs13)
+            for(const [src,x] of canon.concat(csi,st))o.push({src,code:x.code,msg:x.msg,p:x.__p||null,below:/^CS an octave lower/.test(x.msg),written:/^CS (above|below|on the same note as|against) the subject/.test(x.msg)})}return o}""", jobs13)
         # stretto finder counts must not change with the wording (it counts errors, not text)
         bad_o = collections.Counter()
         for r in out13:
@@ -1660,11 +1660,27 @@ async def main():
                     if bad_o['name differs from music21'] <= 3:
                         fail('O', f'climb 13 {r["src"]} message does not name {want!r} (music21 {m.name}): {msg}')
                 # the inverted-countersubject code and note follow the interval itself (a perfect 4th or 11th), not the wording
+                # the label names where the countersubject really is (R2 S-F1): in the written list it is the first voice, in the
+                # inverted list the second
+                if r['below'] or r['written']:
+                    csp, sp = (b2, a) if r['below'] else (a, b2)
+                    reg_w = 'above' if csp['midi'] > sp['midi'] else 'below' if csp['midi'] < sp['midi'] else 'on the same note as'
+                    COUNT['climb 13 countersubject register labels checked'] += 1
+                    if f'{reg_w} the subject: ' not in msg.split('Bar')[0]:
+                        bad_o['register label wrong'] += 1
+                        if bad_o['register label wrong'] <= 3:
+                            fail('O', f'countersubject register label: CS {reg_w} the subject, message {msg}')
                 if r['below']:
                     p4 = m.generic.undirected % 7 == 4 and m.name.startswith('P')
+                    # the written position: the countersubject an octave higher than in this pair
+                    cw = m21pitch.Pitch(m21_of(b2['li'], b2['acc'], b2['oct'] + 1)); sw = m21pitch.Pitch(m21_of(a['li'], a['acc'], a['oct']))
+                    lw, hw = (sw, cw) if (sw.midi, sw.diatonicNoteNum) <= (cw.midi, cw.diatonicNoteNum) else (cw, sw)
+                    mw = m21interval.Interval(noteStart=lw, noteEnd=hw)
+                    was5 = mw.generic.undirected % 7 == 5 and mw.name.startswith('P')
+                    want_ic1 = p4 and was5 and r['code'] in ('I1', 'IC1')
                     COUNT['climb 13 inverted-countersubject issues checked for IC1'] += 1
-                    note = 'This is a 5th that became a 4th' in msg
-                    if (r['code'] == 'IC1') != (p4 and r['code'] in ('I1', 'IC1')) or note != p4:
+                    note = 'This 4th was a 5th before the voices swapped' in msg or '5th that became a 4th' in msg
+                    if (r['code'] == 'IC1') != want_ic1 or note != want_ic1:
                         bad_o['IC1 code or note wrong'] += 1
                         if bad_o['IC1 code or note wrong'] <= 3:
                             fail('O', f'inverted countersubject: {m.name}, code {r["code"]}, note {note}: {msg}')
@@ -1673,6 +1689,22 @@ async def main():
         src13 = (REPO / 'index.html').read_text(encoding='utf-8')
         reg('O-2', 'climb 13 no longer reads its own message text to find a 4th (/a P4|4th/.test(x.msg) gone; c13P4 tests x.iv)',
             '/a P4|4th/.test(x.msg)' not in src13 and '/P4|4th/.test(x.msg)' not in src13 and 'function c13P4(x){return!!(x.iv&&x.iv.g7===4&&x.iv.q===\'P\')}' in src13)
+        # R2 S-F1 / S-F2: targeted countersubjects in C major (subject C4 held; degree 10 = F5, -3 = G3, 4 = G4)
+        tc = await pg.evaluate("""()=>{const ctx={modal:false,key:{k:0,mode:'maj'}};C13.ans='real';const run=(sub,cs)=>c13CSCheck(sub,cs,ctx).map(x=>[x.code,x.msg]);
+            return{eleven:run([0,'h','h','h'],[10,'h','h','h']),below:run([0,'h','h','h'],[-3,'h','h','h']),fifth:run([0,'h','h','h'],[4,'h','h','h']),weak:run([0,1,0,'h'],[2,5,2,'h'])}}""")
+        def has(L, code, *parts):
+            return any(c == code and all(p in m for p in parts) for c, m in L)
+        notes = lambda L: [m for c, m in L if 'was a 5th' in m or 'became a 4th' in m]
+        ok = (has(tc['eleven'], 'I1', 'CS above the subject', 'a perfect 11th') and has(tc['eleven'], 'I1', 'CS an octave lower, above the subject', 'a perfect 4th')
+              and not any(c == 'IC1' for c, m in tc['eleven']) and not notes(tc['eleven']))
+        reg('R2-SF1a', 'countersubject an 11th above: both positions I1 with the CS above, no IC1, no "was a 5th" note', ok, tc['eleven'])
+        ok = (has(tc['below'], 'I1', 'CS below the subject', 'a perfect 4th') and not any(c == 'IC1' for c, m in tc['below']) and not notes(tc['below'])
+              and not any(m.startswith('CS above') for c, m in tc['below']))
+        reg('R2-SF1b', 'countersubject written below: labelled below, its 4th is not called a former 5th, no IC1', ok, tc['below'])
+        ok = has(tc['fifth'], 'IC1', 'CS an octave lower, below the subject', 'a perfect 4th', 'This 4th was a 5th before the voices swapped')
+        reg('R2-SF1c', 'countersubject a 5th above: the lower position is IC1 with the note', ok, tc['fifth'])
+        ok = has(tc['weak'], 'I2', 'CS an octave lower', 'both voices move into a dissonance (a perfect 4th)') and not notes(tc['weak'])
+        reg('R2-SF2', 'a weak-beat I2 "both voices move" issue does not get the strong-beat note', ok, tc['weak'])
         # the rendered climb 13 pages (canon and fugue tabs, random material): no abbreviation in the issue lists
         dom13 = await pg.evaluate("""(J)=>{const o=[];S.level=6;for(const [cells,cs,cx,iv,dl,ans] of J.slice(0,40)){C13.sys='tonal';C13.ownOn=false;C13.tab='canon';
             C13.canon={delay:dl,iv:[-7,-4,7,4].includes(iv)?iv:-7,dux:cells.slice(0,cells.length).concat(Array(Math.max(0,24-cells.length)).fill(null)).slice(0,24)};renderClimb13();
