@@ -4617,17 +4617,27 @@ function c2Parse(s){const li=C2L.indexOf(s[0]),acc=s.includes('#')?1:0,oct=+s.re
 /* interval between two pitches (order free) */
 function c2Iv(a,b){let lo=a,hi=b;if(b.midi<a.midi||(b.midi===a.midi&&b.dn<a.dn)){lo=b;hi=a}
  const gen=hi.dn-lo.dn+1,s=hi.midi-lo.midi,g7=(gen-1)%7+1,ss=s-12*Math.floor((gen-1)/7);let q;
+ // the letters cross the sounding order (E♯ against F♭): the quality is that of the 2nd measured by letter, with the semitones reversed (music21: dd2)
+ const gq=gen<1?2-gen:gen,g7q=gen<1?(gq-1)%7+1:g7,ssq=gen<1?-s-12*Math.floor((gq-1)/7):ss;
  const P={1:0,4:5,5:7},Mj={2:2,3:4,6:9,7:11};
- if(P[g7]!==undefined){const d=ss-P[g7];q=d===0?'P':d===1?'A':d===-1?'d':'x'}else{const d=ss-Mj[g7];q=d===0?'M':d===-1?'m':d===1?'A':d===-2?'d':'x'}
+ // 0.49 C7 (IC_CP_048 C-1): beyond augmented / diminished the quality says which way (AA doubly augmented, dd doubly diminished, AAA ...), not 'x'
+ if(P[g7q]!==undefined){const d=ssq-P[g7q];q=d===0?'P':d>0?'A'.repeat(d):'d'.repeat(-d)}else{const d=ssq-Mj[g7q];q=d===0?'M':d===-1?'m':d>0?'A'.repeat(d):'d'.repeat(-d-1)}
  const cls=(q==='P'&&(g7===1||g7===5))?'P':((g7===3||g7===6)&&(q==='M'||q==='m'))?'I':'D';
- return{gen,s,g7,q,cls,pc:cls==='P'?(g7===1?'8':'5'):null,name:q+gen}}
+ return{gen,s,g7,q,cls,pc:cls==='P'?(g7===1?'8':'5'):null,name:q+gq}}
 /* interval names spelled out for the checkers' messages (0.48): "a perfect 5th", "an augmented 4th", "an octave", not P5, A4, P8.
    The short name (iv.name) stays in the data. A perfect unison and octave are just "unison" and "octave", as in the Keys room. */
-const C2QN={P:'perfect',M:'major',m:'minor',A:'augmented',d:'diminished',x:'doubly altered'};
+const C2QN={P:'perfect',M:'major',m:'minor',A:'augmented',d:'diminished'};
+function c2QName(q){const b=C2QN[q[0]];return q.length<2?b:(['','','doubly ','triply '][q.length]||q.length+'-fold ')+b}
 function c2Ord(n){return n+(n%100>=11&&n%100<=13?'th':n%10===1?'st':n%10===2?'nd':n%10===3?'rd':'th')}
 function c2Art(t){return(/^(augmented|octave|8|11|18)/.test(t)?'an ':'a ')+t}
-function c2IvName(iv){const g=iv.gen<1?2-iv.gen:iv.gen,base=g===1?'unison':g===8?'octave':g===15?'double octave':c2Ord(g);return(iv.q==='P'&&(g===1||g===8||g===15)?'':C2QN[iv.q]+' ')+base}
+function c2IvName(iv){const g=iv.gen<1?2-iv.gen:iv.gen,base=g===1?'unison':g===8?'octave':g===15?'double octave':c2Ord(g);return(iv.q==='P'&&(g===1||g===8||g===15)?'':c2QName(iv.q)+' ')+base}
 function c2IvA(iv){return c2Art(c2IvName(iv))}
+// a span between two voices or across a line, by its size (0.49 C7, IC_CP_048 C-2): a 15th is "a double octave", as c2IvName says
+/* 0.49 C7 (IC_CP_048 C-3): the two perfect intervals of an S3d / parallel message, named as they are (5ths; octaves; an octave and a
+   unison; unisons). (C-4): "Bar 10", not "Bars 10–10", when both notes are in one bar. */
+function c2PerfPair(i0,i1){if(i1.pc==='5')return'5ths';const u0=i0.gen===1,u1=i1.gen===1;return u0&&u1?'unisons':u0||u1?'an octave and a unison':'octaves'}
+function c2Bars(a,b){return a===b?`Bar ${a+1}`:`Bars ${a+1}–${b+1}`}
+function c2Span(g){return g===8?'octave':g===15?'double octave':c2Ord(g)}
 let C2OWN=null;
 function c2Mode(k){return k==='own'?C2OWN:C2M.find(m=>m.k===k)}
 function c2Fin(M){return c2Parse(M.cf[M.cf.length-1])}
@@ -4671,7 +4681,7 @@ function c2Check(M,sp,pos,cpDn,br){br=br||[];
  // verticals
  V.forEach(v=>{if(!v.p)return;const first=v.a===0&&v.on,last=v.a===N-1&&!M.open;
   if(above?v.p.midi<v.c.midi:v.p.midi>v.c.midi)add('warn','crossing',[v.a],`Bar ${v.bar+1}: the counterpoint (${nm(v.p)}) crosses ${above?'below':'above'} the cantus (${nm(v.c)}). Fux's examples do this now and then, but in these exercises keep each voice on its own side so both lines stay clear.`);
-  if(v.iv.gen>10)add('warn','spacing',[v.a],`Bar ${v.bar+1}: the voices are ${c2Art(c2Ord(v.iv.gen))} apart. A 10th is the target; a 12th now and then is acceptable.`);
+  if(v.iv.gen>10)add('warn','spacing',[v.a],`Bar ${v.bar+1}: the voices are ${c2Art(c2Span(v.iv.gen))} apart. A 10th is the target; a 12th now and then is acceptable.`);
   if(first){const okS=v.iv.cls==='P'&&(above||v.iv.g7===1);if(!okS)add('err','start',[v.a],`Bar ${v.bar+1}: begin on a perfect consonance: ${above?'unison, 5th or octave above':'unison or octave below'} the cantus. This is ${c2IvA(v.iv)}.`);return}
   if(last){if(!(v.iv.cls==='P'&&v.iv.g7===1)||v.p.li!==fin.li)add('err','end',[v.a],`Last bar: end on the final (${fin.name}) at the unison or octave. This is ${c2IvA(v.iv)}.`);return}
   if(sp===5){const t=A[v.a];
@@ -4710,7 +4720,7 @@ function c2Check(M,sp,pos,cpDn,br){br=br||[];
   if(a.iv.cls==='P'&&b.iv.cls==='P'&&a.iv.pc===b.iv.pc){const w=A[a.a+1]&&A[a.a+1].bar===a.bar?cp[a.a+1]:null;if(w&&Math.abs(w.dn-a.p.dn)<=2&&!iss.some(x=>(x.rule==='parallel'||x.rule==='consecutive')&&x.att[1]===b.a))add('err','beat5',[a.a,a.a+1,b.a],`Bars ${a.bar+1}–${b.bar+1}: ${a.iv.pc==='5'?'5ths':'octaves'} on two downbeats in a row. The weak beat between moves only a step or a 3rd, which is not enough to break them up; Fux accepts them only when the weak beat leaps more than a 3rd.`)}}}
  // third species: perfect intervals on successive downbeats (advisory, S3d). The card has no final-bar exception, so the step
  // into the last bar counts too, as in the three-voice mixed checker (0.48, Justin 19 Nov: both checkers follow the card).
- if(sp===3||sp===5){const D=V.filter(v=>v.beat===0&&v.p);for(let k=1;k<D.length;k++){const a=D[k-1],b=D[k];if(b.bar!==a.bar+1)continue;if(a.iv.cls==='P'&&b.iv.cls==='P'&&a.iv.pc===b.iv.pc&&a.p.midi!==b.p.midi)add('warn','qbeat',[a.a,b.a],`Bars ${a.bar+1}–${b.bar+1}: ${a.iv.pc==='5'?'5ths':'octaves'} on two downbeats in a row. The crotchets in between soften them, but the ear still hears the downbeats; many teachers ask you to avoid this.`)}}
+ if(sp===3||sp===5){const D=V.filter(v=>v.beat===0&&v.p);for(let k=1;k<D.length;k++){const a=D[k-1],b=D[k];if(b.bar!==a.bar+1)continue;if(a.iv.cls==='P'&&b.iv.cls==='P'&&a.iv.pc===b.iv.pc&&a.p.midi!==b.p.midi)add('warn','qbeat',[a.a,b.a],`Bars ${a.bar+1}–${b.bar+1}: ${c2PerfPair(a.iv,b.iv)} on two downbeats in a row. ${sp===5?'The notes':'The crotchets'} in between soften them, but the ear still hears the downbeats; many teachers ask you to avoid this.`)}}
  if(sp===5&&!M.open){const R=c2RhFix(br,n);let same=1;for(let b=2;b<n-1;b++){same=R[b]===R[b-1]?same+1:1;if(same===3)add('warn','rhythm',[A.findIndex(x=>x.bar===b)].filter(x=>x>=0),`Bar ${b+1}: the same rhythm three bars in a row. Florid counterpoint mixes the note values of the earlier species.`)}
   let qq=0;for(let b=1;b<n-1;b++){qq=R[b]==='qqqq'?qq+1:0;if(qq===3)add('warn','rhythm',[A.findIndex(x=>x.bar===b)].filter(x=>x>=0),`Bar ${b+1}: three bars of running crotchets. Break them up with a minim or a tie.`)}
   if(cp.every(Boolean)&&!R.some(r=>/~$/.test(r)))add('warn','rhythm',[0],'No ties at all. Include at least one syncopation (a tied note), ideally a suspension.');
@@ -4740,10 +4750,10 @@ function c2Check(M,sp,pos,cpDn,br){br=br||[];
   if(c&&c.midi!==b.midi){const iv2=c2Iv(b,c);if(iv.gen>=3&&iv2.gen>=3&&(c.midi>b.midi)===up){const o=c2Iv(a,c);if(o.cls==='D'&&!(o.g7===4&&o.q==='P')||o.gen>8)add('warn','twoleaps',[i-1,i,i+1],`Bar ${A[i+1].bar+1}: two leaps the same way outline ${c2IvA(o)} (${a.txt} to ${c.txt}). Two leaps in one direction should outline a chord: a 5th, 6th or octave.`)}}}
  // whole-line checks
  const full=cp.every(Boolean);if(full){const ms=cp.map(p=>p.midi),hi=Math.max(...ms),lo=Math.min(...ms),r=c2Iv(cp[ms.indexOf(lo)],cp[ms.indexOf(hi)]);
-  if(r.gen>10)add('warn','range',[ms.indexOf(lo),ms.indexOf(hi)],`The line spans ${c2Art(c2Ord(r.gen))}. Keep a singable range, a 10th at most.`);
+  if(r.gen>10)add('warn','range',[ms.indexOf(lo),ms.indexOf(hi)],`The line spans ${c2Art(c2Span(r.gen))}. Keep a singable range, a 10th at most.`);
   if(!S2&&sp!==3&&sp!==5&&ms.filter(m=>m===hi).length>1){const ix=ms.map((m,i)=>m===hi?i:-1).filter(i=>i>=0);add('warn','climax',ix,`The high point (${cp[ix[0]].txt}) comes ${ix.length} times. A line is shaped by one climax.`)}
   const tp=[0];for(let i=1;i<N-1;i++){const d1=ms[i]-ms[i-1],d2=ms[i+1]-ms[i];if(d1&&d2&&Math.sign(d1)!==Math.sign(d2))tp.push(i)}tp.push(N-1);
-  for(let k=1;k<tp.length;k++){const o=c2Iv(cp[tp[k-1]],cp[tp[k]]);if(Math.abs(o.s)%12===6&&o.gen<9)add('warn','outline',[tp[k-1],tp[k]],`Bars ${A[tp[k-1]].bar+1}–${A[tp[k]].bar+1}: the line rises or falls through a tritone (${cp[tp[k-1]].txt} to ${cp[tp[k]].txt}) without turning. The tritone (mi against fa) is the interval Fux warns against most; break it up or avoid it.`)}}
+  for(let k=1;k<tp.length;k++){const o=c2Iv(cp[tp[k-1]],cp[tp[k]]);if(Math.abs(o.s)%12===6&&o.gen<9)add('warn','outline',[tp[k-1],tp[k]],`${c2Bars(A[tp[k-1]].bar,A[tp[k]].bar)}: the line rises or falls through a tritone (${cp[tp[k-1]].txt} to ${cp[tp[k]].txt}) without turning. The tritone (mi against fa) is the interval Fux warns against most; break it up or avoid it.`)}}
  // statistics
  const mo={contrary:0,oblique:0,similar:0,parallel:0};pairs.forEach(([a,b])=>{const dc=b.c.midi-a.c.midi,dp=b.p.midi-a.p.midi;if(!dc&&!dp)return;if(!dc||!dp)mo.oblique++;else if(Math.sign(dc)!==Math.sign(dp))mo.contrary++;else if(a.iv.gen===b.iv.gen)mo.parallel++;else mo.similar++});
  return{iss,V,cp,cf,L,N,mo,full,br}}
@@ -4769,7 +4779,7 @@ function c2CantusCheck(fin,cfs){const iss=[],add=(sev,r,at,msg)=>iss.push({sev,r
  const full=n>=2;if(n>2){const ms=P.map(p=>p.midi),hi=Math.max(...ms),ix=ms.map((m,i)=>m===hi?i:-1).filter(i=>i>=0),lo=Math.min(...ms),r=c2Iv(P[ms.indexOf(lo)],P[ms.indexOf(hi)]);
   if(ix.length>1)add('warn','c7',ix,`The high point (${P[ix[0]].txt}) comes ${ix.length} times. Give the line one climax.`);
   else if(n>=6&&(ix[0]<2||ix[0]>n-3))add('warn','c15',ix,`The high point is note ${ix[0]+1}. Place it in the middle of the line, so the cantus rises to it and comes home from it.`);
-  if(r.gen>10)add('warn','c8',[],`The cantus spans ${c2Art(c2Ord(r.gen))}. Keep it within a 10th; most of Fux's lie within an octave.`);
+  if(r.gen>10)add('warn','c8',[],`The cantus spans ${c2Art(c2Span(r.gen))}. Keep it within a 10th; most of Fux's lie within an octave.`);
   const tp=[0];for(let i=1;i<n-1;i++){const d1=ms[i]-ms[i-1],d2=ms[i+1]-ms[i];if(d1&&d2&&Math.sign(d1)!==Math.sign(d2))tp.push(i)}tp.push(n-1);
   for(let k=1;k<tp.length;k++){const o=c2Iv(P[tp[k-1]],P[tp[k]]);if(Math.abs(o.s)%12===6&&o.gen<9)add('warn','c10',[tp[k-1],tp[k]],`Notes ${tp[k-1]+1}–${tp[k]+1}: the line moves through a tritone (${P[tp[k-1]].txt} to ${P[tp[k]].txt}) without turning. Break it up.`)}}
  return{iss,P,full}}
@@ -4882,7 +4892,7 @@ function c3mCheck(M,arr,spv,sp,cps){const n=M.cf.length,{ci,wv,cf,W,SP,L}=c3mNot
    [[0,1],[0,2],[1,2]].forEach(([a,c])=>{if(ch[a].midi===ch[c].midi)add('warn','unison',[b],[a,c],`Bar ${b+1}: a unison between the ${vn[a]} and ${vn[c]} voices.`)});
    if(ch[0].midi-ch[1].midi>12)add('warn','spacing',[b],[0,1],`Bar ${b+1}: more than an octave between the top and middle voices.`)}});
  // parallels: downbeat to downbeat for every pair; and the species voice's last note of a bar into the next downbeat
- const downs=L.vert.filter(v=>v.beat===0||(v.bar===0&&v===L.vert[0]));for(let k=1;k<downs.length;k++){const A=chordAt(downs[k-1]),B=chordAt(downs[k]);if(!A||!B)continue;[[0,1],[0,2],[1,2]].forEach(([a,c])=>{const i0=c2Iv(A[a],A[c]),i1=c2Iv(B[a],B[c]),ma=B[a].midi-A[a].midi,mc=B[c].midi-A[c].midi;if(!(i0.cls==='P'&&i1.cls==='P'&&i0.pc===i1.pc&&ma&&mc))return;const da=downs[k-1],db=downs[k],what=i1.pc==='5'?'5ths':'octaves';if((a===spv||c===spv)&&(sp===2||sp===3)&&da.beat===0&&db.bar===da.bar+1){if(sp===3){add('warn','qbeat',[da.bar,db.bar],[a,c],`Bars ${da.bar+1}–${db.bar+1}: ${what} on two downbeats in a row between the ${vn[a]} and ${vn[c]} voices. The crotchets in between soften them, but the ear still hears the downbeats; many teachers ask you to avoid this.`);return}const w=SP[da.a+1],p0=SP[da.a];if(!w||!p0||Math.abs(w.dn-p0.dn)>2)return;add('err','beat5',[da.bar,db.bar],[a,c],`Bars ${da.bar+1}–${db.bar+1}: ${what} on two downbeats in a row between the ${vn[a]} and ${vn[c]} voices. The weak beat between moves only a step or a 3rd, which is not enough to break them up; Fux accepts them only when the weak beat leaps more than a 3rd.`);return}add('err',Math.sign(ma)===Math.sign(mc)?'parallel':'consecutive',[da.bar,db.bar],[a,c],`Bars ${da.bar+1}–${db.bar+1}: ${Math.sign(ma)===Math.sign(mc)?'parallel':'consecutive'} ${what} between the ${vn[a]} and ${vn[c]} voices.`)})}
+ const downs=L.vert.filter(v=>v.beat===0||(v.bar===0&&v===L.vert[0]));for(let k=1;k<downs.length;k++){const A=chordAt(downs[k-1]),B=chordAt(downs[k]);if(!A||!B)continue;[[0,1],[0,2],[1,2]].forEach(([a,c])=>{const i0=c2Iv(A[a],A[c]),i1=c2Iv(B[a],B[c]),ma=B[a].midi-A[a].midi,mc=B[c].midi-A[c].midi;if(!(i0.cls==='P'&&i1.cls==='P'&&i0.pc===i1.pc&&ma&&mc))return;const da=downs[k-1],db=downs[k],what=i1.pc==='5'?'5ths':'octaves';if((a===spv||c===spv)&&(sp===2||sp===3)&&da.beat===0&&db.bar===da.bar+1){if(sp===3){add('warn','qbeat',[da.bar,db.bar],[a,c],`Bars ${da.bar+1}–${db.bar+1}: ${c2PerfPair(i0,i1)} on two downbeats in a row between the ${vn[a]} and ${vn[c]} voices. The crotchets in between soften them, but the ear still hears the downbeats; many teachers ask you to avoid this.`);return}const w=SP[da.a+1],p0=SP[da.a];if(!w||!p0||Math.abs(w.dn-p0.dn)>2)return;add('err','beat5',[da.bar,db.bar],[a,c],`Bars ${da.bar+1}–${db.bar+1}: ${what} on two downbeats in a row between the ${vn[a]} and ${vn[c]} voices. The weak beat between moves only a step or a 3rd, which is not enough to break them up; Fux accepts them only when the weak beat leaps more than a 3rd.`);return}add('err',Math.sign(ma)===Math.sign(mc)?'parallel':'consecutive',[da.bar,db.bar],[a,c],`Bars ${da.bar+1}–${db.bar+1}: ${Math.sign(ma)===Math.sign(mc)?'parallel':'consecutive'} ${what} between the ${vn[a]} and ${vn[c]} voices.`)})}
  for(let b=0;b<n-1;b++){const lastA=L.att.map((x,i)=>[x,i]).filter(([x])=>x.bar===b).pop(),nxt=L.vert.find(v=>v.bar===b+1&&v.beat===0);if(!lastA||!nxt)continue;const p0=SP[lastA[1]],p1=SP[nxt.a];if(!p0||!p1||nxt.a===lastA[1])continue;[ci,wv].forEach(o=>{const q0=at(o,b),q1=at(o,b+1);if(!q0||!q1)return;const i0=c2Iv(p0,q0),i1=c2Iv(p1,q1),m1=p1.midi-p0.midi,m2=q1.midi-q0.midi;if(i0.cls==='P'&&i1.cls==='P'&&i0.pc===i1.pc&&m1&&m2){const par=Math.sign(m1)===Math.sign(m2);add('err',par?'parallel':'consecutive',[b,b+1],[spv,o],`Bars ${b+1}–${b+2}: ${par?'parallel':'consecutive'} ${i1.pc==='5'?'5ths':'octaves'}${par?'':' by contrary motion'} between the ${vn[spv]} and ${vn[o]} voices, from the last note of the bar into the downbeat.`)}})}
  // beginning, end, cadence
  const full=W.every(Boolean)&&SP.length===L.att.length&&SP.every(Boolean);
