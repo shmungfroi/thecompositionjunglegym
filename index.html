@@ -6754,10 +6754,15 @@ const CADL={perfect:'Perfect cadence',plagal:'Plagal cadence',imperfect:'Imperfe
 /* EL-7 (0.48): rung 1 is the four basic cadences only, in major keys: the key chord plays, then exactly two chords (the cadence itself),
    in open voicing (soprano more than an octave above the tenor). */
 const CADT={1:{maj:{perfect:['V I'],plagal:['IV I'],imperfect:['I V','IV V'],interrupted:['V vi']}},
- 2:{maj:{perfect:['I vi V7 I','I ii:1 V I','I I:1 V7 I','I vi ii:1 V I','I iii IV V7 I','I I:1 IV V7 I'],plagal:['I vi IV I','I ii:1 IV I','I I:1 IV I','I vi ii:1 IV I','I iii vi IV I','I I:1 vi IV I'],
-   imperfect:['I vi IV V','I ii:1 IV V','I I:1 IV V','I vi IV ii:1 V','I iii vi ii V','I I:1 vi IV V'],interrupted:['I vi V7 vi','I ii:1 V vi','I I:1 V7 vi','I vi ii:1 V vi','I iii IV V7 vi','I I:1 IV V vi']},
-  min:{perfect:['i VI V i','i ii°:1 V7 i','i i:1 V i','i III iv V i','i VI ii°:1 V7 i','i iv ii°:1 V i'],plagal:['i VI iv i','i ii°:1 iv i','i i:1 iv i','i III VI iv i','i VI ii°:1 iv i','i iv i:1 iv i'],
-   imperfect:['i VI iv V','i ii°:1 iv V','i i:1 iv V','i III VI iv V','i VI iv ii°:1 V','i iv VI ii°:1 V'],interrupted:['i VI V VI','i ii°:1 V7 VI','i i:1 V VI','i III iv V VI','i VI ii°:1 V7 VI','i iv ii°:1 V VI']}}};
+ 2:{maj:{perfect:['I vi V7 I','I I:1 V7 I','I IV ii:1 V I','I iii IV V7 I','I I:1 IV V7 I'],plagal:['I vi IV I','I I:1 IV I','I IV I:1 IV I','I iii vi IV I','I I:1 vi IV I'],
+   imperfect:['I vi IV V','I I:1 IV V','I IV I:1 ii:1 V','I iii vi ii V','I I:1 vi IV V'],interrupted:['I vi V7 vi','I I:1 V7 vi','I IV ii:1 V vi','I iii IV V7 vi','I I:1 IV V vi']},
+  min:{perfect:['i VI V i','i i:1 V i','i III iv V i','i iv ii°:1 V i','i i:1 ii°:1 V7 i'],plagal:['i VI iv i','i i:1 iv i','i III VI iv i','i iv i:1 iv i','i i:1 VI iv i'],
+   imperfect:['i VI iv V','i i:1 iv V','i III VI iv V','i iv VI ii°:1 V','i i:1 iv ii°:1 V'],interrupted:['i VI V VI','i i:1 V VI','i III iv V VI','i iv ii°:1 V VI','i i:1 ii°:1 V7 VI']}}};
+/* BHL 0.48 (IC_EAR_048 S3): no model moves ii(⁶) to IV, or ii°⁶ to iv. In common-practice harmony (the tradition of this drill) the
+   pre-dominant moves forward, IV to ii and ii to V; ii back to IV is a retrogression, and the bass-and-numerals drill already forbids it
+   (EBALLOW.ii). A four-chord plagal or imperfect model cannot open I–ii⁶ without that move, so at rung 2 the second chord of a four-chord model
+   is vi or I⁶ (VI or i⁶ in minor), and of a five-chord model IV, iii or I⁶ (III, iv or i⁶ in minor), the same set in every category.
+   ii⁶ (ii°⁶) still comes before V in the five-chord models. */
 /* R4 (0.48): rung 3 (Stage 6 only) has six answers. Every model is five chords and opens I–IV (i–iv in minor), so neither the length nor the
    second chord hints at the answer. The Phrygian cadence (iv⁶–V) is minor only; every other answer occurs in both modes, and the mode is drawn
    before the answer, so the mode never raises the best guess above chance. The cadential 6/4 here decorates a perfect cadence (I⁶₄–V–I);
@@ -6765,7 +6770,8 @@ const CADT={1:{maj:{perfect:['V I'],plagal:['IV I'],imperfect:['I V','IV V'],int
    shared), and the interrupted V–V7–vi holds the bass on so too, so the bass alone never gives the 6/4 away. Perfect and imperfect models never contain a 6/4.
    One right answer: the button names the cadence, which is where the phrase ends (the last two chords). "Cadential 6/4" is the answer only when
    the 6/4 decorates a perfect cadence (I⁶₄–V(7)–I). The two interrupted models below pass through a cadential 6/4 on the way (I⁶₄–V–vi): the
-   cadence itself is interrupted, so "Interrupted" is their one right answer (Justin, 19 Nov 2026), and the feedback says why (CAD64INT). */
+   cadence itself is interrupted, so "Interrupted" is their one right answer (Justin, 19 Nov 2026), and the feedback says why (CAD64INT).
+   "Cadential 6/4" for them is Nearly (CAD64_INT_NEARLY, Justin 20 Nov 2026). */
 CADT[3]={maj:{perfect:['I IV V V7 I'],plagal:['I IV I:1 IV I','I IV vi IV I'],imperfect:['I IV I:1 ii:1 V','I IV ii:1 V7/V V'],
   interrupted:['I IV V V7 vi','I IV ii:1 V vi'],cad64:['I IV I:2 V I','I IV I:2 V7 I']},
  min:{perfect:['i iv V V7 i'],plagal:['i iv i:1 iv i','i iv VI iv i'],imperfect:['i iv i:1 ii°:1 V','i iv VI ii°:1 V'],
@@ -6795,8 +6801,11 @@ function cadSub(rns){const s=rns.join(' ');return/(^| )(iv|IV):1 V$/.test(s)?'Ph
    voices within B E2–D4, T C3–G4, A G3–D5, S C4–G5; S–A and A–T within an octave. Per move: no leap of a 7th or of more than an octave in any
    voice; no augmented 2nd (le–si); no overlap; no parallel or contrary 5ths/8ves; no hidden 5th/8ve in the outer voices with a soprano leap;
    the leading note rises (in an inner voice it may fall to the 5th of I), and always into vi/VI; every 7th falls by step; the raised 4th (fi)
-   of V7/V rises a semitone. */
-const EARRN={maj:{I:[0,'maj'],ii:[2,'min'],iii:[4,'min'],IV:[5,'maj'],V:[7,'maj'],V7:[7,'dom7'],vi:[9,'min'],'V7/V':[2,'dom7']},
+   of V7/V rises a semitone.
+   BHL 0.48 (IC_EAR_048 S1, S2): no voice leaps a tritone (augmented 4th or diminished 5th), and the rules for V7/V hold for every secondary
+   dominant (V7/vi: its leading note, si, is not doubled and rises a semitone). These rules now cover cadences rungs 1, 2 and 3 and every
+   bass-and-numerals realisation, not only rung 3. Tradition: common practice (strict four-part chorale style). */
+const EARRN={maj:{I:[0,'maj'],ii:[2,'min'],iii:[4,'min'],IV:[5,'maj'],V:[7,'maj'],V7:[7,'dom7'],vi:[9,'min'],'V7/V':[2,'dom7'],'V7/vi':[4,'dom7']},
  min:{i:[0,'min'],'ii°':[2,'dim'],III:[3,'maj'],iv:[5,'min'],V:[7,'maj'],V7:[7,'dom7'],VI:[8,'maj']}};
 const EARQ={maj:[0,4,7],min:[0,3,7],dim:[0,3,6],dom7:[0,4,7,10]};
 function earRnInfo(x,key){const[rn,iv]=x.split(':'),e=EARRN[key.mode][rn];if(!e)return null;const root=mod(key.k+e[0],12),T=EARQ[e[1]].map(i=>mod(root+i,12)),inv=+(iv||0);
@@ -6804,9 +6813,9 @@ function earRnInfo(x,key){const[rn,iv]=x.split(':'),e=EARRN[key.mode][rn];if(!e)
 function earStrictChord(v,c,key){if(!c)return true;const pcs=v.map(m=>mod(m,12)),cnt=p=>pcs.filter(x=>x===p).length,LN=mod(key.k+11,12),RG=[[40,62],[48,67],[55,74],[60,79]];
  if(v.some((m,k)=>m<RG[k][0]||m>RG[k][1]))return false;if(v[3]-v[2]>12||v[2]-v[1]>12)return false;
  if(c.inv===2&&cnt(c.bass)<2)return false;if((c.rn==='V'||c.rn==='V7')&&cnt(LN)>1)return false;
- if(c.rn==='V7/V'&&cnt(mod(c.root+4,12))>1)return false;if(c.sev!==null&&cnt(c.sev)>1)return false;return true}
+ if(/^V7\//.test(c.rn)&&cnt(mod(c.root+4,12))>1)return false;if(c.sev!==null&&cnt(c.sev)>1)return false;return true}
 function earStrictPair(P,N,cp,cn,key){if(!cp||!cn)return true;const LN=mod(key.k+11,12),t=key.k;
- for(let k=0;k<4;k++){const mv=Math.abs(N[k]-P[k]);if(mv>12||mv===10||mv===11)return false;
+ for(let k=0;k<4;k++){const mv=Math.abs(N[k]-P[k]);if(mv>12||mv===10||mv===11||mv===6)return false;
   if(key.mode==='min'&&mv===3){const a=mod(P[k],12),b=mod(N[k],12),le=mod(t+8,12);if((a===le&&b===LN)||(a===LN&&b===le))return false}}
  for(let k=0;k<3;k++)if(N[k]>P[k+1]||N[k+1]<P[k])return false;
  for(let a=0;a<4;a++)for(let b=a+1;b<4;b++){if(P[a]===N[a]&&P[b]===N[b])continue;const i1=mod(P[b]-P[a],12),i2=mod(N[b]-N[a],12);if(i1===i2&&(i1===0||i1===7)&&P[a]!==N[a]&&P[b]!==N[b])return false}
@@ -6814,7 +6823,7 @@ function earStrictPair(P,N,cp,cn,key){if(!cp||!cn)return true;const LN=mod(key.k
  if((cp.rn==='V'||cp.rn==='V7')&&['I','i','vi','VI'].includes(cn.rn))for(let k=0;k<4;k++)if(mod(P[k],12)===LN&&N[k]-P[k]!==1){
   if(k===0||k===3||cn.rn==='vi'||cn.rn==='VI')return false;if(!(cn.inv===0&&mod(N[k],12)===cn.fifth&&[3,4].includes(P[k]-N[k])))return false}
  if(cp.sev!==null&&cn.rn!==cp.rn)for(let k=0;k<4;k++)if(mod(P[k],12)===cp.sev&&![1,2].includes(P[k]-N[k]))return false;
- if(cp.rn==='V7/V'){const fi=mod(cp.root+4,12);for(let k=0;k<4;k++)if(mod(P[k],12)===fi&&N[k]-P[k]!==1)return false}
+ if(/^V7\//.test(cp.rn)){const fi=mod(cp.root+4,12);for(let k=0;k<4;k++)if(mod(P[k],12)===fi&&N[k]-P[k]!==1)return false}
  return true}
 /* strict SATB voicing for Ear Lab: the app's SATB candidates, searched with hard rules.
    Rejected outright: any part-writing error from the checker (parallel or consecutive 5ths and 8ves, a 7th that doesn't fall,
@@ -6836,46 +6845,75 @@ function earSATB(L,key,reg={b:47,s:70},opt={}){return withKey(key,()=>{const I=L
  return best[0].path};
  if(opt.startIdx!==undefined)return c0[opt.startIdx]?go([c0[opt.startIdx]]):null;
  return go(c0.slice(0,1))||go(c0)})}
-/* EL-7: rung 1 (two chords). Every strict, open-spaced pair of voicings is weighed, and the one nearest a register drawn at random wins
-   (lowest note reg.b, highest note reg.s, first bass reg.fb, last soprano reg.ls), with smooth voice leading counted too. So the register of
-   the question follows the random draw, not the cadence (tests/earlab_items_test.py section K measures it). */
-function earSATBPair(L,key,reg){reg={b:46,s:72,fb:48,ls:72,...(reg||{})};return withKey(key,()=>{const I=L.map(ch=>chordInfo(ch,key));
- const C=I.map((x,i)=>{let c=satbCandidates(x).filter(n=>!chordIssues(n.v,x).some(e=>e.sev==='error')&&n.v[3]-n.v[1]>12);
-  if(i>0&&I[i-1].dom&&x.a.dia&&x.a.d===5&&x.third){const t3=mod(x.third.midi,12);c=c.filter(n=>n.v.filter(m=>mod(m,12)===t3).length===2)}return c});
- if(C.length!==2||C.some(c=>!c.length))return null;let best=null;
- for(const a of C[0])for(const b of C[1]){if(pairIssues(a.v,b.v,I[0],I[1]).some(e=>e.sev!=='info'))continue; // no errors and no warnings (leaps of a 7th, hidden 5ths ...)
-  const lo=Math.min(a.v[0],b.v[0]),hi=Math.max(a.v[3],b.v[3]),c=4*(Math.abs(lo-reg.b)+Math.abs(hi-reg.s))+2*(Math.abs(a.v[0]-reg.fb)+Math.abs(b.v[3]-reg.ls))+moveCost(a.v,b.v,I[0],I[1]);
-  if(!best||c<best.c)best={c,path:[a.v,b.v]}}
- return best&&best.path})}
-function earProg(rns,key,reg,opt){if(opt&&opt.pair){const L=cadList(rns.join(' '),key),V=earSATBPair(L,key,reg);return{L,V,ch:V?V.map(v=>v.slice()):null}}const L=cadList(rns.join(' '),key),V=earSATB(L,key,reg,opt);return{L,V,ch:V?V.map(v=>v.slice()):null}}
-// the realisation a cadence question at rung l uses
-function earCadProg(l,rns,key,reg){return earProg(rns,key,reg,l===1?{pair:true}:l===3?{strict:true,rns,startIdx:earCad3Open(key,reg)}:undefined)}
-/* rung 3 (strict): the opening tonic's voicing is the best one (for this key and register) from which every rung 3 model of the mode can be
-   realised under the strict rules, so the opening voicing never depends on the cadence. Memoised per key and register. */
+/* BHL 0.48 (Justin, 20 Nov 2026, item H): rung 1 register. Every strict, open-spaced realisation of each rung 1 model in each key is listed
+   once (earR1Pool): every voicing in the voice ranges with the soprano more than an octave above the tenor, no checker error, the strict
+   chord rules, complete chords (so IV keeps the home note the feedback names), one 3rd (two after V in vi), no checker error or warning and
+   no strict fault between the two chords, and in V–I the leading note rises to the home note. Each gets a weight (earR1Weights): a prior
+   for smooth voice leading, then balanced so that, across the four answers, the same lowest
+   and highest note pair, the same span, the same key and the same first and last bass and soprano notes come up as often (iterative
+   proportional fitting, deterministic, run once). The interrupted cadence V–vi in strict open spacing fits in only a few registers (its bass
+   always rises a step from so), so the other answers are drawn to the same outer-voice registers rather than letting their own range give
+   them away. The bass interval itself (so–la, so–do ...) is the cadence and is not hidden. */
+const EARR1={};
+function earR1Pool(){if(EARR1.pool)return EARR1.pool;const pool=[],R=(r,pcs)=>{const a=[];for(let m=r[0];m<=r[1];m++)if(pcs.includes(mod(m,12)))a.push(m);return a};
+ for(const a in CADT[1].maj)for(const t of CADT[1].maj[a]){const rns=t.split(' ');
+  for(const k of CKEYS1){const key={k,mode:'maj'};withKey(key,()=>{const I=cadList(t,key).map(ch=>chordInfo(ch,key)),SR=rns.map(x=>earRnInfo(x,key));
+   const C=I.map((x,i)=>{const t3=mod(x.third.midi,12),dbl3=i>0&&I[i-1].dom&&x.a.dia&&x.a.d===5,out=[];
+    for(const b of R(RANGE.B,[x.bassPc]))for(const tn of R(RANGE.T,x.pcs))for(const al of R(RANGE.A,x.pcs))for(const sp of R(RANGE.S,x.pcs)){const v=[b,tn,al,sp];
+     if(!(b<=tn&&tn<=al&&al<=sp)||sp-tn<=12||chordIssues(v,x).some(e=>e.sev==='error')||!earStrictChord(v,SR[i],key))continue;
+     if(v.filter(m=>mod(m,12)===t3).length!==(dbl3?2:1)||new Set(v.map(m=>mod(m,12))).size<x.pcs.length)continue;out.push(v)}return out});
+   const LN=mod(k+11,12);
+   for(const P of C[0])for(const N of C[1]){if(pairIssues(P,N,I[0],I[1]).some(e=>e.sev!=='info')||!earStrictPair(P,N,SR[0],SR[1],key))continue;
+    // the feedback says the leading note rises to the home note (V–I): at rung 1 it does, in every voice that has it
+    if(t==='V I'&&P.some((m,j)=>mod(m,12)===LN&&N[j]-m!==1))continue;
+    pool.push({a,t,k,ch:[P,N],w:Math.exp(-moveCost(P,N,I[0],I[1])/10)})}})}}
+ return EARR1.pool=pool}
+function earR1Weights(){if(EARR1.by)return EARR1.by;const P=earR1Pool(),cats=Object.keys(CADT[1].maj),lo=p=>Math.min(p.ch[0][0],p.ch[1][0]),hi=p=>Math.max(p.ch[0][3],p.ch[1][3]);
+ const F=[p=>p.ch[0][0],p=>p.ch[1][0],p=>p.ch[0][3],p=>p.ch[1][3],p=>p.k,p=>lo(p)*100+hi(p),p=>hi(p)-lo(p)],w=P.map(p=>p.w),by=cats.map(a=>P.map((p,i)=>i).filter(i=>P[i].a===a));
+ for(let it=0;it<60;it++)for(const f of F){const M=by.map(ix=>{const m=new Map();let t=0;ix.forEach(i=>t+=w[i]);ix.forEach(i=>{const x=f(P[i]);m.set(x,(m.get(x)||0)+w[i]/t)});return m}),T=new Map();
+  M.forEach(m=>m.forEach((v,x)=>T.set(x,(T.get(x)||0)+v/M.length)));by.forEach((ix,c)=>ix.forEach(i=>{const x=f(P[i]);w[i]*=Math.sqrt(T.get(x)/M[c].get(x))}))}
+ EARR1.by={};by.forEach((ix,c)=>{let t=0;ix.forEach(i=>t+=w[i]);EARR1.by[cats[c]]=ix.map(i=>({...P[i],w:w[i]/t}))});return EARR1.by}
+// draw one entry of a weighted list
+function earWPick(L,r){let x=r()*L.reduce((s,e)=>s+e.w,0);for(const e of L){x-=e.w;if(x<=0)return e}return L[L.length-1]}
+// rung 1: the model and key of a question for answer a, drawn from the balanced weights (earCadReg then draws the voicing in that model and key)
+function earR1Draw(a,r){const M=new Map();for(const e of earR1Weights()[a]){const k=e.t+'|'+e.k;M.set(k,(M.get(k)||0)+e.w)}
+ const e=earWPick([...M].map(([k,w])=>({k,w})),r),[t,k]=e.k.split('|');return{t,k:+k}}
+/* EL-7 / BHL 0.48: a rung 1 realisation near a register (lowest note reg.b, highest reg.s, first bass reg.fb, last soprano reg.ls), chosen
+   from the same strict open realisations (earR1Pool). Questions use earCadReg; this is the fixed-register path (tests, fixtures). */
+function earSATBPair(L,key,reg,rns){reg={b:46,s:72,fb:48,ls:72,...(reg||{})};if(key.mode!=='maj'||!rns)return null;const t=rns.join(' ');let best=null;
+ for(const p of earR1Pool()){if(p.t!==t||p.k!==key.k)continue;const[a,b]=p.ch,lo=Math.min(a[0],b[0]),hi=Math.max(a[3],b[3]);
+  const c=4*(Math.abs(lo-reg.b)+Math.abs(hi-reg.s))+2*(Math.abs(a[0]-reg.fb)+Math.abs(b[3]-reg.ls))-Math.log(p.w);if(!best||c<best.c)best={c,path:[a,b]}}
+ return best&&best.path.map(v=>v.slice())}
+function earProg(rns,key,reg,opt){if(opt&&opt.pair){const L=cadList(rns.join(' '),key),V=earSATBPair(L,key,reg,rns);return{L,V,ch:V?V.map(v=>v.slice()):null}}const L=cadList(rns.join(' '),key),V=earSATB(L,key,reg,opt);return{L,V,ch:V?V.map(v=>v.slice()):null}}
+// the realisation a cadence question at rung l uses. Every rung is strict (BHL 0.48, IC_EAR_048 S1: rung 2 was not)
+function earCadProg(l,rns,key,reg){return earProg(rns,key,reg,l===1?{pair:true}:{strict:true,rns,startIdx:earCadOpen(l,key,reg)})}
+/* rungs 2 and 3 (strict): the opening tonic's voicing is the best one (for this rung, key and register) from which every model of the rung
+   and mode can be realised under the strict rules, so the opening voicing never depends on the cadence. Memoised per rung, key and register. */
 const EARC3O=new Map();
-function earCad3Open(key,reg={b:47,s:70}){const mk=key.k+key.mode+'|'+reg.b+','+reg.s;if(EARC3O.has(mk))return EARC3O.get(mk);const M=Object.values(CADT[3][key.mode]).flat();let idx;
+function earCadOpen(l,key,reg={b:47,s:70}){const mk=l+'|'+key.k+key.mode+'|'+reg.b+','+reg.s;if(EARC3O.has(mk))return EARC3O.get(mk);const M=Object.values(CADT[l][key.mode]).flat();let idx;
  for(let i=0;i<40&&idx===undefined;i++)if(M.every(m=>{const rns=m.split(' ');return earSATB(cadList(m,key),key,reg,{strict:true,rns,startIdx:i})}))idx=i;
  EARC3O.set(mk,idx);return idx}
-function earGenCad(l,r){const mode=l===1?'maj':l===3?epick(['maj','min'],r):epick(['maj','maj','min'],r),key={k:epick(earCadKeys(l,mode),r),mode},ts=CADT[l][mode];
+function earCad3Open(key,reg){return earCadOpen(3,key,reg)}
+function earGenCad(l,r){if(l===1){const a=epick(Object.keys(CADT[1].maj),r),d=earR1Draw(a,r),key={k:d.k,mode:'maj'},rns=d.t.split(' ');
+  const{reg,P}=earCadReg(rns,key,r,1);return{d:'cad',l,a,key,rns,sub:cadSub(rns),reg,ch:P.ch,opts:earCadOpts(l)}}
+ const mode=l===1?'maj':l===3?epick(['maj','min'],r):epick(['maj','maj','min'],r),key={k:epick(earCadKeys(l,mode),r),mode},ts=CADT[l][mode];
  // the mode is drawn first, then the answer from those the mode has (at rung 3 minor has all six, major all but the Phrygian)
  const a=epick(Object.keys(ts),r),lens=[...new Set(Object.values(ts).flat().map(x=>x.split(' ').length))],n=epick(lens,r);
  const rns=epick(ts[a].filter(x=>x.split(' ').length===n),r).split(' ');
   const{reg,P}=earCadReg(rns,key,r,l);return{d:'cad',l,a,key,rns,sub:l===3?'':cadSub(rns),reg,ch:P.ch,opts:earCadOpts(l)}}
 /* R13+: outer-voice registers for cadence items, drawn independently of the category. earGenCad calls this and only this.
-   Rung 1 (EL-7, two chords in open spacing): a lowest note, highest note, first bass and last soprano are drawn, and earSATBPair weighs
-   every strict open pair against them. Rungs 2 and 3: a target lowest and highest note are drawn first (the same for every category);
+   Rung 1 (BHL 0.48): the voicing is drawn from the balanced weights of the strict open realisations of this model in this key (earR1Weights),
+   so the lowest and highest notes together, the span and the outer voices of each chord come up as often for every answer. Rungs 2 and 3: a target lowest and highest note are drawn first (the same for every category);
    of nine realisations (bass and soprano preferences on a 3 x 3 grid) the one whose lowest and highest notes come nearest the targets is
    used, so where the bass bottoms out or the soprano peaks no longer hints at the cadence. Realisations are memoised. */
 const EARCADM=new Map();
 function earCadReg(rns,key,r,l=2){
- if(l===1){const tl=41+Math.floor(r()*12),th=67+Math.floor(r()*11),fb=41+Math.floor(r()*16),ls=67+Math.floor(r()*11),j=r(),C=[];
-  // the pair search is weighted to a draw (EL-7); of nine draws on a 3 x 3 grid around it, the one whose lowest and highest notes come nearest
-  // the targets is used, so the lowest and highest note together do not hint at the cadence (merge 0.48)
-  for(const b of [tl-4,tl,tl+4])for(const s of [th-4,th,th+4]){const reg={b,s,fb,ls},k=rns.join(' ')+'|'+key.k+'|1|'+b+','+s+','+fb+','+ls;let P=EARCADM.get(k);if(!P){P=earCadProg(1,rns,key,reg);EARCADM.set(k,P)}
-   if(P.ch){const f=P.ch.flat();C.push({reg,P,d:Math.abs(Math.min(...f)-tl)+Math.abs(Math.max(...f)-th)})}}
-  if(!C.length){const reg={b:tl,s:th,fb,ls};return{reg,P:earCadProg(1,rns,key,reg)}}
-  const m=Math.min(...C.map(c=>c.d)),B=C.filter(c=>c.d===m),c=B[Math.floor(j*B.length)];return{reg:c.reg,P:{L:c.P.L,V:c.P.V,ch:c.P.ch.map(v=>v.slice())}}}
- const W=l===3,tl=(W?41:41)+Math.floor(r()*(W?13:11)),th=(W?64:65)+Math.floor(r()*(W?13:11)),j=r(),C=[],BG=W?[41,47,53]:[42,47,52],SG=W?[64,70,76]:[66,70,74];
+ if(l===1){const t=rns.join(' '),L=earR1Weights()[Object.keys(CADT[1].maj).find(a=>CADT[1].maj[a].includes(t))].filter(e=>e.t===t&&e.k===key.k);
+  if(!L.length){const reg={b:46,s:72};return{reg,P:earCadProg(1,rns,key,reg)}}
+  const e=earWPick(L,r),ch=e.ch.map(v=>v.slice()),f=ch.flat();return{reg:{b:Math.min(...f),s:Math.max(...f)},P:{L:cadList(t,key),V:e.ch,ch}}}
+ // BHL 0.48: rung 2 (now strict) draws from a 4 x 5 grid, so the lowest and highest notes can come nearer the targets; with the strict
+ // rules on the old 3 x 3 grid the exact-semitone register tells grew a little (tests/reports/EL_BHL_048_report.md)
+ const W=l===3,tl=(W?41:40)+Math.floor(r()*(W?13:14)),th=(W?64:63)+Math.floor(r()*(W?13:15)),j=r(),C=[],BG=W?[41,47,53]:[41,45,49,53],SG=W?[64,70,76]:[63,67,71,75,79];
  for(const b of BG)for(const s of SG){const k=rns.join(' ')+'|'+key.k+key.mode+'|'+b+','+s;let P=EARCADM.get(k);if(!P){P=earCadProg(l,rns,key,{b,s});EARCADM.set(k,P)}
   if(P.ch){const f=P.ch.flat();C.push({reg:{b,s},P,d:Math.abs(Math.min(...f)-tl)+Math.abs(Math.max(...f)-th)})}}
  if(!C.length){const reg={b:47,s:70};return{reg,P:earCadProg(l,rns,key,reg)}}
@@ -6885,7 +6923,12 @@ function earBassPool(l){return l===1?['I','IV','V','vi']:l===2?['I','ii','IV','V
 const EBALLOW={I:['ii','IV','V','vi','V7/V','V7/vi'],ii:['V','V7/V'],IV:['I','ii','V','V7/V'],V:['I','vi'],vi:['ii','IV','V','V7/V'],'V7/V':['V'],'V7/vi':['vi']};
 const BKEYS=[0,1,2,3,4,5,7,8,9,10];
 function earBassProgs(l){const pool=earBassPool(l),out=[];const walk=p=>{if(p.length===4){if(!/^V7\//.test(p[3]))out.push(p);return}EBALLOW[p[p.length-1]].filter(x=>pool.includes(x)).forEach(x=>walk(p.concat([x])))};walk(['I']);return out}
-function earGenBass(l,r){const key={k:epick(BKEYS,r),mode:'maj'},rns=epick(earBassProgs(l),r),reg={b:42+Math.floor(r()*11),s:66+Math.floor(r()*9)},P=earProg(rns,key,reg);
+/* BHL 0.48 (IC_EAR_048 S2): bass-and-numerals realisations follow the same strict rules as the cadences (the raised 4th of V7/V and the
+   leading note of V7/vi rise, no leap of a 7th or a tritone ...). If the drawn register has no strict realisation, a fixed list of
+   registers is tried in turn. */
+const EARBREG=[{b:47,s:70},{b:42,s:66},{b:52,s:74},{b:42,s:74},{b:52,s:66},{b:47,s:66},{b:47,s:74}];
+function earBassProg(rns,key,reg){for(const g of [reg,...EARBREG]){const P=earProg(rns,key,g,{strict:true,rns});if(P.ch)return P}return earProg(rns,key,reg,{strict:true,rns})}
+function earGenBass(l,r){const key={k:epick(BKEYS,r),mode:'maj'},rns=epick(earBassProgs(l),r),reg={b:42+Math.floor(r()*11),s:66+Math.floor(r()*9)},P=earBassProg(rns,key,reg);
  return{d:'bass',a:rns,key,ch:P.ch,bass:P.ch.map(c=>c[0]),opts:earBassPool(l)}}
 // solfa: semitones above do, and letter steps above do
 const ESOL={d:[0,0],r:[2,1],m:[4,2],f:[5,3],s:[7,4],si:[8,4],l:[9,5],t:[11,6]};
@@ -7147,10 +7190,12 @@ function ehsign(s){const k=s==='si'?'s':s;if(EHSIMG[k])return`<span class="hsw">
    "Nearly" (0.48 design spec, open question 1; ON, Justin's ruling 19 Nov 2026, option a): at cadences rung 3, Imperfect for a Phrygian
    cadence or Perfect for a cadential 6/4 is true but not precise. It keeps the streak and is not scored: not added to n or ok (so neither
    right nor wrong in "Score ok / n"), and is counted in the field nearly (shown in the stats line, the journal and the log).
-   CAD64_INT_NEARLY (OPEN, still with Justin; default false = wrong): "Cadential 6/4" for an interrupted cadence reached through a cadential
-   6/4 (earCad64Int). One line to flip; the result panel (earCadWrong) explains either way. */
+   CAD64_INT_NEARLY (ON, Justin's ruling 20 Nov 2026, item B): "Cadential 6/4" for an interrupted cadence reached through a cadential 6/4
+   (earCad64Int, the two rung 3 models I IV I⁶₄ V vi and i iv i⁶₄ V VI) is Nearly, like the family answers: gold, streak kept, not scored,
+   counted in nearly. The cadential 6/4 is really there; the answer names the cadence, which is interrupted. Set false to mark it wrong; the
+   result panel (earCadWrong, earCad64IntGiven) follows the switch either way. */
 const EARST0={n:0,ok:0,streak:0,best:0,shown:0,skipped:0,nearly:0};
-let EAR_NEARLY=true,CAD64_INT_NEARLY=false;
+let EAR_NEARLY=true,CAD64_INT_NEARLY=true;
 // pure: the record after one more question. kind: 'ok' | 'miss' | 'shown' | 'skipped' | 'nearly'
 function earStatNext(s,kind){const t={...EARST0,...(s||{})};if(kind==='ok'){t.n++;t.ok++;t.streak++;t.best=Math.max(t.best,t.streak)}
  else if(kind==='miss'){t.n++;t.streak=0}else if(kind==='shown')t.shown++;else if(kind==='skipped')t.skipped++;else if(kind==='nearly')t.nearly=(t.nearly||0)+1;return t}
