@@ -422,9 +422,9 @@ Each has a recommendation. Everything else in this register follows from the app
 ## 8. Justin's answers, 21 Nov 2026 05:53 (decision log L101)
 | D | answer | status |
 |---|---|---|
-| D1 | (a) one bar, 99 items, no repeat within 30. **Plus:** "if we create up to 18 rungs these can be differentiated even more and I'd like that for all these recognition and skill tools" — wants detail to confirm before approving | Approved in part; 18-rung framework pending |
+| D1 | (a) one bar, 99 items, no repeat within 30. **18-rung plan approved for 0.50 (L103).** **Plus:** "if we create up to 18 rungs these can be differentiated even more and I'd like that for all these recognition and skill tools" — wants detail to confirm before approving | Approved in part; 18-rung framework pending |
 | D2 | (a) 2/3 new thing | Approved |
-| D3 (= Fable D6) | Justin asked for image previews of (a) rhythm-first and (b) duration palette | Pending (Fable mock-ups) |
+| D3 (= Fable D6) | **Duration palette** (Fable sheet option b = this register's D3 (a)): choose a length, then tap the ladder (L103) | Approved |
 | D4 (= Fable D7) | (a) both halves right; per-half report; Nearly only for M10 spelling | Approved |
 | D5 | (a) allow f–si once per item as a step, **with visual support** (the gap shown on the ladder and in feedback) | Approved |
 | D6 | Justin asked for an explicit step-by-step explanation | Pending |

@@ -355,3 +355,5 @@ This one is the engine's and the theory checker's to confirm; I raise it because
 
 ## Justin's answers, 21 Nov 2026 05:53 (decision log L101)
 D1 (a) · D2 (a) · D3 (a) · D4 (a) · D5 (a) · D6: image previews of (a) and (b) requested (`entry_ab/`) · D7 (a). Note: the "8 of the last 10" window leaves Nearly out (ladder register D10 (a)), not "Nearly counts as not right" as in 2.2.
+
+L103 (06:13): D6 = **option b, the duration palette** (`entry_ab/`), superseding 2.3's two-step entry. 18-rung picker for 0.50: mock a redesign and a sub-menu version.
