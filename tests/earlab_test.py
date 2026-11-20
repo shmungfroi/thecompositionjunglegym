@@ -354,7 +354,7 @@ async def main():
                 acc, ch = predict_acc(rr, f, lambda r: r['a'])
                 COUNT[f'info: rung {l} {name}: accuracy vs chance'] = f'{acc:.1%} vs {ch:.1%}'
         # the balanced table is in place and current (its length matches the index; a stale or missing table falls back to the old draw)
-        t23 = await pg.evaluate("({w2:!!earR23Weights(2),w3:!!earR23Weights(3),draw:/earR23Draw\(l,mode,a,r\)/.test(earGenCad.toString()),keys2:earCadKeys(2,'maj').length+earCadKeys(2,'min').length,"
+        t23 = await pg.evaluate("({w2:!!earR23Weights(2),w3:!!earR23Weights(3),draw:/earR23Draw\\(l,mode,a,r\\)/.test(earGenCad.toString()),keys2:earCadKeys(2,'maj').length+earCadKeys(2,'min').length,"
                                 "nz2:(earR23Weights(2)||[]).filter(x=>x>0).length,nz3:(earR23Weights(3)||[]).filter(x=>x>0).length})")
         COUNT['C3 balanced table (rungs 2, 3): entries with weight > 0'] = f"{t23['nz2']}, {t23['nz3']}"
         if not (t23['w2'] and t23['w3'] and t23['draw'] and t23['keys2'] == 24):
