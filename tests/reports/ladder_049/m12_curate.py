@@ -32,7 +32,11 @@ TICK = 420
 PICK_OUT = {'k545_42-43', 'k545_44-45',      # the recapitulation in F: bars 1-4 transposed (a transposition is not a new item)
             'k545_63-64', 'k545_65-66',      # the recapitulation's S: bars 18-21 transposed, only the last note differs
             'maple_8-8',                     # a broken-octave accompaniment figure, not the tune
-            'maple_49-50'}                   # the A strain's return: bars 15-16 again with one added note
+            'maple_42-42',                   # the same figure where the A strain returns
+            'maple_49-50',                   # the A strain's return: bars 15-16 again with one added note
+            'chopin20_9-10',                 # B′ repeats B (bars 5-8) note for note
+            'k331a_13-16',                   # A′ restates the opening phrase (bars 1-4 / 5-8)
+            'jesu_11-13'}                    # the last phrase is the first phrase again
 MAX_PER = {'maple': 8, 'entertainer': 8}
 
 
@@ -212,6 +216,9 @@ def build():
                 notes = notes[1:]
             while notes and notes[-1][1] is None:
                 notes = notes[:-1]
+            if notes:   # the last note is held to the end of its bar at most (a fermata or a tie over the barline is cut there)
+                lb = meas_info[notes[-1][3]]
+                notes = notes[:-1] + [notes[-1][:2] + [min(notes[-1][2], lb[1] + lb[3] - notes[-1][0])] + notes[-1][3:]]
             pitches = [e for e in notes if e[1] is not None]
             if not (5 <= len(pitches) <= 24):
                 continue
@@ -227,6 +234,9 @@ def build():
                 reasons.append('leap over an octave')
             for e in notes:
                 bo = e[0] - num_off[e[3]][0]
+                if bo + e[2] > num_off[e[3]][2] + 1e-6:
+                    reasons.append('a note crosses the barline (a tie)')
+                    break
                 if not legal(round(bo, 4), round(e[2], 4), beat, compound):
                     reasons.append('duration %s at %s' % (e[2], bo))
                     break
@@ -300,7 +310,8 @@ def pick(cands):
     for c in order:
         if c['reasons'] or c['id'] in PICK_OUT or c['n'] > 24:
             continue
-        sig = (c['solfa'], tuple((x[0], x[1]) for x in c['notes']), c['metre'])
+        ps = [x[2] for x in c['notes'] if x[2] is not None]
+        sig = (tuple(b - a for a, b in zip(ps, ps[1:])), tuple((x[0], x[1]) for x in c['notes']), c['metre'])   # transposition-free
         if sig in seen:      # a repeat or a transposition (the recapitulation, a repeated strain) is not a new excerpt
             continue
         if per[c['score']] >= MAX_PER.get(c['score'], 99):
