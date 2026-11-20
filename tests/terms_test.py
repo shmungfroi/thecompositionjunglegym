@@ -117,7 +117,9 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
  const nameOf=b=>{const c=b.cloneNode(true);c.querySelectorAll('.el-badge').forEach(x=>x.remove());return c.textContent.trim()};
  const shortCad=b=>{const w=nameOf(b).toLowerCase();if(!SHORTCAD[w]||!b.parentElement)return null;
   const sib=[...b.parentElement.children].filter(x=>x!==b&&x.matches(BTN)&&CADNAMES.test(nameOf(x)));return sib.length?SHORTCAD[w]:null};
- const usList=ti=>{const seg=(ti||'').split(' · ').filter(x=>/^US: /.test(x));return seg.length?seg[seg.length-1].slice(4).split(', '):[]};
+ // 0.49 C14: a hover reads "Australian (US: American)"; a hover with no title of its own stays "US: American" (then the dot only joins the L5 note)
+ const usList=ti=>{const t=ti||'',br=[...t.matchAll(/\(US: ([^)]*)\)/g)];if(br.length)return br[br.length-1][1].split(', ').map(x=>x.replace(/^\d+ /,''));   // the C13 count is checked by the tile table, not here
+ const seg=t.split(' · ').filter(x=>/^US: /.test(x));return seg.length?seg[seg.length-1].slice(4).split(', '):[]};
  const ownText=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT);let t='',n;while((n=w.nextNode()))if(!n.parentElement.closest('[data-notm]')&&n.parentElement.closest(BTN)===e)t+=n.nodeValue+' ';return t};
  // a bracket follows the term, or (0.48 R6 fix) sits inside the term's own following bracket: "Perfect cadence (US: authentic cadence; V–I)"
  const merged=a=>{let h=a,m=a.nextSibling;const sk=()=>{while(m&&m.nodeType===3&&m.nodeValue==='')m=m.nextSibling};sk();
@@ -129,7 +131,7 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
   const tw=document.createTreeWalker(M,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&n.parentElement.closest('svg,script,style,textarea,.el-key2')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
   let txt='',n;while((n=tw.nextNode()))txt+=n.nodeValue;
   const t=strip(txt),mm=US.exec(t);if(mm)add('T2',where+': "'+t.slice(Math.max(0,mm.index-50),mm.index+40)+'"');
-  M.querySelectorAll('[title]').forEach(e=>{const ti=e.getAttribute('title').replace(/(^|\s*·\s*)US: [^·]*/g,' ');if(US.test(strip(ti)))add('T2',where+': title "'+e.getAttribute('title')+'"')});
+  M.querySelectorAll('[title]').forEach(e=>{const ti=e.getAttribute('title').replace(/\s*\(US: [^)]*\)/g,' ').replace(/(^|\s*·\s*)US: [^·]*/g,' ');if(US.test(strip(ti)))add('T2',where+': title "'+e.getAttribute('title')+'"')});
   // T3 scores: the Australian term only inside svg
   M.querySelectorAll('svg').forEach(sv=>{const s=sv.textContent;window.__TN.svg++;if(/\(US/.test(s)||US.test(s.replace(/staff-space/g,'')))add('T3',where+': score text has a US term: "'+s.slice(0,80)+'"')});
   // T3 buttons, chips, options: the Australian term only; the US term in a title
@@ -138,7 +140,7 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
    const el=b,tl=el.getAttribute('title')||'',got=usList(tl),want=new Set(termsIn(ownText(el)).map(([k,w])=>usOf(k,w)));
    const sc=shortCad(el);if(sc)want.add(RULE[sc][1]);
    // M3i: terms named in the button's own title (the part that is not the US hover or the IAC note) need their US hover too
-   const appT=tl.split(' · ').filter(x=>!/^US: /.test(x)&&!/is still a perfect cadence/.test(x)).join(' · ');
+   const appT=tl.replace(/\s*\(US: [^)]*\)/g,'').split(' · ').filter(x=>!/^US: /.test(x)&&!/is still a perfect cadence/.test(x)).join(' · ');
    // (bar and stave are scoped: a later mention needs no pairing, so a hover that merely mentions a bar is left alone)
    termsIn(appT).forEach(([k,w])=>{const u=usOf(k,w);if(u&&k!=='bar'&&k!=='stave'&&!want.has(u)){want.add(u);if(!got.includes(u))add('T3',where+': button titled "'+appT.slice(0,60)+'" names a term with no US hover "US: '+u+'" (M3i; title "'+tl+'")')}});
    got.forEach(u=>{if(/^(authentic|half|deceptive)$/i.test(u))add('T6',where+': shortened US term on hover (C1) "US: '+u+'" on "'+s.trim().slice(0,60)+'"; expected the full term')});
@@ -236,14 +238,14 @@ TARGETS = [
      "US: imperfect authentic · US 'imperfect authentic' is still a perfect cadence; the Australian imperfect cadence is the US half cadence."),
     ('S2/S1 dotted value pairs dotted; "a tone under" pairs', "()=>$('f_p6').textContent",
      'A dotted crotchet (US: dotted quarter note) and a quaver (US: eighth note). You heard the 7th a tone (US: whole step) under the octave.'),
-    ('M3 a button whose own title names a term (data-tt) gets the US hover', "()=>$('b8').title", 'dotted crotchet, quaver · US: dotted quarter note, eighth note'),
+    ('M3 a button whose own title names a term (data-tt) gets the US hover', "()=>$('b8').title", 'dotted crotchet, quaver (US: dotted quarter note, eighth note)'),
     ('L7 no underline under a bracketed term', "()=>getComputedStyle($('f_p2').querySelector('abbr.tm')).textDecorationLine", 'none'),
 ]
 # buttons whose text changes: the hover is rebuilt, not added to (H1)
 CHANGE = [
     ('H1 hover rebuilt when the text loses its term', "async()=>{$('b5').textContent='Add two or more chords';await new Promise(r=>setTimeout(r,300));return $('b5').getAttribute('title')}", None),
-    ('H1 hover rebuilt when the text changes term, keeping the app title', "async()=>{$('b6').textContent='semibreve';await new Promise(r=>setTimeout(r,300));return $('b6').title}", 'own · US: whole note'),
-    ('H1 hover follows a title the app changes', "async()=>{$('b6').title='new';$('b6').textContent='minims';await new Promise(r=>setTimeout(r,300));return $('b6').title}", 'new · US: half notes'),
+    ('H1 hover rebuilt when the text changes term, keeping the app title', "async()=>{$('b6').textContent='semibreve';await new Promise(r=>setTimeout(r,300));return $('b6').title}", 'own (US: whole note)'),
+    ('H1 hover follows a title the app changes', "async()=>{$('b6').title='new';$('b6').textContent='minims';await new Promise(r=>setTimeout(r,300));return $('b6').title}", 'new (US: half notes)'),
 ]
 GYM = [  # (progression [(numeral, inversion)], text the reader must show)
     ([('I', 0), ('IV', 0), ('V', 0), ('I', 0)], 'Perfect cadence (US: authentic cadence).'),
@@ -329,10 +331,10 @@ async def targeted(pg):
     tiles = await pg.evaluate("""()=>new Promise(res=>{const L0=EAR.lvl.rhy;location.hash='ear';EAR.drill='rhy';EAR.q=null;EAR.done=false;const o={};let l=1;
         const step=()=>{EAR.lvl.rhy=l;room('ear');EAR.q=earGen('rhy',l);EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();setTimeout(()=>{document.querySelectorAll('#earMain [data-earcell]').forEach(b=>o[b.dataset.earcell]=b.getAttribute('title'));
           if(++l<=3)step();else{EAR.lvl.rhy=L0;EAR.q=null;EAR.done=false;room('ear');res(o)}},300)};step()})""")
-    want_t = {'q': 'crotchet · US: quarter note', 'e2': '2 quavers · US: eighth notes', 'h': 'minim · US: half note', 's4': '4 semiquavers · US: sixteenth notes',
-              'qr': 'crotchet rest · US: quarter rest', 'dq': 'dotted crotchet, quaver · US: dotted quarter note, eighth note',
-              'es2': 'quaver, 2 semiquavers · US: eighth note, sixteenth notes', 's2e': '2 semiquavers, quaver · US: sixteenth notes, eighth note',
-              'syn': 'quaver, crotchet, quaver · US: eighth note, quarter note, eighth note'}  # R2 S-T1: one US name per value
+    want_t = {'q': 'crotchet (US: quarter note)', 'e2': '2 quavers (US: 2 eighth notes)', 'h': 'minim (US: half note)', 's4': '4 semiquavers (US: 4 sixteenth notes)',
+              'qr': 'crotchet rest (US: quarter rest)', 'dq': 'dotted crotchet, quaver (US: dotted quarter note, eighth note)',
+              'es2': 'quaver, 2 semiquavers (US: eighth note, 2 sixteenth notes)', 's2e': '2 semiquavers, quaver (US: 2 sixteenth notes, eighth note)',
+              'syn': 'quaver, crotchet, quaver (US: eighth note, quarter note, eighth note)'}  # R2 S-T1: one US name per value
     bad_t = {k: v for k, v in tiles.items() if want_t.get(k) != v}
     if bad_t or not tiles:
         fail('T6', f'M3i rhythm tile hovers: {bad_t or tiles}')

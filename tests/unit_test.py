@@ -16,14 +16,14 @@ X-12  (R2) climb 8 draws a borrowed ♭VII rose when MD_MAJOR is on; the Analysi
 S-T1  (R2) every Ear Lab rhythm tile hover pairs its values one to one with the US names (syn: three of each).
 D12   (0.48 decision 12) homes() (the Keys room) and analyse() agree: minor v / v7 and minor-key VII / VII7 are MD in
       both, V / V7 / vii° / vii°7 stay D; the borrowed v and ♭VII of a major key are MD; MD is coloured madder rose
-      #bd6b97 (--md) in FN, FNHEX and the gym/SATB numeral colours; no function colour is the old blue-grey #7fb3c8;
-      the deepened #9e4776 is defined for ivory; MD text reaches at least 4.5:1 on every ground it is drawn on.
+      #b1729d (--md) in FN, FNHEX and the gym/SATB numeral colours; no function colour is the old blue-grey #7fb3c8;
+      the deepened #8b4978 is defined for ivory; MD text reaches at least 4.5:1 on every ground it is drawn on.
 C9    (0.49) the Ear Lab function map (earNumFn) agrees with analyse(): minor v / v7 and VII / VII7 are MD, and so are the
       borrowed v / ♭VII of a major key while MD_MAJOR is on (X when it is off); V, V7, vii°, vii°7 stay D; MD draws in var(--md).
 C8    (0.49) the Chord Library's augmented and diminished 7th texts say "symmetrical" only for equal temperament and name the
       wrap-round interval (diminished 4th / augmented 2nd); the dim7 is vii°7 of four minor keys.
 """
-import sys, asyncio, json, pathlib, collections
+import re, sys, asyncio, json, pathlib, collections
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / 'harness'))
 import cjg
@@ -143,7 +143,7 @@ async def main():
         css = await pg.evaluate("""()=>{const cs=getComputedStyle(document.documentElement);return{md:cs.getPropertyValue('--md').trim(),mdi:cs.getPropertyValue('--md-ivory').trim(),
             hex:FNHEX.MD,cols:COLS['var(--md)'],fname:FNAME.MD,suit:SUIT.MD,legend:[...document.querySelectorAll('.flegend span')].map(s=>s.textContent+'|'+s.getAttribute('style')).join(' ')}}""")
         n += 1
-        if css['md'] != '#bd6b97' or css['mdi'] != '#9e4776' or css['hex'] != '#bd6b97' or css['cols'] != '#bd6b97':
+        if css['md'] != '#b1729d' or css['mdi'] != '#8b4978' or css['hex'] != '#b1729d' or css['cols'] != '#b1729d':
             FAIL.append(f'D12 colour values: {css}')
         n += 1
         if css['fname'] != 'soft pull · modal dominant' or css['suit'] != 'Soft pull' or 'MD modal dominant: soft pull' not in css['legend'] or 'var(--md)' not in css['legend']:
@@ -153,7 +153,7 @@ async def main():
         fnline = next(l for l in src.splitlines() if l.startswith('const FN={'))
         if '#7fb3c8' in fnline or "MD:'var(--md)'" not in fnline:
             FAIL.append(f'D12 FN still uses the blue-grey or lacks MD: {fnline}')
-        # the SATB score numerals (Voicing lab) and the gym frame numerals draw MD in #bd6b97: E minor, i v6 iv6 V and i VII III
+        # the SATB score numerals (Voicing lab) and the gym frame numerals draw MD in #b1729d: E minor, i v6 iv6 V and i VII III
         sv = await pg.evaluate("""async()=>{location.hash='voice';await new Promise(r=>setTimeout(r,500));const o={};
             for(const [nm,prog] of [['v','i v:1 iv:1 V i'],['VII','i VII III iv V i']]){K={k:4,mode:'min'};P=prog.split(' ').map(t=>{const[r,inv]=t.split(':');const p=parseRoman(r,K);return{...p,inv:+(inv||0),beats:4}});
               VL.vc='gym';renderCoach();await new Promise(r=>setTimeout(r,600));
@@ -161,7 +161,7 @@ async def main():
         for nm, tx in sv.items():
             n += 1
             hit = [c for t, c in tx if t.startswith(nm) and not t.startswith('vii')]
-            if not hit or any(c not in ('#bd6b97', 'rgb(189, 107, 151)') for c in hit):
+            if not hit or any(c not in ('#b1729d', 'rgb(177, 114, 157)') for c in hit):
                 FAIL.append(f'D12 SATB score numeral {nm}: colours {hit} (texts {[t for t, c in tx][:12]})')
         # contrast: every element drawn in the MD colour, against the ground behind it (alpha-composited), at least 4.5:1
         cr = await pg.evaluate("""async()=>{const lum=c=>{const f=x=>{x/=255;return x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4)};return .2126*f(c[0])+.7152*f(c[1])+.0722*f(c[2])};
@@ -169,7 +169,7 @@ async def main():
             const ground=el=>{let stack=[];for(let e=el;e;e=e.parentElement){const b=rgb(getComputedStyle(e).backgroundColor);if(b&&(b.length<4||b[3]>0)){stack.push(b);if(b.length<4||b[3]>=1)break}}
               let c=[11,9,6];for(const b of stack.reverse()){const a=b.length<4?1:b[3];c=c.map((x,i)=>x*(1-a)+b[i]*a)}return c};
             const out=[];const scan=room=>{document.querySelectorAll('body *').forEach(e=>{if(!e.getClientRects().length)return;const cs=getComputedStyle(e);const col=e instanceof SVGElement?(cs.fill||''):cs.color;
-              if(!/189, 107, 151|158, 71, 118/.test(col))return;if(!e.textContent.trim())return;const fg=rgb(col),bg=ground(e instanceof SVGElement?e.closest('svg'):e),L1=lum(fg),L2=lum(bg);
+              if(!/177, 114, 157|139, 73, 120/.test(col))return;if(!e.textContent.trim())return;const fg=rgb(col),bg=ground(e instanceof SVGElement?e.closest('svg'):e),L1=lum(fg),L2=lum(bg);
               out.push({room,txt:e.textContent.trim().slice(0,30),fg:col,bg:bg.map(Math.round).join(','),cr:Math.round((Math.max(L1,L2)+.05)/(Math.min(L1,L2)+.05)*100)/100})})};
             location.hash='voice';await new Promise(r=>setTimeout(r,400));scan('voice');
             location.hash='gym';await new Promise(r=>setTimeout(r,400));scan('gym');
@@ -227,15 +227,18 @@ async def main():
             d.querySelectorAll('[data-tt]').forEach(termBtnSync);const o=[...d.querySelectorAll('[data-tt]')].map(b=>[b.dataset.earcell,b.title]);d.remove();return o}""")
         for k, t in tiles:
             n += 1
-            mm = t.split(' · US: ')
-            if len(mm) != 2:
+            mm = re.match(r'^(.*) \(US: (.*)\)$', t)   # 0.49 C14: the bracket form
+            if not mm:
                 FAIL.append(f'S-T1 tile {k}: hover {t!r}'); continue
-            gb, us = mm[0].split(', '), mm[1].split(', ')
+            gb, us = mm.group(1).split(', '), mm.group(2).split(', ')
             if len(gb) != len(us):
                 FAIL.append(f'S-T1 tile {k}: {len(gb)} values but {len(us)} US names: {t!r}')
+            # 0.49 C13: the count is named on both sides, value for value ("2 quavers (US: 2 eighth notes)")
+            elif [re.match(r'^(\d+) ', g).group(1) if re.match(r'^\d+ ', g) else '1' for g in gb] != [re.match(r'^(\d+) ', u).group(1) if re.match(r'^\d+ ', u) else '1' for u in us]:
+                FAIL.append(f'C13 tile {k}: counts differ between the two sides: {t!r}')
         n += 1
         syn = dict(tiles).get('syn')
-        if syn != 'quaver, crotchet, quaver · US: eighth note, quarter note, eighth note':
+        if syn != 'quaver, crotchet, quaver (US: eighth note, quarter note, eighth note)':
             FAIL.append(f'S-T1 syn tile: {syn!r}')
         # ---- P2-6 ----
         rows = await pg.evaluate("""async(T)=>{location.hash='keys';await new Promise(r=>setTimeout(r,400));const o=[];
