@@ -7328,7 +7328,7 @@ function ladSoundSig(cells,barLen,anac){const{ev}=ladRhyEvents(cells),bounds=[];
 /* rhythm marking (D11, R8, R9): right = the same cells (or the same sound with cells the rung's notation rules allow, RF);
    Nearly = the same sound in a notation the register names: plain syn-co-pa across the bar's middle for the tied form (D11), a swung pair
    written as a triplet crotchet–quaver (R8), a septuplet with the other grouping (R9). Returns {ok, nearly, kind, beats, why} */
-function ladRhyMark(q,ans){ans=(ans||[]).slice();const truth=q.a,res={ok:false,nearly:false,kind:'wrong',beats:[],why:''};
+function ladRhyMark(q,ans){ans=Array.isArray(ans)?ans.slice():ans&&ans.riff?ans:[];const truth=q.a,res={ok:false,nearly:false,kind:'wrong',beats:[],why:''};
  if(q.l===10&&q.drums&&ans.riff){const rm=ladRhyMark({...q,l:6,drums:null},ans.riff),D=ladDrumOns(q.drums),G=ans.drums||{kick:[],snare:[]},
    eq=(a,b)=>a.length===b.length&&[...a].sort((x,y)=>x-y).every((x,i)=>x===[...b].sort((x,y)=>x-y)[i]),dk=eq(D.kick,G.kick||[]),ds=eq(D.snare,G.snare||[]);
   return{ok:rm.ok&&dk&&ds,nearly:false,kind:rm.ok&&dk&&ds?'right':'wrong',parts:{riff:rm,kick:dk,snare:ds},beats:rm.beats}}

@@ -1125,9 +1125,10 @@ async def main():
         await pg.evaluate("()=>{EAR.lvl.cad=2;EAR.q=null;EAR.done=false;EAR.res=null;EAR.st.cad={...EARST0};CAD64_INT_NEARLY=true;EAR_NEARLY=true;renderEar()}")
         # ---------------- U: EL-11 rungs, Stage switch, show all, rung change, page errors at Stages 4, 5, 6 ----------------
         # merge 0.48: one Stage table, EARSTAGE (Fable's design spec, section 3): a drill or rung shows when its Stage <= the selected Stage
-        WANT = {4: {'metre': [1, 2], 'rhy': [1, 2], 'qual': [1], 'mel': [1]},
-                5: {'metre': [1, 2, 3], 'rhy': [1, 2, 3], 'qual': [1, 2], 'cad': [1, 2], 'bass': [1, 2], 'mel': [1, 2], 'blind': [1, 2]},
-                6: {d: [1, 2, 3] for d in ('metre', 'rhy', 'qual', 'cad', 'bass', 'mel', 'blind')}}
+        # 0.49 ladders (LADDER_REGISTER_049 section 1): melodic dictation 12 rungs (Stages 4,4,4,4,5,5,5,5,6,6,6,6), rhythm dictation 10 (4,4,4,5,5,5,5,6,6,6)
+        WANT = {4: {'metre': [1, 2], 'rhy': [1, 2, 3], 'qual': [1], 'mel': [1, 2, 3, 4]},
+                5: {'metre': [1, 2, 3], 'rhy': list(range(1, 8)), 'qual': [1, 2], 'cad': [1, 2], 'bass': [1, 2], 'mel': list(range(1, 9)), 'blind': [1, 2]},
+                6: {**{d: [1, 2, 3] for d in ('metre', 'qual', 'cad', 'bass', 'blind')}, 'rhy': list(range(1, 11)), 'mel': list(range(1, 13))}}
         await pg.evaluate("()=>{EAR.all=false;EAR.q=null;EAR.done=false}")
         for g in (4, 5, 6):
             await pg.click(f'#lvl button[data-l="{g}"]')
