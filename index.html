@@ -6972,9 +6972,10 @@ function earGenCad(l,r){if(l===1){const a=epick(Object.keys(CADT[1].maj),r),d=ea
   const{reg,P}=earCadReg(rns,key,r,l);return{d:'cad',l,a,key,rns,sub:l===3?'':cadSub(rns),reg,ch:P.ch,opts:earCadOpts(l)}}
 /* R13+: outer-voice registers for cadence items, drawn independently of the category. earGenCad calls this and only this.
    Rung 1 (BHL 0.48): the voicing is drawn from the balanced weights of the strict open realisations of this model in this key (earR1Weights),
-   so the lowest and highest notes together, the span and the outer voices of each chord come up as often for every answer. Rungs 2 and 3: a target lowest and highest note are drawn first (the same for every category);
-   of nine realisations (bass and soprano preferences on a 3 x 3 grid) the one whose lowest and highest notes come nearest the targets is
-   used, so where the bass bottoms out or the soprano peaks no longer hints at the cadence. Realisations are memoised. */
+   so the lowest and highest notes together, the span and the outer voices of each chord come up as often for every answer. Rungs 2 and 3
+   (0.49 C3): the grid point (bass and soprano preferences, earR23Grid) is drawn by its balanced weight for this model and key (EAR23W,
+   earR23Fit below). Only if the table is missing or stale: the old way, a target lowest and highest note drawn first and the grid
+   realisation nearest to it used. Realisations are memoised (earCadM). */
 const EARCADM=new Map();
 function earCadReg(rns,key,r,l=2){
  if(l===1){const t=rns.join(' '),L=earR1Weights()[Object.keys(CADT[1].maj).find(a=>CADT[1].maj[a].includes(t))].filter(e=>e.t===t&&e.k===key.k);
