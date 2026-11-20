@@ -486,6 +486,55 @@ small.a6{font-size:12.5px;color:var(--violet);font-weight:600}
 .c1pad.home{border-bottom-color:var(--gold)}.c1pad.char{border-bottom-color:var(--violet);background:rgba(164,147,216,.1)}
 .c1pad:active{background:rgba(201,162,74,.3)}
 @media(max-width:700px){.c1pads{grid-template-columns:repeat(4,1fr)}}
+/* seed layout B */
+#room-seed>.head{margin-bottom:10px}
+#room-seed>.head .kicker{font-size:10.5px}
+#room-seed>.head>div:first-child{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:22px;row-gap:2px}
+#room-seed>.head .kicker{flex:0 0 100%}
+#room-seed>.head h1{font-size:32px;margin:2px 0 0}
+#room-seed>.head h1.disp:after{width:40px;margin-top:4px}
+#room-seed>.head .sub{flex:1 1 360px;font-size:14px}
+#picker{position:sticky;top:var(--top);z-index:4;padding:10px 22px 4px;margin-bottom:14px;background:linear-gradient(180deg,var(--panel2),var(--panel));box-shadow:0 10px 18px -12px rgba(0,0,0,.9)}
+#picker .prow{margin-bottom:7px;gap:12px;align-items:center}
+#picker .plbl{flex:0 0 86px;padding-top:0}
+#picker .rp,#picker .rk{width:42px;height:42px}
+#picker .rp{font-size:18px;border-radius:10px}
+#picker .rk button{font-size:13.5px;border-radius:8px}
+#picker .prow2{display:flex;flex-wrap:wrap;align-items:center;column-gap:26px;row-gap:7px;margin-bottom:7px}
+#picker .prow2 .prow{margin:0}
+#picker .prow2 .prow:first-child{flex:0 1 auto;min-width:0}
+#picker .qgroups{flex-direction:row;flex-wrap:wrap;column-gap:14px;row-gap:6px}
+#picker .qg{gap:5px;flex-wrap:wrap}
+#picker .qg .gl{width:auto;flex:0 0 auto;font-size:10.5px;max-width:64px;line-height:1.2}
+#picker .qp{padding:3px 10px 2px;min-width:0}
+#picker .qp b{font-size:15px}
+#picker .qp small{font-size:10.5px}
+#picker .ip{padding:5px 13px;font-size:13px}
+.seedtop{grid-template-columns:minmax(300px,380px) minmax(0,1fr)}
+.seedlow{grid-template-columns:minmax(320px,420px) minmax(0,1fr)}
+#room-seed .card{scroll-margin-top:calc(var(--top) + 170px)}
+@media(max-width:1020px){.seedtop,.seedlow{grid-template-columns:1fr}}
+/* seed equal heights */
+@media(min-width:1021px){
+ .seedtop>div,.seedlow>div{display:flex;flex-direction:column}
+ .seedtop>div>.card,.seedlow>div>.card{flex:1 1 auto}
+}
+
+@media(max-width:700px){
+ #room-seed>.head h1{font-size:28px}
+ #picker{padding:8px 12px 2px;margin-left:-4px;margin-right:-4px}
+ #picker .prow,#picker .prow2{flex-direction:row;flex-wrap:nowrap;align-items:center;gap:8px}
+ #picker .prow2{display:block}
+ #picker .prow2 .prow{margin-bottom:6px}
+ #picker .plbl{flex:0 0 44px;font-size:10px;letter-spacing:1px;line-height:1.15}
+ #picker .roots,#picker .qgroups,#picker .invs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:2px 2px 3px}
+ #picker .roots::-webkit-scrollbar,#picker .qgroups::-webkit-scrollbar,#picker .invs::-webkit-scrollbar{display:none}
+ #picker .qg{flex-wrap:nowrap}
+ #picker .qg .gl{width:auto;flex:0 0 auto;flex-basis:auto;max-width:58px}
+ #picker .rp,#picker .rk,#picker .qp,#picker .ip{flex:0 0 auto}
+ #picker .rp,#picker .rk{width:40px;height:40px}
+ #picker .ip{white-space:nowrap}
+}
 /* song column */
 .seedgrid .songcol{grid-column:1/-1}
 @media(min-width:1500px){.seedgrid{grid-template-columns:minmax(330px,400px) 1fr minmax(320px,380px)}.seedgrid .songcol{grid-column:auto}}
@@ -1142,10 +1191,12 @@ abbr.tm:focus::after{content:attr(title);position:absolute;left:0;top:100%;z-ind
 
  <section class="card picker" id="picker">
   <div class="prow"><span class="plbl">Root</span><div class="roots" id="rootPads"></div></div>
-  <div class="prow"><span class="plbl">Chord type</span><div class="qgroups" id="qualPads"></div></div>
-  <div class="prow"><span class="plbl">Inversion</span><div class="invs" id="invPads"></div></div>
+  <div class="prow2">
+   <div class="prow"><span class="plbl">Chord type</span><div class="qgroups" id="qualPads"></div></div>
+   <div class="prow"><span class="plbl">Inversion</span><div class="invs" id="invPads"></div></div>
+  </div>
  </section>
- <div class="grid seedgrid">
+ <div class="grid seedtop">
   <div>
    <section class="card">
     <h3>The seed<span class="sp"></span><button class="mini gold" id="playBlock">▶ Hear it</button><button class="mini" id="playArp">Arpeggiate</button></h3>
@@ -1162,12 +1213,6 @@ abbr.tm:focus::after{content:attr(title);position:absolute;left:0;top:100%;z-ind
     <div class="legend"><span style="--c:var(--goldhi)">root</span><span style="--c:var(--green)">3rd / sus</span><span style="--c:var(--ivory)">5th</span><span style="--c:var(--red)">7th / 6th</span><span style="--c:var(--violet)">colour tones</span></div>
    </section>
 
-   <section class="card">
-    <h3>Where it lives</h3>
-    <div class="keys" id="keys"></div>
-    <p class="ctx" id="ctx"></p>
-    <div class="flegend"><span style="--c:var(--green)">● T tonic: home, rest</span><span style="--c:var(--gold)">● PD predominant: moving away</span><span style="--c:var(--red)">● D dominant: pulling home</span></div>
-   </section>
   </div>
 
   <div>
@@ -1178,10 +1223,30 @@ abbr.tm:focus::after{content:attr(title);position:absolute;left:0;top:100%;z-ind
     </div>
     <div id="inst"></div>
    </section>
-
+  </div>
+ </div>
+ <div class="grid seedlow">
+  <div class="songcol">
+   <section class="card" id="songCard">
+    <h3>Hear it in a song<span class="sp"></span><button class="mini" id="tToggle" title="Show suitability notes and sources">Teacher notes: off</button></h3>
+    <div id="songs"></div>
+    <div class="lbl" style="margin-top:16px">Where have you heard this chord?</div>
+    <form id="mySongForm" class="search rn"><input id="mySong" placeholder="Song – artist"><button>Add</button></form>
+    <div id="mySongs" class="mysongs"></div>
+    <p class="suggest">Know a great example? Suggest it: <a href="mailto:shmungfroi@gmail.com?subject=Composition%20Jungle%20Gym%20song%20suggestion">shmungfroi@gmail.com</a></p>
+   </section>
+  </div>
+  <div>
    <section class="card">
     <h3>On the stave<span class="sp"></span><small style="letter-spacing:1px;color:var(--muted);text-transform:none;font-weight:400" id="staffNote">concert pitch · left hand bass, right hand close position</small></h3>
     <div class="staff" id="staff"></div>
+   </section>
+
+   <section class="card">
+    <h3>Where it lives</h3>
+    <div class="keys" id="keys"></div>
+    <p class="ctx" id="ctx"></p>
+    <div class="flegend"><span style="--c:var(--green)">● T tonic: home, rest</span><span style="--c:var(--gold)">● PD predominant: moving away</span><span style="--c:var(--red)">● D dominant: pulling home</span></div>
    </section>
 
    <section class="card">
@@ -1192,16 +1257,6 @@ abbr.tm:focus::after{content:attr(title);position:absolute;left:0;top:100%;z-ind
     <div class="chips" id="neigh"></div>
     <div class="lbl" style="margin-top:14px">Plant it</div>
     <div class="chips"><button class="chip" id="plant">⤒ Plant in the Gym (progression playground)</button><button class="chip" id="toOracle">⚄ Send to the Oracle</button></div>
-   </section>
-  </div>
-  <div class="songcol">
-   <section class="card" id="songCard">
-    <h3>Hear it in a song<span class="sp"></span><button class="mini" id="tToggle" title="Show suitability notes and sources">Teacher notes: off</button></h3>
-    <div id="songs"></div>
-    <div class="lbl" style="margin-top:16px">Where have you heard this chord?</div>
-    <form id="mySongForm" class="search rn"><input id="mySong" placeholder="Song – artist"><button>Add</button></form>
-    <div id="mySongs" class="mysongs"></div>
-    <p class="suggest">Know a great example? Suggest it: <a href="mailto:shmungfroi@gmail.com?subject=Composition%20Jungle%20Gym%20song%20suggestion">shmungfroi@gmail.com</a></p>
    </section>
   </div>
  </div>
@@ -2244,7 +2299,10 @@ function renderPads(c){
  $('qualPads').innerHTML=QGROUPS.map(([g,ks])=>{const vis=ks.filter(k=>Q.find(q=>q.k===k).l<=S.level);if(!vis.length)return'';
   return`<div class="qg"><span class="gl">${g}</span>${vis.map(k=>`<button class="qp ${k===S.q?'on':''}" data-pq="${k}"><b>${pretty(S.root+k)}</b><small>${QSHORT[k]}</small></button>`).join('')}</div>`}).join('');
  $('invPads').innerHTML=c.tones.map((t,i)=>`<button class="ip ${i===S.inv?'on':''}" data-pinv="${i}">${i?ORD[i]+' inversion':'Root position'} <span style="opacity:.7">· ${pretty(t.name)} in the bass</span></button>`).join('');
+ padStripFocus();
 }
+/* phones: the pinned chooser rows scroll sideways; keep the chosen pad in view */
+function padStripFocus(){['rootPads','qualPads','invPads'].forEach(id=>{const el=$(id);if(!el||el.scrollWidth<=el.clientWidth+1)return;const on=el.querySelector('.on');if(!on)return;const a=on.getBoundingClientRect(),b=el.getBoundingClientRect();el.scrollLeft+=a.left-b.left-(b.width-a.width)/2})}
 document.addEventListener('click',e=>{const pm=e.target.closest('[data-pm]');if(pm){S.pmode=pm.dataset.pm;LS.set('cjg_pmode',S.pmode);renderInst(chord());const x=instMidis(chord());play(x.m,x.gap,x.k);return}});
 document.addEventListener('click',e=>{const t=e.target.closest('[data-pr],[data-pq],[data-pinv]');if(!t)return;
  if(t.dataset.pr)S.root=t.dataset.pr;if(t.dataset.pq!==undefined){S.q=t.dataset.pq;S.inv=0}if(t.dataset.pinv!==undefined)S.inv=+t.dataset.pinv;
