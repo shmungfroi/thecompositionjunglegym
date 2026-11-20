@@ -10,7 +10,8 @@ Sections
   B  bass and numerals: every progression x key x level; 6,000 generated questions against the allow-list (E8, E9, E11);
      BHL 0.48 (IC_EAR_048 S3): no cadence model, bass progression or generated question moves ii(6) to IV or ii°(6) to iv
   C  tells: no answer predictable above chance from length, tempo or register (E10); 0.49 C3: exact-semitone register tells at rungs 2-3
-  D  pool sizes at level 1 (E11); 0.49 C4: the rung 1 V–vi pool against an independent exhaustive enumeration
+  D  pool sizes at level 1 (E11); 0.49 C4 / C23: the rung 1 V–vi pool (open or close spacing, >= 100) against an independent
+     exhaustive enumeration; C12: no incomplete chord at rung 1
   E  blind analysis windows, labels and buttons (E1–E5)
   F  blind playback note lengths (E6)
   G  ranges (E14)
@@ -317,7 +318,8 @@ async def main():
         # ---------------- C: tells ----------------
         tells = await pg.evaluate("""()=>{let s=17;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o={cad:[],metre:[],qual:[]};
             for(const l of [1,2,3])for(let i=0;i<5000;i++){const c=earGen('cad',l,R);o.cad.push({l,a:c.a,sub:c.sub||'',md:c.key.mode,n:c.ch.length,lo:Math.min(...c.ch.flat()),hi:Math.max(...c.ch.flat()),
-                s2:c.rns[1],open:c.ch[0].join(','),fin:c.ch[c.ch.length-1][3],fb:c.ch[0][0],lb:c.ch[c.ch.length-1][0],fs:c.ch[0][3]});
+                s2:c.rns[1],open:c.ch[0].join(','),fin:c.ch[c.ch.length-1][3],fb:c.ch[0][0],lb:c.ch[c.ch.length-1][0],fs:c.ch[0][3],
+                sp:c.ch.map(v=>v[3]-v[1]>12?'o':'c').join(''),comp:c.ch.every(v=>new Set(v.map(m=>mod(m,12))).size>=3)});
               const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
               const q=earGen('qual',l,R);o.qual.push({l,a:q.a,lo:q.notes[0],hi:q.notes[q.notes.length-1]})}return o}""")
         MARGIN = 0.05
@@ -339,6 +341,17 @@ async def main():
         tell('cadences', tells['cad'], 'mode', lambda r: r['md'], lambda r: r['a'])
         tell('cadences', tells['cad'], 'mode and number of chords', lambda r: (r['md'], r['n']), lambda r: r['a'])
         tell('cadences', tells['cad'], 'lowest and highest note (6-semitone bands)', lambda r: (r['lo'] // 6, r['hi'] // 6), lambda r: r['a'])
+        # 0.49 C23 / C12 (rung 1): open or close spacing of the first chord, the last chord and both, and the final chord's completeness
+        tell('cadences', tells['cad'], 'spacing of the first chord (open or close)', lambda r: r['sp'][0], lambda r: r['a'], (1,))
+        tell('cadences', tells['cad'], 'spacing of the last chord (open or close)', lambda r: r['sp'][-1], lambda r: r['a'], (1,))
+        tell('cadences', tells['cad'], 'spacing of every chord (open or close)', lambda r: r['sp'], lambda r: r['a'], (1,))
+        tell('cadences', tells['cad'], 'every chord complete', lambda r: r['comp'], lambda r: r['a'], (1,))
+        for l in (1, 2, 3):
+            rr = [r for r in tells['cad'] if r['l'] == l]
+            acc, ch = predict_acc(rr, lambda r: r['sp'], lambda r: r['a'])
+            COUNT[f'info: rung {l} spacing of every chord (open/close): accuracy vs chance'] = f'{acc:.1%} vs {ch:.1%}'
+        if any(not r['comp'] for r in tells['cad'] if r['l'] == 1):
+            fail('C', 'C12: a rung 1 item has an incomplete chord')
         # 0.49 C3 (IC_EAR2_048 C2): exact-semitone register tells at rungs 2 and 3, alone and with the mode. Before 0.49 the exact lowest and
         # highest note pair predicted the answer 11 (rung 2) and 14 (rung 3) points above chance, and the last bass note 11 (rung 2, 7 keys).
         # Rung 1's are in earlab_items_test section K. The bass and soprano degrees (lowest note as do or so ...) are the cadence, not a tell.
@@ -407,20 +420,31 @@ async def main():
             floor = 48 if k.startswith('chord quality') else 100
             if v < floor:
                 fail('D', f'level 1 {k}: {v} distinct items (floor {floor})')
-        # 0.49 C4: rung 1 interrupted cadence (V–vi). Its pool is every strict, open, complete realisation in the twelve keys; this
-        # independent enumeration (strict common-practice rules, below) finds the same set, so the 28 voicings are the honest maximum while
-        # rung 1 keeps open spacing and complete chords (EL-7 / BHL H). With close spacing allowed it would be 108 (register 0.49 C12, Drafted).
-        r1 = await pg.evaluate("()=>({vvi:earR1Pool().filter(p=>p.t==='V vi').map(p=>p.k+':'+p.ch.map(v=>v.join(',')).join('|')),by:earR1Pool().reduce((o,p)=>(o[p.t]=(o[p.t]||0)+1,o),{}),"
-                               "w:Object.fromEntries(Object.entries(earR1Weights()).map(([a,L])=>[a,L.filter(e=>e.w>=1e-4).length]))})")
-        mine = {f"{k}:{','.join(map(str, P))}|{','.join(map(str, N))}" for k in range(12) for P, N in vvi_enum(k)}
-        mine_close = sum(len(vvi_enum(k, open_only=False)) for k in range(12))
-        COUNT['C4 rung 1 V–vi: app pool / independent enumeration (open) / with close spacing'] = f"{len(r1['vvi'])} / {len(mine)} / {mine_close}"
-        COUNT['C4 rung 1 pool per model'] = json.dumps(r1['by'])
-        COUNT['C4 rung 1 pool entries with weight >= 1e-4 per answer'] = json.dumps(r1['w'])
+        # 0.49 C4 / C23: rung 1 interrupted cadence (V–vi). Its pool is every strict, complete realisation in the twelve keys, open or close
+        # spacing (Justin 21 Nov 2026, L101: close spacing allowed for all five models together); this independent enumeration (strict
+        # common-practice rules, below) must find the same set, and every voicing must carry weight. Open spacing only it was 28.
+        r1 = await pg.evaluate("()=>({vvi:earR1Pool().filter(p=>earR1Use(p)&&p.t==='V vi').map(p=>p.k+':'+p.ch.map(v=>v.join(',')).join('|')),by:earR1Pool().filter(p=>earR1Use(p)).reduce((o,p)=>(o[p.t]=(o[p.t]||0)+1,o),{}),"
+                               "w:Object.fromEntries(Object.entries(earR1Weights()).map(([a,L])=>[a,L.filter(e=>e.w>=1e-4).length])),"
+                               "opt:{inc:EARR1OPT.inc,open:EARR1OPT.open},inc:Object.values(earR1Weights()).flat().filter(e=>e.inc).length,"
+                               "cl:Object.values(earR1Weights()).flat().filter(e=>e.cl&&e.w>=1e-4).reduce((o,e)=>(o[e.t]=(o[e.t]||0)+1,o),{})})")
+        mine = {f"{k}:{','.join(map(str, P))}|{','.join(map(str, N))}" for k in range(12) for P, N in vvi_enum(k, open_only=False)}
+        mine_open = sum(len(vvi_enum(k)) for k in range(12))
+        COUNT['C23 rung 1 V–vi: app pool / independent enumeration (open or close) / open only'] = f"{len(r1['vvi'])} / {len(mine)} / {mine_open}"
+        COUNT['C23 rung 1 pool per model'] = json.dumps(r1['by'])
+        COUNT['C23 rung 1 pool entries with weight >= 1e-4 per answer'] = json.dumps(r1['w'])
+        COUNT['C23 rung 1 entries in use with a close-spaced chord, per model'] = json.dumps(r1['cl'])
         if set(r1['vvi']) != mine:
-            fail('D', f"C4 rung 1 V–vi pool differs from the independent enumeration: app only {sorted(set(r1['vvi']) - mine)[:3]}, enumeration only {sorted(mine - set(r1['vvi']))[:3]}")
+            fail('D', f"C23 rung 1 V–vi pool differs from the independent enumeration: app only {sorted(set(r1['vvi']) - mine)[:3]}, enumeration only {sorted(mine - set(r1['vvi']))[:3]}")
+        if len(mine) < 100:
+            fail('D', f'C23 rung 1 interrupted: {len(mine)} voicings, floor 100')
         if r1['w'].get('interrupted', 0) < len(mine):
-            fail('D', f"C4 rung 1 interrupted: only {r1['w'].get('interrupted')} of {len(mine)} voicings carry weight")
+            fail('D', f"C23 rung 1 interrupted: only {r1['w'].get('interrupted')} of {len(mine)} voicings carry weight")
+        # close spacing for all five models together (never one alone, which would make spacing a tell; the tells are in earlab_items_test K)
+        if r1['opt'] != {'inc': False, 'open': False} or any(r1['cl'].get(t, 0) == 0 for t in ('V I', 'IV I', 'I V', 'IV V', 'V vi')):
+            fail('D', f"C12 / C23 rung 1 options {r1['opt']}: close-spaced entries in use per model {r1['cl']}")
+        # 0.49 C12 (L101, "always use the complete chord"): no rung 1 entry in use is incomplete
+        if r1['inc']:
+            fail('D', f"C12 rung 1: {r1['inc']} incomplete entries in use")
 
         # ---------------- E: blind analysis ----------------
         blind = await pg.evaluate("""async()=>{await earLoadBlind();return{items:EAR.blind.map(x=>({...x})),cats:[1,2,3].map(l=>earBlindCats(l)),meta:AN.meta}}""")

@@ -6869,12 +6869,13 @@ function earGenQual(l,r){const q=epick(earQualOpts(l),r),root=epick(['C','D','Eb
 const CADL={perfect:'Perfect cadence',plagal:'Plagal cadence',imperfect:'Imperfect cadence',interrupted:'Interrupted cadence'};   // answer buttons: the Australian term only (the US term is on hover and in the feedback)
 /* Cadence models for the common-practice drill (tradition: Tonal/common practice). Only common-practice successions: no V–IV, no ii–I.
    Every category has models of the same lengths at each rung, and the length is drawn first, so the number of chords never gives the answer away.
-   Rung 1 (EL-7): the four basic cadences in major, the key chord then two chords, open voicing. Rung 2: major and minor, 7ths, 4- and 5-chord models.
+   Rung 1 (EL-7): the four basic cadences in major, the key chord then two chords, complete chords, open or close spacing (0.49 C12, C23). Rung 2: major and minor, 7ths, 4- and 5-chord models.
    Rung 3 (R4, Stage 6): six answers, adding the Phrygian cadence and the cadential 6/4 as answers of their own. */
 /* The second chord is drawn from the same set in every category (at each rung, mode and length), so it never hints at the answer;
    only the last chords (the cadence itself) differ. */
 /* EL-7 (0.48): rung 1 is the four basic cadences only, in major keys: the key chord plays, then exactly two chords (the cadence itself),
-   in open voicing (soprano more than an octave above the tenor). */
+   in open voicing (soprano more than an octave above the tenor). 0.49 C23 (Justin 21 Nov 2026, L101): close spacing is allowed as well, for all
+   five models together (EARR1OPT.open). */
 const CADT={1:{maj:{perfect:['V I'],plagal:['IV I'],imperfect:['I V','IV V'],interrupted:['V vi']}},
  2:{maj:{perfect:['I vi V7 I','I I:1 V7 I','I IV ii:1 V I','I iii IV V7 I','I I:1 IV V7 I'],plagal:['I vi IV I','I I:1 IV I','I IV I:1 IV I','I iii vi IV I','I I:1 vi IV I'],
    imperfect:['I vi IV V','I I:1 IV V','I IV I:1 ii:1 V','I iii vi ii V','I I:1 vi IV V'],interrupted:['I vi V7 vi','I I:1 V7 vi','I IV ii:1 V vi','I iii IV V7 vi','I I:1 IV V vi']},
@@ -6969,14 +6970,16 @@ function earSATB(L,key,reg={b:47,s:70},opt={}){return withKey(key,()=>{const I=L
  return best[0].path};
  if(opt.startIdx!==undefined)return c0[opt.startIdx]?go([c0[opt.startIdx]]):null;
  return go(c0.slice(0,1))||go(c0)})}
-/* BHL 0.48 (Justin, 20 Nov 2026, item H): rung 1 register. Every strict, open-spaced realisation of each rung 1 model in each key is listed
-   once (earR1Pool): every voicing in the voice ranges with the soprano more than an octave above the tenor, no checker error, the strict
-   chord rules, complete chords (so IV keeps the home note the feedback names; the one exception is the incomplete final tonic of V–I,
-   EARR1OPT.inc), one 3rd (two after V in vi), no checker error or warning and
+/* BHL 0.48 (Justin, 20 Nov 2026, item H): rung 1 register. Every strict realisation of each rung 1 model in each key is listed
+   once (earR1Pool): every voicing in the voice ranges, open or close spacing (open only before 0.49 C23; close-spaced entries are marked cl
+   and used unless EARR1OPT.open), no checker error, the strict
+   chord rules, complete chords (so IV keeps the home note the feedback names; the one exception, listed but off since 0.49 C12, is the incomplete final
+   tonic of V–I, EARR1OPT.inc), one 3rd (two after V in vi), no checker error or warning and
    no strict fault between the two chords, and in V–I the leading note rises to the home note. Each gets a weight (earR1Weights): a prior
    for smooth voice leading, then balanced so that, across the four answers, the same lowest
-   and highest note pair, the same span, the same key and the same first and last bass and soprano notes come up as often (iterative
-   proportional fitting, deterministic, run once). The interrupted cadence V–vi in strict open spacing fits in only a few registers (its bass
+   and highest note pair, the same span, the same key and the same first and last bass and soprano notes come up as often, and since 0.49 C23 the
+   same spacing (open or close) of each chord (iterative proportional fitting, deterministic, run once; then a 3% mix with the plain draw
+   inside each model, EARR1OPT.mix, so every strict voicing stays in use). The interrupted cadence V–vi in strict open spacing fits in only a few registers (its bass
    always rises a step from so), so the other answers are drawn to the same outer-voice registers rather than letting their own range give
    them away. The bass interval itself (so–la, so–do ...) is the cadence and is not hidden. */
 const EARR1={};
@@ -6985,7 +6988,8 @@ function earR1Pool(){if(EARR1.pool)return EARR1.pool;const pool=[],R=(r,pcs)=>{c
   for(const k of CKEYS1){const key={k,mode:'maj'};withKey(key,()=>{const I=cadList(t,key).map(ch=>chordInfo(ch,key)),SR=rns.map(x=>earRnInfo(x,key));
    const C=I.map((x,i)=>{const t3=mod(x.third.midi,12),dbl3=i>0&&I[i-1].dom&&x.a.dia&&x.a.d===5,out=[];
     for(const b of R(RANGE.B,[x.bassPc]))for(const tn of R(RANGE.T,x.pcs))for(const al of R(RANGE.A,x.pcs))for(const sp of R(RANGE.S,x.pcs)){const v=[b,tn,al,sp];
-     if(!(b<=tn&&tn<=al&&al<=sp)||sp-tn<=12||chordIssues(v,x).some(e=>e.sev==='error')||!earStrictChord(v,SR[i],key))continue;
+     // 0.49 C23: close spacing (soprano within an octave of the tenor) is listed too, for every model; EARR1OPT.open keeps open only
+     if(!(b<=tn&&tn<=al&&al<=sp)||chordIssues(v,x).some(e=>e.sev==='error')||!earStrictChord(v,SR[i],key))continue;
      if(v.filter(m=>mod(m,12)===t3).length!==(dbl3?2:1))continue;
      // complete chords; the one exception (EARR1OPT.inc) is the final tonic of V–I with its 5th left out and the root tripled, the
      // common-practice incomplete tonic after V (the leading note still rises to the home note), which also lets the top line fall so–mi
@@ -6994,7 +6998,7 @@ function earR1Pool(){if(EARR1.pool)return EARR1.pool;const pool=[],R=(r,pcs)=>{c
    for(const P of C[0])for(const N of C[1]){if(pairIssues(P,N,I[0],I[1]).some(e=>e.sev!=='info')||!earStrictPair(P,N,SR[0],SR[1],key))continue;
     // the feedback says the leading note rises to the home note (V–I): at rung 1 it does, in every voice that has it
     if(t==='V I'&&P.some((m,j)=>mod(m,12)===LN&&N[j]-m!==1))continue;
-    const inc=new Set(N.map(m=>mod(m,12))).size<3;pool.push({a,t,k,ch:[P,N],mc:moveCost(P,N,I[0],I[1]),...(inc?{inc:true}:{})})}})}}
+    const inc=new Set(N.map(m=>mod(m,12))).size<3,cl=P[3]-P[1]<=12||N[3]-N[1]<=12;pool.push({a,t,k,ch:[P,N],mc:moveCost(P,N,I[0],I[1]),...(inc?{inc:true}:{}),...(cl?{cl:true}:{})})}})}}
  return EARR1.pool=pool}
 /* EL S2 (IC_EAR2_048, 20 Nov 2026): within the imperfect answer, I–V and IV–V are held at half each (opt.share) at the end of every sweep,
    so the model share is fixed before, not traded against, the register balance. Without it the fitting left IV–V at 16%, and a first chord
@@ -7003,11 +7007,19 @@ function earR1Pool(){if(EARR1.pool)return EARR1.pool;const pool=[],R=(r,pcs)=>{c
    so–mi) joins the balanced features, fitted first so the register features keep the last word. With it off, the top line is left as the
    voice leading gives it. Measured both ways in tests/reports/EL_S1S2_048_report.md. */
 let RUNG1_SOP_BALANCE=false;
-// inc: V–I may end on the incomplete tonic (5th left out, root tripled). On by default since EL S2 (it nearly doubles the perfect cadences'
-// voicings, 47 -> 91 in use, with no register tell); sopF: which soprano features RUNG1_SOP_BALANCE balances (2 = the top-line path)
-const EARR1OPT={iters:60,damp:.5,tau:10,share:true,inc:true,sopF:[2]};
-function earR1Fit(o){o={...EARR1OPT,sop:RUNG1_SOP_BALANCE,...(o||{})};const P=earR1Pool().filter(p=>!p.inc||o.inc),cats=Object.keys(CADT[1].maj),lo=p=>Math.min(p.ch[0][0],p.ch[1][0]),hi=p=>Math.max(p.ch[0][3],p.ch[1][3]),dg=(m,p)=>mod(m-p.k,12);
+// inc: V–I may end on the incomplete tonic (5th left out, root tripled). Off since 0.49 C12 (Justin 21 Nov 2026, L101: "always use the
+// complete chord"; this supersedes L95, which had it on): on, it was 66% of perfect items and never in another cadence, so a hollow final
+// chord meant "perfect" (IC_SELF_048 S1). open: open spacing only (soprano more than an octave above the tenor, EL-7 / BHL H); off since
+// 0.49 C23 (L101): close spacing is allowed for all five models together (never one model alone, which would make spacing a tell), and the
+// spacing of each chord (open or close) is one of the balanced features. sopF: which soprano features RUNG1_SOP_BALANCE balances (2 = the
+// top-line path)
+const EARR1OPT={iters:60,damp:.5,tau:10,share:true,inc:false,open:false,mix:.03,sopF:[2]};
+// rung 1 pool entries the options allow (complete chords unless o.inc; open spacing only if o.open)
+function earR1Use(p,o){o=o||EARR1OPT;return(!p.inc||o.inc)&&(!p.cl||!o.open)}
+function earR1Fit(o){o={...EARR1OPT,sop:RUNG1_SOP_BALANCE,...(o||{})};const P=earR1Pool().filter(p=>earR1Use(p,o)),cats=Object.keys(CADT[1].maj),lo=p=>Math.min(p.ch[0][0],p.ch[1][0]),hi=p=>Math.max(p.ch[0][3],p.ch[1][3]),dg=(m,p)=>mod(m-p.k,12);
  const F=[p=>p.ch[0][0],p=>p.ch[1][0],p=>p.ch[0][3],p=>p.ch[1][3],p=>p.k,p=>lo(p)*100+hi(p),p=>hi(p)-lo(p)];
+ // 0.49 C23: the spacing of both chords (open or close each) is balanced as well, so spacing never hints at the answer
+ if(!o.open)F.push(p=>(p.ch[0][3]-p.ch[0][1]>12?2:0)+(p.ch[1][3]-p.ch[1][1]>12?1:0));
  if(o.sop)F.unshift(...[p=>dg(p.ch[0][3],p),p=>dg(p.ch[1][3],p),p=>dg(p.ch[0][3],p)*12+dg(p.ch[1][3],p)].filter((f,j)=>!o.sopF||o.sopF.includes(j)));
  const w=P.map(p=>Math.exp(-p.mc/o.tau)),by=cats.map(a=>P.map((p,i)=>i).filter(i=>P[i].a===a));
  const share=()=>by.forEach((ix,c)=>{const ms=[...new Set(ix.map(i=>P[i].t))];if(ms.length<2)return;const t=new Map();ix.forEach(i=>t.set(P[i].t,(t.get(P[i].t)||0)+w[i]));
@@ -7016,6 +7028,9 @@ function earR1Fit(o){o={...EARR1OPT,sop:RUNG1_SOP_BALANCE,...(o||{})};const P=ea
  for(let it=0;it<o.iters;it++){for(const f of F){const M=by.map(ix=>{const m=new Map();let t=0;ix.forEach(i=>t+=w[i]);ix.forEach(i=>{const x=f(P[i]);m.set(x,(m.get(x)||0)+w[i]/t)});return m}),T=new Map();
   M.forEach(m=>m.forEach((v,x)=>T.set(x,(T.get(x)||0)+v/M.length)));by.forEach((ix,c)=>ix.forEach(i=>{const x=f(P[i]);w[i]*=Math.pow(T.get(x)/M[c].get(x),o.damp)}))}
   if(o.share)share()}
+ // 0.49 C23: a small mix with the plain (uniform) draw inside each model, so every strict voicing keeps some weight (variety)
+ if(o.mix)by.forEach(ix=>{const ms=[...new Set(ix.map(i=>P[i].t))],n=new Map(),m=new Map();let s=0;ix.forEach(i=>{s+=w[i];n.set(P[i].t,(n.get(P[i].t)||0)+1);m.set(P[i].t,(m.get(P[i].t)||0)+w[i])});
+  ix.forEach(i=>{const sh=o.share?1/ms.length:m.get(P[i].t)/s;w[i]=(1-o.mix)*w[i]/s+o.mix*sh/n.get(P[i].t)})});
  const out={};by.forEach((ix,c)=>{let t=0;ix.forEach(i=>t+=w[i]);out[cats[c]]=ix.map(i=>({...P[i],w:w[i]/t}))});return out}
 function earR1Weights(){const k=RUNG1_SOP_BALANCE?'sop':'std';EARR1.by=EARR1.by||{};return EARR1.by[k]||(EARR1.by[k]=earR1Fit())}
 // draw one entry of a weighted list
@@ -7026,7 +7041,7 @@ function earR1Draw(a,r){const M=new Map();for(const e of earR1Weights()[a]){cons
 /* EL-7 / BHL 0.48: a rung 1 realisation near a register (lowest note reg.b, highest reg.s, first bass reg.fb, last soprano reg.ls), chosen
    from the same strict open realisations (earR1Pool). Questions use earCadReg; this is the fixed-register path (tests, fixtures). */
 function earSATBPair(L,key,reg,rns){reg={b:46,s:72,fb:48,ls:72,...(reg||{})};if(key.mode!=='maj'||!rns)return null;const t=rns.join(' ');let best=null;
- for(const p of earR1Pool()){if(p.t!==t||p.k!==key.k||(p.inc&&!EARR1OPT.inc))continue;const[a,b]=p.ch,lo=Math.min(a[0],b[0]),hi=Math.max(a[3],b[3]);
+ for(const p of earR1Pool()){if(p.t!==t||p.k!==key.k||!earR1Use(p))continue;const[a,b]=p.ch,lo=Math.min(a[0],b[0]),hi=Math.max(a[3],b[3]);
   const c=4*(Math.abs(lo-reg.b)+Math.abs(hi-reg.s))+2*(Math.abs(a[0]-reg.fb)+Math.abs(b[3]-reg.ls))+p.mc/10;if(!best||c<best.c)best={c,path:[a,b]}}
  return best&&best.path.map(v=>v.slice())}
 function earProg(rns,key,reg,opt){if(opt&&opt.pair){const L=cadList(rns.join(' '),key),V=earSATBPair(L,key,reg,rns);return{L,V,ch:V?V.map(v=>v.slice()):null}}const L=cadList(rns.join(' '),key),V=earSATB(L,key,reg,opt);return{L,V,ch:V?V.map(v=>v.slice()):null}}

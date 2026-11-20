@@ -7,7 +7,8 @@ and voice-leading arithmetic), and asks the app's SATB checker only where the re
 Sections
   Q  EL-6  chord quality: root position only at rungs 1-3, >= 1,000 seeded items per rung, spacing, two registers, register tell,
            augmented and diminished 7th answers name no inversion and say the chord is symmetrical
-  K  EL-7  cadences rung 1: four basic cadences, two chords after the key chord, open voicing, SATB checker, balance, tells
+  K  EL-7  cadences rung 1: four basic cadences, two chords after the key chord, SATB checker, balance, tells; 0.49 C12 complete
+           chords only, C23 open or close spacing for every model with no spacing tell
   K2 EL S2 / S1 (IC_EAR2_048): rung 1 model share inside imperfect (I–V and IV–V about half each), the IV-first ambiguity, the soprano
            tells, and the RUNG1_SOP_BALANCE switch (default off; on: strict, soprano tells lower, register tells still near chance)
   S  R4    cadences rung 3: six answers, family feedback, SATB checker, mode tell, the 6/4 bass motion, >= 100 distinct items per answer
@@ -245,9 +246,14 @@ def sec_K(items, real):
             continue
         if not q.get('cue_ok', True):
             fail('K', f'{where}: the key chord does not play first')
+        # 0.49 C23 (Justin 21 Nov 2026, L101): open or close spacing, for every model (EARR1OPT.open off); the upper voices stay within an
+        # octave of each other. 0.49 C12 (L101): complete chords in every cadence (EARR1OPT.inc off)
         for c in q['ch']:
-            if c[3] - c[1] <= 12:
-                fail('K', f'{where}: chord {c} is not in open spacing (soprano {c[3]}, tenor {c[1]})')
+            if c[3] - c[2] > 12 or c[2] - c[1] > 12:
+                fail('K', f'{where}: chord {c} has upper voices more than an octave apart')
+        fin = set(m % 12 for m in q['ch'][-1]); fst = set(m % 12 for m in q['ch'][0])
+        if len(fin) < 3 or len(fst) < 3:
+            fail('K', f'{where}: incomplete chord {q["ch"]} (rung 1 uses the complete chord, C12)')
         if q['app']:
             fail('K', f'{where}: app SATB checker reports {q["app"]}')
         for e in vl_errors(q['ch'], q['rns'], q['k'], 'maj'):
@@ -275,6 +281,22 @@ def sec_K(items, real):
         tell('K', items, f'lowest and highest note together ({w}-semitone bands)' if w > 1 else 'lowest and highest note together (exact)',
              (lambda w: lambda r: (lo(r) // w, hi(r) // w))(w), A, W)
     tell('K', items, 'span from lowest to highest note (exact)', lambda r: hi(r) - lo(r), A, W)
+    # 0.49 C23: open or close spacing must not give the answer away (each chord, and both together)
+    op = lambda c: c[3] - c[1] > 12
+    tell('K', items, 'spacing of the first chord (open or close)', lambda r: op(r['ch'][0]), A, W)
+    tell('K', items, 'spacing of the last chord (open or close)', lambda r: op(r['ch'][-1]), A, W)
+    tell('K', items, 'spacing of both chords (open or close each)', lambda r: (op(r['ch'][0]), op(r['ch'][-1])), A, W)
+    # 0.49 C12: the final chord's completeness (with the incomplete tonic on it was +16 points); all complete now, so it cannot tell
+    tell('K', items, 'final chord complete', lambda r: len(set(m % 12 for m in r['ch'][-1])) == 3, A, W)
+    ncl = sum(1 for r in items if not op(r['ch'][0]) or not op(r['ch'][-1]))
+    COUNT['C23 rung 1 items with a close-spaced chord'] = f'{ncl} of {len(items)}'
+    for c in ('perfect', 'plagal', 'imperfect', 'interrupted'):
+        rr = [r for r in items if r['a'] == c]
+        COUNT[f'C23 rung 1 {c}: share with a close-spaced chord'] = f'{sum(1 for r in rr if not op(r["ch"][0]) or not op(r["ch"][-1])) / max(1, len(rr)):.1%}'
+    for nm, f in (('tenor-soprano distance of the first chord (exact)', lambda r: r['ch'][0][3] - r['ch'][0][1]),
+                  ('tenor-soprano distance of the last chord (exact)', lambda r: r['ch'][-1][3] - r['ch'][-1][1])):
+        a, c = predict_acc(items, f, A)
+        COUNT[f'info: rung 1 {nm}: accuracy vs chance'] = f'{a:.1%} vs {c:.1%}'
 
 
 SIX = ['perfect', 'plagal', 'imperfect', 'interrupted', 'phrygian', 'cad64']
@@ -323,16 +345,20 @@ def sec_K2(off, on, flag_default):
         COUNT[f'K2 strict rules, items checked (switch {name})'] = len(items)
         if errs:
             fail('K2', f'switch {name}: strict errors {dict(errs.most_common(5))}')
+        # 0.49 C23: open and close spacing both allowed (spacing tells are checked in section K); C12: complete chords only
         for q in items:
-            if q['ch'] and any(c[3] - c[1] <= 12 for c in q['ch']):
-                fail('K2', f'switch {name}: not open spacing {q["ch"]}')
+            if q['ch'] and any(len(set(m % 12 for m in c)) < 3 for c in q['ch']):
+                fail('K2', f'switch {name}: incomplete chord {q["ch"]}')
                 break
     # with the switch on, the top line tells less (soprano solfa path 82% -> 78% measured; the cadence's last top note is content)
     for fn in ('soprano solfa path', 'soprano degree, first chord', 'soprano degree, last chord'):
         if acc_sop[('on', fn)] > acc_sop[('off', fn)] + .005:
             fail('K2', f'{fn}: switch on {acc_sop[("on", fn)]:.1%} is not below switch off {acc_sop[("off", fn)]:.1%}')
-    if acc_sop[('off', 'soprano solfa path')] > .86:
-        fail('K2', f'soprano solfa path predicts {acc_sop[("off", "soprano solfa path")]:.0%} with the switch off (82% measured, 91% before EL S2)')
+    # 0.49 C12 (L101, complete chords only) takes away the incomplete tonic's so–mi and re–do top lines, so a complete V–I can only have
+    # so–so, ti–do or re–mi on top: with the switch off the path now reads about 92% (82% with the incomplete tonic; 83% with the switch on).
+    # The ceiling moves from 86% to 94%; the switch (Justin has not ruled) is what lowers it. tests/reports/C_ENG_049_report.md
+    if acc_sop[('off', 'soprano solfa path')] > .94:
+        fail('K2', f'soprano solfa path predicts {acc_sop[("off", "soprano solfa path")]:.0%} with the switch off (about 92% measured since 0.49 C12)')
 
 
 def sec_V(d):
