@@ -7375,9 +7375,16 @@ const elTk=k=>['perfect','imperfect','interrupted'].includes(k)?k:'';
 function elCadKeyHTML(list){const m=['perfect','imperfect','interrupted'].filter(k=>list.includes(k));if(!m.length)return'';
  const t=m.map(k=>`<span style="white-space:nowrap">${ELCADL[k]} = US ${elUS(k)}</span>`);
  return`<p class="el-key2" data-notm>${t.join(' · ')}</p>`}
-const ELFN={T:['tonic','var(--green)'],PD:['pre-dominant','var(--gold)'],D:['dominant','var(--red)'],X:['outside the key','var(--violet)']};
+const ELFN={T:['tonic','var(--green)'],PD:['pre-dominant','var(--gold)'],D:['dominant','var(--red)'],MD:['modal dominant, soft pull','var(--md)'],X:['outside the key','var(--violet)']};
 const ELMETN={'2/4':'Simple duple','3/4':'Simple triple','4/4':'Simple quadruple','6/8':'Compound duple','9/8':'Compound triple','12/8':'Compound quadruple','5/4':'Irregular, 5 4','7/8':'Irregular, 7 8'};
-function earNumFn(rn){const r=rn.replace(/:\d/,'');if(r.includes('/'))return'X';const b=r.replace(/[°7]/g,'').toLowerCase();return b==='ii'||b==='iv'?'PD':b==='v'||b==='vii'?'D':'T'}
+/* the function colour of an Ear Lab numeral in a key of mode `mode`. 0.49 C9: as Analysis colours them (analyse(), L91 decision 12), the minor v (v7)
+   and the subtonic VII (VII7) of a minor key have no leading note, so they are the modal dominant MD, a soft pull, not D; the borrowed v and ♭VII
+   of a major key are MD when MD_MAJOR is on (otherwise outside the key, X, as Analysis then colours them). V, V7, vii°, vii°7 stay D. */
+function earNumFn(rn,mode='maj'){const r=rn.replace(/:\d/,'');if(r.includes('/'))return'X';const acc=/^[♭♯]/.test(r),n=r.replace(/^[♭♯]/,'').replace(/[°ø7]/g,''),dim=/[°ø]/.test(r),b=n.toLowerCase(),maj=mode==='maj';
+ if(n==='v'&&!acc)return maj?(MD_MAJOR?'MD':'X'):'MD';
+ if(n==='VII'&&!dim)return maj?(MD_MAJOR&&r.startsWith('♭')?'MD':'X'):acc?'X':'MD';
+ if(acc)return'X';
+ return b==='ii'||b==='iv'?'PD':b==='v'||b==='vii'?'D':'T'}
 function earRnHTML(rn){const m=rn.match(/^([^:]*)(?::(\d))?$/),b=m[1];return m[2]==='1'?`${b}<sup>6</sup>`:m[2]==='2'?`${b}<span class="fig"><i>6</i><i>4</i></span>`:b}
 function earRnTxt(rn){return rn.replace(':2','⁶₄').replace(':1','⁶')}
 function earSolOfMidi(m,key){return{0:'do',1:'di',2:'re',3:'ri',4:'mi',5:'fa',6:'fi',7:'so',8:'si',9:'la',10:'ta',11:'ti'}[mod(m-earDo(key).m,12)]}
@@ -7536,7 +7543,7 @@ function earCadWrong(a,g,q,min,res){const T=min?'i':'I',SD=min?'iv':'IV',S6=min?
 function earChordRowHTML(q){const n=q.rns.length,cn=q.a==='cad64'?3:2,key=q.key;if(!q.ch||q.ch.length!==n)return'';
  // a cadential 6/4 is named for what it does, not given one function: its colour follows the app's numeral analysis (I in second inversion,
  // as Analysis labels it, and as Ic in the British/Australian tradition), and its title gives both readings (reconcile 0.48)
- const chip=(rn,i,cad)=>{const f=earNumFn(rn),[fnm,col]=ELFN[f],c64=/:2$/.test(rn)&&/^V/.test(q.rns[i+1]||''),T=key.mode==='min'?'i':'I';
+ const chip=(rn,i,cad)=>{const f=earNumFn(rn,key.mode),[fnm,col]=ELFN[f],c64=/:2$/.test(rn)&&/^V/.test(q.rns[i+1]||''),T=key.mode==='min'?'i':'I';
   const tt=c64?`Cadential 6/4: the tonic chord in second inversion (${T}⁶₄, also written ${T}c), over the dominant bass (bass ${earSolOfMidi(q.ch[i][0],key)}). Read by its spelling it is a tonic chord, as this app's Analysis labels it; many harmony texts hear it as part of the dominant, because its 6th and 4th fall to the 5th and 3rd of V over the same bass.`:fnm;
   // IC_EAR_048 S4: the 6/4 is named "cadential 6/4" inside the cadence bracket as well as before it; its bass solfa moves to the title
   return`<div class="el-ch" style="--fc:${col}" title="${tt}">${earRnHTML(rn)}<small>${c64?'cadential 6/4':cad?'bass '+earSolOfMidi(q.ch[i][0],key):fnm}</small></div>`};
@@ -7571,17 +7578,17 @@ function earTeachCad(q,res){const a=q.a,g=res.given,min=q.key&&q.key.mode==='min
   after:`<p class="el-note" data-notm>From ${q.t||q.score}, bar ${q.bar}. <button class="el-btn sm" data-earscore="${q.score}">Open this score in Analysis</button></p>`};
  return{kind:res.kind,head,teach:t,pic:earChordRowHTML(q),replays:rp}}
 function earBassSolTxt(q){return q.bass.map(m=>earSolOfMidi(m,q.key)).join(' – ')}
-function earTeachBass(q,res){const g=res.given,a=q.a,key=q.key,heads=a.map((rn,i)=>`<span class="rn" style="color:${ELFN[earNumFn(rn)][1]}">${earRnTxt(rn)}</span>`).join(' – ');
+function earTeachBass(q,res){const g=res.given,a=q.a,key=q.key,heads=a.map((rn,i)=>`<span class="rn" style="color:${ELFN[earNumFn(rn,key.mode)][1]}">${earRnTxt(rn)}</span>`).join(' – ');
  const bad=g?[1,2,3].filter(i=>g[i-1]!==a[i]):[];let t;
  if(g===null)t=`The bass spells it out: ${earBassSolTxt(q)}.`;
  else if(!bad.length)t=`All three right. The bass spells it out: ${earBassSolTxt(q)}.`;
- else{const k=bad[0],gv=g[k-1],av=a[k],gf=earNumFn(gv),af=earNumFn(av),sol=earSolOfMidi(q.bass[k],key);
+ else{const k=bad[0],gv=g[k-1],av=a[k],gf=earNumFn(gv,key.mode),af=earNumFn(av,key.mode),sol=earSolOfMidi(q.bass[k],key);
   if(/\//.test(av))t=`Chord ${k+1} has a note from outside the key, ${/V7\/vi/.test(av)?'si':'fi'}, leaning into the next chord. It is ${av}, the dominant of ${av.split('/')[1]}.`;
-  else if(gf===af)t=`Chord ${k+1}: you wrote ${gv}; it is ${av}. Both do the same job here (${af==='PD'?'pre-dominant: they lead to V':af==='T'?'tonic: a place of rest':'dominant'}), so you heard its role. The bass tells them apart: it is on ${sol}, not ${ELDEG[gv]||'the root of '+gv}.`;
+  else if(gf===af)t=`Chord ${k+1}: you wrote ${gv}; it is ${av}. Both do the same job here (${af==='PD'?'pre-dominant: they lead to V':af==='T'?'tonic: a place of rest':af==='MD'?'modal dominant: a soft pull home, with no leading note':'dominant'}), so you heard its role. The bass tells them apart: it is on ${sol}, not ${ELDEG[gv]||'the root of '+gv}.`;
   else t=`Chord ${k+1}: you wrote ${gv}; it is ${av}. Sing the bass: it ${q.bass[k]>q.bass[k-1]?'rises':'falls'} to ${sol}, the root of ${av}.`;
   if(bad.length>1)t+=` Chord${bad.length>2?'s':''} ${bad.slice(1).map(i=>i+1).join(' and ')} ${bad.length>2?'are':'is'} marked below.`}
  const rp=[{v:'bassonly',t:'Bass only, with the solfa shown'}];if(bad.length)rp.push({v:'pair',o:String(bad[0]),t:`Hear chords ${bad[0]} and ${bad[0]+1}`});
- const row=`<div class="el-chords" id="earBassRow" aria-label="${a.map(earRnTxt).join(', ')} in ${keyName(key)}">${a.map((rn,i)=>{const[fnm,col]=ELFN[earNumFn(rn)];return`<div class="el-ch" data-i="${i}" style="--fc:${col}" title="${fnm}">${earRnHTML(rn)}<small>bass ${earSolOfMidi(q.bass[i],key)}</small></div>`}).join('')}<span class="el-key">in ${keyName(key)}</span></div>`;
+ const row=`<div class="el-chords" id="earBassRow" aria-label="${a.map(earRnTxt).join(', ')} in ${keyName(key)}">${a.map((rn,i)=>{const[fnm,col]=ELFN[earNumFn(rn,key.mode)];return`<div class="el-ch" data-i="${i}" style="--fc:${col}" title="${fnm}">${earRnHTML(rn)}<small>bass ${earSolOfMidi(q.bass[i],key)}</small></div>`}).join('')}<span class="el-key">in ${keyName(key)}</span></div>`;
  return{kind:res.kind,head:heads,small:`in ${keyName(key)}`,teach:t,pic:row,replays:rp}}
 const ELDEG={I:'do',ii:'re',iii:'mi',IV:'fa',V:'so',vi:'la'};
 function earMelStep(a,b,key){return Math.abs(eSolMidi(eSolParse(a),key)-eSolMidi(eSolParse(b),key))<=2}
@@ -7620,10 +7627,10 @@ function earOptsAreaHTML(q,l){const d=EAR.drill;if(d==='metre')return earMetreGr
  const list=d==='qual'?earQualOpts(l):d==='cad'?(q&&q.opts||earCadOpts(l)):earBlindCats(l).length?earBlindCats(l):Object.keys(CADL);
  const lab=k=>d==='qual'?QUALS[k]:d==='cad'?ELCADL[k]:ELCADL[k],tk=k=>d!=='qual'?elTk(k):'',cls=d==='qual'&&list.length===2?' c2':d==='qual'&&list.length===4?' q4':'';
  return`<div class="el-lbl" data-notm>Your answer</div><div class="el-opts${cls}${q?'':' wait'}" role="group" aria-label="Answer">${list.map(k=>earOptBtn(k,`<span>${lab(k)}</span>`,q,{tk:tk(k)})).join('')}</div>${d==='cad'||d==='blind'?elCadKeyHTML(list):''}`}
-function earBassAreaHTML(q){const lock=EAR.done,A=lock&&EAR.res&&EAR.res.given?EAR.res.given:EAR.ans,col=rn=>ELFN[earNumFn(rn)][1];
+function earBassAreaHTML(q){const lock=EAR.done,A=lock&&EAR.res&&EAR.res.given?EAR.res.given:EAR.ans,col=rn=>ELFN[earNumFn(rn,q.key.mode)][1];
  const slots=[0,1,2,3].map(i=>{const rn=i===0?'I':A[i-1],ok=lock&&i>0&&A[i-1]===q.a[i];return`<div class="el-slot${i===A.length+1&&!lock?' cur':''}${lock&&i>0?(ok?' okk':' badk'):''}" style="--fc:${rn?col(rn):'var(--muted)'}"${lock&&i>0?` aria-label="Chord ${i+1}: ${ok?'right':'wrong, it is '+q.a[i]}"`:''}>${rn?earRnHTML(rn):'?'}${lock&&i>0?`<span class="st">${ok?ELICON.tick:ELICON.cross}</span>${ok?'':`<small style="color:${col(q.a[i])}">${earRnHTML(q.a[i])}</small>`}`:''}</div>`}).join('');
  return`<div class="el-lbl" data-notm>Name chords 2–4 in ${keyName(q.key)}</div><div class="el-slots${lock?' lock':''}">${slots}</div>
-  <div class="el-opts c4${q.opts.length===5?' n5':''}" role="group" aria-label="Chord numerals">${q.opts.map(o=>{const f=earNumFn(o),[fnm,c]=ELFN[f];return`<button class="el-opt num" style="--fc:${c}" data-earrn="${o}" title="${fnm}" ${lock||A.length>=3?'disabled':''}>${earRnHTML(o)}<span class="fn">${fnm}</span></button>`}).join('')}</div>${lock?'':earEditBtns(A.length===3)}`}
+  <div class="el-opts c4${q.opts.length===5?' n5':''}" role="group" aria-label="Chord numerals">${q.opts.map(o=>{const f=earNumFn(o,q.key.mode),[fnm,c]=ELFN[f];return`<button class="el-opt num" style="--fc:${c}" data-earrn="${o}" title="${fnm}" ${lock||A.length>=3?'disabled':''}>${earRnHTML(o)}<span class="fn">${fnm}</span></button>`}).join('')}</div>${lock?'':earEditBtns(A.length===3)}`}
 function earEditBtns(full){return EAR.done?'':`<div class="el-edit"><button class="el-btn sm" data-hist="ear:u" title="Undo (Ctrl+Z)">↶ Undo</button><button class="el-btn sm" data-hist="ear:r" title="Redo">↷ Redo</button><button class="el-btn sm" data-earclr>Clear</button><span class="sp"></span><button class="el-btn gold" data-earchk ${full?'':'disabled'}>Check</button></div>`}
 function earRhyAreaHTML(q,l){if(EAR.done)return'';const A=EAR.ans,used=A.reduce((s,k)=>s+RCELL[k].w,0),tot=16*q.bars,stick=l===1,nm=RHYNAMES,GA=earRhyBars(A,q.bars);
  const lab=`Your rhythm · ${used/4} of ${tot/4} beats`,alab='Your rhythm so far: '+(A.length?A.map(k=>ELTITLE[k]).join(', '):'nothing yet');
