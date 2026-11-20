@@ -8381,7 +8381,7 @@ function renderEar(){const el=$('earMain');if(!el)return;
  const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill),d=EAR.drill;
  if(!rdy&&!EAR.preloading){EAR.preloading=elPreload(d).catch(()=>{}).then(()=>{EAR.preloading=null;if(ROOM==='ear'&&$('earMain'))renderEar()})}
  el.classList.add('el');const fk=EAR.focus||earFocusKey();EAR.focus=null;
- const tabs=EDR.filter(([k])=>earDrillShown(k)),hidD=EDR.filter(([k])=>!earDrillShown(k)),rungs=[...new Set([...earRungsShown(d),l])].sort(),hidR=rungs.length<3;
+ const tabs=EDR.filter(([k])=>earDrillShown(k)),hidD=EDR.filter(([k])=>!earDrillShown(k)),rungs=[...new Set([...earRungsShown(d),l])].sort((a,b)=>a-b),hidR=rungs.length<earRungs(d).length;   // 0.49: numeric order, 12 / 10 rungs
  const hmin=Math.min(...hidD.map(([k])=>EARSTAGE[k][0])),hmax=Math.max(...hidD.map(([k])=>Math.max(...EARSTAGE[k])));
  const allBtn=hidD.length?`<button class="el-all" data-earall aria-pressed="false" title="Also offer the drills and rungs outside Stage ${earStage()}">${hidD.length} more for ${earStageTxt(hmin,hmax)} · show all</button>`:EAR.all?`<button class="el-all" data-earall aria-pressed="true" title="Offer only the drills and rungs for Stage ${earStage()}">Show Stage ${earStage()} only</button>`:'';
  const fresh=EAR.ok0===undefined?s.ok:EAR.ok0,fade=s.ok>fresh&&EAR.ok0Drill===d;EAR.ok0=s.ok;EAR.ok0Drill=d;
