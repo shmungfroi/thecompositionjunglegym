@@ -32,18 +32,18 @@ One right hand. Heights: do at the waist, ti at eye level, do′ at the forehead
 | do′ | The do fist again | forehead | [C1] [K] [J] |
 | ti | Fist with the first finger pointing up and forward (about 40° above level) | eye level | [C1] [C2] "the upturned hand, pointing with the forefinger" [K] [J] |
 | la | Hand hangs loose from the wrist, palm down, all fingers drooping | chin | [C1] [K] [J] |
-| so | Open hand on its edge, palm to the eye with its three creases, thumb up (stray tone patch removed in round 3) | The best drawing. The thumb is slightly long |
+| so | Open hand on its edge, fingers together pointing across, palm towards the signer, thumb on top | shoulder | [C2] "the open hand, pointing outwards, with the thumb upwards" [K] [J] |
 | fa | Loose fist, thumb pointing down (towards mi) | upper chest | [C1] [K] [J] [T] |
 | mi | Flat hand, level, palm down | lower chest | [C2] "the open hand with the palm downwards" [K] [J] |
 | re | Flat hand slanting upward (about 30°), palm down | stomach | [K] [J] [T]; Curwen differs, see 2.1 |
 | do | Closed fist, palm down, knuckles forward | waist | [C2] "the closed hand" [K] [J] |
-| di | Round 3: the same fist tipped up 33°: the knuckles rise and the wrist drops, so it differs from do by angle and by silhouette | Good |
+| di | The do fist tipped up | between do and re | [J] |
 | ri | The re slant, steeper (about 50°) | between re and mi | [J] |
 | fi | The fa hand turned over: thumb up | between fa and so | [J] [CK] "Flip fa around" |
 | si | The so hand lifted, fingers opening | between so and la | [J] [CK] |
-| li | Round 3: palm up and gently cupped, seen from the side and a little above: the palm hollow with its creases, the fingertips curling up without overlapping, the thumb beyond | Good |
-| te | The ti hand pointing down about 36°; round 3 tucks the thumb against the curled fingers | Good |
-| le | Round 3: the wrist bent about 82°, fingers hanging close to vertical, with a longer forearm. The frame is enlarged for this sign so the drop fits, which makes this hand about 10% smaller than the others | Good; cannot be taken for la. Say if the smaller scale bothers you |
+| li | The la hand turned up: palm cupped upward, fingers curling up | between la and ti | [J] |
+| te | The ti finger pointing down and forward | between la and ti | [J]; Curwen differs, see 2.1 |
+| le | The la hand dropped further: fingers hang straight down | between so and la | [J] |
 | se | The so hand tipped down, palm open | between fa and so | [J] |
 | me | The mi hand sloping down | between re and mi | [J] |
 | ra | The re hand with the thumb let fall (pointing down) | between do and re | [J], my reading of a small drawing: decision 4 |
@@ -118,16 +118,16 @@ The gestures are Curwen's and common property. The artwork is ours: the hand is 
 | re | Flat relaxed hand slanting up about 28°, fingers slightly staggered, thumb resting below | Good |
 | mi | The same hand, level | Good |
 | fa | Loose fist, thumb straight down with its nail | Good; the curled index is a little busy |
-| so | Open hand on its edge, palm to the eye with its three creases, thumb up | The best drawing. The thumb is slightly long; one stray patch of tone on the palm |
+| so | Open hand on its edge, palm to the eye with its three creases, thumb up (stray tone patch removed in round 3) | The best drawing. The thumb is slightly long |
 | la | Hand hanging from a bent wrist, fingers drooping at slightly different angles | Good, a little crowded where the thumb crosses the fingers |
 | ti | First finger up and forward, the others closed, thumb across | Good |
-| di | The do fist tipped up 28° | As do |
+| di | Round 3: the same fist tipped up 33°: the knuckles rise and the wrist drops, so it differs from do by angle and by silhouette | Good |
 | ri | The re hand at 50° | Good |
 | fi | Thumb up, the curled fingers and their nails towards the eye | Good |
 | si | The so hand lifted 16°, fingers fanned | Good |
-| li | Palm turned up and cupped, fingers curling up | **Unhappy.** The fingers overlap from this eye point and it takes a second to read. A lower eye point would help |
-| te | The ti hand pointing down about 36° | Good; the thumb under the finger is slightly awkward |
-| le | The la hand dropped further, fingers nearly straight down | **Unhappy.** Hard to tell from la at a glance at card size (clear enough at ladder size by its upright shape); the forearm is cut short to fit the frame |
+| li | Round 3: palm up and gently cupped, seen from the side and a little above: the palm hollow with its creases, the fingertips curling up without overlapping, the thumb beyond | Good |
+| te | The ti hand pointing down about 36°; round 3 tucks the thumb against the curled fingers | Good |
+| le | Round 3: the wrist bent about 82°, fingers hanging close to vertical, with a longer forearm. The frame is enlarged for this sign so the drop fits, which makes this hand about 6% smaller than the others in the full drawing and about 20% smaller in the small drawing | Good; cannot be taken for la. Say if the smaller scale bothers you |
 | se | The so hand tipped down 30°, palm open | Good |
 | me | The mi hand sloping down 28°, slightly more relaxed | Good |
 | ra | The re hand with the thumb let fall | Good; still the one gesture that needs your confirmation (decision 4) |
