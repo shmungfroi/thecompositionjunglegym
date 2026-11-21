@@ -8476,12 +8476,19 @@ function earCellDraw(k,X,s,top,base,ink){const C=LCELL[k],ev=[];let t=s,o='';con
 // the width a beat is drawn with: a quintuplet 1.3 times, a septuplet 1.75 times (never less than 12 px a note)
 function earTupWide(k){const C=LCELL[k];if(!C||!C.tup)return 1;const n=C.tup.reduce((a,b)=>a+b,0);return n===5?1.3:n===7?1.75:1}
 /* one bar. o: {metre, grp, cells, region:[a,b] in full-bar ticks, sig, no, cursor, holes, final, narrow, marks:[ok per beat]|null, names:[[tick,name]], ruler, cls, evs (line events), start, label, caretId} */
-function earRhyBarSVG(o){const M=LMET[o.metre],beats=earRhyBeatsOf(o.metre,o.grp),comp=!!M.comp,ppb=earRhyPPB(o.narrow),ppt=ppb/420*(comp?.8:1),[ra,rb]=o.region,X0=o.sig?34:10,top=28,base=62,sy=78,nmLow=!!o.names&&o.names.some(([k])=>/^q[57]/.test(k)),Ht=o.names?(nmLow?119:106):90;
+function earRhyBarSVG(o){const M=LMET[o.metre],beats=earRhyBeatsOf(o.metre,o.grp),comp=!!M.comp,ppb=earRhyPPB(o.narrow),ppt=ppb/420*(comp?.8:1),[ra,rb]=o.region,X0=o.sig?34:10,top=28,base=62,sy=78;
  // beat widths, widened for tuplets
  const cellAt=[];let p=ra;o.cells.forEach(k=>{cellAt.push([k,p]);p+=ladW(k)});
  const bw=beats.map(([t0,t1])=>{let f=1;cellAt.forEach(([k,s])=>{if(s>=t0&&s<t1)f=Math.max(f,earTupWide(k))});const C=null;let w=(t1-t0)*ppt*f;cellAt.forEach(([k,s])=>{const c=LCELL[k];if(s>=t0&&s<t1&&c&&c.tup){const n=c.tup.reduce((a,b)=>a+b,0);if(n>3)w=Math.max(w,n*12+8)}});return w});
  const bx=[];let acc=0;beats.forEach((b,i)=>{bx.push(acc);acc+=bw[i]});const X=t=>{const i=Math.max(0,Math.min(beats.length-1,beats.findIndex(([a,b])=>t>=a&&t<b)));const j=t>=beats[beats.length-1][1]?beats.length-1:i,[a,b]=beats[j];return bx[j]+(t-a)/(b-a)*bw[j]};
  const xa=X(ra),xe=rb>=M.bar?acc:X(rb),Wd=X0+(xe-xa)+16,XX=t=>X0+X(t)-xa;
+  // 0.49 RC: the cell names never overlap. Each name goes on the first row where it clears the names already there (15 px a row); the q5 / q7 names start on the second row
+  // (as before); a name that would run past the bar's right edge is moved back inside it. The height follows the rows used.
+  const nmCv=earRhyBarSVG.cv||(earRhyBarSVG.cv=document.createElement('canvas').getContext('2d'));nmCv.font='11px Outfit, sans-serif';
+  const nmL=[];{const rows=[];(o.names||[]).forEach(([k,st0,nm])=>{const low=/^q[57]/.test(k),endB=low&&st0+ladW(k)>=rb,w=nmCv.measureText(nm).width+1;
+    let x0=endB?X0+(xe-xa)-4-w:XX(st0)+3;if(x0+w>Wd-4)x0=Math.max(2,Wd-4-w);let r=low?1:0;
+    while((rows[r]||[]).some(([a,b])=>x0<b+4&&x0+w>a-4))r++;(rows[r]=rows[r]||[]).push([x0,x0+w]);nmL.push({nm,x:x0,r,endB:endB&&Math.abs(x0-(X0+(xe-xa)-4-w))<.01,xe:X0+(xe-xa)-4})})}
+  const Ht=o.names?106+15*Math.max(0,...nmL.map(n=>n.r)):90;
  let s=`<svg class="el-rsvg" viewBox="0 0 ${Wd.toFixed(0)} ${Ht}" width="${Wd.toFixed(0)}" height="${Ht}" role="img" aria-label="${o.label||'Bar '+o.no}" data-t0="${o.start||0}" data-len="${rb-ra}" data-seg="${beats.map(([a,b],i)=>[a,b,(X0+bx[i]-xa).toFixed(1),(X0+bx[i]+bw[i]-xa).toFixed(1)].join(',')).join(';')}" data-ra="${ra}">`;
  if(o.marks)beats.forEach(([a,b],i)=>{if(o.marks[i]===false&&b>ra&&a<rb)s+=`<rect x="${XX(Math.max(a,ra)).toFixed(1)}" y="0" width="${(XX(Math.min(b,rb))-XX(Math.max(a,ra))).toFixed(1)}" height="${Ht}" rx="6" fill="rgba(200,71,59,.13)"/>`});
  s+=`<line x1="4" y1="${base}" x2="${Wd-6}" y2="${base}" stroke="#c9b98f" stroke-opacity=".55" stroke-width="1"/>`;
@@ -8499,7 +8506,7 @@ function earRhyBarSVG(o){const M=LMET[o.metre],beats=earRhyBeatsOf(o.metre,o.grp
  (o.evs||[]).forEach(e=>{const a=e.on-o.start+ra,b=Math.min(a+e.dur,rb);if(a<ra||a>=rb)return;const x1=XX(a)+2.5,x2=XX(b)-2.5;
   s+=e.rest?`<line x1="${(x1+1).toFixed(1)}" y1="${sy+3}" x2="${(x2-1).toFixed(1)}" y2="${sy+3}" stroke="${ELC.MUTED}" stroke-width="1.5" stroke-dasharray="2 5" stroke-linecap="round"/>`
    :`<rect x="${x1.toFixed(1)}" y="${sy}" width="${Math.max(2,x2-x1).toFixed(1)}" height="6" rx="3" fill="${o.stripCol||ink}" fill-opacity=".8"/>`});
- if(o.names)o.names.forEach(([k,st0,nm])=>{const low=/^q[57]/.test(k),endB=low&&st0+ladW(k)>=rb;s+=`<text x="${(endB?X0+(xe-xa)-4:XX(st0)+3).toFixed(1)}" y="${sy+22+(low?13:0)}"${endB?' text-anchor="end"':''} font-family="Outfit,sans-serif" font-size="11" fill="${ELC.MUTED}" class="melname">${nm}</text>`});
+  nmL.forEach(n=>{s+=`<text x="${(n.endB?n.xe:n.x).toFixed(1)}" y="${sy+22+15*n.r}"${n.endB?' text-anchor="end"':''} font-family="Outfit,sans-serif" font-size="11" fill="${ELC.MUTED}" class="melname">${n.nm}</text>`});
  if(o.cursor&&used<rb){const x=XX(used);s+=`<line x1="${(x+1).toFixed(1)}" y1="${top-4}" x2="${(x+1).toFixed(1)}" y2="${sy+8}" stroke="${ELC.GOLD}" stroke-width="1.5" stroke-linecap="round"/><path d="M${(x-3.5).toFixed(1)} ${top-9}h9l-4.5 5.5z" fill="${ELC.GOLD}"/>`}
  if(o.holes){beats.forEach(([a,b])=>{const a2=Math.max(a,used),b2=Math.min(b,rb);if(b2>a2&&b>used)s+=`<rect x="${(XX(a2)+3).toFixed(1)}" y="${sy+.5}" width="${Math.max(6,XX(b2)-XX(a2)-6).toFixed(1)}" height="5" rx="2.5" fill="none" stroke="#7a6e55" stroke-width="1" stroke-dasharray="2 3"/>`})}
  if(o.caret)s+=`<g class="el-caret" style="opacity:0"><line x1="0" y1="${top-4}" x2="0" y2="${sy+8}" stroke="${ELC.GOLD}" stroke-width="1.5" stroke-linecap="round"/><path d="M-3.5 ${top-9}h9l-4.5 5.5z" fill="${ELC.GOLD}"/></g>`;

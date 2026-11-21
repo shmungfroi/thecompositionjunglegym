@@ -106,6 +106,21 @@ async def ladder_views(pg):
         out[f'ear-ladder/{name}']={'overlap':r['overlap'],'clipped':r['clipped'],'offscreen':off}
         await pg.evaluate("document.querySelectorAll('.el-dock').forEach(e=>e.style.visibility='')")
     return out
+NAMESWEEP="""([nm,per])=>{EAR.names=nm;S.level=6;const out=[];let items=0,names=0;
+ for(const l of [7,8,9,10])for(let i=0;i<per;i++){EAR.drill='rhy';EAR.lvl.rhy=l;EAR.q=null;EAR.done=false;EAR.res=null;earNew();const q=EAR.q;try{elStop()}catch(e){}
+  for(const k of q.a){const b=document.querySelector(`.el-tile[data-earcell="${k}"]`);if(b&&!b.disabled)b.click()}
+  if(earFull(q))earCheck();items++;
+  document.querySelectorAll('#earMain svg.el-rsvg').forEach((sv,si)=>{const T=[...sv.querySelectorAll('text.melname')].map(t=>({t:t.textContent,r:t.getBoundingClientRect()}));const R=sv.getBoundingClientRect();names+=T.length;
+   for(let a=0;a<T.length;a++){const A=T[a].r;if(A.left<R.left-.5||A.right>R.right+.5)out.push({a:T[a].t,b:'(outside its bar)',rung:l,cells:q.a.join(' ')});
+    for(let c=a+1;c<T.length;c++){const B=T[c].r,ix=Math.min(A.right,B.right)-Math.max(A.left,B.left),iy=Math.min(A.bottom,B.bottom)-Math.max(A.top,B.top);if(ix>0&&iy>0)out.push({a:T[a].t,b:T[c].t,rung:l,cells:q.a.join(' ')})}}})}
+ return{out,items,names}}"""
+async def names_sweep(pg,W):
+    out={}
+    for nm in ('k','kk'):
+        r=await pg.evaluate(NAMESWEEP,[nm,40 if W<500 else 15])
+        out[f'ear-ladder/rhythm names rungs 7-10 ({nm}, {r["items"]} items, {r["names"]} names)']={'overlap':r['out'][:5],'clipped':[],'offscreen':[]}
+        if not r['names']: out[f'ear-ladder/rhythm names rungs 7-10 ({nm}) self-check']={'overlap':[],'clipped':['no names were drawn, the sweep is empty'],'offscreen':[]}
+    return out
 async def main():
     widths=[int(w) for w in (sys.argv_w if False else ['1440','1366','1024','390'])]
     res={}
@@ -131,6 +146,7 @@ async def main():
             res[f'{W} voice/iss-rows']=r
             for name,r in (await ear_states(pg,W)).items(): res[f'{W} {name}']=r
             for name,r in (await ladder_views(pg)).items(): res[f'{W} {name}']=r
+            for name,r in (await names_sweep(pg,W)).items(): res[f'{W} {name}']=r
             res[f'{W} errors']=errs
             await pg.close()
         await b.close()
