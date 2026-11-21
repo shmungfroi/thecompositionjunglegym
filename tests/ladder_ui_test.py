@@ -60,7 +60,9 @@ E2E_MEL = """([l,mod,N])=>{const bad=[];let n=0;EAR.mod=mod;
    if(stuck)break}
   if(stuck){bad.push({stuck,a:q.a.join(' ')});continue}
   if(!earFull(q)){bad.push({stuck:'not full',a:q.a.join(' ')});continue}
-  earCheck();n++;if(EAR.res.kind!=='ok')bad.push({kind:EAR.res.kind,a:q.a.join(' ')})}
+  earCheck();n++;if(EAR.res.kind!=='ok')bad.push({kind:EAR.res.kind,a:q.a.join(' ')});
+  // Fable's verification: a right answer has no cross in its headline (Move do: the answer's line is not re-read through the student's mutation)
+  else if(document.querySelector('#earResult .el-answer .pt.bad'))bad.push({headline:document.querySelector('#earResult .el-answer').textContent,a:q.a.join(' ')})}
  return{l,mod,n,nbad:bad.length,bad:bad.slice(0,3)}}"""
 
 E2E_RHY = """([l,N])=>{const bad=[];let n=0;
@@ -68,7 +70,9 @@ E2E_RHY = """([l,N])=>{const bad=[];let n=0;
   for(const k of q.a){const b=document.querySelector(`.el-tile[data-earcell="${k}"]`);if(!b||b.disabled){stuck=k+(b?' disabled':' missing');break}b.click()}
   if(!stuck&&q.drums){const T=ladDrumOns(q.drums);for(const key of['kick','snare'])for(const t of T[key]){const b=document.querySelector(`[data-eardrum="${key}:${t}"]`);if(!b){stuck='drum '+key+t;break}b.click()}}
   if(stuck){bad.push({stuck,metre:q.metre,a:q.a.join(' ')});continue}
-  earCheck();n++;if(EAR.res.kind!=='ok')bad.push({kind:EAR.res.kind,a:q.a.join(' ')})}
+  earCheck();n++;if(EAR.res.kind!=='ok')bad.push({kind:EAR.res.kind,a:q.a.join(' ')});
+  // Fable's verification: the time names at the reveal sit under their own bar (as many names in the answer's first bar as it has cells)
+  else{const sv=document.querySelector('#earCmpW .el-sys:last-of-type svg'),want=earRhyBarsOf(q,q.a)[0].cells.length;if(sv&&sv.querySelectorAll('.melname').length!==want)bad.push({names:sv.querySelectorAll('.melname').length,want,a:q.a.join(' ')})}}
  return{l,n,nbad:bad.length,bad:bad.slice(0,3)}}"""
 
 # a melody scene: write the first part of the right answer, optionally spoil one note, optionally check
