@@ -1232,8 +1232,14 @@ label.ck{gap:8px;cursor:pointer}
 .bar[data-fn]::after,.clrn span[data-fn]::after{content:attr(data-fn);position:absolute;right:8px;bottom:5px;font-size:11px;font-weight:600;letter-spacing:1px;line-height:1;color:var(--c)}
 .clrn span[data-fn]{padding-right:34px}
 .clrn span[data-fn]::after{bottom:auto;top:7px}
-/* circle-of-fifths wheel: <text class="f" x="${x+25}" y="${y-21}" text-anchor="middle">${f}</text> inside each g.wn */
+/* circle-of-fifths wheel: <text class="f" x="${x+27}" y="${y-24}" text-anchor="middle">${f}</text> inside each g.wn (x+32 for a two-letter cue).
+   Fable verify C6: was x+25, y-21, which sat on the node's stroke; the letter now clears it by 2 px or more. */
 .wheel .wn .f{font-family:Outfit;font-size:11px;font-weight:600;letter-spacing:.5px}
+.wheel{overflow:visible}
+/* Fable verify C6: in climb 6 the falling-fifth mark shares the bar's bottom line with the function letter. When the grid is narrow
+   (bars under about 85 px: phones, and 1024 beside the wheel) the letter takes a line of its own, so the two never touch. */
+.c6grid{container-type:inline-size}
+@container (max-width:360px){.c6grid .bar[data-fn]{padding-bottom:22px}}
 /* Ear Lab chord chips: <small><b class="fn" style="color:var(--fc)">D</b> bass s</small> */
 .el-ch small .fn{font-weight:600;letter-spacing:.6px;margin-right:3px}
 /* one legend line wherever functions are coloured (Climbs with a bar grid, Analysis, Ear Lab bass/blind results) */
@@ -3640,7 +3646,7 @@ function c5Play(onStep){const{list,key}=c5List();stopAll();const a=ac(),V=voiceP
  run();run();PLAY.timers.push(setTimeout(stopAll,(t-a.currentTime)*1000+300))}
 function c5Wheel(){const R=86,cx=120,cy=120;let s=`<svg viewBox="0 0 240 240" class="wheel">`;s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#3a3226" stroke-dasharray="4 5"/>`;
  C5LOOP.forEach((r,i)=>{const a=-Math.PI/2+i*Math.PI/2,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a),on=C5.rot===i,f=analyse(parseRoman(r,C5.key),C5.key).f;
-  s+=`<g class="wn ${on?'on':''}" data-c5rot="${i}"><circle cx="${x}" cy="${y}" r="30" style="stroke:${FN[f]}"/><text class="f" x="${x+25}" y="${y-21}" text-anchor="middle" style="fill:${FN[f]}">${FNL(f)}</text><text x="${x}" y="${y-2}" text-anchor="middle" class="r">${r}</text><text x="${x}" y="${y+15}" text-anchor="middle" class="c">${pretty(parseRoman(r,C5.key).root)}${r==='vi'?'m':''}</text></g>`});
+  s+=`<g class="wn ${on?'on':''}" data-c5rot="${i}"><circle cx="${x}" cy="${y}" r="30" style="stroke:${FN[f]}"/><text class="f" x="${x+(FNL(f).length>1?32:27)}" y="${y-24}" text-anchor="middle" style="fill:${FN[f]}">${FNL(f)}</text><text x="${x}" y="${y-2}" text-anchor="middle" class="r">${r}</text><text x="${x}" y="${y+15}" text-anchor="middle" class="c">${pretty(parseRoman(r,C5.key).root)}${r==='vi'?'m':''}</text></g>`});
  s+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" class="ctr">start on</text><text x="${cx}" y="${cy+18}" text-anchor="middle" class="ctr big">${C5LOOP[C5.rot]}</text></svg>`;return s}
 function renderClimb5(){const key=C5.key,kn=keyName(key),F=C5FAM.filter(x=>x.l<=S.level);if(!F.find(x=>x.k===C5.fam))C5.fam='pop';const{list,key:lk}=c5List(),rot=C5ROT[C5.rot];
  const keySel=C5KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
@@ -3762,7 +3768,7 @@ function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.f
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Sing the bass in solfa as it plays: it falls a 5th or climbs a 4th each time, and both land on the same note name.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c6play>▶ Play</button><button class="mini" data-load="${c6Str(ex,key)}|${mode}">⤴ Open in the Gym</button></h3>
    <div class="wheelbox c6box">${c6Wheel(L,key,lab)}<div>
-    <div class="bargrid">${L.map((c,i)=>{const f=fnOf(c,key);const fall=i<L.length-1?c6Fall(c,L[i+1]):null;return`<div class="bar" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><small>${pairs?(i<6?(i<2?'model':'copy '+(i>>1)):'cadence'):''}</small><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b(?=[IVX])/g,'♭')}${fall&&fall!=='other'?` <em class="${fall}">↓${fall==='d5'?'d5':'5'}</em>`:''}</span></div>`}).join('')}</div>${FNKEY}
+    <div class="bargrid c6grid">${L.map((c,i)=>{const f=fnOf(c,key);const fall=i<L.length-1?c6Fall(c,L[i+1]):null;return`<div class="bar" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><small>${pairs?(i<6?(i<2?'model':'copy '+(i>>1)):'cadence'):''}</small><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b(?=[IVX])/g,'♭')}${fall&&fall!=='other'?` <em class="${fall}">↓${fall==='d5'?'d5':'5'}</em>`:''}</span></div>`}).join('')}</div>${FNKEY}
     <div class="legend c6leg"><span style="--c:#c9a24a">root falls a perfect 5th</span><span style="--c:#a493d8">a diminished 5th (stays in the key)</span><span style="--c:#6d6553">lead-in</span></div>
    </div></div>
    <div class="staff" id="c6Staff"></div>

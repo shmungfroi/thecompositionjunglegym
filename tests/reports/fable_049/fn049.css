@@ -11,8 +11,15 @@
 .bar[data-fn]::after,.clrn span[data-fn]::after{content:attr(data-fn);position:absolute;right:8px;bottom:5px;font-size:11px;font-weight:600;letter-spacing:1px;line-height:1;color:var(--c)}
 .clrn span[data-fn]{padding-right:34px}
 .clrn span[data-fn]::after{bottom:auto;top:7px}
-/* circle-of-fifths wheel: <text class="f" x="${x+25}" y="${y-21}" text-anchor="middle">${f}</text> inside each g.wn */
+/* circle-of-fifths wheel: <text class="f" x="${x+27}" y="${y-24}" text-anchor="middle">${f}</text> inside each g.wn (x+32 for a two-letter cue).
+   Fable verify C6: was x+25, y-21, which sat on the node's stroke; the letter now clears it by 2 px or more. */
 .wheel .wn .f{font-family:Outfit;font-size:11px;font-weight:600;letter-spacing:.5px}
+.wheel{overflow:visible}
+/* Fable verify C6: in climb 6 the falling-fifth mark shares the bar's bottom line with the function letter. When the grid is narrow
+   (bars under about 85 px: phones, and 1024 beside the wheel) the letter takes a line of its own, so the two never touch. */
+.c6grid{container-type:inline-size}
+@container (max-width:360px){.c6grid .bar[data-fn]{padding-bottom:22px}}
+/* markup: the climb 6 grid is <div class="bargrid c6grid"> */
 /* Ear Lab chord chips: <small><b class="fn" style="color:var(--fc)">D</b> bass s</small> */
 .el-ch small .fn{font-weight:600;letter-spacing:.6px;margin-right:3px}
 /* one legend line wherever functions are coloured (Climbs with a bar grid, Analysis, Ear Lab bass/blind results) */
