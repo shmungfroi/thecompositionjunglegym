@@ -820,6 +820,7 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-cmp{grid-column:1 / -1;display:grid;grid-template-columns:84px minmax(0,1fr);gap:6px 12px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
 .el-cmp .who{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
 .el-cmp .who.ans{color:var(--gold)}
+.el-cmp.paired .el-sys+.who:not(.ans):not(:empty){margin-top:8px}
 
 /* ---- foot: stats, Reset (inline confirm + undo), Save to journal ---- */
 .el-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:18px;padding-top:12px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
@@ -1239,6 +1240,13 @@ label.ck{gap:8px;cursor:pointer}
 .el-lb i.x{border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
 .el-lb i.on.x{background:var(--red)}
 .el-cmp2{grid-column:1 / -1;margin-top:10px}
+.el-lnote{margin:0 0 6px;font-size:12px;color:var(--muted)}
+.el-drums.ph{gap:12px}
+.el-half{display:grid;gap:3px}
+.el-half .cap{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.el-hrow{display:grid;grid-template-columns:18px repeat(4,1fr);gap:3px;align-items:center}
+.el-hrow .kk{font-size:11px;letter-spacing:0;color:var(--muted);text-align:center}
+.el-hrow .el-dcell{height:44px;min-width:44px}
 @media(max-width:760px){.el-lbar{grid-template-columns:repeat(4,1fr);width:100%}.el-dcell{height:44px}.el-lane .who,.el-lrow .who{width:100%}.el-lrow{gap:4px 14px}.el-lb{grid-template-columns:repeat(8,1fr);flex:1 1 100%}}
 /* ===== Ear Lab 0.49 ladders: UI (Fable ladder049.css, then ladder_ui.css, lifted as written; the replaced two-step entry rules are removed as ladder_ui.css says) ===== */
 /* Ear Lab 0.49: the long ladders (melody 12 rungs, rhythm 10). Component CSS for Sonnet to lift into index.html as written.
@@ -8499,13 +8507,14 @@ const earRhyEvents=(cells)=>ladRhyEvents(cells).ev;
 /* the cells' names, per cell: tie-in aware (ladRhyNames) */
 function earRhyNameList(q){return ladRhyNames(q)}
 // a whole line as bar svgs. cur: the bar being filled (cursor). marks: per-beat ok array from the marker
-function earRhyLineHTML(q,cells,o={}){const bars=earRhyBarsOf(q,cells),evs=earRhyEvents(cells),nar=!!o.narrow,nm=o.names?ladRhyNames({...q,anacCells:q.anacCells||[],cells:q.cells}):null;
+function earRhyLineHTML(q,cells,o={}){const r=earRhyLineParts(q,cells,o);return o.parts?r:r.join('')}
+function earRhyLineParts(q,cells,o={}){const bars=earRhyBarsOf(q,cells),evs=earRhyEvents(cells),nar=!!o.narrow,nm=o.names?ladRhyNames({...q,anacCells:q.anacCells||[],cells:q.cells}):null;
  let at=0;const full=bars.map(b=>{const w=b.cells.reduce((s,k)=>s+ladW(k),0);return w>=(b.anac?q.anac:q.barLen[b.no.replace('Bar ','')-1])});
  let cur=full.findIndex(f=>!f);if(cur<0)cur=-1;
  return bars.map((b,bi)=>{const M=LMET[q.metre],bm=o.marks?earRhyBeatMarks(q,o.marks,q.anac?bi:bi+1,b):null;
   // names for the reveal, positioned at each cell's start
   let names=null;if(nm){let p=b.region[0];names=[];const arr=nm[b.anac?0:+String(b.no).replace('Bar ','')]||[];arr.forEach(({k,name})=>{names.push([k,p,name.includes(' ')&&(k==='q7_34'||k==='q7_43')?name.replace(' ',' '):name]);p+=ladW(k)})}
-  return earRhyBarSVG({metre:q.metre,grp:q.grp,cells:b.cells,region:b.region,sig:bi===0,no:b.no,cursor:o.cursor&&bi===cur,holes:o.holes&&cur>=0&&bi>=cur,final:bi===bars.length-1,narrow:nar,marks:bm,names,evs:o.strip===false?[]:evs,start:b.start,count:bi===0,stripCol:o.stripCol,caret:o.caret,label:(o.label||'')+b.no})}).join('')}
+  return earRhyBarSVG({metre:q.metre,grp:q.grp,cells:b.cells,region:b.region,sig:bi===0,no:b.no,cursor:o.cursor&&bi===cur,holes:o.holes&&cur>=0&&bi>=cur,final:bi===bars.length-1,narrow:nar,marks:bm,names,evs:o.strip===false?[]:evs,start:b.start,count:bi===0,stripCol:o.stripCol,caret:o.caret,label:(o.label||'')+b.no})})}
 // per-beat marks for one bar from the marker's beats list ({bar, beat, ok}; bar 0 the upbeat; 7/8 beats are eighths: a drawn group is right when all its eighths are)
 function earRhyBeatMarks(q,list,barNo,b){const M=LMET[q.metre],beats=earRhyBeatsOf(q.metre,q.grp);const bar=b.anac?0:barNo;
  const mine=list.filter(x=>x.bar===bar);if(!mine.length)return null;
@@ -8551,7 +8560,11 @@ function earRhyAreaHTML(q,l){if(EAR.done)return'';const groove=!!q.drums,A=groov
  const wide=`<div class="el-rhy wide"><div class="el-sys">${earRhyLineHTML(q,cells,{cursor:true,holes:true,label:'Your rhythm, '})}</div></div>`,nar=`<div class="el-rhy narrow">${earRhyLineHTML(q,cells,{cursor:true,holes:true,narrow:true,label:'Your rhythm, '})}</div>`;
  return`<div class="el-lbl" data-notm>${lab}</div><span class="el-sr">${alab}</span>${wide}${nar}<div class="el-lbl" data-notm>Add the next beat</div>${earRhyTilesHTML(q,cells)}${groove?earDrumHTML(q):''}${earEditBtns(earFullRhy(q))}`}
 // ---- R10: the drum groove, two quaver lanes a bar
-function earDrumHTML(q){const D=EAR.ans.drums||{kick:[],snare:[]},lane=(nm,key)=>`<div class="el-lane" role="group" aria-label="${nm}"><span class="who" data-notm>${nm}</span>${q.barLen.map((L,b)=>`<div class="el-lbar" data-bar="${b+1}">${[0,1,2,3,4,5,6,7].map(i=>{const t=b*1680+i*210,on=D[key].includes(t);return`<button class="el-dcell${on?' on':''}" data-eardrum="${key}:${t}" aria-pressed="${on}" aria-label="${nm}, bar ${b+1}, ${i%2?'and after beat '+((i-1)/2+1):'beat '+(i/2+1)}"><span aria-hidden="true">${i%2?'&':i/2+1}</span></button>`}).join('')}</div>`).join('')}</div>`;
+function earDrumHTML(q){const D=EAR.ans.drums||{kick:[],snare:[]},cellOf=(nm,key,b,i)=>{const t=b*1680+i*210,on=D[key].includes(t);return`<button class="el-dcell${on?' on':''}" data-eardrum="${key}:${t}" aria-pressed="${on}" aria-label="${nm}, bar ${b+1}, ${i%2?'and after beat '+((i-1)/2+1):'beat '+(i/2+1)}"><span aria-hidden="true">${i%2?'&':i/2+1}</span></button>`},
+ lane=(nm,key)=>`<div class="el-lane" role="group" aria-label="${nm}"><span class="who" data-notm>${nm}</span>${q.barLen.map((L,b)=>`<div class="el-lbar" data-bar="${b+1}">${[0,1,2,3,4,5,6,7].map(i=>cellOf(nm,key,b,i)).join('')}</div>`).join('')}</div>`;
+ // phones: for each half bar a kick row over a snare row, so a beat of one is under the same beat of the other
+ if(innerWidth<761){const halves=q.barLen.flatMap((L,b)=>[[b,0],[b,4]]);
+  return`<div class="el-lbl" data-notm>Kick and snare drums · tap where each one plays</div><div class="el-drums ph">${halves.map(([b,o])=>`<div class="el-half" role="group" aria-label="Bar ${b+1}, ${o?'second':'first'} half">${o?'':`<span class="cap" data-notm>Bar ${b+1}</span>`}${[['Kick','kick','K'],['Snare','snare','S']].map(([nm,key,ch])=>`<div class="el-hrow"><span class="kk" data-notm aria-hidden="true">${ch}</span>${[0,1,2,3].map(i=>cellOf(nm,key,b,o+i)).join('')}</div>`).join('')}</div>`).join('')}</div>`}
  return`<div class="el-lbl" data-notm>Kick and snare drums · tap where each one plays</div><div class="el-drums">${lane('Kick','kick')}${lane('Snare','snare')}</div>`}
 
 // ---- the reveal
@@ -8564,7 +8577,12 @@ function earDrumCmp(q,res){const g=res.given&&res.given.drums,T=ladDrumOns(q.dru
  return`<div class="el-lanes" data-notm role="img" aria-label="Kick and snare, you wrote and the answer">${g?earLaneRow('Kick, you wrote',g.kick||[],T.kick,nb,true):''}${earLaneRow('Kick, it was',T.kick,T.kick,nb,false)}${g?earLaneRow('Snare, you wrote',g.snare||[],T.snare,nb,true):''}${earLaneRow('Snare, it was',T.snare,T.snare,nb,false)}</div>`}
 function earRhyCmp2(q,res){const g=res.given,gr=q.drums?(g&&g.riff):g,marks=res.mark?res.mark.beats:null,who=(t,c='')=>`<div class="who ${c}" data-notm>${t}</div>`;
  const row=(narrow)=>`${gr?who('You wrote')+`<div class="el-sys">${earRhyLineHTML(q,gr,{marks,narrow,label:'You wrote, '})}</div>`:''}${who('It was','ans')}<div class="el-sys">${earRhyLineHTML(q,q.a,{stripCol:ELC.GOLD,caret:true,names:true,narrow,label:'It was, '})}</div>`;
- return`<div class="el-cmp wide" id="earCmpW">${row(false)}</div><div class="el-cmp narrow" id="earCmpN">${row(true)}</div>${q.drums?`<div class="el-cmp2">${earDrumCmp(q,res)}</div>`:''}`}
+ const wideRows=()=>{ // 5/4 and 7/8: one bar fills a line, so each line of yours sits over the same line of the answer
+  const mk=(c,o2)=>earRhyLineHTML(q,c,{...o2,parts:true}),Y=gr?mk(gr,{marks,narrow:false,label:'You wrote, '}):null,A=mk(q.a,{stripCol:ELC.GOLD,caret:true,names:true,narrow:false,label:'It was, '}),n=A.length,lines=[],up=q.anac?2:1;
+  for(let i=0;i<n;){const e=i===0?Math.min(up,n):i+1;lines.push([i,e]);i=e}
+  return lines.map(([a,b],li)=>`${gr?who(li===0?'You wrote':'')+`<div class="el-sys">${Y.slice(a,b).join('')}</div>`:''}${who(li===0?'It was':'','ans')}<div class="el-sys">${A.slice(a,b).join('')}</div>`).join('')};
+ const paired=q.metre==='5/4'||q.metre==='7/8';
+ return`<div class="el-cmp wide${paired?' paired':''}" id="earCmpW">${paired?wideRows():row(false)}</div><div class="el-cmp narrow" id="earCmpN">${row(true)}</div>${q.drums?`<div class="el-cmp2">${earDrumCmp(q,res)}</div>`:''}`}
 // the display beat (1-based) that holds an engine beat (7/8: engine beats are quavers, drawn beats are the groups)
 function earRhyDispBeat(q,bar,beat){const beats=earRhyBeatsOf(q.metre,q.grp),M=LMET[q.metre],t=(beat-1)*M.beat,i=beats.findIndex(([a,b])=>t>=a&&t<b);return i<0?beat:i+1}
 function earTeachRhy2(q,res){const g=res.given,groove=!!q.drums,gr=groove?(g&&g.riff):g,mk=res.mark||{},beats=mk.beats||[],bad=beats.filter(b=>!b.ok),gk=b=>b.bar+':'+(b.bar===0||b.anac?'u'+b.beat:earRhyDispBeat(q,b.bar,b.beat)),N=new Set(beats.map(gk)).size,m=N-new Set(bad.map(gk)).size,M=LMET[q.metre],an=q.anac||0,nb=q.barLen.length;let head,teach,rp=[],two=null;
@@ -8634,8 +8652,8 @@ function earLenGlyph(k,rest){const c='currentColor',base=30,top=6;let g='';
   if(flag)g+=elGlyph(k<=105?'flag16thUp':'flag8thUp',sx-.65,top,c);if(dot)g+=elGlyph('augmentationDot',x+ELHW+3.2,base,c)}
  return`<svg viewBox="0 0 34 40" aria-hidden="true">${g}</svg>`}
 function earPalHTML(q,P,part,mutHTML){const lens=earPalLens(q,part),rests=earPalRests(q,part),live=P.done?new Set():earLiveSet(P,false),liveR=P.done?new Set():earLiveSet(P,true),n=lens.length+rests.length;
- const cell=t=>{const dis=!live.has(t),w=ELLENW[t]||t,why=dis?earLenWhy(q,P,t,part):'',on=t===EAR.len;return`<button class="el-len" role="radio" data-len="${t}" aria-checked="${on}" aria-label="${w}${dis?', '+why:''}" title="${cap1(w)}${dis?': '+why:''}" aria-disabled="${dis}" tabindex="${on?0:-1}">${earLenGlyph(t,false)}</button>`};
- const rc=t=>{const dis=!liveR.has(t),w=(ELLENW[t]||t)+' rest',why=dis?earLenWhy(q,P,t,part):'';return`<button class="el-len rest" data-rest="${t}" aria-label="${w}${dis?', '+why:''}" title="${cap1(w)}${dis?': '+why:''}" aria-disabled="${dis}">${earLenGlyph(t,true)}</button>`};
+ const cell=t=>{const dis=!live.has(t),w=ELLENW[t]||t,why=dis?earLenWhy(q,P,t,part):'',on=t===EAR.len;return`<button class="el-len" role="radio" data-len="${t}" aria-checked="${on}" aria-label="${w}${dis?', '+why:''}" title="${cap1(w)}${dis?': '+why:''}" data-tt aria-disabled="${dis}" tabindex="${on?0:-1}">${earLenGlyph(t,false)}</button>`};
+ const rc=t=>{const dis=!liveR.has(t),w=(ELLENW[t]||t)+' rest',why=dis?earLenWhy(q,P,t,part):'';return`<button class="el-len rest" data-rest="${t}" aria-label="${w}${dis?', '+why:''}" title="${cap1(w)}${dis?': '+why:''}" data-tt aria-disabled="${dis}">${earLenGlyph(t,true)}</button>`};
  return`<div class="el-palwrap"><div class="el-lbl" data-notm>Length</div><div class="el-pal${n>7?' two':''}" role="radiogroup" aria-label="Note length">${lens.map(cell).join('')}${rests.map(rc).join('')}</div>${mutHTML||''}</div>`}
 /* ---------------- the solfa ladder, with half rungs for the chromatic syllables (names only, no new hand-sign art) ---------------- */
 const ELSOLW={d:'do',r:'re',m:'mi',f:'fa',s:'so',l:'la',t:'ti'};
@@ -8649,17 +8667,17 @@ function earChrSet(q){const l=q.l;if(l===7||l===11)return['si','fi'];if(l===8)re
 // Move do after the mutation: the ladder is named from the new do (semitones above the old one); relative-key items keep their names
 function earLadShift(q){return q.l===9&&EAR.mod==='move'&&EAR.pivot!=null&&q.info&&q.info.shift?7:0}
 /* o: part, lock (the reveal), full (every note written), last (the row tapped last), a2 / a2on (the fa-si gauge), shift (semitones the do moved), homeP (the home note, in semitones from the old do) */
-function earLadderHTML(q,o={}){const part=o.part||'mel',sh=o.shift||0,chr=new Set(o.chr||[]),newDo=lmod(q.key.do+sh,12),letters=EAR.letters,dis=(o.lock||o.full)?'disabled':'',hp=o.homeP||0;
+function earLadderHTML(q,o={}){const part=o.part||'mel',sh=o.shift||0,chr=new Set(o.chr||[]),newDo=lmod(q.key.do+sh,12),letters=EAR.letters,dis=(o.lock||o.full)?'disabled':'',hp=o.homeP||0,bo=part==='bass'&&q.l===11?2:0,shown=(name,oc)=>name+elmk(oc+bo);   // S4: at rung 11 the bass's marks count from its own do, two octaves down; display only
  let lo,hi;if(part==='bass'){const is=q.bass.map(b=>b.i);lo=Math.min(...is,q.range[0]-14);hi=Math.max(...is,q.range[1]-14)}else{lo=q.range[0];hi=q.range[1]}
  const ln=(part==='bass'?q.bass:q.notes)||[],lw=ln.length?Math.min(...ln.map(n=>ladSemis(n.i,n.a))):0,hg=ln.length?Math.max(...ln.map(n=>ladSemis(n.i,n.a))):0,sLo=Math.min(ladSemis(lo,0),lw),sHi=Math.max(ladSemis(hi,0),hg),nm=s=>({pc:lmod(s,12),oc:Math.floor(s/12)}),letter=tx=>{const p=ladParse(tx);return p?pretty(ladSpell(p.i,p.a,newDo).name):''};let h='';
  for(let p=sHi;p>=sLo;p--){const n=nm(p-sh),pc0=lmod(p,12),a2=o.a2&&[5,6,7,8].includes(pc0)&&p-(pc0-5)>=sLo&&p-(pc0-5)+3<=sHi?` a2${pc0===8?' a2top':pc0===5?' a2bot':''}`:'',
    was=sh?earSolOfSemi(p):'';
   if(ELDIAPC[n.pc]!==undefined){const s=ELDIAPC[n.pc],tx=s+elmk(n.oc),isH=lmod(p-hp,12)===0;
-   h+=`<button class="earstep${isH?' home':''}${tx===o.last?' last':''}${a2}" data-earsol="${tx}" ${dis} aria-label="${ELSOLW[s]}${n.oc<0?' low':n.oc>0?' high':''}${isH?', home note':''}${was?', was '+was:''}">${ehsign(s)}<b>${tx}</b>${letters?`<small>${letter(tx)}</small>`:''}${was?`<span class="was">was <b>${was}</b></span>`:''}${p===hp?'<span class="hm">home</span>':''}${a2&&pc0===7?'<span class="a2lab" aria-hidden="true"><b>3 semitones</b>fa to si</span>':''}</button>`}
+   h+=`<button class="earstep${isH?' home':''}${tx===o.last?' last':''}${a2}" data-earsol="${tx}" ${dis} aria-label="${ELSOLW[s]}${n.oc<0?' low':n.oc>0?' high':''}${isH?', home note':''}${was?', was '+was:''}">${ehsign(s)}<b>${shown(s,n.oc)}</b>${letters?`<small>${letter(tx)}</small>`:''}${was?`<span class="was">was <b>${was}</b></span>`:''}${p===hp?'<span class="hm">home</span>':''}${a2&&pc0===7?'<span class="a2lab" aria-hidden="true"><b>3 semitones</b>fa to si</span>':''}</button>`}
   else{const f=ELLOWER[n.pc],r=ELRAISE[n.pc],hasF=f&&chr.has(f),hasS=r&&chr.has(r);if(!hasF&&!hasS)continue;
-   const btn=(name,cls,word)=>{const tx=name+elmk(n.oc);return`<button class="earstep chr ${cls}${tx===o.last?' last':''}" data-earsol="${tx}" ${dis} aria-label="${name}${n.oc<0?' low':n.oc>0?' high':''}, ${word} ${ELOFW[name]}${was?', was '+was:''}"><b>${tx}</b>${letters?`<small>${letter(tx)}</small>`:''}<span class="of">${word} ${ELOFW[name]}</span>${was?`<span class="was">was <b>${was}</b></span>`:''}</button>`};
+   const btn=(name,cls,word)=>{const tx=name+elmk(n.oc);return`<button class="earstep chr ${cls}${tx===o.last?' last':''}" data-earsol="${tx}" ${dis} aria-label="${name}${n.oc<0?' low':n.oc>0?' high':''}, ${word} ${ELOFW[name]}${was?', was '+was:''}"><b>${shown(name,n.oc)}</b>${letters?`<small>${letter(tx)}</small>`:''}<span class="of">${word} ${ELOFW[name]}</span>${was?`<span class="was">was <b>${was}</b></span>`:''}</button>`};
    h+=`<div class="earhalf${a2}">${hasF?btn(f,'fl','lowered'):''}${hasS?btn(r,'sh','raised'):''}</div>`}}
- return`<div class="earlad chr${o.lock?' listen':''}${o.a2on?' a2on':''}" role="group" aria-label="Solfa ladder, high to low">${h}</div>`}
+ return`${bo?`<p class="el-lnote" data-notm>The bass's octave marks count from the bass's own do.</p>`:''}<div class="earlad chr${o.lock?' listen':''}${o.a2on?' a2on':''}" role="group" aria-label="Solfa ladder, high to low">${h}</div>`}
 
 /* ---------------- the stave: bars drawn in proportion to time (ladder_ui.js score(), generalised to the engine's ticks, key signatures and two staves) ---------------- */
 const ELDUR={1680:['w',0],1260:['h',1],840:['h',0],630:['q',1],420:['q',0],315:['8',1],210:['8',0],105:['16',0]};
@@ -8871,7 +8889,15 @@ function earTeachMel4(q,res){const g=res.given,mk=res.mark||{},two=q.l===11,gm=t
   else if(!rel&&pn){const nt=q.notes[q.pivot],L=ladSpell(nt.i,nt.a,q.key.do).letter,min=q.newKey&&q.newKey.mode==='min',lead=pretty(min?ladSpell(1,1,q.key.do).name:ladSpell(3,1,q.key.do).name),W=s=>ELSOLW[s.replace(/[,']/g,'')]||s;
    ps.push(`Mutation at the ${L}: ${W(pn[0])} became ${W(pn[1])}, and ${lead} is the new ${min?'si':'ti'}.`)}}
  if(!ps.length)ps.push(kind==='ok'||kind==='right'||mk.ok?(two?'Melody and bass both right. Hear them together once more.':'Rhythm and solfa both right. Hear it once more with the hand signs.'):'');
- if(two&&!mk.ok){const b=mk.parts&&mk.parts.bass,m=mk.parts&&mk.parts.mel;ps.length=0;ps.push(`${m&&!m.right?'The melody':''}${m&&!m.right&&b&&!b.right?' and ':''}${b&&!b.right?'The bass':''} ${m&&!m.right&&b&&!b.right?'are':'is'} not right yet. Compare the staves below.`.replace(/^ /,''))}
+ if(two&&!mk.ok){const b=mk.parts&&mk.parts.bass,m=mk.parts&&mk.parts.mel;ps.length=0;
+  // the rung 4 to 10 sentence for the part that is wrong: "Melody, bar 1: the sixth note is r: you wrote m"
+  const say=(pn,key,okp)=>{if(okp)return null;try{const tlp=earMelTruth(q,key),gp=g&&g[key],glp=gp?earMelLine(q,gp,key):null;if(!glp)return null;
+    const bt=earMelBeats(q,tlp,glp),sl=earMelSolfa(q,tlp,glp),bd=bt.find(x=>!x.ok),w=sl.find(x=>!x.ok&&!x.spell),own=x=>x.bi===0?'the upbeat':`bar ${x.bi}`;
+    if(w){const gg=w.g;return`${pn}, ${own(w)}: the ${ELORD[w.i]||'next'} note is ${w.t.as}: you wrote ${gg?gg.as:'nothing'}.`}
+    if(bd){const tn=bd.T.map(x=>({dur:x.dur,rest:x.rest})),gn=bd.G.map(x=>({dur:x.dur,rest:x.rest}));return`${pn}, ${own(bd)}${bd.bi===0?'':`, beat ${bd.k}`}: ${earDescribe(tn)||'silent'}: you wrote ${earDescribe(gn)||'nothing'}.`}}catch(e){}return null};
+  const sm=say('Melody','mel',!m||m.right),sb=say('Bass','bass',!b||b.right);
+  if(sm||sb){ps.push([sm,sb].filter(Boolean).join(' '))}
+  else ps.push(`${m&&!m.right?'The melody':''}${m&&!m.right&&b&&!b.right?' and ':''}${b&&!b.right?'The bass':''} ${m&&!m.right&&b&&!b.right?'are':'is'} not right yet. Compare the staves below.`.replace(/^ /,''))}
  teach=ps.join(' ');rp.push({v:'all',t:'Hear it all with the hand signs'});
  return{kind,head:earTwoHead(parts),twoHead:true,teach,pic,replays:rp,cmp}}
 
@@ -8897,7 +8923,7 @@ function earMelClick(d){const q=EAR.q;if(!q||q.d!=='mel')return false;
 document.addEventListener('keydown',e=>{if(ROOM!=='ear'||!EAR.q||EAR.q.d!=='mel'||EAR.done||!earLong4(EAR.q)||e.ctrlKey||e.metaKey||e.altKey)return;const t=e.target;if(t&&/INPUT|TEXTAREA|SELECT/.test(t.tagName))return;
  const q=EAR.q,part=earMelPart(),ents=earEnts(q,part),P=ladPalette(q,ents,part),lens=earPalLens(q,part),live=earLiveSet(P,false);
  if(t&&t.closest&&t.closest('.el-pal')&&['ArrowRight','ArrowLeft','ArrowDown','ArrowUp'].includes(e.key)){const dir=e.key==='ArrowRight'||e.key==='ArrowDown'?1:-1;let i=lens.indexOf(EAR.len);for(let k=0;k<lens.length;k++){i=(i+dir+lens.length)%lens.length;if(live.has(lens[i])){EAR.len=lens[i];EAR.focus=`[data-len="${lens[i]}"]`;renderEar();break}}e.preventDefault();return}
- if(/^[1-7]$/.test(e.key)&&e.target===document.body){const n=+e.key-1;if(n<lens.length&&live.has(lens[n])){EAR.len=lens[n];renderEar();e.preventDefault()}return}
+ if(/^[1-7]$/.test(e.key)&&(e.target===document.body||(t&&t.closest&&t.closest('#earMain')&&!t.isContentEditable))){const n=+e.key-1;if(n<lens.length&&live.has(lens[n])){EAR.len=lens[n];renderEar();e.preventDefault()}return}
  if(e.key==='Backspace'&&(e.target===document.body||(t.closest&&t.closest('#earMain')))){if(HIST.ear.undo())e.preventDefault()}});
 // replays at the reveal (adapters over the engine's tone calls): 'bar' = one bar, yours then the answer; 'a2' = fa to si, then fa to so
 function earSchedMel4(q,variant,t0,o={}){let t=t0;ladCueNotes(q).forEach(m=>tone(m,t,'piano',.55,1.3));t+=1.6;const tk=ladTickSec(q),res=EAR.res,end0=t;let end=t;

@@ -304,7 +304,7 @@ async def targeted(pg):
         rb = await pg.evaluate("""(lv)=>new Promise(res=>{const L0=EAR.lvl.rhy;location.hash='ear';EAR.drill='rhy';EAR.lvl.rhy=lv;room('ear');
             setTimeout(()=>{const a=[...document.querySelectorAll('#room-ear abbr.tm[data-k="bar"]')],ask=document.querySelector('#earCard .el-ask'),
               r={first:a[0]?!!a[0].closest('.el-ask'):false,txt:ask?ask.textContent:'',later:a.slice(1).filter(x=>x.nextSibling&&x.nextSibling.className==='tmus').length};EAR.lvl.rhy=L0;room('ear');res(r)},500)})""", lv)
-        want = ('two bars (US: measures)' if lv == 3 else 'one bar (US: measure)')
+        want = ('two bars (US: measures)' if lv >= 2 else 'one bar (US: measure)')
         if not rb['first'] or want not in rb['txt'] or rb['later']:
             fail('T3', f'C2 Ear Lab rhythm card rung {lv}: first mention of bar not bracketed in the prompt (or bracketed again later): {rb}')
         else:
@@ -334,6 +334,7 @@ async def targeted(pg):
           if(++l<=3)step();else{EAR.lvl.rhy=L0;EAR.q=null;EAR.done=false;room('ear');res(o)}},300)};step()})""")
     want_t = {'q': 'crotchet (US: quarter note)', 'e2': '2 quavers (US: 2 eighth notes)', 'h': 'minim (US: half note)', 's4': '4 semiquavers (US: 4 sixteenth notes)',
               'qr': 'crotchet rest (US: quarter rest)', 'dq': 'dotted crotchet, quaver (US: dotted quarter note, eighth note)',
+              'w': 'semibreve (US: whole note)', 'hd': 'dotted minim (US: dotted half note)',
               'es2': 'quaver, 2 semiquavers (US: eighth note, 2 sixteenth notes)', 's2e': '2 semiquavers, quaver (US: 2 sixteenth notes, eighth note)',
               'syn': 'quaver, crotchet, quaver (US: eighth note, quarter note, eighth note)'}  # R2 S-T1: one US name per value
     bad_t = {k: v for k, v in tiles.items() if want_t.get(k) != v}
