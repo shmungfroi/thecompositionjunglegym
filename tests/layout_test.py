@@ -74,6 +74,34 @@ async def ear_states(pg,W):
             off+=cov
             out[f'ear-card/{d}/{stage}']={'overlap':r['overlap'],'clipped':r['clipped'],'offscreen':off}
     return out
+LADSCENE="""([d,l,mod,frac,spoil,chk,wantS])=>{EAR.mod=mod;S.level=6;const want=wantS?new Function('q','return '+wantS):null;let q;
+ for(let t=0;t<300;t++){EAR.drill=d;EAR.lvl[d]=l;EAR.q=null;EAR.done=false;EAR.res=null;earNew();q=EAR.q;if(!want||want(q))break}
+ try{elStop()}catch(e){}
+ if(d==='rhy'){const n=Math.floor(q.a.length*frac);for(let j=0;j<n;j++){const b=document.querySelector(`.el-tile[data-earcell="${q.a[j]}"]`);if(b&&!b.disabled)b.click()}
+  if(spoil){while(!earFull(q)){const t=[...document.querySelectorAll('.el-tile:not([disabled])')].pop();if(!t)break;t.click()}}
+  if(chk)earCheck();return}
+ const T=ladTruthEntries(q,'mel'),n=Math.floor(T.length*frac);
+ for(let j=0;j<n;j++){const e=T[j],idx=j+1;if(e.s===null){document.querySelector(`[data-rest="${e.t}"]`).click();continue}
+  const lb=document.querySelector(`[data-len="${e.t}"]`);if(lb.getAttribute('aria-checked')!=='true')lb.click();
+  let nm=e.s;if(q.l===9&&mod==='move'&&q.readings&&idx>q.pivot)nm=q.readings.move[idx];
+  if(spoil&&j===spoil)nm=[...document.querySelectorAll('[data-earsol]')].map(x=>x.dataset.earsol).find(x=>x!==nm&&!/[a-z]{2}/.test(x))||nm;
+  document.querySelector(`[data-earsol="${nm}"]`).click();if(q.l===9&&mod==='move'&&q.readings&&idx===q.pivot&&frac>.45)document.querySelector('[data-earmut]').click()}
+ if(chk)earCheck()}"""
+LADVIEWS=[('long header',['mel',6,'home',0,0,0,None]),('palette desk',['mel',6,'home',.6,0,0,None]),('result state',['mel',6,'home',1,3,1,None]),
+ ('rung 7',['mel',7,'home',1,5,1,'q.aug2&&q.aug2.length']),('rung 9 Move do',['mel',9,'move',.7,0,0,"q.readings&&q.kind==='M-V'"]),
+ ('rhythm rung 9',['rhy',9,'home',.5,0,0,None]),('rhythm rung 9 result',['rhy',9,'home',1,1,1,None])]
+async def ladder_views(pg):
+    out={}
+    for name,a in LADVIEWS:
+        await pg.evaluate(LADSCENE,a);await pg.wait_for_timeout(250);await pg.evaluate("scrollTo(0,0)")
+        await pg.evaluate("document.querySelectorAll('.el-dock').forEach(e=>e.style.visibility='hidden')")
+        r=await pg.evaluate(DET);sw=await pg.evaluate('document.documentElement.scrollWidth-innerWidth');q=await pg.evaluate(EARQ)
+        off=list(r['offscreen'])
+        if sw>1: off.append(f'page scrolls sideways by {sw}px')
+        off+=['target under 44px: '+x for x in q['small']]
+        out[f'ear-ladder/{name}']={'overlap':r['overlap'],'clipped':r['clipped'],'offscreen':off}
+        await pg.evaluate("document.querySelectorAll('.el-dock').forEach(e=>e.style.visibility='')")
+    return out
 async def main():
     widths=[int(w) for w in (sys.argv_w if False else ['1440','1366','1024','390'])]
     res={}
@@ -98,6 +126,7 @@ async def main():
             if not await pg.evaluate("document.querySelectorAll('#satbCheck .iss').length"): r['clipped'].append('self-check: no checker rows rendered, the regression view is empty')
             res[f'{W} voice/iss-rows']=r
             for name,r in (await ear_states(pg,W)).items(): res[f'{W} {name}']=r
+            for name,r in (await ladder_views(pg)).items(): res[f'{W} {name}']=r
             res[f'{W} errors']=errs
             await pg.close()
         await b.close()

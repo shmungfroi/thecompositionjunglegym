@@ -14,7 +14,7 @@ fi
 python3 -c "import playwright, music21" 2>/dev/null || { echo "Needs: pip install playwright music21"; exit 2; }
 
 # order: quick and basic first
-SUITES="content_lint unit_test score_ids_test sound_test earlab_test earlab_r2_test earlab_items_test earlab_ui_test chordshape_test spelling_test terms_test counterpoint_test pageerrors_test layout_test transport_test score_measure_test analysis_engrave_test cvd_sim"
+SUITES="content_lint unit_test score_ids_test sound_test earlab_test earlab_r2_test earlab_items_test earlab_ui_test ladder_ui_test chordshape_test spelling_test terms_test counterpoint_test pageerrors_test layout_test transport_test score_measure_test analysis_engrave_test cvd_sim"
 FILTER="${1:-}"
 FAILED=0
 SUMMARY="{"
