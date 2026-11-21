@@ -1,0 +1,503 @@
+--- content_lint
+ "censor_terms": {
+  "failures": []
+ },
+ "sources": {
+  "failures": [],
+  "known_exceptions_count": 0,
+  "known_exceptions_listed": 0,
+  "known_exceptions_now_sourced": []
+ },
+ "source_links": {
+  "failures": [],
+  "rendered": 178
+ },
+ "credits": {
+  "failures": []
+ },
+ "us_terms": {
+  "failures": [],
+  "cases_checked": 64
+ },
+ "song_entries": 56,
+ "scsong_entries": 25,
+ "lyric_words": {
+  "failures": []
+ },
+ "song_rules": {
+  "failures": [],
+  "post_2015": [
+   "Dance Monkey (2019)",
+   "Dance to This (2018)",
+   "We Don't Talk About Bruno (2021)"
+  ]
+ },
+ "syllabus_tags": {
+  "failures": [],
+  "rooms_checked": 32,
+  "codes": 21
+ },
+ "passed": true
+}
+--- content_lint: pass (1s)
+--- unit_test
+D12 contrast scan: {'voice': 1, 'gym': 3, 'keys': 4, 'analysis': 2, 'analysis score': 6} lowest 5.1
+{
+ "checks": 1164,
+ "failures": [],
+ "n_failures": 0
+}
+--- unit_test: pass (12s)
+--- score_ids_test
+Traceback (most recent call last):
+  File "/home/claude/thecompositionjunglegym/tests/score_ids_test.py", line 16, in <module>
+    import engrave  # noqa: E402
+    ^^^^^^^^^^^^^^
+  File "/home/claude/thecompositionjunglegym/scores/src/engrave.py", line 22, in <module>
+    import verovio
+ModuleNotFoundError: No module named 'verovio'
+--- score_ids_test: FAIL (0s)
+--- sound_test
+   "36": [
+    3.5,
+    0.3
+   ],
+   "48": [
+    5.5,
+    0.3
+   ],
+   "60": [
+    6.1,
+    0.4
+   ],
+   "72": [
+    1.9,
+    1.6
+   ],
+   "84": [
+    8.8,
+    0.2
+   ],
+   "92": [
+    8.5,
+    0.2
+   ]
+  },
+  "Analysis chorale: notes over 2.6 s at 0.75": 0,
+  "Analysis k545: notes over 2.6 s at 0.75": 4,
+  "Analysis maple: notes over 2.6 s at 0.75": 0,
+  "Analysis ohaupt: notes over 2.6 s at 0.75": 0,
+  "Analysis jesu: notes over 2.6 s at 0.75": 8,
+  "Analysis k331a: notes over 2.6 s at 0.75": 0,
+  "Analysis k331d: notes over 2.6 s at 0.75": 0,
+  "Analysis entertainer: notes over 2.6 s at 0.75": 0,
+  "Analysis chopin7: notes over 2.6 s at 0.75": 0,
+  "Analysis chopin20: notes over 2.6 s at 0.75": 6,
+  "Analysis notes timed (3 speeds)": 19104
+ },
+ "failures": [],
+ "n_failures": 0
+}
+--- sound_test: pass (59s)
+--- earlab_test
+  "self-check L1 R3 distinct items in 5000": 2705,
+  "self-check L3 R3 new-thing share": 0.683,
+  "self-check L2 R3 tells checked (5,000 items)": 15,
+  "self-check L1 R4 distinct items in 5000": 3728,
+  "self-check L3 R4 new-thing share": 0.661,
+  "self-check L2 R4 tells checked (5,000 items)": 15,
+  "self-check L1 R5 distinct items in 5000": 2725,
+  "self-check L3 R5 new-thing share": 0.663,
+  "self-check L2 R5 tells checked (5,000 items)": 15,
+  "self-check L1 R6 distinct items in 5000": 4097,
+  "self-check L3 R6 new-thing share": 0.665,
+  "self-check L2 R6 tells checked (5,000 items)": 15,
+  "self-check L1 R7 distinct items in 5000": 4697,
+  "self-check L3 R7 new-thing share": 0.665,
+  "self-check L2 R7 tells checked (5,000 items)": 15,
+  "self-check L1 R8 distinct items in 5000": 4655,
+  "self-check L3 R8 new-thing share": 0.664,
+  "self-check L2 R8 tells checked (5,000 items)": 15,
+  "self-check L1 R9 distinct items in 5000": 5000,
+  "self-check L3 R9 new-thing share": 0.652,
+  "self-check L13 R9 tuplet items checked": 1119,
+  "self-check L2 R9 tells checked (5,000 items)": 19,
+  "self-check L1 R10 distinct items in 5000": 5000,
+  "self-check L2 R10 tells checked (5,000 items)": 15,
+  "self-check L1 R1 consecutive draws checked for repeats within 30": 3000,
+  "self-check L7 M9 items checked": 2000,
+  "self-check L7 m-III windows narrower than the item (IC M-7)": 501,
+  "self-check L9 melody answers marked": 1800,
+  "self-check L9 M10 enharmonic spellings marked Nearly": "50 of 50",
+  "self-check L9 M9 marking: dominant items, relative items": "193, 194",
+  "self-check L9 marking, readiness and beaming cases": 12,
+  "self-check L15 IC regressions run": 1,
+  "self-check L15 M9 key counts (2,000 items)": "{\"0\": 210, \"1\": 169, \"2\": 152, \"3\": 173, \"4\": 187, \"5\": 173, \"7\": 180, \"8\": 182, \"9\": 188, \"10\": 209, \"11\": 177}",
+  "self-check L15 palette random walks to a full line": 1350,
+  "self-check L15 swing items rendered": 40,
+  "self-check L14 rungs rendered offline": 22
+ },
+ "failures": {},
+ "n_failures": 0
+}
+--- earlab_test: pass (257s)
+--- earlab_r2_test
+1714 checks, 0 failed
+--- earlab_r2_test: pass (69s)
+--- earlab_items_test
+  "I distinct interrupted-after-6/4 items, maj": 51,
+  "I distinct interrupted-after-6/4 items, min": 50,
+  "I share of interrupted items that pass through a 6/4": "718/2101",
+  "I answers of items containing a 6/4": "{\"cad64\": 2227, \"interrupted\": 718}",
+  "I feedback checks": 4,
+  "I CAD64_INT_NEARLY checks": 4,
+  "T answer grid per rung": 3,
+  "T fixture rows": 8,
+  "T rung 1 answers": "{\"2/4\": 1916, \"3/4\": 1993, \"4/4\": 2091}",
+  "T rung 2 answers": "{\"12/8\": 1012, \"2/4\": 1004, \"3/4\": 1022, \"4/4\": 992, \"6/8\": 994, \"9/8\": 976}",
+  "T rung 3 answers": "{\"12/8\": 776, \"2/4\": 704, \"3/4\": 723, \"4/4\": 778, \"5/4\": 712, \"6/8\": 767, \"7/8\": 744, \"9/8\": 796}",
+  "T metre items checked (bars against the fixture)": 18000,
+  "T scheduler checks": 300,
+  "info: metre rung 1, tempo and playing time together (10 bpm, whole seconds): accuracy vs chance": "44% vs 35%",
+  "info: metre rung 1, fastest click (25 ms bands): metre / simple-compound accuracy vs chance": "35% vs 35%",
+  "info: metre rung 1, number of clicks (5s): metre / simple-compound accuracy vs chance": "40% vs 35%",
+  "info: metre rung 2, tempo and playing time together (10 bpm, whole seconds): accuracy vs chance": "21% vs 17%",
+  "info: metre rung 2, fastest click (25 ms bands): metre / simple-compound accuracy vs chance": "28% vs 17% / 81% vs 50%",
+  "info: metre rung 2, number of clicks (5s): metre / simple-compound accuracy vs chance": "28% vs 17% / 74% vs 50%",
+  "info: metre rung 3, tempo and playing time together (10 bpm, whole seconds): accuracy vs chance": "22% vs 13%",
+  "info: metre rung 3, fastest click (25 ms bands): metre / simple-compound accuracy vs chance": "20% vs 13% / 61% vs 39%",
+  "info: metre rung 3, number of clicks (5s): metre / simple-compound accuracy vs chance": "25% vs 13% / 56% vs 39%",
+  "P panel sentences checked": 76458,
+  "P 6/4-into-V bass sentences checked (of them, an octave move)": 8724,
+  "P 6/4-into-V bass sentences: octave move said": 216,
+  "P cadential 6/4 chips checked": 956,
+  "P chip function letters checked": 32961,
+  "P chip kinds with a letter checked": 13,
+  "P panel items": 8000,
+  "B blind excerpts": 30,
+  "B blind sentences checked": 90,
+  "B blind bass-on-root checks": 18,
+  "T2 metre sentences checked": 12000,
+  "EL-11 drill x Stage rendered": 18,
+  "EL-11 Stages checked": 3,
+  "EL-11 rung-change checks": 3
+ },
+ "failures": {},
+ "n_failures": 0
+}
+--- earlab_items_test: pass (213s)
+--- earlab_ui_test
+469 checks, 0 failed
+--- earlab_ui_test: pass (59s)
+--- ladder_ui_test
+{
+ "checks": 232,
+ "info": {
+  "1366px r11 bass items / offsets (octaves below the melody do) / sentences": "64 / {'1': 35, '2': 29} / 64",
+  "390px r11 bass items / offsets (octaves below the melody do) / sentences": "64 / {'0': 1, '1': 42, '2': 21} / 64"
+ },
+ "failures": [],
+ "n_failures": 0
+}
+--- ladder_ui_test: pass (147s)
+--- chordshape_test
+  "E bass patterns": 3835,
+  "D uke shapes (more)": 3352,
+  "TOTAL shapes checked": 21500,
+  "distinct fretted shapes (ukulele counted once per root x type, not per inversion)": 9512
+ },
+ "seconds": 43.2,
+ "info": {
+  "beginner shapes without the 5th (no label in Beginner view)": {
+   "n": 794,
+   "first": [
+    "C7 inv0 guitar shape 1 x32310",
+    "C7 inv0 uke shape 4 9(10)87",
+    "C7 inv1 guitar shape 2 xx2310",
+    "C7 inv1 uke shape 4 9(10)87",
+    "C7 inv2 uke shape 4 9(10)87",
+    "C7 inv3 uke shape 4 9(10)87",
+    "C6 inv0 guitar shape 1 x32210",
+    "C6 inv1 guitar shape 2 xx2210",
+    "C6 inv3 guitar shape 2 xx7555",
+    "Cm6 inv0 uke shape 2 5353"
+   ]
+  },
+  "chart-library shapes with open strings above fret 4 (allowed: charted)": {
+   "n": 8,
+   "first": [
+    "Fmaj7 inv0 uke shape 2 5500",
+    "Fmaj7 inv1 uke shape 2 5500",
+    "Fmaj7 inv2 uke shape 2 5500",
+    "Fmaj7 inv3 uke shape 2 5500",
+    "E#maj7 inv0 uke shape 2 5500",
+    "E#maj7 inv1 uke shape 2 5500",
+    "E#maj7 inv2 uke shape 2 5500",
+    "E#maj7 inv3 uke shape 2 5500"
+   ]
+  }
+ },
+ "known_failures": {},
+ "failures": {},
+ "n_failures": 0
+}
+--- chordshape_test: pass (44s)
+--- spelling_test
+  "I: inversions": 578,
+  "I: semitone counts": 578,
+  "I: triple accidental respelled and flagged": 2,
+  "J: chords vs music21 (symbol)": 1192,
+  "J: jazz voicings vs chord symbols": 2472,
+  "J: piano voicings (chord tones over the right bass)": 160,
+  "K: chords of the key": 5544,
+  "K: degree labels": 612,
+  "K: key signatures": 508,
+  "K: pitch classes": 612,
+  "K: scale spellings": 612,
+  "K: solfa": 612,
+  "K: staff key signatures": 436,
+  "K: step patterns": 612,
+  "K: theoretical keys flagged with the enharmonic": 104,
+  "K: triple accidental respelled and flagged": 5,
+  "M: chords vs music21 (symbol)": 60,
+  "M: chromatic mediant roots": 726,
+  "M: modal character notes": 30,
+  "M: piano voicings (chord tones over the right bass)": 1044,
+  "M: planing spellings": 240,
+  "M: tintinnabuli T-voice": 72,
+  "M: vamp voicings": 120,
+  "R3: stave views that reach a triple accidental": 113,
+  "R: Chords room staves drawn": 805,
+  "R: SATB chords (chord tones, bass, root+3rd, order)": 6108,
+  "R: chords vs music21 (classical)": 6108,
+  "R: chords vs music21 (symbol)": 1924,
+  "R: piano voicings (chord tones over the right bass)": 1560,
+  "R: triple accidental respelled and flagged": 164,
+  "climb progressions captured": 1625,
+  "climb renders": 2007,
+  "seconds": 164,
+  "tonics offered in the Scales tab": 18
+ },
+ "n_checks": 49154,
+ "failures": {},
+ "n_failures": 0,
+ "known_failures": {}
+}
+--- spelling_test: pass (164s)
+--- terms_test
+  "T6: H1 Gym cadence reader brackets its feedback (no stale hover)": 6,
+  "T6: H1 hover follows a title the app changes": 1,
+  "T6: H1 hover rebuilt when the text changes term, keeping the app title": 1,
+  "T6: H1 hover rebuilt when the text loses its term": 1,
+  "T6: H2 \"Twelve-bar blues\" button has no measure hover": 1,
+  "T6: H2 heading \"12-bar blues\" has no bracket": 1,
+  "T6: H2 plain \"Twelve bars\" keeps its bracket": 1,
+  "T6: H2/L2 \"8- to 16-bar\", \"bar by bar\", \"8-bar\" have no bracket": 1,
+  "T6: L1 a bracket inside a bracket is square": 1,
+  "T6: L1 back-to-back brackets merge": 1,
+  "T6: L5 IAC chip hover carries the note": 1,
+  "T6: L7 no underline under a bracketed term": 1,
+  "T6: L8 Ear Lab cadence feedback: no shortened US bracket": 1,
+  "T6: M1 bare interval \"a tone\" pairs once per block; chord tone, tone colour, common tone and a pitched tone do not": 1,
+  "T6: M1 every interval \"a tone\" is marked": 1,
+  "T6: M1 heading \"down a tone\" pairs": 1,
+  "T6: M1i every Ear Lab cadence/blind panel names the cadence with its US term": 1,
+  "T6: M3 a button whose own title names a term (data-tt) gets the US hover": 1,
+  "T6: M3 plural button hover": 1,
+  "T6: M3 rest button hover": 1,
+  "T6: M3i rhythm tiles carry the US term on hover (7 cells)": 1,
+  "T6: M4 one bracket per checker list": 1,
+  "T6: M4i circle neighbours read as the right mode (24 keys)": 1,
+  "T6: S2/S1 dotted value pairs dotted; \"a tone under\" pairs": 1,
+  "T6: answer 6: bar locators are still marked (tap hover)": 1,
+  "T6: answer 6: bar locators in feedback after the first mention in the room carry no bracket": 1,
+  "clicks scanned": 2350,
+  "page scan: abbr": 83309,
+  "page scan: buttons": 2087712,
+  "page scan: headings": 6533,
+  "page scan: notmHeads": 1463,
+  "page scan: scans": 2513,
+  "page scan: scopes": 39397,
+  "page scan: svg": 54611,
+  "self-check fresh pages opened": 3,
+  "views scanned": 153
+ },
+ "failures": {},
+ "n_failures": 0
+}
+--- terms_test: pass (678s)
+--- counterpoint_test
+   "what": "climb 13 canon, countersubject and stretto messages (43606) name intervals in words, with the right article, as music21 names them",
+   "pass": true
+  },
+  {
+   "id": "O-2",
+   "what": "climb 13 no longer reads its own message text to find a 4th (/a P4|4th/.test(x.msg) gone; c13P4 tests x.iv)",
+   "pass": true
+  },
+  {
+   "id": "R2-SF1a",
+   "what": "countersubject an 11th above: both positions I1 with the CS above, no IC1, no \"was a 5th\" note",
+   "pass": true
+  },
+  {
+   "id": "R2-SF1b",
+   "what": "countersubject written below: labelled below, its 4th is not called a former 5th, no IC1",
+   "pass": true
+  },
+  {
+   "id": "R2-SF1c",
+   "what": "countersubject a 5th above: the lower position is IC1 with the note",
+   "pass": true
+  },
+  {
+   "id": "R2-SF2",
+   "what": "a weak-beat I2 \"both voices move\" issue does not get the strong-beat note",
+   "pass": true
+  },
+  {
+   "id": "O-3",
+   "what": "rendered climb 13 issue lists (839 lines) show no abbreviated interval",
+   "pass": true
+  },
+  {
+   "id": "O-4",
+   "what": "climb 2 ladder hovers (16952, every mode, species and position) name the interval in words as music21 does",
+   "pass": true
+  }
+ ]
+}
+--- counterpoint_test: pass (160s)
+--- pageerrors_test
+{
+ "views": 153,
+ "clicks": 4230,
+ "errors": [],
+ "p2_5": {
+  "audit_sequence_errors": [],
+  "random_clicks": 881,
+  "random_run_errors": []
+ },
+ "n_errors": 0
+}
+--- pageerrors_test: pass (518s)
+--- layout_test
+{
+ "views": 332,
+ "views_with_findings": 0,
+ "findings": {},
+ "page_errors": {}
+}
+--- layout_test: pass (321s)
+--- transport_test
+   "Back from climb → list",
+   "#climbs",
+   "ok"
+  ],
+  [
+   "Forward → climb 3",
+   "#climbs/3",
+   "ok"
+  ],
+  [
+   "reload keeps climb 3",
+   "#climbs/3",
+   "ok"
+  ],
+  [
+   "open a form",
+   "#forms/phrase",
+   "ok"
+  ],
+  [
+   "Back from form → forms list",
+   "#forms",
+   "ok"
+  ]
+ ],
+ "ear": {
+  "items": 42,
+  "state_checks": 112,
+  "natural_end": 21,
+  "double_tap": 42,
+  "play_while_playing": 42,
+  "variants": 28,
+  "stop_events": 256,
+  "beats_live": 3,
+  "end_diff_ms": 0
+ },
+ "fails": [],
+ "n_fails": 0,
+ "page_errors": []
+}
+--- transport_test: pass (763s)
+--- score_measure_test
+{
+ "scores_measured": 300,
+ "scores_with_findings": 0,
+ "findings": {},
+ "page_errors": {}
+}
+--- score_measure_test: pass (86s)
+--- analysis_engrave_test
+{
+ "counts": {
+  "engraving files checked": 30,
+  "views": 70,
+  "staff-spaces measured": 70,
+  "time signatures checked": 70,
+  "systems in view checked": 40,
+  "overlay labels": 1848,
+  "cadence tags": 210,
+  "text-notehead pairs checked": 2346684,
+  "index jumps": 70,
+  "R1 notes timed": 6368,
+  "D known short (2 full systems)": 9
+ },
+ "failures": 0
+}
+--- analysis_engrave_test: pass (211s)
+--- cvd_sim
+Ivory variant #8b4978 on ivory #ece2c8: 4.90:1
+
+Pairs, dE00, severity 1.0 (below 11 = collapses ✗, 11 to 20 = weak ~)
+
+  pair      normal protan deutan tritan
+  T  /PD      25.0   13.0 ~   12.8 ~     40.0
+  T  /D       53.2     25.4   15.3 ~     51.6
+  T  /MD      53.7     37.0     27.7     45.6
+  T  /C       41.0     40.0     36.7     20.8
+  PD /D       35.4     22.3   12.9 ~   17.1 ~
+  PD /MD      46.0     41.3     35.2   12.6 ~
+  PD /C       49.0     47.9     47.4     22.9
+  D  /MD    19.9 ~     25.8     27.0   12.7 ~
+  D  /C       31.9     35.9     40.1     31.1
+  MD /C     16.4 ~   12.6 ~   13.0 ~     23.6
+
+Pairs, dE00, severity 0.6 (below 11 = collapses ✗, 11 to 20 = weak ~)
+
+  pair      normal protan deutan tritan
+  T  /PD      25.0   14.4 ~   13.9 ~     30.2
+  T  /D       53.2     29.9     22.2     53.4
+  T  /MD      53.7     39.8     35.0     49.5
+  T  /C       41.0     41.9     39.5     32.9
+  PD /D       35.4     24.3   17.5 ~     26.2
+  PD /MD      46.0     42.7     39.8     30.9
+  PD /C       49.0     48.5     48.2     33.6
+  D  /MD    19.9 ~     23.8     26.3   16.4 ~
+  D  /C       31.9     34.1     36.7     30.5
+  MD /C     16.4 ~   15.0 ~   15.2 ~   17.9 ~
+
+Simulated colours (severity 1.0)
+
+
+  T   #9dc995 #ccc092 #c5bc98 #9ac6bb
+  PD  #c9a24a #b4a141 #bdab4d #d9958f
+  D   #d15e5d #79735c #968b5a #e44b5f
+  MD  #b1729d #74809f #848a9b #b87381
+  C   #a493d8 #829edb #849cd6 #9a9eac
+
+All rules pass.
+--- cvd_sim: pass (0s)
+tests/run_all: line 43: unexpected EOF while looking for matching `"'
+EXIT 2

@@ -1,0 +1,66 @@
+{
+ "maj off1": {
+  "n": 760,
+  "rowsMax": 23,
+  "marksOnLadder": {
+   "2": 760
+  },
+  "marksInAnswer": {
+   "0": 202,
+   "1": 557,
+   "2": 1
+  }
+ },
+ "maj off2": {
+  "n": 567,
+  "rowsMax": 19,
+  "marksOnLadder": {
+   "1": 567
+  },
+  "marksInAnswer": {
+   "0": 380,
+   "1": 187
+  }
+ },
+ "min off1": {
+  "n": 133,
+  "rowsMax": 21,
+  "marksOnLadder": {
+   "2": 133
+  },
+  "marksInAnswer": {
+   "1": 129,
+   "2": 4
+  }
+ },
+ "min off0": {
+  "n": 1,
+  "rowsMax": 23,
+  "marksOnLadder": {
+   "3": 1
+  },
+  "marksInAnswer": {
+   "2": 1
+  }
+ },
+ "min off2": {
+  "n": 38,
+  "rowsMax": 16,
+  "marksOnLadder": {
+   "1": 38
+  },
+  "marksInAnswer": {
+   "1": 38
+  }
+ },
+ "maj off0": {
+  "n": 1,
+  "rowsMax": 23,
+  "marksOnLadder": {
+   "3": 1
+  },
+  "marksInAnswer": {
+   "1": 1
+  }
+ }
+}

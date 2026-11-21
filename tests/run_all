@@ -2,7 +2,7 @@
 # Run every regression suite (charter, Part B) from a fresh clone.
 #   tests/run_all            run everything
 #   tests/run_all earlab     run the suites whose names contain "earlab"
-# Needs: python3 with playwright and music21, node/npm, and Chrome (or Playwright's Chromium).
+# Needs: python3 with playwright, music21 and verovio, node/npm, and Chrome (or Playwright's Chromium).
 # Exit status is non-zero if any suite fails. A summary is written to tests/last_run.json.
 set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -11,7 +11,7 @@ if [ ! -d "$HERE/harness/node_modules/vexflow" ]; then
   echo "Installing the test harness (VexFlow 4.2.3 and fonts) ..."
   (cd "$HERE/harness" && npm install --silent --no-audit --no-fund) || { echo "npm install failed"; exit 2; }
 fi
-python3 -c "import playwright, music21" 2>/dev/null || { echo "Needs: pip install playwright music21"; exit 2; }
+python3 -c "import playwright, music21, verovio" 2>/dev/null || { echo "Needs: pip install playwright music21 verovio"; exit 2; }
 
 # order: quick and basic first
 SUITES="content_lint unit_test score_ids_test sound_test earlab_test earlab_r2_test earlab_items_test earlab_ui_test ladder_ui_test chordshape_test spelling_test terms_test counterpoint_test pageerrors_test layout_test transport_test score_measure_test analysis_engrave_test cvd_sim"

@@ -1,0 +1,7214 @@
+{
+ "n1_r12_up34_entry_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "upbeat · bar 1",
+   "bar 2"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bar 1 of 2 · beat 2"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_result_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · UPBEAT · BAR 1",
+   "THE MELODY · UPBEAT · BAR 1",
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f",
+   "m",
+   "r",
+   "s,",
+   "m",
+   "f",
+   "r",
+   "r",
+   "r",
+   "r"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [
+   "In bar 1, the third note is r: you wrote m."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 2 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_nosemi_up_result_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    0,
+    1,
+    2
+   ],
+   [
+    3
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3",
+    "a": "Bar 3",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE MELODY · BARS 1–2",
+   "YOU WROTE · BAR 3",
+   "THE MELODY · BAR 3"
+  ],
+  "sol": [
+   "m",
+   "s",
+   "f",
+   "m",
+   "s",
+   "m",
+   "s",
+   "f",
+   "m",
+   "r",
+   "d",
+   "d"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "s>s [so]",
+   "se>se [se, lowered so]",
+   "fi>fi [fi, raised fa]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]"
+  ],
+  "teach": [
+   "In bar 2, the second note is r: you wrote s."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 3 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 7,
+    "mode": "maj",
+    "do": 7
+   },
+   "anac": 420,
+   "a": "m s f m r d",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r6_up68_result_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    0,
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE MELODY · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE MELODY · BARS 3–4"
+  ],
+  "sol": [
+   "m",
+   "r",
+   "m",
+   "l,",
+   "d'",
+   "l,",
+   "s,",
+   "l,",
+   "m",
+   "r",
+   "m",
+   "l,",
+   "s,",
+   "l,",
+   "s,",
+   "l,",
+   "m",
+   "l",
+   "m",
+   "d",
+   "m",
+   "m",
+   "r",
+   "d",
+   "l",
+   "m",
+   "l",
+   "m",
+   "d",
+   "m",
+   "m",
+   "r",
+   "d",
+   "l"
+  ],
+  "names": [
+   "ti",
+   "ta ti",
+   "tam",
+   "ta ti",
+   "ta ti",
+   "ti-ti-ti",
+   "ta ti",
+   "ti-ti-ti",
+   "ta"
+  ],
+  "lnote": [],
+  "rows": [
+   "d'>d' [do high]",
+   "t>t [ti]",
+   "l>l [la, home note]",
+   "s>s [so]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "r>r [re]",
+   "d>d [do]",
+   "t,>t, [ti low]",
+   "l,>l, [la low, home note]",
+   "s,>s, [so low]"
+  ],
+  "teach": [
+   "In bar 2, the first note is s,: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 6/8"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 6,
+   "metre": "6/8",
+   "mode": "min",
+   "key": {
+    "k": 2,
+    "mode": "min",
+    "do": 5
+   },
+   "anac": 210,
+   "a": "m r m l, s, l, s, l, m l m d m m r d l",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_bassentry_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off2_bassentry_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "m",
+   "l,",
+   "t,",
+   "d",
+   "r",
+   "m",
+   "l",
+   "d'",
+   "d",
+   "d",
+   "l,",
+   "l,",
+   "m",
+   "m",
+   "l",
+   "r",
+   "l",
+   "t",
+   "s",
+   "r",
+   "d"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high, home note]",
+   "t,,>t [ti]",
+   "l,,>l [la]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do, home note]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 8,
+    "mode": "maj",
+    "do": 8
+   },
+   "anac": 0,
+   "a": "m l, t, d r m l d' d m l r l t s r d",
+   "bass": [
+    44,
+    41,
+    41,
+    48,
+    48,
+    46,
+    51,
+    56
+   ],
+   "bassTruth": "d,, l,,, l,,, m,, m,, r,, s,, d,",
+   "off": 2,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off0_bassentry_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "s",
+   "t,",
+   "s,",
+   "t,",
+   "r",
+   "f",
+   "d",
+   "f,",
+   "r",
+   "s",
+   "l",
+   "l,",
+   "d",
+   "d'"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "l,>l, [la low]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]",
+   "fi,>fi, [fi low, raised fa]",
+   "f,>f, [fa low]",
+   "m,>m, [mi low]",
+   "r,>r, [re low]",
+   "d,>d, [do low, home note]",
+   "t,,>t,, [ti low]",
+   "l,,>l,, [la low]",
+   "si,,>si,, [si low, raised so]",
+   "s,,>s,, [so low]",
+   "fi,,>fi,, [fi low, raised fa]",
+   "f,,>f,, [fa low]",
+   "m,,>m,, [mi low]",
+   "r,,>r,, [re low]",
+   "d,,>d,, [do low, home note]",
+   "t,,,>t,,, [ti low]",
+   "l,,,>l,,, [la low]",
+   "si,,,>si,,, [si low, raised so]",
+   "s,,,>s,,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 2,
+    "mode": "maj",
+    "do": 2
+   },
+   "anac": 0,
+   "a": "s t, s, t, r f r s l l, d d'",
+   "bass": [
+    62,
+    55,
+    57,
+    50
+   ],
+   "bassTruth": "d f, s, d,",
+   "off": -0.0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off1_bassentry_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    7,
+    8
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   },
+   {
+    "t": "5–6",
+    "a": "Bars 5 to 6",
+    "p": "true"
+   },
+   {
+    "t": "7–8",
+    "a": "Bars 7 to 8",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3",
+   "bar 5",
+   "bar 7"
+  ],
+  "sol": [
+   "l",
+   "m",
+   "l,",
+   "l,",
+   "l,",
+   "l,",
+   "l",
+   "l,",
+   "l",
+   "l,",
+   "m",
+   "s,",
+   "r",
+   "l,",
+   "l,",
+   "m",
+   "t,",
+   "d",
+   "f",
+   "d",
+   "l",
+   "s",
+   "r",
+   "t,",
+   "l,"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low, home note]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low, home note]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 5 of 8 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 8,
+    "mode": "min",
+    "do": 11
+   },
+   "anac": 0,
+   "a": "l m l, l, l l, l l, m s, r m t, d f d l s r t, l,",
+   "bass": [
+    56,
+    56,
+    56,
+    56,
+    56,
+    49,
+    51,
+    56
+   ],
+   "bassTruth": "l,, l,, l,, l,, l,, r,, m,, l,,",
+   "off": 1,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off2_bassentry_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "t,",
+   "d",
+   "l"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high]",
+   "t,,>t [ti]",
+   "l,,>l [la, home note]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low, home note]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 7,
+    "mode": "min",
+    "do": 10
+   },
+   "anac": 0,
+   "a": "l l, m m f t, d l",
+   "bass": [
+    43,
+    46,
+    50,
+    43
+   ],
+   "bassTruth": "l,,, d,, m,, l,,,",
+   "off": 2,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off0_bassentry_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "d",
+   "t,",
+   "r",
+   "l,",
+   "r,",
+   "t,",
+   "d",
+   "f",
+   "l,",
+   "t,",
+   "l,"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "l,>l, [la low, home note]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]",
+   "fi,>fi, [fi low, raised fa]",
+   "f,>f, [fa low]",
+   "m,>m, [mi low]",
+   "r,>r, [re low]",
+   "d,>d, [do low]",
+   "t,,>t,, [ti low]",
+   "l,,>l,, [la low, home note]",
+   "si,,>si,, [si low, raised so]",
+   "s,,>s,, [so low]",
+   "fi,,>fi,, [fi low, raised fa]",
+   "f,,>f,, [fa low]",
+   "m,,>m,, [mi low]",
+   "r,,>r,, [re low]",
+   "d,,>d,, [do low]",
+   "t,,,>t,,, [ti low]",
+   "l,,,>l,,, [la low, home note]",
+   "si,,,>si,,, [si low, raised so]",
+   "s,,,>s,,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 11,
+    "mode": "min",
+    "do": 2
+   },
+   "anac": 0,
+   "a": "d t, r t, d f l, t, l,",
+   "bass": [
+    59,
+    52,
+    54,
+    47
+   ],
+   "bassTruth": "l, r, m, l,,",
+   "off": 0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_basswrong_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "t,",
+   "d",
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d"
+  ],
+  "names": [
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 2: the first note is l,: you wrote t,."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off2_basswrong_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "m",
+   "l,",
+   "t,",
+   "d",
+   "r",
+   "m",
+   "l",
+   "d'",
+   "d",
+   "d",
+   "l,",
+   "d'",
+   "m",
+   "m",
+   "l,",
+   "t,",
+   "d",
+   "r",
+   "m",
+   "l",
+   "d'",
+   "d",
+   "d",
+   "l,",
+   "l,",
+   "m",
+   "m",
+   "l",
+   "r",
+   "l",
+   "t",
+   "s",
+   "r",
+   "d",
+   "m",
+   "r",
+   "s",
+   "d'",
+   "m",
+   "l",
+   "r",
+   "l",
+   "t",
+   "s",
+   "r",
+   "d",
+   "m",
+   "r",
+   "s",
+   "d'"
+  ],
+  "names": [
+   "ta",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta",
+   "ta-a",
+   "ta-a",
+   "ti-ti",
+   "ta",
+   "ti-ti",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high, home note]",
+   "t,,>t [ti]",
+   "l,,>l [la]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do, home note]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 2: the first note is l,: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 8,
+    "mode": "maj",
+    "do": 8
+   },
+   "anac": 0,
+   "a": "m l, t, d r m l d' d m l r l t s r d",
+   "bass": [
+    44,
+    41,
+    41,
+    48,
+    48,
+    46,
+    51,
+    56
+   ],
+   "bassTruth": "d,, l,,, l,,, m,, m,, r,, s,, d,",
+   "off": 2,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off1_basswrong_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    7,
+    8
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   },
+   {
+    "t": "5–6",
+    "a": "Bars 5 to 6",
+    "p": "false"
+   },
+   {
+    "t": "7–8",
+    "a": "Bars 7 to 8",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4",
+   "YOU WROTE · BARS 5–6",
+   "THE ANSWER · BARS 5–6",
+   "YOU WROTE · BARS 7–8",
+   "THE ANSWER · BARS 7–8"
+  ],
+  "sol": [
+   "l",
+   "m",
+   "l,",
+   "l,",
+   "l",
+   "m",
+   "l,",
+   "l,",
+   "l,",
+   "l,",
+   "l",
+   "l,",
+   "l",
+   "l,",
+   "m",
+   "s,",
+   "r",
+   "d",
+   "l,",
+   "l,",
+   "l,",
+   "l",
+   "l,",
+   "l",
+   "l,",
+   "m",
+   "s,",
+   "r",
+   "l,",
+   "l,",
+   "m",
+   "t,",
+   "d",
+   "f",
+   "d",
+   "l",
+   "s",
+   "r",
+   "l,",
+   "r,",
+   "m",
+   "t,",
+   "d",
+   "f",
+   "d",
+   "l",
+   "s",
+   "r",
+   "l,",
+   "r,",
+   "t,",
+   "l,",
+   "m,",
+   "l,",
+   "t,",
+   "l,",
+   "m,",
+   "l,"
+  ],
+  "names": [
+   "ta-a-a",
+   "ta-a-a",
+   "ta",
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta-a",
+   "ti-ti",
+   "ta",
+   "ti-ti"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low, home note]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low, home note]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 3: the first note is l,: you wrote d."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 8 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 8,
+    "mode": "min",
+    "do": 11
+   },
+   "anac": 0,
+   "a": "l m l, l, l l, l l, m s, r m t, d f d l s r t, l,",
+   "bass": [
+    56,
+    56,
+    56,
+    56,
+    56,
+    49,
+    51,
+    56
+   ],
+   "bassTruth": "l,, l,, l,, l,, l,, r,, m,, l,,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off2_basswrong_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "t,",
+   "d",
+   "l",
+   "d'",
+   "l,",
+   "t,",
+   "d",
+   "l",
+   "m",
+   "l,"
+  ],
+  "names": [
+   "ta-a",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ta-a",
+   "ta",
+   "ta-a-a"
+  ],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high]",
+   "t,,>t [ti]",
+   "l,,>l [la, home note]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low, home note]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 3: the first note is m: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 7,
+    "mode": "min",
+    "do": 10
+   },
+   "anac": 0,
+   "a": "l l, m m f t, d l",
+   "bass": [
+    43,
+    46,
+    50,
+    43
+   ],
+   "bassTruth": "l,,, d,, m,, l,,,",
+   "off": 2,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_melwrong_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "d'",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d"
+  ],
+  "names": [
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Melody, bar (US: measure) 1: the sixth note is r: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_entry_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "upbeat · bar 1",
+   "bar 2"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bar 1 of 2 · beat 2"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_result_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · UPBEAT · BAR 1",
+   "THE MELODY · UPBEAT · BAR 1",
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f",
+   "m",
+   "r",
+   "s,",
+   "m",
+   "f",
+   "r",
+   "r",
+   "r",
+   "r"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [
+   "In bar 1, the third note is r: you wrote m."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 2 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_nosemi_up_result_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    0,
+    1,
+    2
+   ],
+   [
+    3
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3",
+    "a": "Bar 3",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE MELODY · BARS 1–2",
+   "YOU WROTE · BAR 3",
+   "THE MELODY · BAR 3"
+  ],
+  "sol": [
+   "m",
+   "s",
+   "f",
+   "m",
+   "s",
+   "m",
+   "s",
+   "f",
+   "m",
+   "r",
+   "d",
+   "d"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "s>s [so]",
+   "se>se [se, lowered so]",
+   "fi>fi [fi, raised fa]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]"
+  ],
+  "teach": [
+   "In bar 2, the second note is r: you wrote s."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 3 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 7,
+    "mode": "maj",
+    "do": 7
+   },
+   "anac": 420,
+   "a": "m s f m r d",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r6_up68_result_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    0,
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE MELODY · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE MELODY · BARS 3–4"
+  ],
+  "sol": [
+   "m",
+   "r",
+   "m",
+   "l,",
+   "d'",
+   "l,",
+   "s,",
+   "l,",
+   "m",
+   "r",
+   "m",
+   "l,",
+   "s,",
+   "l,",
+   "s,",
+   "l,",
+   "m",
+   "l",
+   "m",
+   "d",
+   "m",
+   "m",
+   "r",
+   "d",
+   "l",
+   "m",
+   "l",
+   "m",
+   "d",
+   "m",
+   "m",
+   "r",
+   "d",
+   "l"
+  ],
+  "names": [
+   "ti",
+   "ta ti",
+   "tam",
+   "ta ti",
+   "ta ti",
+   "ti-ti-ti",
+   "ta ti",
+   "ti-ti-ti",
+   "ta"
+  ],
+  "lnote": [],
+  "rows": [
+   "d'>d' [do high]",
+   "t>t [ti]",
+   "l>l [la, home note]",
+   "s>s [so]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "r>r [re]",
+   "d>d [do]",
+   "t,>t, [ti low]",
+   "l,>l, [la low, home note]",
+   "s,>s, [so low]"
+  ],
+  "teach": [
+   "In bar 2, the first note is s,: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 6/8"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 6,
+   "metre": "6/8",
+   "mode": "min",
+   "key": {
+    "k": 2,
+    "mode": "min",
+    "do": 5
+   },
+   "anac": 210,
+   "a": "m r m l, s, l, s, l, m l m d m m r d l",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_bassentry_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off2_bassentry_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "m",
+   "l,",
+   "t,",
+   "d",
+   "r",
+   "m",
+   "l",
+   "d'",
+   "d",
+   "d",
+   "l,",
+   "l,",
+   "m",
+   "m",
+   "l",
+   "r",
+   "l",
+   "t",
+   "s",
+   "r",
+   "d"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high, home note]",
+   "t,,>t [ti]",
+   "l,,>l [la]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do, home note]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 8,
+    "mode": "maj",
+    "do": 8
+   },
+   "anac": 0,
+   "a": "m l, t, d r m l d' d m l r l t s r d",
+   "bass": [
+    44,
+    41,
+    41,
+    48,
+    48,
+    46,
+    51,
+    56
+   ],
+   "bassTruth": "d,, l,,, l,,, m,, m,, r,, s,, d,",
+   "off": 2,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off0_bassentry_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "s",
+   "t,",
+   "s,",
+   "t,",
+   "r",
+   "f",
+   "d",
+   "f,",
+   "r",
+   "s",
+   "l",
+   "l,",
+   "d",
+   "d'"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "l,>l, [la low]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]",
+   "fi,>fi, [fi low, raised fa]",
+   "f,>f, [fa low]",
+   "m,>m, [mi low]",
+   "r,>r, [re low]",
+   "d,>d, [do low, home note]",
+   "t,,>t,, [ti low]",
+   "l,,>l,, [la low]",
+   "si,,>si,, [si low, raised so]",
+   "s,,>s,, [so low]",
+   "fi,,>fi,, [fi low, raised fa]",
+   "f,,>f,, [fa low]",
+   "m,,>m,, [mi low]",
+   "r,,>r,, [re low]",
+   "d,,>d,, [do low, home note]",
+   "t,,,>t,,, [ti low]",
+   "l,,,>l,,, [la low]",
+   "si,,,>si,,, [si low, raised so]",
+   "s,,,>s,,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 2,
+    "mode": "maj",
+    "do": 2
+   },
+   "anac": 0,
+   "a": "s t, s, t, r f r s l l, d d'",
+   "bass": [
+    62,
+    55,
+    57,
+    50
+   ],
+   "bassTruth": "d f, s, d,",
+   "off": -0.0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off1_bassentry_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    7,
+    8
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   },
+   {
+    "t": "5–6",
+    "a": "Bars 5 to 6",
+    "p": "true"
+   },
+   {
+    "t": "7–8",
+    "a": "Bars 7 to 8",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3",
+   "bar 5",
+   "bar 7"
+  ],
+  "sol": [
+   "l",
+   "m",
+   "l,",
+   "l,",
+   "l,",
+   "l,",
+   "l",
+   "l,",
+   "l",
+   "l,",
+   "m",
+   "s,",
+   "r",
+   "l,",
+   "l,",
+   "m",
+   "t,",
+   "d",
+   "f",
+   "d",
+   "l",
+   "s",
+   "r",
+   "t,",
+   "l,"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low, home note]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low, home note]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 5 of 8 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 8,
+    "mode": "min",
+    "do": 11
+   },
+   "anac": 0,
+   "a": "l m l, l, l l, l l, m s, r m t, d f d l s r t, l,",
+   "bass": [
+    56,
+    56,
+    56,
+    56,
+    56,
+    49,
+    51,
+    56
+   ],
+   "bassTruth": "l,, l,, l,, l,, l,, r,, m,, l,,",
+   "off": 1,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off2_bassentry_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "t,",
+   "d",
+   "l"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high]",
+   "t,,>t [ti]",
+   "l,,>l [la, home note]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low, home note]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 7,
+    "mode": "min",
+    "do": 10
+   },
+   "anac": 0,
+   "a": "l l, m m f t, d l",
+   "bass": [
+    43,
+    46,
+    50,
+    43
+   ],
+   "bassTruth": "l,,, d,, m,, l,,,",
+   "off": 2,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off0_bassentry_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 1",
+   "bar 3"
+  ],
+  "sol": [
+   "d",
+   "t,",
+   "r",
+   "l,",
+   "r,",
+   "t,",
+   "d",
+   "f",
+   "l,",
+   "t,",
+   "l,"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "l,>l, [la low, home note]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]",
+   "fi,>fi, [fi low, raised fa]",
+   "f,>f, [fa low]",
+   "m,>m, [mi low]",
+   "r,>r, [re low]",
+   "d,>d, [do low]",
+   "t,,>t,, [ti low]",
+   "l,,>l,, [la low, home note]",
+   "si,,>si,, [si low, raised so]",
+   "s,,>s,, [so low]",
+   "fi,,>fi,, [fi low, raised fa]",
+   "f,,>f,, [fa low]",
+   "m,,>m,, [mi low]",
+   "r,,>r,, [re low]",
+   "d,,>d,, [do low]",
+   "t,,,>t,,, [ti low]",
+   "l,,,>l,,, [la low, home note]",
+   "si,,,>si,,, [si low, raised so]",
+   "s,,,>s,,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 11,
+    "mode": "min",
+    "do": 2
+   },
+   "anac": 0,
+   "a": "d t, r t, d f l, t, l,",
+   "bass": [
+    59,
+    52,
+    54,
+    47
+   ],
+   "bassTruth": "l, r, m, l,,",
+   "off": 0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_basswrong_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "t,",
+   "d",
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d"
+  ],
+  "names": [
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 2: the first note is l,: you wrote t,."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off2_basswrong_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "m",
+   "l,",
+   "t,",
+   "d",
+   "r",
+   "m",
+   "l",
+   "d'",
+   "d",
+   "d",
+   "l,",
+   "d'",
+   "m",
+   "m",
+   "l,",
+   "t,",
+   "d",
+   "r",
+   "m",
+   "l",
+   "d'",
+   "d",
+   "d",
+   "l,",
+   "l,",
+   "m",
+   "m",
+   "l",
+   "r",
+   "l",
+   "t",
+   "s",
+   "r",
+   "d",
+   "m",
+   "r",
+   "s",
+   "d'",
+   "m",
+   "l",
+   "r",
+   "l",
+   "t",
+   "s",
+   "r",
+   "d",
+   "m",
+   "r",
+   "s",
+   "d'"
+  ],
+  "names": [
+   "ta",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta",
+   "ta-a",
+   "ta-a",
+   "ti-ti",
+   "ta",
+   "ti-ti",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high, home note]",
+   "t,,>t [ti]",
+   "l,,>l [la]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do, home note]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 2: the first note is l,: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 8,
+    "mode": "maj",
+    "do": 8
+   },
+   "anac": 0,
+   "a": "m l, t, d r m l d' d m l r l t s r d",
+   "bass": [
+    44,
+    41,
+    41,
+    48,
+    48,
+    46,
+    51,
+    56
+   ],
+   "bassTruth": "d,, l,,, l,,, m,, m,, r,, s,, d,",
+   "off": 2,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off1_basswrong_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    7,
+    8
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   },
+   {
+    "t": "5–6",
+    "a": "Bars 5 to 6",
+    "p": "false"
+   },
+   {
+    "t": "7–8",
+    "a": "Bars 7 to 8",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4",
+   "YOU WROTE · BARS 5–6",
+   "THE ANSWER · BARS 5–6",
+   "YOU WROTE · BARS 7–8",
+   "THE ANSWER · BARS 7–8"
+  ],
+  "sol": [
+   "l",
+   "m",
+   "l,",
+   "l,",
+   "l",
+   "m",
+   "l,",
+   "l,",
+   "l,",
+   "l,",
+   "l",
+   "l,",
+   "l",
+   "l,",
+   "m",
+   "s,",
+   "r",
+   "d",
+   "l,",
+   "l,",
+   "l,",
+   "l",
+   "l,",
+   "l",
+   "l,",
+   "m",
+   "s,",
+   "r",
+   "l,",
+   "l,",
+   "m",
+   "t,",
+   "d",
+   "f",
+   "d",
+   "l",
+   "s",
+   "r",
+   "l,",
+   "r,",
+   "m",
+   "t,",
+   "d",
+   "f",
+   "d",
+   "l",
+   "s",
+   "r",
+   "l,",
+   "r,",
+   "t,",
+   "l,",
+   "m,",
+   "l,",
+   "t,",
+   "l,",
+   "m,",
+   "l,"
+  ],
+  "names": [
+   "ta-a-a",
+   "ta-a-a",
+   "ta",
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta-a",
+   "ti-ti",
+   "ta",
+   "ti-ti"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low, home note]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low, home note]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 3: the first note is l,: you wrote d."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 8 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 8,
+    "mode": "min",
+    "do": 11
+   },
+   "anac": 0,
+   "a": "l m l, l, l l, l l, m s, r m t, d f d l s r t, l,",
+   "bass": [
+    56,
+    56,
+    56,
+    56,
+    56,
+    49,
+    51,
+    56
+   ],
+   "bassTruth": "l,, l,, l,, l,, l,, r,, m,, l,,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off2_basswrong_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "t,",
+   "d",
+   "l",
+   "d'",
+   "l,",
+   "t,",
+   "d",
+   "l",
+   "m",
+   "l,"
+  ],
+  "names": [
+   "ta-a",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ta-a",
+   "ta",
+   "ta-a-a"
+  ],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high]",
+   "t,,>t [ti]",
+   "l,,>l [la, home note]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low, home note]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 3: the first note is m: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 7,
+    "mode": "min",
+    "do": 10
+   },
+   "anac": 0,
+   "a": "l l, m m f t, d l",
+   "bass": [
+    43,
+    46,
+    50,
+    43
+   ],
+   "bassTruth": "l,,, d,, m,, l,,,",
+   "off": 2,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_melwrong_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "d'",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d"
+  ],
+  "names": [
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Melody, bar (US: measure) 1: the sixth note is r: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_entry_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "upbeat · bar 1"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bar 1 of 2 · beat 2"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_result_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · UPBEAT · BAR 1",
+   "THE MELODY · UPBEAT · BAR 1"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f",
+   "m",
+   "r",
+   "s,",
+   "m",
+   "f",
+   "r",
+   "r"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [
+   "In bar 1, the third note is r: you wrote m."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 2 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_nosemi_up_result_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    0,
+    1,
+    2
+   ],
+   [
+    3
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3",
+    "a": "Bar 3",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE MELODY · BARS 1–2"
+  ],
+  "sol": [
+   "m",
+   "s",
+   "f",
+   "m",
+   "s",
+   "m",
+   "s",
+   "f",
+   "m",
+   "r"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "s>s [so]",
+   "se>se [se, lowered so]",
+   "fi>fi [fi, raised fa]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]"
+  ],
+  "teach": [
+   "In bar 2, the second note is r: you wrote s."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 3 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 7,
+    "mode": "maj",
+    "do": 7
+   },
+   "anac": 420,
+   "a": "m s f m r d",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r6_up68_result_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    0,
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE MELODY · BARS 1–2"
+  ],
+  "sol": [
+   "m",
+   "r",
+   "m",
+   "l,",
+   "d'",
+   "l,",
+   "s,",
+   "l,",
+   "m",
+   "r",
+   "m",
+   "l,",
+   "s,",
+   "l,",
+   "s,",
+   "l,"
+  ],
+  "names": [
+   "ti",
+   "ta ti",
+   "tam",
+   "ta ti",
+   "ta ti"
+  ],
+  "lnote": [],
+  "rows": [
+   "d'>d' [do high]",
+   "t>t [ti]",
+   "l>l [la, home note]",
+   "s>s [so]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "r>r [re]",
+   "d>d [do]",
+   "t,>t, [ti low]",
+   "l,>l, [la low, home note]",
+   "s,>s, [so low]"
+  ],
+  "teach": [
+   "In bar 2, the first note is s,: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 6/8"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 6,
+   "metre": "6/8",
+   "mode": "min",
+   "key": {
+    "k": 2,
+    "mode": "min",
+    "do": 5
+   },
+   "anac": 210,
+   "a": "m r m l, s, l, s, l, m l m d m m r d l",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_bassentry_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 3"
+  ],
+  "sol": [
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off2_bassentry_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 3"
+  ],
+  "sol": [
+   "m",
+   "l",
+   "r",
+   "l",
+   "t",
+   "s",
+   "r",
+   "d"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high, home note]",
+   "t,,>t [ti]",
+   "l,,>l [la]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do, home note]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 8,
+    "mode": "maj",
+    "do": 8
+   },
+   "anac": 0,
+   "a": "m l, t, d r m l d' d m l r l t s r d",
+   "bass": [
+    44,
+    41,
+    41,
+    48,
+    48,
+    46,
+    51,
+    56
+   ],
+   "bassTruth": "d,, l,,, l,,, m,, m,, r,, s,, d,",
+   "off": 2,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off0_bassentry_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 3"
+  ],
+  "sol": [
+   "r",
+   "s",
+   "l",
+   "l,",
+   "d",
+   "d'"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "l,>l, [la low]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]",
+   "fi,>fi, [fi low, raised fa]",
+   "f,>f, [fa low]",
+   "m,>m, [mi low]",
+   "r,>r, [re low]",
+   "d,>d, [do low, home note]",
+   "t,,>t,, [ti low]",
+   "l,,>l,, [la low]",
+   "si,,>si,, [si low, raised so]",
+   "s,,>s,, [so low]",
+   "fi,,>fi,, [fi low, raised fa]",
+   "f,,>f,, [fa low]",
+   "m,,>m,, [mi low]",
+   "r,,>r,, [re low]",
+   "d,,>d,, [do low, home note]",
+   "t,,,>t,,, [ti low]",
+   "l,,,>l,,, [la low]",
+   "si,,,>si,,, [si low, raised so]",
+   "s,,,>s,,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 2,
+    "mode": "maj",
+    "do": 2
+   },
+   "anac": 0,
+   "a": "s t, s, t, r f r s l l, d d'",
+   "bass": [
+    62,
+    55,
+    57,
+    50
+   ],
+   "bassTruth": "d f, s, d,",
+   "off": -0.0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off1_bassentry_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    7,
+    8
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   },
+   {
+    "t": "5–6",
+    "a": "Bars 5 to 6",
+    "p": "true"
+   },
+   {
+    "t": "7–8",
+    "a": "Bars 7 to 8",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "bar 5"
+  ],
+  "sol": [
+   "m",
+   "t,",
+   "d",
+   "f",
+   "d",
+   "l",
+   "s",
+   "r"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low, home note]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low, home note]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 5 of 8 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 8,
+    "mode": "min",
+    "do": 11
+   },
+   "anac": 0,
+   "a": "l m l, l, l l, l l, m s, r m t, d f d l s r t, l,",
+   "bass": [
+    56,
+    56,
+    56,
+    56,
+    56,
+    49,
+    51,
+    56
+   ],
+   "bassTruth": "l,, l,, l,, l,, l,, r,, m,, l,,",
+   "off": 1,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off2_bassentry_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 3"
+  ],
+  "sol": [
+   "t,",
+   "d",
+   "l"
+  ],
+  "names": [],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high]",
+   "t,,>t [ti]",
+   "l,,>l [la, home note]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low, home note]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 7,
+    "mode": "min",
+    "do": 10
+   },
+   "anac": 0,
+   "a": "l l, m m f t, d l",
+   "bass": [
+    43,
+    46,
+    50,
+    43
+   ],
+   "bassTruth": "l,,, d,, m,, l,,,",
+   "off": 2,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off0_bassentry_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "false"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "true"
+   }
+  ],
+  "labels": [
+   "bar 3"
+  ],
+  "sol": [
+   "t,",
+   "d",
+   "f",
+   "l,",
+   "t,",
+   "l,"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "l,>l, [la low, home note]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]",
+   "fi,>fi, [fi low, raised fa]",
+   "f,>f, [fa low]",
+   "m,>m, [mi low]",
+   "r,>r, [re low]",
+   "d,>d, [do low]",
+   "t,,>t,, [ti low]",
+   "l,,>l,, [la low, home note]",
+   "si,,>si,, [si low, raised so]",
+   "s,,>s,, [so low]",
+   "fi,,>fi,, [fi low, raised fa]",
+   "f,,>f,, [fa low]",
+   "m,,>m,, [mi low]",
+   "r,,>r,, [re low]",
+   "d,,>d,, [do low]",
+   "t,,,>t,,, [ti low]",
+   "l,,,>l,,, [la low, home note]",
+   "si,,,>si,,, [si low, raised so]",
+   "s,,,>s,,, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bass · Bar 3 of 4 · beat 1"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 11,
+    "mode": "min",
+    "do": 2
+   },
+   "anac": 0,
+   "a": "d t, r t, d f l, t, l,",
+   "bass": [
+    59,
+    52,
+    54,
+    47
+   ],
+   "bassTruth": "l, r, m, l,,",
+   "off": 0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_basswrong_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "t,",
+   "d",
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d"
+  ],
+  "names": [
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ti-ti",
+   "ta-a"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 2: the first note is l,: you wrote t,."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off2_basswrong_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2"
+  ],
+  "sol": [
+   "m",
+   "l,",
+   "t,",
+   "d",
+   "r",
+   "m",
+   "l",
+   "d'",
+   "d",
+   "d",
+   "l,",
+   "d'",
+   "m",
+   "m",
+   "l,",
+   "t,",
+   "d",
+   "r",
+   "m",
+   "l",
+   "d'",
+   "d",
+   "d",
+   "l,",
+   "l,",
+   "m"
+  ],
+  "names": [
+   "ta",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta",
+   "ta-a"
+  ],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high, home note]",
+   "t,,>t [ti]",
+   "l,,>l [la]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do, home note]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 2: the first note is l,: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 8,
+    "mode": "maj",
+    "do": 8
+   },
+   "anac": 0,
+   "a": "m l, t, d r m l d' d m l r l t s r d",
+   "bass": [
+    44,
+    41,
+    41,
+    48,
+    48,
+    46,
+    51,
+    56
+   ],
+   "bassTruth": "d,, l,,, l,,, m,, m,, r,, s,, d,",
+   "off": 2,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off1_basswrong_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    7,
+    8
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   },
+   {
+    "t": "5–6",
+    "a": "Bars 5 to 6",
+    "p": "false"
+   },
+   {
+    "t": "7–8",
+    "a": "Bars 7 to 8",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2"
+  ],
+  "sol": [
+   "l",
+   "m",
+   "l,",
+   "l,",
+   "l",
+   "m",
+   "l,",
+   "l,"
+  ],
+  "names": [
+   "ta-a-a",
+   "ta-a-a"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low, home note]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low, home note]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 3: the first note is l,: you wrote d."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 8 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 8,
+    "mode": "min",
+    "do": 11
+   },
+   "anac": 0,
+   "a": "l m l, l, l l, l l, m s, r m t, d f d l s r t, l,",
+   "bass": [
+    56,
+    56,
+    56,
+    56,
+    56,
+    49,
+    51,
+    56
+   ],
+   "bassTruth": "l,, l,, l,, l,, l,, r,, m,, l,,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off2_basswrong_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2"
+  ],
+  "sol": [
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d"
+  ],
+  "names": [
+   "ta-a",
+   "ti-ti",
+   "ta-a",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high]",
+   "t,,>t [ti]",
+   "l,,>l [la, home note]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low, home note]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 3: the first note is m: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 7,
+    "mode": "min",
+    "do": 10
+   },
+   "anac": 0,
+   "a": "l l, m m f t, d l",
+   "bass": [
+    43,
+    46,
+    50,
+    43
+   ],
+   "bassTruth": "l,,, d,, m,, l,,,",
+   "off": 2,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_melwrong_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "d'",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d"
+  ],
+  "names": [
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ti-ti",
+   "ta-a"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Melody, bar (US: measure) 1: the sixth note is r: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_entry_1366_kk": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "upbeat · bar 1",
+   "bar 2"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bar 1 of 2 · beat 2"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_result_1366_kk": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · UPBEAT · BAR 1",
+   "THE MELODY · UPBEAT · BAR 1",
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f",
+   "m",
+   "r",
+   "s,",
+   "m",
+   "f",
+   "r",
+   "r",
+   "r",
+   "r"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [
+   "In bar 1, the third note is r: you wrote m."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 2 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_noup44_result_1366": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 1,
+  "sys": [
+   [
+    1
+   ],
+   [
+    2
+   ],
+   [
+    3
+   ],
+   [
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1",
+    "p": "false"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3",
+    "a": "Bar 3",
+    "p": "false"
+   },
+   {
+    "t": "4",
+    "a": "Bar 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BAR 1",
+   "THE MELODY · BAR 1",
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2",
+   "YOU WROTE · BAR 3",
+   "THE MELODY · BAR 3",
+   "YOU WROTE · BAR 4",
+   "THE MELODY · BAR 4"
+  ],
+  "sol": [
+   "d'",
+   "d'",
+   "t",
+   "t",
+   "d'",
+   "d'",
+   "t",
+   "t",
+   "d'",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "f",
+   "m",
+   "r",
+   "d",
+   "l",
+   "f",
+   "m",
+   "r",
+   "d",
+   "d",
+   "r",
+   "d",
+   "t,",
+   "l,",
+   "d",
+   "r",
+   "d",
+   "t,",
+   "l,"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "d'>d' [do high]",
+   "t>t [ti]",
+   "te>te [te, lowered ti]",
+   "li>li [li, raised la]",
+   "l>l [la, home note]",
+   "le>le [le, lowered la]",
+   "si>si [si, raised so]",
+   "s>s [so]",
+   "se>se [se, lowered so]",
+   "fi>fi [fi, raised fa]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low, home note]"
+  ],
+  "teach": [
+   "In bar (US: measure) 2, the first note is l: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "4/4",
+   "mode": "min",
+   "key": {
+    "k": 0,
+    "mode": "min",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d' d' t t l t si fi m l f m r d d r d t, l,",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_noup44_result_1366_kk": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 1,
+  "sys": [
+   [
+    1
+   ],
+   [
+    2
+   ],
+   [
+    3
+   ],
+   [
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1",
+    "p": "false"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3",
+    "a": "Bar 3",
+    "p": "false"
+   },
+   {
+    "t": "4",
+    "a": "Bar 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BAR 1",
+   "THE MELODY · BAR 1",
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2",
+   "YOU WROTE · BAR 3",
+   "THE MELODY · BAR 3",
+   "YOU WROTE · BAR 4",
+   "THE MELODY · BAR 4"
+  ],
+  "sol": [
+   "d'",
+   "d'",
+   "t",
+   "t",
+   "d'",
+   "d'",
+   "t",
+   "t",
+   "d'",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "f",
+   "m",
+   "r",
+   "d",
+   "l",
+   "f",
+   "m",
+   "r",
+   "d",
+   "d",
+   "r",
+   "d",
+   "t,",
+   "l,",
+   "d",
+   "r",
+   "d",
+   "t,",
+   "l,"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "d'>d' [do high]",
+   "t>t [ti]",
+   "te>te [te, lowered ti]",
+   "li>li [li, raised la]",
+   "l>l [la, home note]",
+   "le>le [le, lowered la]",
+   "si>si [si, raised so]",
+   "s>s [so]",
+   "se>se [se, lowered so]",
+   "fi>fi [fi, raised fa]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low, home note]"
+  ],
+  "teach": [
+   "In bar (US: measure) 2, the first note is l: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "4/4",
+   "mode": "min",
+   "key": {
+    "k": 0,
+    "mode": "min",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d' d' t t l t si fi m l f m r d d r d t, l,",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_basswrong_1366_kk": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "t,",
+   "d",
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d"
+  ],
+  "names": [
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 2: the first note is l,: you wrote t,."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off2_basswrong_1366_kk": {
+  "melW": 474,
+  "melClient": 474,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "t,",
+   "d",
+   "l",
+   "d'",
+   "l,",
+   "t,",
+   "d",
+   "l",
+   "m",
+   "l,"
+  ],
+  "names": [
+   "ta-a",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ta-a",
+   "ta",
+   "ta-a-a"
+  ],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high]",
+   "t,,>t [ti]",
+   "l,,>l [la, home note]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low, home note]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 3: the first note is m: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 7,
+    "mode": "min",
+    "do": 10
+   },
+   "anac": 0,
+   "a": "l l, m m f t, d l",
+   "bass": [
+    43,
+    46,
+    50,
+    43
+   ],
+   "bassTruth": "l,,, d,, m,, l,,,",
+   "off": 2,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_entry_1024_kk": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "upbeat · bar 1",
+   "bar 2"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bar 1 of 2 · beat 2"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_result_1024_kk": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · UPBEAT · BAR 1",
+   "THE MELODY · UPBEAT · BAR 1",
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f",
+   "m",
+   "r",
+   "s,",
+   "m",
+   "f",
+   "r",
+   "r",
+   "r",
+   "r"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [
+   "In bar 1, the third note is r: you wrote m."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 2 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_noup44_result_1024": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 1,
+  "sys": [
+   [
+    1
+   ],
+   [
+    2
+   ],
+   [
+    3
+   ],
+   [
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1",
+    "p": "false"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3",
+    "a": "Bar 3",
+    "p": "false"
+   },
+   {
+    "t": "4",
+    "a": "Bar 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BAR 1",
+   "THE MELODY · BAR 1",
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2",
+   "YOU WROTE · BAR 3",
+   "THE MELODY · BAR 3",
+   "YOU WROTE · BAR 4",
+   "THE MELODY · BAR 4"
+  ],
+  "sol": [
+   "d'",
+   "d'",
+   "t",
+   "t",
+   "d'",
+   "d'",
+   "t",
+   "t",
+   "d'",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "f",
+   "m",
+   "r",
+   "d",
+   "l",
+   "f",
+   "m",
+   "r",
+   "d",
+   "d",
+   "r",
+   "d",
+   "t,",
+   "l,",
+   "d",
+   "r",
+   "d",
+   "t,",
+   "l,"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "d'>d' [do high]",
+   "t>t [ti]",
+   "te>te [te, lowered ti]",
+   "li>li [li, raised la]",
+   "l>l [la, home note]",
+   "le>le [le, lowered la]",
+   "si>si [si, raised so]",
+   "s>s [so]",
+   "se>se [se, lowered so]",
+   "fi>fi [fi, raised fa]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low, home note]"
+  ],
+  "teach": [
+   "In bar (US: measure) 2, the first note is l: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "4/4",
+   "mode": "min",
+   "key": {
+    "k": 0,
+    "mode": "min",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d' d' t t l t si fi m l f m r d d r d t, l,",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_noup44_result_1024_kk": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 1,
+  "sys": [
+   [
+    1
+   ],
+   [
+    2
+   ],
+   [
+    3
+   ],
+   [
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1",
+    "p": "false"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3",
+    "a": "Bar 3",
+    "p": "false"
+   },
+   {
+    "t": "4",
+    "a": "Bar 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BAR 1",
+   "THE MELODY · BAR 1",
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2",
+   "YOU WROTE · BAR 3",
+   "THE MELODY · BAR 3",
+   "YOU WROTE · BAR 4",
+   "THE MELODY · BAR 4"
+  ],
+  "sol": [
+   "d'",
+   "d'",
+   "t",
+   "t",
+   "d'",
+   "d'",
+   "t",
+   "t",
+   "d'",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "f",
+   "m",
+   "r",
+   "d",
+   "l",
+   "f",
+   "m",
+   "r",
+   "d",
+   "d",
+   "r",
+   "d",
+   "t,",
+   "l,",
+   "d",
+   "r",
+   "d",
+   "t,",
+   "l,"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "d'>d' [do high]",
+   "t>t [ti]",
+   "te>te [te, lowered ti]",
+   "li>li [li, raised la]",
+   "l>l [la, home note]",
+   "le>le [le, lowered la]",
+   "si>si [si, raised so]",
+   "s>s [so]",
+   "se>se [se, lowered so]",
+   "fi>fi [fi, raised fa]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low, home note]"
+  ],
+  "teach": [
+   "In bar (US: measure) 2, the first note is l: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "4/4",
+   "mode": "min",
+   "key": {
+    "k": 0,
+    "mode": "min",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d' d' t t l t si fi m l f m r d d r d t, l,",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_basswrong_1024_kk": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "t,",
+   "d",
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d",
+   "s,",
+   "t,",
+   "d",
+   "d'",
+   "s",
+   "t,",
+   "m",
+   "d",
+   "d",
+   "d",
+   "s,",
+   "d"
+  ],
+  "names": [
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 2: the first note is l,: you wrote t,."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off2_basswrong_1024_kk": {
+  "melW": 512,
+  "melClient": 512,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2",
+   "YOU WROTE · BARS 3–4",
+   "THE ANSWER · BARS 3–4"
+  ],
+  "sol": [
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "t,",
+   "d",
+   "l",
+   "d'",
+   "l,",
+   "t,",
+   "d",
+   "l",
+   "m",
+   "l,"
+  ],
+  "names": [
+   "ta-a",
+   "ti-ti",
+   "ta-a",
+   "ta",
+   "ta-a",
+   "ta",
+   "ta-a-a"
+  ],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high]",
+   "t,,>t [ti]",
+   "l,,>l [la, home note]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low, home note]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 3: the first note is m: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 7,
+    "mode": "min",
+    "do": 10
+   },
+   "anac": 0,
+   "a": "l l, m m f t, d l",
+   "bass": [
+    43,
+    46,
+    50,
+    43
+   ],
+   "bassTruth": "l,,, d,, m,, l,,,",
+   "off": 2,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_entry_390_kk": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "upbeat · bar 1"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [],
+  "head": [],
+  "lbl": [
+   "Bar 1 of 2 · beat 2"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_up34_result_390_kk": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 1,
+  "sys": [
+   [
+    0,
+    1
+   ],
+   [
+    2
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1, with the upbeat, an error here",
+    "p": "true"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · UPBEAT · BAR 1",
+   "THE MELODY · UPBEAT · BAR 1"
+  ],
+  "sol": [
+   "s,",
+   "m",
+   "f",
+   "m",
+   "r",
+   "s,",
+   "m",
+   "f",
+   "r",
+   "r"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do, home note]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low]",
+   "le,>le, [le low, lowered la]",
+   "si,>si, [si low, raised so]",
+   "s,>s, [so low]"
+  ],
+  "teach": [
+   "In bar 1, the third note is r: you wrote m."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 2 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "mode": "maj",
+   "key": {
+    "k": 9,
+    "mode": "maj",
+    "do": 9
+   },
+   "anac": 420,
+   "a": "s, m f r r r",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_noup44_result_390": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 1,
+  "sys": [
+   [
+    1
+   ],
+   [
+    2
+   ],
+   [
+    3
+   ],
+   [
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1",
+    "p": "false"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3",
+    "a": "Bar 3",
+    "p": "false"
+   },
+   {
+    "t": "4",
+    "a": "Bar 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2"
+  ],
+  "sol": [
+   "d'",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "t",
+   "si",
+   "fi",
+   "m"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "d'>d' [do high]",
+   "t>t [ti]",
+   "te>te [te, lowered ti]",
+   "li>li [li, raised la]",
+   "l>l [la, home note]",
+   "le>le [le, lowered la]",
+   "si>si [si, raised so]",
+   "s>s [so]",
+   "se>se [se, lowered so]",
+   "fi>fi [fi, raised fa]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low, home note]"
+  ],
+  "teach": [
+   "In bar (US: measure) 2, the first note is l: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "4/4",
+   "mode": "min",
+   "key": {
+    "k": 0,
+    "mode": "min",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d' d' t t l t si fi m l f m r d d r d t, l,",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n1_r12_noup44_result_390_kk": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 1,
+  "sys": [
+   [
+    1
+   ],
+   [
+    2
+   ],
+   [
+    3
+   ],
+   [
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1",
+    "a": "Bar 1",
+    "p": "false"
+   },
+   {
+    "t": "2",
+    "a": "Bar 2, an error here",
+    "p": "true"
+   },
+   {
+    "t": "3",
+    "a": "Bar 3",
+    "p": "false"
+   },
+   {
+    "t": "4",
+    "a": "Bar 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BAR 2",
+   "THE MELODY · BAR 2"
+  ],
+  "sol": [
+   "d'",
+   "t",
+   "si",
+   "fi",
+   "m",
+   "l",
+   "t",
+   "si",
+   "fi",
+   "m"
+  ],
+  "names": [],
+  "lnote": [],
+  "rows": [
+   "d'>d' [do high]",
+   "t>t [ti]",
+   "te>te [te, lowered ti]",
+   "li>li [li, raised la]",
+   "l>l [la, home note]",
+   "le>le [le, lowered la]",
+   "si>si [si, raised so]",
+   "s>s [so]",
+   "se>se [se, lowered so]",
+   "fi>fi [fi, raised fa]",
+   "f>f [fa]",
+   "m>m [mi]",
+   "me>me [me, lowered mi]",
+   "ri>ri [ri, raised re]",
+   "r>r [re]",
+   "ra>ra [ra, lowered re]",
+   "di>di [di, raised do]",
+   "d>d [do]",
+   "t,>t, [ti low]",
+   "te,>te, [te low, lowered ti]",
+   "li,>li, [li low, raised la]",
+   "l,>l, [la low, home note]"
+  ],
+  "teach": [
+   "In bar (US: measure) 2, the first note is l: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 12,
+   "metre": "4/4",
+   "mode": "min",
+   "key": {
+    "k": 0,
+    "mode": "min",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d' d' t t l t si fi m l f m r d d r d t, l,",
+   "bass": null,
+   "bassTruth": null,
+   "off": 0,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_maj_off1_basswrong_390_kk": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2"
+  ],
+  "sol": [
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "t,",
+   "d",
+   "d",
+   "l,",
+   "l",
+   "f",
+   "l,",
+   "r",
+   "m",
+   "f",
+   "l,",
+   "l",
+   "m",
+   "d",
+   "d",
+   "l,",
+   "d"
+  ],
+  "names": [
+   "ti-ti",
+   "ti-ti",
+   "ti-ti",
+   "ta",
+   "ta",
+   "ti-ti",
+   "ta-a"
+  ],
+  "lnote": [
+   "In the bass, d is the do one octave below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d [do, home note]",
+   "t,,>t, [ti low]",
+   "l,,>l, [la low]",
+   "si,,>si, [si low, raised so]",
+   "s,,>s, [so low]",
+   "fi,,>fi, [fi low, raised fa]",
+   "f,,>f, [fa low]",
+   "m,,>m, [mi low]",
+   "r,,>r, [re low]",
+   "d,,>d, [do low, home note]",
+   "t,,,>t,, [ti low]",
+   "l,,,>l,, [la low]",
+   "si,,,>si,, [si low, raised so]",
+   "s,,,>s,, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 2: the first note is l,: you wrote t,."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 4/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "4/4",
+   "mode": "maj",
+   "key": {
+    "k": 3,
+    "mode": "maj",
+    "do": 3
+   },
+   "anac": 0,
+   "a": "d l, l f l, r m f l, l m s, t, d d' s t, m d",
+   "bass": [
+    51,
+    51,
+    48,
+    51,
+    51,
+    51,
+    46,
+    51
+   ],
+   "bassTruth": "d, d, l,, d, d, d, s,, d,",
+   "off": 1,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "n2_r11_min_off2_basswrong_390_kk": {
+  "melW": 328,
+  "melClient": 328,
+  "psBuilt": 2,
+  "sys": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    4
+   ]
+  ],
+  "map": [
+   {
+    "t": "1–2",
+    "a": "Bars 1 to 2",
+    "p": "true"
+   },
+   {
+    "t": "3–4",
+    "a": "Bars 3 to 4",
+    "p": "false"
+   }
+  ],
+  "labels": [
+   "YOU WROTE · BARS 1–2",
+   "THE ANSWER · BARS 1–2"
+  ],
+  "sol": [
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d",
+   "l",
+   "l,",
+   "m",
+   "m",
+   "f",
+   "l,",
+   "d"
+  ],
+  "names": [
+   "ta-a",
+   "ti-ti",
+   "ta-a",
+   "ta"
+  ],
+  "lnote": [
+   "In the bass, d is the do two octaves below the melody's d. Octave marks count from there."
+  ],
+  "rows": [
+   "d,>d' [do high]",
+   "t,,>t [ti]",
+   "l,,>l [la, home note]",
+   "si,,>si [si, raised so]",
+   "s,,>s [so]",
+   "fi,,>fi [fi, raised fa]",
+   "f,,>f [fa]",
+   "m,,>m [mi]",
+   "r,,>r [re]",
+   "d,,>d [do]",
+   "t,,,>t, [ti low]",
+   "l,,,>l, [la low, home note]",
+   "si,,,>si, [si low, raised so]",
+   "s,,,>s, [so low]"
+  ],
+  "teach": [
+   "Bass, bar (US: measure) 3: the first note is m: you wrote d'."
+  ],
+  "head": [],
+  "lbl": [
+   "Melody · 4 bars of 3/4"
+  ],
+  "svgs": 1,
+  "over": 0,
+  "scene": {
+   "l": 11,
+   "metre": "3/4",
+   "mode": "min",
+   "key": {
+    "k": 7,
+    "mode": "min",
+    "do": 10
+   },
+   "anac": 0,
+   "a": "l l, m m f t, d l",
+   "bass": [
+    43,
+    46,
+    50,
+    43
+   ],
+   "bassTruth": "l,,, d,, m,, l,,,",
+   "off": 2,
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ }
+}
