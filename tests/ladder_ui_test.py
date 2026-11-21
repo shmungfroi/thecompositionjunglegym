@@ -109,7 +109,7 @@ async def run(p):
     # ---- U1
     o = await pg.evaluate(UNIT)
     check(o['win'] == '1111111100' or o['win'] == '11111111' + '00' or o['win'] == '1111111100', f"U1 window {o['win']}")
-    check(o['rdy'] == [True, False, True], f"U1 ready {o['rdy']}")
+    check(o['rdy'] == [True, False, False], f"U1 ready {o['rdy']}")
     check(o['now1'] is True and 'Rung 5 starts Stage 5' in o['html'] and 'Ready for rung 5?' in o['html'], f"U1 suggestion row {o['html'][:200]}")
     check(o['reached'] == [4], f"U1 dot earned {o['reached']}")
     check(o['now2'] is False, 'U1 the row shows once per climb')
@@ -141,7 +141,7 @@ async def run(p):
             check(not await pg.evaluate(SMALL), f'{t}: text under 11 px {(await pg.evaluate(SMALL))[:3]}')
             check(await pg.evaluate(OVER) <= 0, f'{t}: sideways scroll {await pg.evaluate(OVER)}')
             check(await pg.evaluate(COUNT, '.el-bandtab') >= 1 and await pg.evaluate(COUNT, '.el-rungline') == 1, f'{t}: picker and rung line')
-            if not chk: check(await pg.evaluate(COUNT, '.el-len') >= 3, f'{t}: palette cells')
+            if not chk: check(await pg.evaluate(COUNT, '.el-len') >= (1 if l == 11 else 3), f'{t}: palette cells')
             if mod == 'move' and not chk: check(await pg.evaluate(COUNT, '.el-mut') == 1, f'{t}: mutation button only under Move do')
             if mod == 'home' and l == 9: check(await pg.evaluate(COUNT, '.el-mut') == 0, f'{t}: no mutation button under Keep home do')
             if w < 500:

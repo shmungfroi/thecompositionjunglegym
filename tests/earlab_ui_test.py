@@ -163,10 +163,10 @@ async def run(p):
         h = await pg.evaluate("()=>{const e=document.querySelector('#earMain .el-answer .rn');return e?getComputedStyle(e).fontFamily:''}")
         check('Garamond' in h, f'{w}px FR-14 bass headline numerals in EB Garamond {h}')
         # FR-13: rhythm listening options group caption with control; FR-12 empty bar placeholders; FR-18 sentence
-        await pg.evaluate(VIEW, ['rhy', 3]); await pg.evaluate("()=>{EAR.q={d:'rhy',bars:2,a:['e2','q','dq','s4','q','h'],l:3,lvl:3,plays:2};EAR.ans=['e2','q'];renderEar()}")
+        await pg.evaluate(VIEW, ['rhy', 3]); await pg.evaluate("()=>{let q;do{q=earGen('rhy',3,R)}while(q.metre!=='4/4'||q.a.length<4);q.plays=2;EAR.q=q;EAR.ans=q.a.slice(0,1);renderEar()}")
         h = await pg.evaluate("()=>({g:document.querySelectorAll('#earMain .el-vars .grp').length,holes:[...document.querySelectorAll('#earMain .el-rhy.narrow svg')].map(s=>s.querySelectorAll('rect[stroke-dasharray]').length),note:document.querySelector('#earTips').textContent.includes('The strip under the notes')})")
         check(h['g'] == 2 and h['note'] and all(x > 0 for x in h['holes']), f'{w}px FR-12/13/7 rhythm options grouped, bar placeholders in every bar, tips wording {h}')
-        await pg.evaluate("()=>{EAR.q={d:'rhy',bars:2,a:['e2','q','dq','s4','q','h'],l:3,lvl:3,plays:2};earMark(false,['e2','q','dq','es2','q','h']);renderEar()}")
+        await pg.evaluate("()=>{let q;do{q=earGen('rhy',3,R)}while(q.metre!=='4/4'||q.a.length<4);q.plays=2;EAR.q=q;const w=q.a.slice(),i=w.length-1;w[i]=ladRhyTiles(3).find(k=>k!==w[i]&&ladW(k)===ladW(w[i]))||w[i];EAR.ans=w;earCheck()}")
         t = await pg.evaluate("document.querySelector('#earMain .el-teach').textContent")
         check(t[0].isupper() and bool(__import__('re').match(r'^((Bar \d is exactly right\. )?In bar \d, beat \d, you wrote)', t)), f'{w}px FR-18 rhythm sentence starts in capitals: {t}')
         # FR-20 / FR-21: option columns, Reset disabled with nothing to reset; FR-17 tips measure
@@ -252,7 +252,7 @@ async def vcheck(b):
             await pg.evaluate("(a)=>{const[d,l]=a;try{elStop()}catch(e){};EAR.drill=d;EAR.lvl[d]=l;EAR.q=null;EAR.done=false;EAR.res=null;EAR.ans=[];EAR.st[d]={n:14,ok:11,streak:3,best:6,shown:2,skipped:1};renderEar()}", [d, l])
             await pg.evaluate("(a)=>{const[d,pred]=a;const f=pred?eval('(q=>'+pred+')'):(()=>true);let q,i=0;do{q=earGen(d,earLvl(),mk(7+(i++)*1000003))}while(!f(q)&&i<3000);q.plays=1;EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar()}", [d, "q.a==='phrygian'" if d == 'cad' else None])
             if d == 'mel': await pg.evaluate("()=>{const q=EAR.q;EAR.ans=q.a.slice(1);EAR.ans[2]=EAR.ans[2]==='r'?'m':'r';renderEar()}")
-            if d == 'rhy': await pg.evaluate("()=>{const q=EAR.q;EAR.ans=q.a.slice();const C=earCells(q.l);EAR.ans[0]=C.find(k=>k!==q.a[0]&&RCELL[k].d===RCELL[q.a[0]].d)||q.a[0];renderEar()}")
+            if d == 'rhy': await pg.evaluate("()=>{const q=EAR.q;EAR.ans=q.a.slice();EAR.ans[0]=ladRhyTiles(q.l).find(k=>k!==q.a[0]&&ladW(k)===ladW(q.a[0]))||q.a[0];renderEar()}")
             await pg.evaluate("scrollTo(0,0)"); await pg.wait_for_timeout(150)
             sel = '#earMain [data-earans="imperfect"]' if d == 'cad' else '#earMain [data-earans="3/4"]' if d == 'metre' else '#earMain [data-earchk]'
             btn = pg.locator(sel).first; await btn.scroll_into_view_if_needed(); await pg.wait_for_timeout(250); await btn.click(); await pg.wait_for_timeout(900)

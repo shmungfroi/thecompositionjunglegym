@@ -8115,7 +8115,7 @@ function earSchedRhyBeat(q,t0,o){const g=(EAR.res&&EAR.res.given)||[],[bar,bt]=(
 function earSched(q,variant,t0,o={}){let t=t0,end=t0;
  if(variant==='tap'){c2Tone(o.midi,t,.5,1);return{end:t+.55,lead:ELPRE}}
  // 0.49 ladders: melody and rhythm items from the ladder engine (the 'frag' and 'ending' replays stay with earSchedReplay)
- if((q.d==='rhy'&&q.barLen)||(q.d==='mel'&&q.l>=4&&['bar','a2'].includes(variant)))return earSchedMel4(q,variant,t0,o);
+ if(q.d==='mel'&&q.l>=4&&['bar','a2'].includes(variant))return earSchedMel4(q,variant,t0,o);
  if((q.d==='rhy'&&q.barLen)||(q.d==='mel'&&!['q3','q5','q7','qab','last','pair','frag','ending'].includes(variant)))return ladSched(q,variant,t0,o);
  if(variant==='given'&&q.d==='metre'){const g=EAR.res&&EAR.res.given;return earSchedMetre(earGenMetre(3,Math.random,{m:g,bpm:q.bpm}),t0)}
  if(q.d==='metre')return earSchedMetre(q,t0);
@@ -8396,7 +8396,7 @@ function earRhyLineHTML(q,cells,o={}){const bars=earRhyBarsOf(q,cells),evs=earRh
  return bars.map((b,bi)=>{const M=LMET[q.metre],bm=o.marks?earRhyBeatMarks(q,o.marks,q.anac?bi:bi+1,b):null;
   // names for the reveal, positioned at each cell's start
   let names=null;if(nm){let p=b.region[0];names=[];const arr=nm[bi]||[];arr.forEach(({k,name})=>{names.push([k,p,name.includes(' ')&&(k==='q7_34'||k==='q7_43')?name.replace(' ',' '):name]);p+=ladW(k)})}
-  return earRhyBarSVG({metre:q.metre,grp:q.grp,cells:b.cells,region:b.region,sig:bi===0,no:b.no,cursor:o.cursor&&bi===cur,holes:o.holes&&bi===cur,final:bi===bars.length-1,narrow:nar,marks:bm,names,evs:o.strip===false?[]:evs,start:b.start,count:bi===0,stripCol:o.stripCol,caret:o.caret,label:(o.label||'')+b.no})}).join('')}
+  return earRhyBarSVG({metre:q.metre,grp:q.grp,cells:b.cells,region:b.region,sig:bi===0,no:b.no,cursor:o.cursor&&bi===cur,holes:o.holes&&cur>=0&&bi>=cur,final:bi===bars.length-1,narrow:nar,marks:bm,names,evs:o.strip===false?[]:evs,start:b.start,count:bi===0,stripCol:o.stripCol,caret:o.caret,label:(o.label||'')+b.no})}).join('')}
 // per-beat marks for one bar from the marker's beats list ({bar, beat, ok}; bar 0 the upbeat; 7/8 beats are eighths: a drawn group is right when all its eighths are)
 function earRhyBeatMarks(q,list,barNo,b){const M=LMET[q.metre],beats=earRhyBeatsOf(q.metre,q.grp);const bar=b.anac?0:barNo;
  const mine=list.filter(x=>x.bar===bar);if(!mine.length)return null;
