@@ -7643,6 +7643,8 @@ function ladPalette(q,entries,part='mel'){const all=[ladFirst(q,part),...(entrie
  for(const e of all){while(b<bl.length&&used>=bl[b]){b++;used=0}if(b>=bl.length)return{done:true,over:true,lengths:[]};per[b].push(e.t);used+=e.t}
  while(b<bl.length&&used>=bl[b]){b++;used=0}
  if(b>=bl.length)return{done:true,lengths:[]};
+ // M12: the line is complete once the excerpt's last note is written (the rest of a D9 outline's last bar is silence)
+ if(q.l===12&&part==='mel'){const last=q.notes[q.notes.length-1],tot=all.reduce((a,e)=>a+e.t,0);if(tot>=last.on+last.dur)return{done:true,lengths:[]}}
  let L=[];
  if(q.l===12||part==='bass'){const M=LMET[q.metre]||LMET['4/4'],rem=bl[b]-used,beatPos=used%M.beat;
   if(part==='bass'){const pos=all.reduce((a,e)=>a+e.t,0)+q.bass[0].on,sl=q.bass.find(x=>x.on===pos);L=sl?[sl.dur]:[]}   // one bass note a slot
@@ -7690,7 +7692,9 @@ function ladMelMark(q,ans,o={}){if(q.l===11){const A=ans&&!Array.isArray(ans)?an
  /* M9 under Move do (D8, L102, L107): for the dominant kinds the student marks the mutation; from there their syllables are read in the new key
     (the pivot in either key; a note is right when its sound is right). Relative kinds have no mutation: right with none marked, and a needless
     mutation with every note right is still right (L107), with a sentence. */
- const mo=q.l===9&&q.kind&&mode==='move'&&dom&&pv!=null?{...o,dms:j=>j<pv?[q.doMidi]:j===pv?[q.doMidi,q.newDoMidi]:[q.newDoMidi,q.doMidi]}:o;
+ // Keep home do: the old key's syllables, but a note written in the new key's syllables after the true pivot is the same sound: right too
+ const mo=q.l===9&&q.kind&&dom?(mode==='move'?(pv!=null?{...o,dms:j=>j<pv?[q.doMidi]:j===pv?[q.doMidi,q.newDoMidi]:[q.newDoMidi,q.doMidi]}:o)
+   :{...o,dms:j=>j<q.pivot?[q.doMidi]:[q.doMidi,q.newDoMidi]}):o;
  const m=ladMelMarkLine(q,ans,'mel',mo);let ok=m.right,pivotOK=null;
  if(q.l===9&&q.pivotWindow&&mode==='move'){if(dom){pivotOK=pv!=null&&pv>=q.pivotWindow[0]&&pv<=q.pivotWindow[1];ok=ok&&pivotOK}
   else{pivotOK=pv==null;if(pv!=null&&ok)note='Every note is right. There is no mutation here: in a move to the relative '+(q.kind==='M-vi'?'minor':'major')+' do stays where it is and only the home note moves (from '+(q.kind==='M-vi'?'do to la':'la to do')+').'}}
