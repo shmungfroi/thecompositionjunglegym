@@ -72,3 +72,12 @@ Deferred: R19–R22 (counterpoint) — Justin 20 Nov "later".
 | C33 | Rungs 2–3 older tells: spacing pattern +7.9 (rung 2), +15.0 (rung 3); final-chord completeness +9.3 (rung 3). Present on 049 before this work | Ladder rule | Rebalance (fix now) or with the 0.51 cadence ladder (with C26) | Ear Lab rungs 2–3 | earlab_test C | Should | Opus | Approved (L108) → building (Opus) |
 | C34 | Rung 2: root-position IV, vi, III, VI with a doubled 3rd and no 5th mid-phrase (1.9% of items) | Strict SATB doubling (C25) | Extend the C25 rule to these | Ear Lab rung 2 | earlab_test doubling | Should | Opus | Approved (L108) → building (Opus) |
 | C35 | Analysis reads 17 minor-key numerals by sound, not spelling (iv°, ii°7, V+, vii+ with C♭, D♯…): Ear Lab map right, Analysis wrong | Theory accuracy | Make Analysis check spelling; add the 17 to unit_test | Analysis colours | unit_test | Should | Opus | Approved (L108) → building (Opus) |
+
+## New rows from FABLE_VERIFY_C6_049 (21 Nov; C6 SIGN OFF at ec50111), status Drafted
+| id | finding | proposed change | pri | status |
+|---|---|---|---|---|
+| C36 | Function colour without the letter cue in places the C6 table missed: Gym progression cards and palette, Oracle cards, Keys chord and key chips | Add the letter cue there | Should | Drafted |
+| C37 | Climb 6 grid at 1024 squeezed beside the wheel, 20 px past the card edge (pre-existing) | Re-flow at tablet width | Should | Drafted |
+| C38 | Test robustness: terms_test needs a fresh page per Stage; earlab_ui_test detached-element flake | Fix the harness | Should | Drafted |
+| C39 | Keys piano solfa names run together at 390 (pre-existing) | Spacing fix | Could | Drafted |
+| C40 | Cadence chips say "T tonic" right above a legend that repeats it | Drop the duplicate | Could | Drafted |
