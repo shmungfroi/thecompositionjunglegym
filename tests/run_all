@@ -14,19 +14,22 @@ fi
 python3 -c "import playwright, music21" 2>/dev/null || { echo "Needs: pip install playwright music21"; exit 2; }
 
 # order: quick and basic first
-SUITES="content_lint unit_test score_ids_test sound_test earlab_test earlab_r2_test earlab_items_test earlab_ui_test chordshape_test spelling_test terms_test counterpoint_test pageerrors_test layout_test transport_test score_measure_test analysis_engrave_test"
+SUITES="content_lint unit_test score_ids_test sound_test earlab_test earlab_r2_test earlab_items_test earlab_ui_test chordshape_test spelling_test terms_test counterpoint_test pageerrors_test layout_test transport_test score_measure_test analysis_engrave_test cvd_sim"
 FILTER="${1:-}"
 FAILED=0
 SUMMARY="{"
 for s in $SUITES; do
   f="$HERE/$s.py"
+  ARGS="$REPO"
+  # 0.49 C6: the colour-blind check lives with Fable's design files; it reads the function colours from index.html
+  if [ "$s" = "cvd_sim" ]; then f="$HERE/reports/fable_049/cvd_sim.py"; ARGS="--check"; fi
   [ -n "$FILTER" ] && [[ "$s" != *"$FILTER"* ]] && continue
   if [ ! -f "$f" ]; then
     echo "--- $s: MISSING"; SUMMARY="$SUMMARY\"$s\":\"missing\","; FAILED=1; continue
   fi
   echo "--- $s"
   start=$(date +%s)
-  out="$(python3 "$f" "$REPO" 2>&1)"; code=$?
+  out="$(python3 "$f" $ARGS 2>&1)"; code=$?
   secs=$(( $(date +%s) - start ))
   echo "$out" | tail -n 40
   if [ $code -eq 0 ]; then st=pass; else st=FAIL; FAILED=1; fi

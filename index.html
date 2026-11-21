@@ -5,7 +5,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Poiret+One&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.3/build/cjs/vexflow-bravura.js"></script>
 <style>
-:root{--ink:#0b0906;--panel:#12100b;--panel2:#17140e;--line:#2a2418;--gold:#c9a24a;--goldhi:#f0d48a;--ivory:#ece2c8;--muted:#9c927c;--red:#c8473b;--green:#8fbf6a;--violet:#a493d8;--lush:#3ec27a;--pink:#ee6fa5;--md:#bd6b97;--md-ivory:#9e4776;--rail:64px;--top:58px}
+:root{--ink:#0b0906;--panel:#12100b;--panel2:#17140e;--line:#2a2418;--gold:#c9a24a;--goldhi:#f0d48a;--ivory:#ece2c8;--muted:#9c927c;--red:#d15e5d;--green:#9dc995;--violet:#a493d8;--lush:#3ec27a;--pink:#ee6fa5;--md:#b1729d;--md-ivory:#8b4978;--rail:64px;--top:58px}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:var(--ink);color:var(--ivory);font-family:Outfit,system-ui,sans-serif;font-weight:300}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -111,7 +111,7 @@ dd{margin:0}
 .piano .b.lit{background:linear-gradient(#2a241a 0 45%,var(--c) 45%)}
 .piano .lab{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:11px;font-weight:600;color:#0b0906}
 .piano .b .lab{color:#0b0906;bottom:6px}
-.piano .c{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10px;color:var(--muted)}
+.piano .c{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted)}
 
 /* fretted */
 .voicings{display:flex;gap:16px;flex-wrap:wrap}
@@ -325,18 +325,18 @@ footer a{color:var(--gold)}footer .sylpanel{margin:12px 0 0;max-width:600px}foot
 .istart .a{color:var(--muted);font-size:12.5px}
 .istart .lf{font-size:14px;color:var(--ivory);margin-top:2px}
 .istart .sb{margin-top:5px}
-.istart .lw{margin-left:6px;color:#ff8a7a;border:1px solid #c8473b;border-radius:10px;padding:0 7px;font-size:11px;letter-spacing:1px}
+.istart .lw{margin-left:6px;color:#ff8a7a;border:1px solid #d15e5d;border-radius:10px;padding:0 7px;font-size:11px;letter-spacing:1px}
 .istart .lw.th{color:#d9b46a;border-color:#a9853a}
 .gtabs{display:flex;gap:6px}
 .tick{font-size:14px;color:var(--ivory);display:inline-flex;gap:4px;align-items:center;margin-right:8px}
 .gq{display:flex;gap:8px;margin:8px 0 10px}
 .gans{display:flex;gap:6px;flex-wrap:wrap}
 .gans .chip.right{background:var(--green);color:#0b0906;border-color:var(--green)}
-.gans .chip.wrong{background:rgba(200,71,59,.25);border-color:var(--red)}
+.gans .chip.wrong{background:rgba(209,94,93,.25);border-color:var(--red)}
 #room-keys .ok{color:var(--green);font-size:14px}
 .singtask{font-size:15px;margin:8px 0;line-height:1.6}
 .singtask .so{color:var(--goldhi);font-style:italic;font-size:20px}
-.meter{position:relative;height:46px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(90deg,rgba(200,71,59,.18),rgba(143,191,106,.25) 40%,rgba(143,191,106,.25) 60%,rgba(200,71,59,.18));margin:6px 0 4px;overflow:hidden}
+.meter{position:relative;height:46px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(90deg,rgba(209,94,93,.18),rgba(157,201,149,.25) 40%,rgba(157,201,149,.25) 60%,rgba(209,94,93,.18));margin:6px 0 4px;overflow:hidden}
 .meter .tgt{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--goldhi)}
 .meter .needle{position:absolute;top:6px;width:10px;height:22px;margin-left:-5px;border-radius:5px;background:var(--ivory);opacity:.25;left:50%;transition:left .08s}
 .meter span{position:absolute;bottom:3px;left:10px;font-size:12.5px;color:var(--ivory)}
@@ -436,7 +436,7 @@ footer a{color:var(--gold)}footer .sylpanel{margin:12px 0 0;max-width:600px}foot
 @media(max-width:700px){.c6box{grid-template-columns:1fr}}
 /* climb 7 */
 .c7grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
-#climbDetail .bar.sec{border-color:rgba(164,147,216,.5);background:rgba(164,147,216,.08)}#climbDetail .bar.sec.md{border-color:rgba(189,107,151,.5);background:rgba(189,107,151,.08)}
+#climbDetail .bar.sec{border-color:rgba(164,147,216,.5);background:rgba(164,147,216,.08)}#climbDetail .bar.sec.md{border-color:rgba(177,114,157,.5);background:rgba(177,114,157,.08)}
 #climbDetail .bar em.nn{display:block;font-style:normal;font-size:12.5px;color:var(--goldhi);margin-top:3px}
 #climbDetail .bar em.nn i,.c7tab i.so{font-style:italic;color:var(--goldhi)}
 #c7Staff,#c7bStaff{overflow-x:auto;margin-top:10px}
@@ -558,7 +558,7 @@ small.a6{font-size:12.5px;color:var(--violet);font-weight:600}
 .song .tn .srcnote{font-size:12px;line-height:1.45;color:var(--muted);opacity:.9}
 body.teacher .song .tn{display:block}
 .song .lw.th{color:#d9b46a;border-color:#a9853a}
-.song .lw{margin-left:8px;color:#ff8a7a;border:1px solid #c8473b;border-radius:10px;padding:0 7px;font-size:11px;letter-spacing:1px}
+.song .lw{margin-left:8px;color:#ff8a7a;border:1px solid #d15e5d;border-radius:10px;padding:0 7px;font-size:11px;letter-spacing:1px}
 .songcount{font-size:12.5px;color:var(--muted);margin-bottom:6px}
 .mysongs{font-size:14px;color:var(--ivory);margin-top:8px;line-height:1.7}
 .mysongs span{color:var(--muted)}
@@ -600,7 +600,7 @@ body.teacher .song .tn{display:block}
 .c2lad td.rl i{color:var(--goldhi);font-size:11px;margin-left:5px}.c2lad td.rl.home{color:var(--goldhi);font-weight:700}
 .c2lad tr.cfr td.c2rp{opacity:.35}.c2lad tr.cfr td{color:var(--goldhi);font-size:12.5px;padding:4px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .c2c{width:28px;height:22px;border-radius:5px;border:1px solid transparent;background:rgba(236,226,200,.03);color:var(--muted);font:inherit;font-size:10.5px;cursor:pointer;padding:0;line-height:1}
-.c2c.P{background:rgba(201,162,74,.13);color:var(--gold)}.c2c.I{background:rgba(143,191,106,.13);color:var(--green)}.c2c.D{background:rgba(200,71,59,.05);color:#7d5a52}.c2c.x{opacity:.28}
+.c2c.P{background:rgba(201,162,74,.13);color:var(--gold)}.c2c.I{background:rgba(157,201,149,.13);color:var(--green)}.c2c.D{background:rgba(209,94,93,.05);color:#7d5a52}.c2c.x{opacity:.28}
 .c2c:hover{border-color:var(--gold)}.c2c.on{background:var(--ivory);color:#0b0906;font-weight:700;font-size:11px}.c2c.on.err{background:#e0604f;color:#fff}.c2c.on.warn{background:var(--goldhi);color:#0b0906}
 .c2iss{margin:8px 0;padding:0;list-style:none;font-size:14px;line-height:1.5}.c2iss li{padding:6px 10px;border-left:3px solid var(--line);margin-bottom:5px;background:rgba(236,226,200,.03);border-radius:0 8px 8px 0}
 .c2iss li.e{border-left-color:#e0604f}.c2iss li.w{border-left-color:var(--goldhi)}.c2iss li b{color:var(--ivory)}
@@ -620,7 +620,7 @@ button[data-hist][disabled]{opacity:.4;cursor:default}
 .fline{display:grid;grid-template-columns:120px repeat(4,1fr);gap:6px;align-items:stretch}
 .flab{display:flex;flex-direction:column;justify-content:center;font-size:12.5px;color:var(--muted);line-height:1.3}.flab b{font-family:'Poiret One',Outfit;font-size:22px;color:var(--goldhi);font-weight:400}
 .fbar{position:relative;border:1px solid var(--line);border-radius:10px;background:#0e0c08;padding:16px 6px 6px;min-height:62px;transition:box-shadow .15s}
-.fbar.home{border-color:rgba(143,191,106,.45)}.fbar.now{box-shadow:0 0 0 2px var(--goldhi)}
+.fbar.home{border-color:rgba(157,201,149,.45)}.fbar.now{box-shadow:0 0 0 2px var(--goldhi)}
 .fbar small{position:absolute;left:8px;top:3px;font-size:11px;color:var(--muted);letter-spacing:.5px}
 .fchs{display:flex;gap:4px}
 .fch{flex:1;display:flex;flex-direction:column;align-items:center;border:1px solid var(--line);border-top:3px solid var(--c);border-radius:8px;padding:4px 2px;background:none;color:var(--ivory);font:inherit;min-width:0}
@@ -734,8 +734,8 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 
 /* ---- result (EL-8): takes the place of the stage after an answer ---- */
 .el-result{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:0 14px;align-items:start;background:var(--inset);border:1px solid var(--line);border-radius:var(--r-m);padding:14px 16px 16px}
-.el-result.ok{border-color:rgba(143,191,106,.5);background:linear-gradient(180deg,rgba(143,191,106,.07),rgba(143,191,106,.02) 70%),var(--inset)}
-.el-result.bad{border-color:rgba(200,71,59,.55);background:linear-gradient(180deg,rgba(200,71,59,.08),rgba(200,71,59,.02) 70%),var(--inset)}
+.el-result.ok{border-color:rgba(157,201,149,.5);background:linear-gradient(180deg,rgba(157,201,149,.07),rgba(157,201,149,.02) 70%),var(--inset)}
+.el-result.bad{border-color:rgba(209,94,93,.55);background:linear-gradient(180deg,rgba(209,94,93,.08),rgba(209,94,93,.02) 70%),var(--inset)}
 .el-result.near,.el-result.shown{border-color:rgba(201,162,74,.55);background:linear-gradient(180deg,rgba(201,162,74,.08),rgba(201,162,74,.02) 70%),var(--inset)}
 .el-mark{width:32px;height:32px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;margin-top:2px}
 .el-mark svg{width:16px;height:16px}
@@ -774,8 +774,8 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-opt:hover:not([disabled]){border-color:var(--gold)}
 .el-opt[disabled]{cursor:default;color:var(--ivory)}
 .el-opts.wait .el-opt{opacity:.55}
-.el-opt.is-ans{border-color:var(--green);background:rgba(143,191,106,.07)}
-.el-opt.is-mine{border-color:var(--red);background:rgba(200,71,59,.07)}
+.el-opt.is-ans{border-color:var(--green);background:rgba(157,201,149,.07)}
+.el-opt.is-mine{border-color:var(--red);background:rgba(209,94,93,.07)}
 .el-opt.is-near{border-color:var(--gold);background:rgba(201,162,74,.08)}
 .el-opt.is-dim{opacity:.6}
 .el-badge{display:flex;align-items:center;gap:5px;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
@@ -1106,7 +1106,7 @@ small{font-size:max(11px,.85em)}
 /* climb 2 rule book: two columns of cards; an open card takes the full width for its examples; Must = red edge, Should = gold edge */
 .c2rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:8px;align-items:start;margin-bottom:6px}
 .c2rgrid .c2rule{margin:0;border-left-width:3px}
-.c2rule.must{border-left-color:#c8473b}.c2rule.should{border-left-color:var(--gold)}
+.c2rule.must{border-left-color:#d15e5d}.c2rule.should{border-left-color:var(--gold)}
 .c2rule[open]{grid-column:1/-1}
 .c2rule summary{min-height:28px}
 
@@ -1131,9 +1131,9 @@ button:disabled{cursor:default;opacity:.45}
 @media (prefers-reduced-motion:reduce){.el-play.playing:not(.loading) .arc{animation:elRing var(--dur,8s) linear var(--del,0s) forwards!important}}
 
 /* one Stop for everything */
-.tstop{background:var(--red,#c8473b);color:#fff;border:0;border-radius:22px;padding:7px 16px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 0 0 0 rgba(200,71,59,.5);animation:tstopPulse 1.6s ease-out infinite}
-@keyframes tstopPulse{0%{box-shadow:0 0 0 0 rgba(200,71,59,.45)}100%{box-shadow:0 0 0 10px rgba(200,71,59,0)}}
-[data-playing]{border-color:var(--red,#c8473b)!important;color:#fff!important;background:rgba(200,71,59,.25)!important}
+.tstop{background:var(--red,#d15e5d);color:#fff;border:0;border-radius:22px;padding:7px 16px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 0 0 0 rgba(209,94,93,.5);animation:tstopPulse 1.6s ease-out infinite}
+@keyframes tstopPulse{0%{box-shadow:0 0 0 0 rgba(209,94,93,.45)}100%{box-shadow:0 0 0 10px rgba(209,94,93,0)}}
+[data-playing]{border-color:var(--red,#d15e5d)!important;color:#fff!important;background:rgba(209,94,93,.25)!important}
 @media (max-width:760px){.top{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(11,9,6,.98)}.tstop{position:fixed;right:14px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:8;padding:11px 20px;font-size:15px}}
 
 /* 0.45 layout and text fixes */
@@ -1178,6 +1178,8 @@ label.ck{gap:8px;cursor:pointer}
 .istart .sb a:hover{border-color:var(--gold);color:var(--goldhi)}
 .istart .sb a:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
 @media (max-width:760px){.istart .sb{gap:8px}.istart .sb a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:22px;font-size:14px}}
+/* C16 (0.49, IC_SELF Fable N-2): the song-card links in the other rooms get the same 44 px phone pill as the Keys song starters. */
+@media (max-width:760px){.song .sb,.c6h .sb{gap:8px}.song .sb a,.c6h .sb a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:22px;font-size:14px}}
 
 /* C5-5  Keys, Intervals and Aural gym on phones: every control at least 44 px. */
 @media (max-width:760px){
@@ -1218,6 +1220,32 @@ label.ck{gap:8px;cursor:pointer}
  .top .jbtn{padding:7px 12px}
 }
 .search input{text-overflow:ellipsis}
+/* Register 0.49, row C6: function colours and the non-colour cue. For Sonnet to lift into index.html as written. */
+
+/* 1. Tokens (replace the values in :root; --gold and --violet stay) */
+/* the token values themselves are in the first :root above (the one cvd_sim.py --check reads): --green #9dc995, --red #d15e5d, --md #b1729d, --md-ivory #8b4978 */
+/* also in script: FNHEX {T:'#9dc995',PD:'#c9a24a',D:'#d15e5d',MD:'#b1729d',C:'#a493d8'}; COLS keys for --green, --red, --md the same;
+   earMelMount RED '#c8473b' -> '#d15e5d'; .gans .chip.wrong and .el-opt.is-mine washes rgba(200,71,59,..) -> rgba(209,94,93,..) */
+
+/* 2. The function letter: every chip that shows a function by colour also carries its letter (T, PD, D, MD, C).
+      Markup: add data-fn="T|PD|D|MD|C" beside the existing style="--c:..." */
+.bar[data-fn],.clrn span[data-fn]{position:relative}
+.bar[data-fn]::after,.clrn span[data-fn]::after{content:attr(data-fn);position:absolute;right:8px;bottom:5px;font-size:11px;font-weight:600;letter-spacing:1px;line-height:1;color:var(--c)}
+.clrn span[data-fn]{padding-right:34px}
+.clrn span[data-fn]::after{bottom:auto;top:7px}
+/* circle-of-fifths wheel: <text class="f" x="${x+27}" y="${y-24}" text-anchor="middle">${f}</text> inside each g.wn (x+32 for a two-letter cue).
+   Fable verify C6: was x+25, y-21, which sat on the node's stroke; the letter now clears it by 2 px or more. */
+.wheel .wn .f{font-family:Outfit;font-size:11px;font-weight:600;letter-spacing:.5px}
+.wheel{overflow:visible}
+/* Fable verify C6: in climb 6 the falling-fifth mark shares the bar's bottom line with the function letter. When the grid is narrow
+   (bars under about 85 px: phones, and 1024 beside the wheel) the letter takes a line of its own, so the two never touch. */
+.c6grid{container-type:inline-size}
+@container (max-width:360px){.c6grid .bar[data-fn]{padding-bottom:22px}}
+/* Ear Lab chord chips: <small><b class="fn" style="color:var(--fc)">D</b> bass s</small> */
+.el-ch small .fn{font-weight:600;letter-spacing:.6px;margin-right:3px}
+/* one legend line wherever functions are coloured (Climbs with a bar grid, Analysis, Ear Lab bass/blind results) */
+.fnkey{display:flex;flex-wrap:wrap;gap:4px 14px;margin:8px 0 0;font-size:12.5px;color:var(--muted)}
+.fnkey b{font-weight:600;letter-spacing:.6px;margin-right:4px}
 </style></head>
 <body>
 
@@ -1742,15 +1770,17 @@ function termBtnSync(b){
  if(!b.isConnected||b.closest('svg,[data-notm]'))return;
  const tw=document.createTreeWalker(b,NodeFilter.SHOW_TEXT);let txt='',n,m;while((n=tw.nextNode()))if(!n.parentElement.closest('[data-notm]'))txt+=n.nodeValue+' ';
  // IC_TERMS_048 M3: a button whose visible face is not the term (a rhythm tile shows "ta") names the term in its own title: data-tt
- // marks that title as text to read, so "crotchet" gets "crotchet · US: quarter note"
+ // marks that title as text to read, so "crotchet" gets "crotchet (US: quarter note)"
  // R2 S-T1: the title's values are mapped one for one, in order, repeats kept ("quaver, crotchet, quaver" -> "eighth note, quarter note, eighth note")
  let ttx='';if(b.hasAttribute('data-tt')){const c0=b.getAttribute('title')||'';ttx=b.dataset.tset===undefined||c0!==b.dataset.tset?c0:b.dataset.t0||''}
  const L=(b.dataset.tk||'').split(',').map(k=>termUS(k.trim())).filter(Boolean);
- if(ttx){TM_RX.lastIndex=0;while((m=TM_RX.exec(ttx))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUSw(k,m[0]);if(u)L.push(u)}}
+ // 0.49 C13: a count in the title is carried to the US side too, one to one ("2 quavers" -> "2 eighth notes")
+ if(ttx){TM_RX.lastIndex=0;while((m=TM_RX.exec(ttx))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUSw(k,m[0]),cnt=/(\d+) $/.exec(ttx.slice(0,m.index));if(u)L.push(cnt?cnt[1]+' '+u:u)}}
  TM_RX.lastIndex=0;while((m=TM_RX.exec(txt))){const k=Object.keys(m.groups).find(g=>m.groups[g]!==undefined),u=termUSw(k,m[0]);if(u&&!L.includes(u))L.push(u)}
  if(!L.length&&b.dataset.tset===undefined)return;
  const cur=b.getAttribute('title')||'';if(b.dataset.tset===undefined||cur!==b.dataset.tset)b.dataset.t0=cur;   // the app's own title (kept, and refreshed if the app changed it)
- const t0=b.dataset.t0,nt=L.length?(t0?t0+' · ':'')+'US: '+L.join(', ')+(L.includes(TERMSBY.iac.us)?' · '+TERM_NOTE:''):t0;
+ // 0.49 C14: the bracket form, "Australian (US: American)", on every hover that names the Australian term; a hover with no title of its own stays "US: x"
+ const t0=b.dataset.t0,us='US: '+L.join(', '),nt=L.length?(t0?`${t0} (${us})`:us)+(L.includes(TERMSBY.iac.us)?' · '+TERM_NOTE:''):t0;
  if(nt)b.setAttribute('title',nt);else b.removeAttribute('title');b.dataset.tset=nt;b.dataset.us=L.join('|')}
 /* the bracket: headings, and the first mention in each block (in each room for bar and stave); never on buttons and chips (they get the hover).
  Three forms, so brackets never pile up: " (US: x)" normally; " [US: x]" when the term already sits inside a bracket; and when the term is
@@ -2034,7 +2064,7 @@ function boxSVG(v,inst,c){
  // barre bar under the dots
  if(FG.barre){const b=FG.barre;s+=`<rect x="${xs(b.from)-11}" y="${y(b.fret)-10}" width="${(b.to-b.from)*sp+22}" height="20" rx="10" fill="rgba(240,212,138,.26)" stroke="#f0d48a" stroke-width="1.3"/>`}
  v.fr.forEach((f,i)=>{const x=xs(i);
-  if(f<0){s+=`<text x="${x}" y="${top-10}" fill="#c8473b" font-size="13" text-anchor="middle">×</text>`;return}
+  if(f<0){s+=`<text x="${x}" y="${top-10}" fill="#d15e5d" font-size="13" text-anchor="middle">×</text>`;return}
   const m=tun[i]+f,t=c.tones.find(t=>mod(t.midi,12)===mod(m,12)),col=getCol(t.d),isR=t.d==='1';
   if(f===0){s+=`<circle cx="${x}" cy="${top-14}" r="5.5" fill="none" stroke="${col}" stroke-width="1.7"/>`+(isR?`<circle cx="${x}" cy="${top-14}" r="8.5" fill="none" stroke="${col}" stroke-width=".9" opacity=".7"/>`:'');return}
   const yy=y(f),lab=fing?(FG.fing[i]===''||FG.fing[i]==null?'':FG.fing[i]):dg(t.d);
@@ -2047,7 +2077,7 @@ function boxSVG(v,inst,c){
   s+=`<text x="${xs(i)}" y="${yb+34}" fill="#7d7058" font-size="9.5" letter-spacing=".5" text-anchor="middle">${STR[i]}</text>`});
  return s+'</svg>';
 }
-const COLS={'var(--goldhi)':'#f0d48a','var(--green)':'#8fbf6a','var(--ivory)':'#ece2c8','var(--red)':'#c8473b','var(--violet)':'#a493d8','var(--md)':'#bd6b97'};
+const COLS={'var(--goldhi)':'#f0d48a','var(--green)':'#9dc995','var(--ivory)':'#ece2c8','var(--red)':'#d15e5d','var(--violet)':'#a493d8','var(--md)':'#b1729d'};
 const getCol=d=>COLS[degColor(d)];
 function boardSVG(c,inst){
  const tun=TUN[inst],ns=tun.length,F=15,fw=46,sh=20,x0=50,y0=14,H=y0*2+(ns-1)*sh;
@@ -2085,10 +2115,14 @@ const MAJ=[0,2,4,5,7,9,11],MIN=[0,2,3,5,7,8,10];
 const MAJN=['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'],MINN=['C','C♯','D','E♭','E','F','F♯','G','G♯','A','B♭','B'];
 const ROM=['I','II','III','IV','V','VI','VII'];
 /* function colours. MD = modal dominant ("soft pull", 0.48 decision 12): the minor v and the subtonic VII of a minor key, and the borrowed
-   v and ♭VII of a major key: chords on the dominant side of the key with no leading note. Madder rose #bd6b97 on the dark grounds
-   (#9e4776 if it ever sits on ivory). S and W are the pre-0.48 codes for the same chords, kept as aliases for old data. */
+   v and ♭VII of a major key: chords on the dominant side of the key with no leading note. Madder rose #b1729d on the dark grounds
+   (#8b4978 if it ever sits on ivory). S and W are the pre-0.48 codes for the same chords, kept as aliases for old data. */
 const FN={T:'var(--green)',PD:'var(--gold)',D:'var(--red)',MD:'var(--md)',S:'var(--md)',W:'var(--md)'};
-const FNHEX={T:'#8fbf6a',PD:'#c9a24a',D:'#c8473b',MD:'#bd6b97',C:'#a493d8'};
+const FNHEX={T:'#9dc995',PD:'#c9a24a',D:'#d15e5d',MD:'#b1729d',C:'#a493d8'};
+/* 0.49 C6: the non-colour cue. FNL() gives the letter every function colour also carries (T, PD, D, MD, C; the old S and W codes read as MD,
+   anything outside the key as C). FNKEY is the one legend line under a bar grid or numeral strip. */
+const FNL=f=>f==='S'||f==='W'?'MD':f==='T'||f==='PD'||f==='D'||f==='MD'?f:'C';
+const FNKEY=`<div class="fnkey" data-notm>${[['T','tonic','var(--green)'],['PD','pre-dominant','var(--gold)'],['D','dominant','var(--red)'],['MD','modal dominant','var(--md)'],['C','colour','var(--violet)']].map(([k,w,c])=>`<span><b style="color:${c}">${k}</b>${w}</span>`).join('')}</div>`;
 /* is this chord a modal dominant in key k (tonic pc k)? judged by content, not by what it does in the phrase: a root on the 5th with the
    minor 3rd above it (v, v7: no leading note), or a root on the unraised 7th (VII, VII7, ♭VII, ♭VII7, and their sus / bare-5th forms).
    A sus or bare-5th chord on the 5th has no 3rd at all, so no leading note and no minor 3rd: it stays D in both modes, as in major,
@@ -2628,8 +2662,8 @@ function renderFrame(){
  V.forEach((v,i)=>{const cx=x0+i*cw+cw/2;s+=`<g class="col" data-ci="${i}"><rect x="${cx-cw/2+3}" y="${top-6}" width="${cw-6}" height="${H-bot-top+12}" rx="10" fill="transparent"/></g>`;
   if(i<V.length-1){const nx=x0+(i+1)*cw+cw/2,nv=V[i+1];
    v.rh.forEach(n=>{const to=nv.rh.reduce((a,b)=>Math.abs(b.midi-n.midi)<Math.abs(a.midi-n.midi)?b:a),held=to.midi===n.midi;
-    s+=`<path d="M${cx} ${y(n.midi)} C${cx+cw/2} ${y(n.midi)} ${nx-cw/2} ${y(to.midi)} ${nx} ${y(to.midi)}" fill="none" stroke="${held?'#8fbf6a':'#c9a24a'}" stroke-width="${held?2.6:1.5}" stroke-opacity="${held?.9:.75}"/>`});
-   s+=`<path d="M${cx} ${y(v.bass.midi)} C${cx+cw/2} ${y(v.bass.midi)} ${nx-cw/2} ${y(nv.bass.midi)} ${nx} ${y(nv.bass.midi)}" fill="none" stroke="#c8473b" stroke-width="1.6" stroke-dasharray="5 4" stroke-opacity=".8"/>`}});
+    s+=`<path d="M${cx} ${y(n.midi)} C${cx+cw/2} ${y(n.midi)} ${nx-cw/2} ${y(to.midi)} ${nx} ${y(to.midi)}" fill="none" stroke="${held?'#9dc995':'#c9a24a'}" stroke-width="${held?2.6:1.5}" stroke-opacity="${held?.9:.75}"/>`});
+   s+=`<path d="M${cx} ${y(v.bass.midi)} C${cx+cw/2} ${y(v.bass.midi)} ${nx-cw/2} ${y(nv.bass.midi)} ${nx} ${y(nv.bass.midi)}" fill="none" stroke="#d15e5d" stroke-width="1.6" stroke-dasharray="5 4" stroke-opacity=".8"/>`}});
  V.forEach((v,i)=>{const cx=x0+i*cw+cw/2,a=analyse(P[i],K);
   s+=`<circle cx="${cx}" cy="${y(v.bass.midi)}" r="7" fill="#0b0906" stroke="${getCol(v.bass.d)}" stroke-width="2.2"/>`;
   v.rh.forEach(n=>s+=`<circle cx="${cx}" cy="${y(n.midi)}" r="6.5" fill="${getCol(n.d)}"/><text x="${cx+11}" y="${y(n.midi)+4}" font-size="10" fill="#9c927c">${pretty(n.name)}</text>`);
@@ -3042,17 +3076,17 @@ function checkSATB(S4,list){const I=list.map(ch=>chordInfo(ch,K)),iss=[],tagged=
  return tagged(iss)}
 
 /* ---------- frames ---------- */
-const VCOL=['#c8473b','#8fbf6a','#ece2c8','#f0d48a'];
+const VCOL=['#d15e5d','#9dc995','#ece2c8','#f0d48a'];
 function frameSVG(cols,labels,opt={}){const all=cols.flat(),lo=Math.min(...all)-2,hi=Math.max(...all)+2,cw=opt.cw||80,x0=46,H=opt.h||260,top=14,bot=36,W=x0+cols.length*cw+10;
  const y=m=>top+(hi-m)/(hi-lo)*(H-top-bot);let s=`<svg width="${W}" height="${H}">`;
  for(let m=Math.ceil(lo/12)*12;m<=hi;m+=12)s+=`<line x1="${x0-6}" x2="${W}" y1="${y(m)}" y2="${y(m)}" stroke="#2a2418" stroke-dasharray="3 5"/><text x="${x0-10}" y="${y(m)+4}" fill="#6f6650" font-size="10" text-anchor="end">C${m/12-1}</text>`;
- (opt.hl||[]).forEach(i=>s+=`<rect x="${x0+i*cw+3}" y="${top-6}" width="${cw-6}" height="${H-bot-top+12}" rx="10" fill="rgba(200,71,59,.12)"/>`);
+ (opt.hl||[]).forEach(i=>s+=`<rect x="${x0+i*cw+3}" y="${top-6}" width="${cw-6}" height="${H-bot-top+12}" rx="10" fill="rgba(209,94,93,.12)"/>`);
  cols.forEach((col,i)=>{const cx=x0+i*cw+cw/2;if(i<cols.length-1){const nx=cx+cw,nc=cols[i+1];
-   if(opt.fixed)col.forEach((m,v)=>{const n=nc[v],held=n===m,bad=(opt.bad||[]).some(b=>b.i===i&&b.v.includes(v));s+=`<path d="M${cx} ${y(m)} C${cx+cw/2} ${y(m)} ${nx-cw/2} ${y(n)} ${nx} ${y(n)}" fill="none" stroke="${bad?'#ff6a5c':held?'#8fbf6a':VCOL[v]}" stroke-width="${bad?3:held?2.6:1.6}" stroke-opacity="${opt.solo>=0&&opt.solo!==v?.15:.85}" ${bad?'stroke-dasharray="6 4"':''}/>`});
-   else{col.slice(1).forEach(m=>{const to=nc.slice(1).reduce((a,b)=>Math.abs(b-m)<Math.abs(a-m)?b:a),held=to===m;s+=`<path d="M${cx} ${y(m)} C${cx+cw/2} ${y(m)} ${nx-cw/2} ${y(to)} ${nx} ${y(to)}" fill="none" stroke="${held?'#8fbf6a':'#c9a24a'}" stroke-width="${held?2.6:1.5}" stroke-opacity=".8"/>`});
-    s+=`<path d="M${cx} ${y(col[0])} C${cx+cw/2} ${y(col[0])} ${nx-cw/2} ${y(nc[0])} ${nx} ${y(nc[0])}" fill="none" stroke="#c8473b" stroke-width="1.6" stroke-dasharray="5 4"/>`}}});
+   if(opt.fixed)col.forEach((m,v)=>{const n=nc[v],held=n===m,bad=(opt.bad||[]).some(b=>b.i===i&&b.v.includes(v));s+=`<path d="M${cx} ${y(m)} C${cx+cw/2} ${y(m)} ${nx-cw/2} ${y(n)} ${nx} ${y(n)}" fill="none" stroke="${bad?'#ff6a5c':held?'#9dc995':VCOL[v]}" stroke-width="${bad?3:held?2.6:1.6}" stroke-opacity="${opt.solo>=0&&opt.solo!==v?.15:.85}" ${bad?'stroke-dasharray="6 4"':''}/>`});
+   else{col.slice(1).forEach(m=>{const to=nc.slice(1).reduce((a,b)=>Math.abs(b-m)<Math.abs(a-m)?b:a),held=to===m;s+=`<path d="M${cx} ${y(m)} C${cx+cw/2} ${y(m)} ${nx-cw/2} ${y(to)} ${nx} ${y(to)}" fill="none" stroke="${held?'#9dc995':'#c9a24a'}" stroke-width="${held?2.6:1.5}" stroke-opacity=".8"/>`});
+    s+=`<path d="M${cx} ${y(col[0])} C${cx+cw/2} ${y(col[0])} ${nx-cw/2} ${y(nc[0])} ${nx} ${y(nc[0])}" fill="none" stroke="#d15e5d" stroke-width="1.6" stroke-dasharray="5 4"/>`}}});
  cols.forEach((col,i)=>{const cx=x0+i*cw+cw/2;col.forEach((m,v)=>{const sel=opt.sel&&opt.sel.i===i&&opt.sel.v===v;
-   s+=`<circle cx="${cx}" cy="${y(m)}" r="${sel?9:6.5}" fill="${opt.fixed?VCOL[v]:(v===0?'#0b0906':'#c9a24a')}" stroke="${sel?'#fff':v===0&&!opt.fixed?'#c8473b':'none'}" stroke-width="2.2" ${opt.click?`data-sv="${i},${v}" style="cursor:pointer"`:''} opacity="${opt.solo>=0&&opt.solo!==v?.25:1}"/>`;
+   s+=`<circle cx="${cx}" cy="${y(m)}" r="${sel?9:6.5}" fill="${opt.fixed?VCOL[v]:(v===0?'#0b0906':'#c9a24a')}" stroke="${sel?'#fff':v===0&&!opt.fixed?'#d15e5d':'none'}" stroke-width="2.2" ${opt.click?`data-sv="${i},${v}" style="cursor:pointer"`:''} opacity="${opt.solo>=0&&opt.solo!==v?.25:1}"/>`;
    if(opt.names)s+=`<text x="${cx+11}" y="${y(m)+4}" font-size="10" fill="#9c927c">${opt.names[i][v]}</text>`});
   s+=`<text x="${cx}" y="${H-12}" text-anchor="middle" font-family="Poiret One,Outfit" font-size="16" fill="#f0d48a">${labels[i]}</text>`});
  return s+'</svg>'}
@@ -3181,7 +3215,7 @@ function kbHTML(lit,lo,hi,extra){let s=`<div class="piano kpiano" ${extra||''}>`
  whites.forEach((m,i)=>{const c=cell(m);s+=`<div class="w ${c?'lit':''}" data-m="${m}" style="left:${i*ww}%;width:${ww}%;--c:${c?c.c:''}">${c?c.lab:''}${mod(m,12)===0?`<span class="c">${m===60?'Middle C':'C'+(m/12-1)}</span>`:''}</div>`});
  for(let m=lo;m<=hi;m++)if(!NAT.includes(mod(m,12))){const i=whites.indexOf(m-1)+1,c=cell(m);s+=`<div class="b ${c?'lit':''}" data-m="${m}" style="left:${i*ww-ww*.32}%;width:${ww*.64}%;--c:${c?c.c:''}">${c?c.lab:''}</div>`}
  return s+'</div><div style="height:24px"></div>'}
-const scCol=(t,sc)=>t.d==='1'?'#f0d48a':(sc.ch||[]).includes(t.d)?'#a493d8':'#8fbf6a';
+const scCol=(t,sc)=>t.d==='1'?'#f0d48a':(sc.ch||[]).includes(t.d)?'#a493d8':'#9dc995';
 /* VexFlow: a line of notes with solfa/number under each */
 function drawLine(el,notes,clef,ksig,dur,time){if(!window.Vex){el.innerHTML='<div class="empty">Notation needs an internet connection the first time it loads.</div>';return}ENG.keep(el,drawLine,arguments);
  const VF=Vex.Flow,ks=ksig||null,bars=[[]];notes.forEach(n=>{if(n.bar)bars.push([]);else bars[bars.length-1].push(n)});
@@ -3531,7 +3565,7 @@ function renderClimb4(){const key=C4.key,kn=keyName(key),EX=C4EX.filter(x=>x.l<=
    <div class="cads">${EX.map(x=>`<button class="cad ${x.k===C4.ex?'on':''}" data-c4ex="${x.k}"><b>${x.n}</b><span>${x.st}</span><small>${x.p}</small></button>`).join('')}</div>
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Clap on beats 2 and 4, then sing the root of each chord (do, fa, so) as the bass changes.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c4play>▶ Play</button><button class="mini" data-load="${ex.bars}|${ex.k==='mblues'?'min':'maj'}">⤴ Open in the Gym</button></h3>
-   <div class="bargrid ${L.length===12?'b12':''}">${L.map((c,i)=>{const f=withKey(ex.k==='mblues'?{k:key.k,mode:'min'}:key,()=>analyse(c,ex.k==='mblues'?{k:key.k,mode:'min'}:key).f);return`<div class="bar" id="c4b${i}" style="--c:${FN[f]||'var(--violet)'}"><small>${i+1}</small><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b/g,'♭')}</span></div>`}).join('')}</div>
+   <div class="bargrid ${L.length===12?'b12':''}">${L.map((c,i)=>{const f=withKey(ex.k==='mblues'?{k:key.k,mode:'min'}:key,()=>analyse(c,ex.k==='mblues'?{k:key.k,mode:'min'}:key).f);return`<div class="bar" id="c4b${i}" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><small>${i+1}</small><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b/g,'♭')}</span></div>`}).join('')}</div>${FNKEY}
    ${L.length===12?`<div class="note" style="margin-top:8px">Line 1: the statement · Line 2: the statement again, over IV · Line 3: the answer, with the turnaround (bar 12) pulling back to the top.</div>`:''}
   </section>
  </div>
@@ -3612,7 +3646,7 @@ function c5Play(onStep){const{list,key}=c5List();stopAll();const a=ac(),V=voiceP
  run();run();PLAY.timers.push(setTimeout(stopAll,(t-a.currentTime)*1000+300))}
 function c5Wheel(){const R=86,cx=120,cy=120;let s=`<svg viewBox="0 0 240 240" class="wheel">`;s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#3a3226" stroke-dasharray="4 5"/>`;
  C5LOOP.forEach((r,i)=>{const a=-Math.PI/2+i*Math.PI/2,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a),on=C5.rot===i,f=analyse(parseRoman(r,C5.key),C5.key).f;
-  s+=`<g class="wn ${on?'on':''}" data-c5rot="${i}"><circle cx="${x}" cy="${y}" r="30" style="stroke:${FN[f]}"/><text x="${x}" y="${y-2}" text-anchor="middle" class="r">${r}</text><text x="${x}" y="${y+15}" text-anchor="middle" class="c">${pretty(parseRoman(r,C5.key).root)}${r==='vi'?'m':''}</text></g>`});
+  s+=`<g class="wn ${on?'on':''}" data-c5rot="${i}"><circle cx="${x}" cy="${y}" r="30" style="stroke:${FN[f]}"/><text class="f" x="${x+(FNL(f).length>1?32:27)}" y="${y-24}" text-anchor="middle" style="fill:${FN[f]}">${FNL(f)}</text><text x="${x}" y="${y-2}" text-anchor="middle" class="r">${r}</text><text x="${x}" y="${y+15}" text-anchor="middle" class="c">${pretty(parseRoman(r,C5.key).root)}${r==='vi'?'m':''}</text></g>`});
  s+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" class="ctr">start on</text><text x="${cx}" y="${cy+18}" text-anchor="middle" class="ctr big">${C5LOOP[C5.rot]}</text></svg>`;return s}
 function renderClimb5(){const key=C5.key,kn=keyName(key),F=C5FAM.filter(x=>x.l<=S.level);if(!F.find(x=>x.k===C5.fam))C5.fam='pop';const{list,key:lk}=c5List(),rot=C5ROT[C5.rot];
  const keySel=C5KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
@@ -3629,7 +3663,7 @@ function renderClimb5(){const key=C5.key,kn=keyName(key),F=C5FAM.filter(x=>x.l<=
    <div class="lbl" style="margin-top:14px">Relatives of the loop</div>
    <div class="cads">${F.map(x=>`<button class="cad ${x.k===C5.fam?'on':''}" data-c5fam="${x.k}"><b>${x.n}</b><span>${x.r.replace(/ /g,'–')}</span><small>${x.p}</small></button>`).join('')}</div></section>
   <section class="card"><h3>See · the loop<span class="sp"></span><button class="mini gold" data-c5play>▶ Play twice</button><button class="mini" data-c5gym>⤴ Open in the Gym</button></h3>
-   <div class="bargrid">${list.map((c,i)=>{const f=withKey(lk,()=>analyse(c,lk).f);const ch=chordOf(c.root,c.q,c.inv);return`<div class="bar" id="c5b${i}" style="--c:${FN[f]||'var(--violet)'}"><small>${c.beats} beat${c.beats>1?'s':''}</small><b>${pretty(ch.sym)}${C5.v.pedal?(mod(pcOf(c.root),12)===lk.k?'':'/'+pretty(KEYN[lk.mode][lk.k])):c.inv?'/'+pretty(ch.bass.name):''}</b><span>${c.rn.replace(/b/g,'♭')}</span></div>`}).join('')}</div>
+   <div class="bargrid">${list.map((c,i)=>{const f=withKey(lk,()=>analyse(c,lk).f);const ch=chordOf(c.root,c.q,c.inv);return`<div class="bar" id="c5b${i}" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><small>${c.beats} beat${c.beats>1?'s':''}</small><b>${pretty(ch.sym)}${C5.v.pedal?(mod(pcOf(c.root),12)===lk.k?'':'/'+pretty(KEYN[lk.mode][lk.k])):c.inv?'/'+pretty(ch.bass.name):''}</b><span>${c.rn.replace(/b/g,'♭')}</span></div>`}).join('')}</div>${FNKEY}
    <div class="lbl" style="margin-top:14px">Same loop, new metre <span class="note">(opens in the Gym, one chord per bar)</span></div>
    <div class="chips">${[['4/4','backbeat','4/4 backbeat (pop)'],['6/8','pulse','6/8 ballad'],['3/4','pulse','3/4 waltz'],['6/8','hemiola','6/8 hemiola (3+3 / 2+2+2)'],['7/8','pulse','7/8 (2+2+3)'],['4/4','swing','4/4 swing']].map(([m,p,l])=>`<button class="chip" data-c5met="${m},${p}">${l}</button>`).join('')}</div>
    <div class="lbl" style="margin-top:14px">Producer's tricks: change the colour, keep the loop</div>
@@ -3734,7 +3768,7 @@ function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.f
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Sing the bass in solfa as it plays: it falls a 5th or climbs a 4th each time, and both land on the same note name.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c6play>▶ Play</button><button class="mini" data-load="${c6Str(ex,key)}|${mode}">⤴ Open in the Gym</button></h3>
    <div class="wheelbox c6box">${c6Wheel(L,key,lab)}<div>
-    <div class="bargrid">${L.map((c,i)=>{const f=fnOf(c,key);const fall=i<L.length-1?c6Fall(c,L[i+1]):null;return`<div class="bar" style="--c:${FN[f]||'var(--violet)'}"><small>${pairs?(i<6?(i<2?'model':'copy '+(i>>1)):'cadence'):''}</small><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b(?=[IVX])/g,'♭')}${fall&&fall!=='other'?` <em class="${fall}">↓${fall==='d5'?'d5':'5'}</em>`:''}</span></div>`}).join('')}</div>
+    <div class="bargrid c6grid">${L.map((c,i)=>{const f=fnOf(c,key);const fall=i<L.length-1?c6Fall(c,L[i+1]):null;return`<div class="bar" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><small>${pairs?(i<6?(i<2?'model':'copy '+(i>>1)):'cadence'):''}</small><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b(?=[IVX])/g,'♭')}${fall&&fall!=='other'?` <em class="${fall}">↓${fall==='d5'?'d5':'5'}</em>`:''}</span></div>`}).join('')}</div>${FNKEY}
     <div class="legend c6leg"><span style="--c:#c9a24a">root falls a perfect 5th</span><span style="--c:#a493d8">a diminished 5th (stays in the key)</span><span style="--c:#6d6553">lead-in</span></div>
    </div></div>
    <div class="staff" id="c6Staff"></div>
@@ -3825,7 +3859,7 @@ function c7SecRn(rn){return /\//.test(rn)}
 function c7Name(ex,mode){const s=ex[mode];if(!s)return'';const sec=s.split(' ').find(c7SecRn),[a,b]=sec.split('/');return(ex.k==='dec'?'Interrupted ':'')+a.replace('°7','°7')+' of '+b}
 function c7Target(ex,mode){const sec=ex[mode].split(' ').find(c7SecRn);return sec.split('/')[1]}
 function c7Bars(L,key){return L.map((c,i)=>{const sec=c7SecRn(c.rn),f=sec?'C':fnOf(c,key),nw=sec?c7New(c,key):[];
-  return`<div class="bar ${sec?'sec':''}" style="--c:${FN[f]||'var(--violet)'}"><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b(?=[IVX])/g,'♭')}</span>${nw.length?`<em class="nn">${nw.map(t=>`${pretty(t.name)} <i>${c7Sol(t.name,key)}</i>`).join(' · ')}</em>`:''}</div>`}).join('')}
+  return`<div class="bar ${sec?'sec':''}" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b(?=[IVX])/g,'♭')}</span>${nw.length?`<em class="nn">${nw.map(t=>`${pretty(t.name)} <i>${c7Sol(t.name,key)}</i>`).join(' · ')}</em>`:''}</div>`}).join('')}
 function c7Targets(key){return key.mode==='maj'?['ii','iii','IV','V','vi']:['III','iv','V','VI','VII']}
 function c7Base(mode){return mode==='maj'?['I','vi','IV','ii','V','I']:['i','VI','iv','V','i']}
 function c7Built(mode){const out=[];c7Base(mode).forEach((rn,i)=>{if(C7.ins[mode+i])out.push('V7/'+rn);out.push(rn)});return out.join(' ')}
@@ -3848,7 +3882,7 @@ function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.f
    <div class="cads">${EX.map(x=>`<button class="cad ${x.k===C7.ex?'on':''}" data-c7ex="${x.k}"><b>${c7Name(x,mode)}</b><span>${x[mode].split(' ').join('–')}</span><small>${x.p}</small></button>`).join('')}</div>
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Listen for the one note that doesn't belong to the key, and sing where it goes.</p></section>
   <section class="card"><h3>See · ${c7Name(ex,mode)}<span class="sp"></span><button class="mini gold" data-c7play>▶ Play</button><button class="mini" data-load="${ex[mode]}|${mode}">⤴ Open in the Gym</button></h3>
-   <div class="bargrid c7grid" id="c7Bars">${c7Bars(L,key)}</div>
+   <div class="bargrid c7grid" id="c7Bars">${c7Bars(L,key)}</div>${FNKEY}
    <div class="legend"><span style="--c:var(--violet)">secondary dominant (colour)</span><span style="--c:var(--goldhi)">its new note, with solfa</span></div>
    <div class="staff" id="c7Staff"></div>
    <p class="note" style="margin:8px 0 0">${ex.k==='lt'?'vii°7/V is built on the leading note of V. Its new note (fi in major) rises to so, and the diminished 7th falls by step.':ex.k==='dec'?'The new note still rises a semitone, but the bass goes to IV instead of vi: the same swerve as an interrupted cadence, one level down.':ex.k==='IV'?'Here the new note is the 7th (ta in major). A chord 7th falls, so ta falls to la, the 3rd of IV.':'The new note is the 3rd of the secondary dominant: a temporary leading note. It rises a semitone to the root of the chord it points to, just as ti rises to do.'}</p></section>
@@ -3932,7 +3966,7 @@ function c8Choice(mode){const ch=C8SW[mode].map((alts,i)=>{const A=alts.filter(a
 function c8Built(mode){return c8Choice(mode).ch.join(' ')}
 function c8NewNotes(ch,key){const set=c7Scale(key);return chordOf(ch.root,ch.q,0).tones.filter(t=>!set.includes(mod(t.midi,12)))}
 function c8Bars(L,key,id){return`<div class="bargrid c7grid" ${id?`id="${id}"`:''}>${L.map(c=>{const nw=c8NewNotes(c,key),f0=fnOf(c,key),f=nw.length&&!(MD_MAJOR&&f0==='MD')?'C':f0;const ch=chordOf(c.root,c.q,c.inv||0),aug=/\+6/.test(c.q);
-  return`<div class="bar ${nw.length?'sec':''} ${f==='MD'?'md':''}" style="--c:${FN[f]||'var(--violet)'}"><b>${aug?pretty(c.root)+'<small class="a6"> '+c.q.replace('+6','⁺⁶')+'</small>':pretty(ch.sym)+(c.inv?'/'+pretty(ch.bass.name):'')}</b><span>${c8Rn(c.rn)}</span>${nw.length?`<em class="nn">${nw.map(t=>`${pretty(t.name)} <i>${c7Sol(t.name,key)}</i>`).join(' · ')}</em>`:''}</div>`}).join('')}</div>`}
+  return`<div class="bar ${nw.length?'sec':''} ${f==='MD'?'md':''}" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><b>${aug?pretty(c.root)+'<small class="a6"> '+c.q.replace('+6','⁺⁶')+'</small>':pretty(ch.sym)+(c.inv?'/'+pretty(ch.bass.name):'')}</b><span>${c8Rn(c.rn)}</span>${nw.length?`<em class="nn">${nw.map(t=>`${pretty(t.name)} <i>${c7Sol(t.name,key)}</i>`).join(' · ')}</em>`:''}</div>`}).join('')}</div>${FNKEY}`}
 function c8PlayEx(){const ex=C8EX.find(x=>x.k===C8.ex),r=realise(ex[C8.key.mode],C8.key);playCols(r.sat,'climb',i=>document.querySelectorAll('#c8Bars .bar').forEach((b,j)=>b.classList.toggle('now',j===i)))}
 function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.filter(x=>x.l<=S.level&&x[mode]);
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
@@ -4097,7 +4131,7 @@ function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.f
    <p class="note" style="margin:10px 0 0">Tap one to hear it with a bass and a comping piano. Then listen again and sing only the guide tones.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c9play>▶ Play</button><button class="mini" data-load="${ex[mode]}|${mode}">⤴ Open in the Gym</button></h3>
    <div class="chips">${VT.map(([k,l])=>`<button class="chip ${C9.vt===k?'on':''}" data-c9vt="${k}">${l}</button>`).join('')}<span class="note" style="margin-left:8px">First chord:</span>${['A','B'].map(f=>`<button class="chip ${C9.start===f?'on':''}" data-c9st="${f}" title="${C9.vt==='rootless'?(f==='A'?'Start with the 3rd at the bottom':'Start with the 7th at the bottom'):(f==='A'?'7th on top':'3rd on top')}">${C9.vt==='rootless'?(f==='A'?'A form':'B form'):(f==='A'?'7th on top':'3rd on top')}</button>`).join('')}</div>
-   <div class="bargrid c7grid" id="c9Bars" style="margin-top:10px">${V.map(v=>`<div class="bar" style="--c:${({m7:'var(--gold)',m7b5:'var(--gold)','7':'var(--red)','7b9':'var(--red)',maj7:'var(--green)'})[v.ch.kind]}"><b>${c9Sym(v.ch,C9.vt)}</b><span>${v.ch.rn.replace(/b(?=[IVX])/g,'♭')}${v.form?` · ${v.form}`:''}</span><em class="nn">${c9Guide(v.ch).map(n=>pretty(n.name)).join(' · ')}</em></div>`).join('')}</div>
+   <div class="bargrid c7grid" id="c9Bars" style="margin-top:10px">${V.map(v=>`<div class="bar" style="--c:${({m7:'var(--gold)',m7b5:'var(--gold)','7':'var(--red)','7b9':'var(--red)',maj7:'var(--green)'})[v.ch.kind]}" data-fn="${({m7:'PD',m7b5:'PD','7':'D','7b9':'D',maj7:'T'})[v.ch.kind]||'C'}"><b>${c9Sym(v.ch,C9.vt)}</b><span>${v.ch.rn.replace(/b(?=[IVX])/g,'♭')}${v.form?` · ${v.form}`:''}</span><em class="nn">${c9Guide(v.ch).map(n=>pretty(n.name)).join(' · ')}</em></div>`).join('')}</div>${FNKEY}
    <div class="legend"><span style="--c:var(--goldhi)">guide tones: 3rd · 7th</span><span>Upper voices move ${mv} semitones in total</span></div>
    <div class="staff" id="c9Staff"></div>
    <p class="note" style="margin:8px 0 0">${C9.vt==='guide'?'Two notes per chord, and they hardly move: the 7th of each chord slips down a semitone or a tone to become the 3rd of the next, while the other guide tone holds still.':C9.vt==='shell'?'Root in the bass, guide tones above. This is how jazz guitarists and big-band pianists comp: three notes that say exactly what each chord is.':'The bass player has the root, so the pianist leaves it out. The A form has the 3rd at the bottom, the B form the 7th. In a ii–V–I they usually alternate (A–B–A or B–A–B), so the hand barely moves. The V chord gets its 13th (or ♭9 and ♭13 in minor), the I chord its 9th.'}</p></section>
@@ -4178,7 +4212,7 @@ function c10Wheel(key){const R=84,cx=110,cy=110,ord=[0,7,2,9,4,11,6,1,8,3,10,5],
  const V=parseRoman('V7',key),S2=parseRoman('bII7',key),tv=chordOf(V.root,'7',0).tones,ts=chordOf(S2.root,'7',0).tones;
  const poly=(T,col)=>`<polygon points="${T.map(t=>pos(t.midi).join(',')).join(' ')}" fill="${col}" fill-opacity=".10" stroke="${col}" stroke-width="2"/>`;
  const sh=[tv[1],tv[3]];let s=`<svg viewBox="0 0 220 220" class="wheel c10w">`;
- s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#3a3226" stroke-dasharray="4 5"/>`+poly(tv,'#c8473b')+poly(ts,'#a493d8');
+ s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#3a3226" stroke-dasharray="4 5"/>`+poly(tv,'#d15e5d')+poly(ts,'#a493d8');
  const[a1,b1]=[pos(sh[0].midi),pos(sh[1].midi)];s+=`<line x1="${a1[0]}" y1="${a1[1]}" x2="${b1[0]}" y2="${b1[1]}" stroke="#f0d48a" stroke-width="3.5"/>`;
  const lab={};[...tv,...ts].forEach(t=>{const p=mod(t.midi,12),n=pretty(t.name);lab[p]=lab[p]?(lab[p].split('/').includes(n)?lab[p]:lab[p]+'/'+n):n});
  for(let p=0;p<12;p++){const[x,y]=pos(p),on=lab[p],sh2=sh.some(t=>mod(t.midi,12)===p);s+=`<circle cx="${x}" cy="${y}" r="${on?14:4}" fill="${sh2?'#f0d48a':on?'#14110c':'#3a3226'}" stroke="${on?'#c9a24a':'none'}"/>${on?`<text x="${x}" y="${y+4}" text-anchor="middle" style="font-size:${on.length>3?8.5:11}px;font-family:Outfit;font-weight:600;fill:${sh2?'#0b0906':'#ece2c8'}">${on}</text>`:''}`}
@@ -4207,7 +4241,7 @@ function renderClimb10(){const key=C10.key,mode=key.mode,kn=keyName(key),EX=C10E
    <p class="note" style="margin:10px 0 0">Play the original, then the substitute. Sing the bass line of each: the substitute moves by semitones.</p></section>
   <section class="card"><h3>See · ${ex.n}${C10.sub?'':' (original)'}<span class="sp"></span><button class="mini gold" data-c10play>▶ Play</button><button class="mini" data-load="${c10Str(ex,mode,C10.sub)}|${mode}">⤴ Open in the Gym</button></h3>
    <div class="chips">${[['guide','Guide tones'],['shell','Shells'],['rootless','Rootless']].map(([k,l])=>`<button class="chip ${C10.vt===k?'on':''}" data-c10vt="${k}">${l}</button>`).join('')}</div>
-   <div class="bargrid c7grid" id="c10Bars" style="margin-top:10px">${V.map((v,i)=>{const subbed=v.ch.rn!==O[i].rn;return`<div class="bar ${subbed?'sec':''}" style="--c:${({m7:'var(--gold)',m7b5:'var(--gold)','7':'var(--red)','7b9':'var(--red)',maj7:'var(--green)'})[v.ch.kind]}"><b>${c9Sym(v.ch,C10.vt)}</b><span>${v.ch.rn.replace(/b(?=[IVXivx])/g,'♭')}${subbed?` <i class="note">for ${O[i].rn}</i>`:''}</span><em class="nn">${c9Guide(v.ch).map(n=>pretty(n.name)).join(' · ')}</em></div>`}).join('')}</div>
+   <div class="bargrid c7grid" id="c10Bars" style="margin-top:10px">${V.map((v,i)=>{const subbed=v.ch.rn!==O[i].rn;return`<div class="bar ${subbed?'sec':''}" style="--c:${({m7:'var(--gold)',m7b5:'var(--gold)','7':'var(--red)','7b9':'var(--red)',maj7:'var(--green)'})[v.ch.kind]}" data-fn="${({m7:'PD',m7b5:'PD','7':'D','7b9':'D',maj7:'T'})[v.ch.kind]||'C'}"><b>${c9Sym(v.ch,C10.vt)}</b><span>${v.ch.rn.replace(/b(?=[IVXivx])/g,'♭')}${subbed?` <i class="note">for ${O[i].rn}</i>`:''}</span><em class="nn">${c9Guide(v.ch).map(n=>pretty(n.name)).join(' · ')}</em></div>`}).join('')}</div>${FNKEY}
    <div class="legend"><span>Bass: <b style="color:var(--goldhi)">${bassLine}</b></span>${C10.sub?`<span>Original: ${bassO}</span>`:''}</div>
    <div class="staff" id="c10Staff"></div>
    <p class="note" style="margin:8px 0 0">${C10.vt==='guide'?'Switch between original and substitute: with guide tones only, nothing changes except the spelling. The 3rd and 7th of the two dominants are the same two notes.':'Compare the guide tones under each chord symbol with the original: the substituted dominant has the same two, spelled the other way round.'}</p></section>
@@ -4342,7 +4376,7 @@ function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V.filter(v=>v.l
    <div class="cads">${VS.map(v=>`<button class="cad ${v.k===C11.ver?'on':''}" data-c11v="${v.k}"><b>${v.n}</b><span>${v.r.split(' ').map(c11Rn).join(' · ')}</span><small>${v.p}</small></button>`).join('')}</div>
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Sing the melody each time: it never changes. What does each version make it mean?</p></section>
   <section class="card"><h3>See · ${ver.n}<span class="sp"></span><button class="mini gold" data-c11play>▶ Play</button><button class="mini" data-load="${ver.r}|maj">⤴ Open in the Gym</button></h3>
-   <div class="bargrid c7grid" id="c11Slots">${L.map((c,i)=>{const d=c11Fit(c,mel[i]),ch=chordOf(c.root,c.q,c.inv);return`<div class="bar" style="--c:${FN[fnOf(c,key)]||'var(--violet)'}"><small>${i+1}</small><b>${pretty(ch.sym)}${c.inv?'/'+pretty(ch.bass.name):''}</b><span>${c11Rn(c.rn)}</span><em class="nn">${pretty(mel[i].name)} = ${C11DN[d]||d}</em></div>`}).join('')}</div>
+   <div class="bargrid c7grid" id="c11Slots">${L.map((c,i)=>{const d=c11Fit(c,mel[i]),ch=chordOf(c.root,c.q,c.inv);return`<div class="bar" style="--c:${FN[fnOf(c,key)]||'var(--violet)'}" data-fn="${FNL(fnOf(c,key))}"><small>${i+1}</small><b>${pretty(ch.sym)}${c.inv?'/'+pretty(ch.bass.name):''}</b><span>${c11Rn(c.rn)}</span><em class="nn">${pretty(mel[i].name)} = ${C11DN[d]||d}</em></div>`}).join('')}</div>${FNKEY}
    <div class="legend"><span style="--c:var(--goldhi)">the melody note, and which chord note it is</span></div>
    <div class="staff" id="c11Staff"></div></section>
  </div>
@@ -4451,7 +4485,7 @@ function renderClimb12(){const L=Math.max(S.level,4),tabs=[['vamp','Modal vamps'
   <section class="card"><h3>Hear · a vamp in every mode<span class="sp"></span><label class="note">Tonic <select id="c12Ton">${tonSel}</select></label></h3>
    <div class="cads">${MODES.map(m=>`<button class="cad ${m.k===C12.mode?'on':''}" data-c12m="${m.k}"><b>${m.n}</b><span>${m.r.replace(/b(?=[IVX])/g,'♭').replace(' ','–')}</span><small>${m.feel}</small></button>`).join('')}</div></section>
   <section class="card"><h3>See · ${vp.m.n} on ${pretty(vp.tn)}<span class="sp"></span><button class="mini gold" data-c12play="vamp">▶ Play the vamp</button><button class="mini" data-load="${vp.m.r}|${vp.m.mode}">⤴ Gym</button></h3>
-   <div class="bargrid">${vp.L.map(c=>`<div class="bar" style="--c:var(--violet)"><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${vp.m.r.split(' ')[vp.L.indexOf(c)].replace(/b(?=[IVX])/g,'♭')}</span></div>`).join('')}</div>
+   <div class="bargrid">${vp.L.map(c=>`<div class="bar" style="--c:var(--violet)" data-fn="C"><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${vp.m.r.split(' ')[vp.L.indexOf(c)].replace(/b(?=[IVX])/g,'♭')}</span></div>`).join('')}</div>${FNKEY}
    <p class="desc">The <b>character note</b> of ${vp.m.n} is <b style="color:var(--violet)">${pretty(vp.cn.name)}</b>, the ${vp.m.chn}. The vamp is built so that one of its two chords contains it: that is how the mode announces itself without a cadence. Improvise over it on the ${vp.m.n} scale and lean on ${pretty(vp.cn.name)}.</p>
    <p class="note">In a vamp nothing pulls home: there is no V–I. The tonic is home because it is where the groove starts, where the bass sits and where the melody keeps returning (climb 5's loop, with the function taken out). Explore the modes themselves in Level 1, Keys, Scales & Intervals.</p></section></div>`;
  if(C12.tab==='plane')body=`<div class="grid clgrid">
@@ -5112,7 +5146,7 @@ function c2Draw(el,M,spc,pos,cpDn,opt){opt=opt||{};if(!window.Vex){el.innerHTML=
  Object.values(tieFrom).forEach(t=>ENG.tie(S,t.from,t.to));
  // interval numbers between the staves, centred on the counterpoint note
  if(opt.ivs!==false)res.V.forEach(v=>{if(!v.p)return;const X=xs[v.bar+'_'+v.beat];if(!X)return;const B=S.bars[X.b],y=(B.staves[0].getYForLine(4)+B.staves[1].getYForLine(0))/2+4.5/k;
-  const isBad=bad[v.a]&&res.iss.some(z=>z.sev==='err'&&z.att.includes(v.a)&&z.bars.includes(v.bar)),c=v.iv.cls==='P'?'#f0d48a':v.iv.cls==='I'?'#8fbf6a':'#a493d8';
+  const isBad=bad[v.a]&&res.iss.some(z=>z.sev==='err'&&z.att.includes(v.a)&&z.bars.includes(v.bar)),c=v.iv.cls==='P'?'#f0d48a':v.iv.cls==='I'?'#9dc995':'#a493d8';
   const t=ENG.txt(S,X.x,y,v.iv.gen,'iv',{anchor:'middle',fill:isBad?'#e0604f':c,cls:'ivn'});if(isBad)t.setAttribute('font-weight','700');if(!v.on)t.setAttribute('font-style','italic')});
  ENG.finish(S)}
 /* the ladder: tap a note in each column */
@@ -6317,7 +6351,7 @@ function c13TransDraw(ctx){const sub=c13Sub();if(!$('c13Tr'))return;const S=c13L
  c13Draw($('c13Tr'),[{L:S},{L:c13TLine('inv',sub,ctx),col:'#c9b98f'},{L:c13TLine('aug',sub,ctx),col:'#a493d8'}],{bw:104});c13Draw($('c13TrDim'),[{L:S}],{half:true,bw:150});
  const T=C13.tr;if(T.sel&&$('c13TC')){const L=c13ComboLines(T.sel.kind,T.sel.d,T.sel.iv,sub,ctx);c13Draw($('c13TC'),L.map((x,i)=>({L:x,col:i?'#c9b98f':'#ece2c8'})),{bw:104})}}
 function c13FugueHTML(ctx){if(!c13Line(c13Sub(),ctx).some(Boolean))return'<p class="note">Write your subject on the ladder first: tap a note in each column. The whole fugue is built from it.</p>';const sub=c13Sub(),cs=c13CurCS(),P=C13.plan,F=c13Fugue(sub,cs,ctx),pairs=[[0,1],[0,2],[1,2]],iss=[];pairs.forEach(([a,b])=>c13Pair(F.V[a],F.V[b]).filter(x=>x.sev==='err'&&!(b===2&&F.ped&&x.cells.every(c=>c>=F.ped[0]&&c<=F.ped[1]))).forEach(x=>iss.push({...x,msg:['top','middle','bottom'][a]+' and '+['top','middle','bottom'][b]+': '+x.msg})));
- const opt=(k,v,lab)=>`<button class="chip ${P[k]===v?'on':''}" data-c13pl="${k},${v}">${lab}</button>`,cols=['#c9a24a','#8fbf6a','#a493d8','#7fb3c8','#c9b98f','#e0a060'];
+ const opt=(k,v,lab)=>`<button class="chip ${P[k]===v?'on':''}" data-c13pl="${k},${v}">${lab}</button>`,cols=['#c9a24a','#9dc995','#a493d8','#7fb3c8','#c9b98f','#e0a060'];
  return`<div class="go" style="margin-bottom:6px"><span class="lbl" style="margin:0 8px 0 0">Middle entry 1</span>${opt('me1','rel',ctx.modal?'on the 3rd':'relative key')}${opt('me1','sub',ctx.modal?'on the 4th':'subdominant')}${opt('me1','dom',ctx.modal?'on the 5th':'dominant')}</div>
  <div class="go" style="margin-bottom:6px"><span class="lbl" style="margin:0 8px 0 0">Middle entry 2</span>${opt('me2','none','none')}${opt('me2','rel',ctx.modal?'on the 3rd':'relative key')}${opt('me2','sub',ctx.modal?'on the 4th':'subdominant')}</div>
  <div class="go" style="margin-bottom:6px"><span class="lbl" style="margin:0 8px 0 0">Episodes</span>${opt('ep','3rd','sequence in 3rds')}${opt('ep','6th','sequence in 6ths')}<span class="lbl" style="margin:0 8px 0 14px">Ending</span><button class="chip ${P.stretto?'on':''}" data-c13pl="stretto,${!P.stretto}">stretto</button><button class="chip ${P.pedal?'on':''}" data-c13pl="pedal,${!P.pedal}">dominant pedal</button><span class="sp"></span><button class="mini gold" data-c13play="fugue">▶ Play the whole fugue</button><button class="mini" data-c13fsave>✎ Save the plan</button></div>
@@ -6366,7 +6400,7 @@ const ANV=[['',880],['.t',560],['.p',336]],ANIDXW=186;
 /* which engraving and layout fit this panel: the index sits beside the score when there is room, otherwise it is a chip row above it */
 /* FA-6: the frame hugs the engraving (its width + 34 px); the index sits beside it whenever engraving + 34 + 16 + 186 px fits */
 function anLayout(){const w=$('anWrap');const W=w?w.clientWidth:0,phone=W<520,avail=phone?document.documentElement.clientWidth-16:W-34;let suf='.p',ew=280;for(const[s,x]of ANV)if(avail>=x){suf=s;ew=x;break}const side=!phone&&W>=ew+34+16+ANIDXW;return{side,phone,suf}}
-const ANCOL={gold:'rgba(201,162,74,.20)',green:'rgba(143,191,106,.18)',violet:'rgba(164,147,216,.20)',tan:'rgba(201,185,143,.12)'},ANLINE={gold:'#c9a24a',green:'#8fbf6a',violet:'#a493d8',tan:'#c9b98f'};
+const ANCOL={gold:'rgba(201,162,74,.20)',green:'rgba(157,201,149,.18)',violet:'rgba(164,147,216,.20)',tan:'rgba(201,185,143,.12)'},ANLINE={gold:'#c9a24a',green:'#9dc995',violet:'#a493d8',tan:'#c9b98f'};
 /* NSW cadence names, two words, for the tag in the score; the full sentence stays in the table under it. A label that names no cadence gets no tag. */
 const anCadTag=t=>{const x=/^(Perfect|Imperfect|Plagal|Interrupted)\b/.exec(t||'');return x?x[1]+' cadence':null};
 /* the section index: form sections, or for the chorales (no form layer) the phrases, each ending at a fermata cadence */
@@ -6476,10 +6510,10 @@ function anProg(){if(!P.length)return null;const rows=[];let beat=0;const isV=x=
 function anProgHTML(){const r=anProg();if(!r)return`<p class="note">The Gym is empty. Build a progression in the Gym (or send one from any climb or form), then come back here.</p><button class="mini gold" data-room="gym">Go to the Gym</button>`;
  const FL={T:'tonic',PD:'predominant',D:'dominant',MD:'modal dominant',C:'colour'};
  return`<p class="note" style="margin:0 0 10px">${P.length} chords, ${Number.isInteger(r.bars)?r.bars:r.bars.toFixed(1)} bars in ${keyName(K)}. Every label below is worked out from the chords; the tags show which tradition each judgement comes from.</p>
- <div class="clrn" style="flex-wrap:wrap">${r.rows.map(x=>`<span style="--c:${FN[x.f]||'var(--violet)'}">${x.num}<small>${x.sym} · bar ${x.bar}</small>${x.cad?`<small style="color:var(--goldhi)">${cadWord(x.cad)}</small>`:''}</span>`).join('')}</div>
+ <div class="clrn" style="flex-wrap:wrap">${r.rows.map(x=>`<span style="--c:${FN[x.f]||'var(--violet)'}" data-fn="${FNL(x.f)}">${x.num}<small>${x.sym} · bar ${x.bar}</small>${x.cad?`<small style="color:var(--goldhi)">${cadWord(x.cad)}</small>`:''}</span>`).join('')}</div>${FNKEY}
  <table class="cadtab" style="margin-top:12px"><tr><th>What</th><th>Found</th><th>Tradition</th></tr>
  <tr><td><b>Key</b></td><td>${keyName(K)}; ${r.tonic} of ${r.rows.length} chords are tonic-function</td><td><span class="c2src">common practice</span></td></tr>
- <tr><td><b>Functions</b></td><td>${r.rows.map(x=>`<span style="color:${FN[x.f]||'var(--violet)'}">${x.f}</span>`).join(' ')} <span class="note">(T tonic, PD predominant, D dominant, MD modal dominant, C colour)</span></td><td><span class="c2src">common practice</span></td></tr>
+ <tr><td><b>Functions</b></td><td>${r.rows.map(x=>`<span style="color:${FN[x.f]||'var(--violet)'}">${x.f}</span>`).join(' ')}</td><td><span class="c2src">common practice</span></td></tr>
  <tr><td><b>Cadences</b></td><td>${r.cads.length?r.cads.map(x=>`<b>${cadWord(x.cad)}</b> at the end of bar ${x.phraseEnd}`).join('; '):'none at the end of an even-numbered bar: the phrases never close on I or pause on V'}${r.cads.concat(r.inner).some(x=>x.cad==='less')?`<br>${TERM_NOTE_HTML}`:''}${r.inner.length?`<br><span class="note">Also ${r.inner.length} cadence-like move${r.inner.length>1?'s':''} inside a phrase (${r.inner.map(x=>cadWord(x.cad)+' into bar '+x.bar).join(', ')}): a cadence only counts as punctuation at the end of a phrase.</span>`:''}</td><td><span class="c2src">common practice</span></td></tr>
  <tr><td><b>Phrases</b></td><td>${r.ends.length?`${r.ends.length} phrase ending${r.ends.length>1?'s':''}, at bar ${r.ends.map(x=>x.phraseEnd).join(', ')}${r.ends.length>=2?(r.ends.some(x=>x.cad==='half')&&r.ends[r.ends.length-1].cad==='perfect'?': a question answered by a full stop, like a period':''):''}`:'no cadence lands at the end of an even-numbered bar'}</td><td><span class="c2src">classical</span></td></tr>
  <tr><td><b>Tonicisations</b></td><td>${r.sec.length?r.sec.map(x=>`${x.num} (${x.sym}) in bar ${x.bar}`).join('; '):'none'}</td><td><span class="c2src">common practice</span></td></tr>
@@ -6489,7 +6523,7 @@ function anReportText(){const r=anProg();if(!r)return'';return`Analysis of my pr
 /* ---------- listening map (any recording) ---------- */
 function anMapRows(){if(!AN.map.rows)AN.map.rows=[{t:'0:00',lab:'Intro',note:''}];return AN.map.rows}
 function anMapHTML(){const R=anMapRows(),sec=s=>{const m=String(s||'').match(/^(\d+):(\d{1,2})$/);return m?+m[1]*60+ +m[2]:null},end=sec(AN.map.end),pts=R.map(r=>sec(r.t));const ok=end!=null&&pts.every((p,i)=>p!=null&&(i===0||p>pts[i-1]))&&end>pts[pts.length-1];
- const cols=['#c9a24a','#8fbf6a','#a493d8','#7fb3c8','#c9b98f','#e0a060'],labs=[...new Set(R.map(r=>r.lab))];
+ const cols=['#c9a24a','#9dc995','#a493d8','#7fb3c8','#c9b98f','#e0a060'],labs=[...new Set(R.map(r=>r.lab))];
  return`<label class="note">Recording <input class="sfin" style="width:360px" data-anmapt value="${(AN.map.title||'').replace(/"/g,'&quot;')}" placeholder="artist or composer, title, version"></label>
  <table class="fplan" style="margin-top:10px"><tr><th>Starts at</th><th>Section</th><th>What I hear (texture, instruments, dynamics, key, mood)</th><th></th></tr>${R.map((r,i)=>`<tr><td><input class="sfin" style="width:64px" data-anm="${i},t" value="${r.t}"></td><td><input class="sfin" style="width:120px" data-anm="${i},lab" value="${r.lab.replace(/"/g,'&quot;')}" list="anLabs"></td><td><input class="sfin" style="width:360px" data-anm="${i},note" value="${r.note.replace(/"/g,'&quot;')}"></td><td><button class="mini" data-anmx="${i}">✕</button></td></tr>`).join('')}<tr><td><input class="sfin" style="width:64px" data-anmend value="${AN.map.end||''}" placeholder="end"></td><td colspan="3" class="note">end of the recording</td></tr></table>
  <datalist id="anLabs">${['Intro','Verse','Pre-chorus','Chorus','Bridge','Solo','Outro','Head','A','B','C','Exposition','Development','Recapitulation','Coda','Refrain','Episode','Strain'].map(x=>`<option value="${x}">`).join('')}</datalist>
@@ -7871,7 +7905,7 @@ EAR.blindTonic=k=>{const L=k[0],acc=/♭/.test(k)?-1:/♯/.test(k)?1:0;let m=48+
    Drawn as inline SVG from the Bravura outlines VexFlow already ships (ELGLY), so no extra font is loaded. ---- */
 const ELGLY={"noteheadBlack":"M140 -180C268 -180 425 -62 425 60C425 134 367 180 285 180C127 180 0 63 0 -60C0 -135 62 -180 140 -180Z","noteheadHalf":"M140 -180C377 -180 425 13 425 60C425 134 366 180 282 180C68 180 0 14 0 -60C0 -137 60 -180 140 -180ZM108 -125C78 -125 60 -109 50 -92C46 -84 42 -73 42 -63C42 7 251 121 318 121C346 121 361 108 372 91C376 82 380 73 380 63C380 1 177 -125 108 -125Z","restQuarter":"M112 -55C135 -84 156 -111 174 -141C177 -147 183 -158 183 -161C183 -163 183 -166 181 -167C179 -173 173 -174 166 -174C160 -174 148 -171 143 -170C141 -170 138 -170 137 -170L125 -166C50 -166 1 -233 1 -304C1 -376 63 -446 168 -527C180 -536 194 -540 206 -540C216 -540 226 -537 228 -531C229 -527 230 -524 230 -521C230 -508 219 -497 207 -487C189 -487 173 -448 170 -435C166 -423 164 -410 164 -397C164 -338 194 -292 255 -292C297 -292 344 -308 369 -317L370 -318C376 -320 379 -320 382 -320C386 -320 389 -318 389 -314C389 -297 351 -249 336 -232C281 -166 236 -112 236 -32C236 -30 236 -29 236 -27L238 -17C238 -16 238 -14 238 -13C243 71 295 140 333 199C337 206 338 213 338 220C338 235 333 248 333 248C333 248 120 501 95 526C88 533 78 537 69 537C55 537 40 527 40 507C40 500 42 492 46 484C52 468 134 395 134 291C134 238 112 176 48 108C33 94 27 78 27 66C27 46 42 32 42 32Z","flag8thUp":"M343 -1138C343 -1138 380 -1001 380 -888C380 -708 305 -539 215 -395C141 -281 81 -157 58 -19C53 4 42 13 27 13C12 13 0 9 0 -9L0 -353C95 -370 232 -566 284 -688C305 -737 318 -819 318 -904C318 -969 308 -1037 284 -1102C281 -1110 279 -1117 279 -1123C279 -1146 294 -1159 302 -1165C311 -1171 336 -1162 343 -1138Z","augmentationDot":"M144 0C144 40 112 72 72 72C32 72 0 40 0 0C0 -40 32 -72 72 -72C112 -72 144 -40 144 0Z","timeSig0":"M648 0C648 200 510 361 338 361C167 361 29 200 29 0C29 -199 167 -360 338 -360C510 -360 648 -199 648 0ZM338 317C397 317 446 180 446 10C446 -158 397 -295 338 -295C278 -295 230 -158 230 10C230 180 278 317 338 317Z","timeSig1":"M35 19C35 19 29 10 29 0C29 -7 33 -16 45 -20C50 -22 56 -23 58 -23C72 -23 78 -10 78 -10C78 -10 140 89 156 117C161 127 167 131 170 131C176 131 179 120 179 111L179 -261C179 -294 145 -315 115 -315C105 -315 91 -320 91 -337C91 -353 104 -360 122 -360L429 -360C452 -360 452 -337 452 -337C452 -337 452 -315 431 -315C410 -315 384 -289 384 -265L384 328C384 351 376 360 356 361C336 361 300 356 281 356C253 356 228 357 206 360C203 360 200 361 199 361C184 361 179 347 173 334Z","timeSig2":"M606 -131C606 -114 599 -111 589 -111C577 -111 573 -117 570 -127L569 -128C554 -164 543 -192 513 -192C505 -192 498 -190 488 -187C469 -180 459 -179 445 -171C416 -160 348 -137 289 -137C271 -137 252 -140 236 -145C268 -94 390 -50 422 -42C523 -14 613 27 613 147C613 300 464 366 330 366C229 366 140 357 69 275C45 245 29 209 29 170C29 150 33 130 42 108C63 63 108 29 160 29C248 29 261 120 261 156C261 242 161 246 161 275C164 295 190 330 275 330C403 330 405 233 405 192C405 60 297 -39 193 -102C114 -153 58 -223 33 -317L32 -321C32 -340 48 -370 69 -370C101 -370 118 -282 203 -282C261 -282 282 -360 410 -360C472 -360 583 -354 606 -131Z","timeSig3":"M307 357C305 357 304 357 301 357L291 359C289 359 287 359 285 359C161 359 37 276 37 200C37 153 65 89 154 84L161 84C225 84 256 130 256 177L256 189C252 242 216 245 209 248C202 251 180 248 180 268L180 274C183 298 228 310 240 310C363 310 374 233 374 199L374 189C374 82 289 40 199 36C184 35 164 27 164 12C164 -6 189 -6 200 -6C366 -6 379 -118 379 -137C379 -289 301 -307 269 -307C264 -307 258 -305 256 -305C245 -304 217 -304 216 -282L216 -275C216 -243 248 -222 249 -180C249 -120 207 -76 145 -76C140 -76 135 -76 130 -78C105 -82 78 -96 60 -115C36 -137 29 -171 29 -203C32 -315 134 -359 275 -361L288 -361C431 -361 577 -288 577 -161L577 -151C575 -109 564 -82 537 -50C528 -39 517 -29 503 -20L472 -3L425 10C418 12 413 12 410 17C409 20 409 22 409 24C409 30 410 36 415 37C431 42 446 43 459 50C517 78 547 115 547 181C547 314 367 353 307 357Z","timeSig4":"M521 -107L521 202C521 213 520 226 504 226C491 226 484 223 475 213L338 48C333 40 325 32 325 14L325 -107L131 -107C246 -9 477 318 481 336L482 340C482 353 472 361 461 361C448 361 389 359 363 359C337 359 272 361 261 361C248 361 228 357 228 334C228 156 86 -45 43 -105L35 -117C35 -117 35 -118 35 -118L33 -120C30 -127 29 -132 29 -137C29 -151 40 -161 58 -161L325 -161L325 -252C325 -291 294 -302 268 -302C245 -302 235 -315 235 -330C235 -344 240 -360 262 -360L569 -360C583 -360 598 -350 598 -330C598 -310 580 -301 566 -301C552 -301 521 -292 521 -246L521 -161L626 -161C641 -161 648 -151 648 -134C648 -117 642 -107 626 -107Z","timeSig5":"M109 85C109 85 115 166 117 179C118 190 125 197 138 197L144 197C158 194 226 184 285 184C485 184 492 300 492 323C492 341 488 353 472 353C454 353 341 340 295 340C249 340 125 351 101 354C75 354 68 341 66 330L50 10L50 7C50 -12 65 -14 79 -14C94 -14 95 -1 111 14C125 29 160 62 209 62C258 62 357 35 357 -125C357 -284 272 -304 235 -304C223 -304 212 -304 202 -300C194 -295 186 -289 184 -279C184 -269 194 -264 202 -259C235 -239 256 -203 256 -163C256 -99 206 -50 144 -50C66 -50 35 -107 30 -157C29 -166 29 -174 29 -183C29 -302 107 -361 284 -361C456 -361 552 -255 552 -125C552 6 445 112 314 112C230 112 168 98 122 71C120 69 117 69 115 69C109 69 109 75 109 79Z","timeSig6":"M439 120C500 120 554 167 554 229C554 235 554 239 553 245C539 337 426 361 348 361C239 360 137 307 85 209C53 148 29 72 29 4L29 -1C30 -68 42 -143 73 -200C132 -307 203 -359 324 -359C389 -359 461 -348 513 -307C563 -266 596 -202 596 -137C596 -24 490 72 379 72C333 72 285 55 248 22C245 19 242 19 239 19C230 19 226 30 226 53C230 320 315 327 346 327C374 327 393 320 393 305C393 285 366 268 357 251C350 238 347 223 347 209C347 187 354 166 369 150C379 131 420 120 439 120ZM320 3C366 3 405 -69 405 -158C405 -248 366 -320 320 -320C274 -320 236 -248 236 -158C236 -69 274 3 320 3Z","timeSig7":"M606 294C606 333 606 351 582 351C580 351 557 346 552 336C541 318 521 236 485 236C449 236 382 359 262 359C179 359 157 325 137 307C117 288 108 282 98 281C86 281 68 301 60 315C58 321 50 325 43 325C36 325 29 321 29 308L29 71C29 71 30 48 45 48C56 48 60 60 66 76C81 112 99 196 164 196C222 196 291 88 374 88C415 88 435 109 446 118C451 121 456 124 459 124C465 124 468 120 469 111C469 71 359 -10 272 -112C217 -176 173 -259 173 -315C173 -346 173 -360 200 -360C226 -360 258 -347 294 -347C330 -347 397 -360 412 -360C426 -360 435 -348 435 -307C435 -66 606 140 606 288Z","timeSig8":"M481 52C533 85 567 132 567 204C567 351 356 373 317 373C150 373 36 297 36 176C36 76 92 23 161 -16C86 -52 29 -99 29 -190C29 -315 158 -373 301 -373C445 -373 599 -311 599 -117C599 -30 549 17 481 52ZM406 85C291 125 168 150 168 240C168 301 251 331 314 331C360 331 482 308 482 207C482 150 454 112 406 85ZM295 -325C199 -325 111 -276 111 -183C111 -125 161 -72 225 -48C330 -94 436 -124 436 -219C436 -276 392 -325 295 -325Z","timeSig9":"M186 -117C125 -117 71 -164 71 -226C71 -232 71 -236 72 -242C86 -334 199 -359 276 -359C386 -357 488 -304 540 -206C572 -145 596 -69 596 -1L596 4C595 71 583 145 552 203C492 310 422 361 301 361C236 361 164 351 112 310C62 269 29 204 29 140C29 27 135 -69 246 -69C292 -69 340 -52 377 -19C380 -16 383 -16 386 -16C395 -16 399 -27 399 -50C395 -317 310 -324 279 -324C251 -324 232 -317 232 -302C232 -282 259 -265 268 -248C275 -235 278 -220 278 -206C278 -184 271 -163 256 -147C246 -128 204 -117 186 -117ZM305 0C259 0 220 72 220 161C220 251 259 323 305 323C351 323 389 251 389 161C389 72 351 0 305 0Z"};
 
-const ELC={IV:'#ece2c8',MUTED:'#9c927c',GOLD:'#c9a24a',GOLDHI:'#f0d48a',RED:'#c8473b',GREEN:'#8fbf6a'},ELS=.02376,ELHW=425*ELS;
+const ELC={IV:'#ece2c8',MUTED:'#9c927c',GOLD:'#c9a24a',GOLDHI:'#f0d48a',RED:'#d15e5d',GREEN:'#9dc995'},ELS=.02376,ELHW=425*ELS;
 const ELICON={tick:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.6l3.3 3.2L13 4.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
  cross:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
  near:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6.2c2-2 3.4-1.6 5 0s3 2 5 0M3 10.6c2-2 3.4-1.6 5 0s3 2 5 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
@@ -7917,7 +7951,7 @@ function earRhyCellAt(cells,b){let p=0;for(const k of cells){const w=RCELL[k].w;
 function earRhySVG(cells,o={}){const u=o.u||18,bars=o.bars||1,sig=o.sig!==false,stick=!!o.stick,ink=o.ink||ELC.IV,X0=sig?34:10,BG=16,top=26,base=60,sy=76,
   Wd=X0+bars*16*u+(bars-1)*BG+14,Ht=88,barx=b=>X0+b*(16*u+BG),marks=o.marks,ruler=o.ruler!==false,strip=o.strip!==false,fin=o.final!==false;
  let s=`<svg class="el-rsvg" viewBox="0 0 ${Wd} ${Ht}" width="${Wd}" height="${Ht}" role="img" aria-label="${o.label||'Rhythm'}">`;
- if(marks)marks.forEach((ok,i)=>{if(!ok){const b=Math.floor(i/4),k=i%4;s+=`<rect x="${barx(b)+k*4*u}" y="0" width="${4*u}" height="${Ht}" rx="6" fill="rgba(200,71,59,.13)"/>`}});
+ if(marks)marks.forEach((ok,i)=>{if(!ok){const b=Math.floor(i/4),k=i%4;s+=`<rect x="${barx(b)+k*4*u}" y="0" width="${4*u}" height="${Ht}" rx="6" fill="rgba(209,94,93,.13)"/>`}});
  if(!stick)s+=`<line x1="4" y1="${base}" x2="${Wd-6}" y2="${base}" stroke="#c9b98f" stroke-opacity=".55" stroke-width="1"/>`;
  if(sig)s+=elGlyph('timeSig4',6,base-8.6,ink)+elGlyph('timeSig4',6,base+8.6,ink);
  for(let b=0;b<bars;b++){for(let k=0;k<4;k++){const cx=barx(b)+k*4*u+6+ELHW/2,lit=o.countin&&b===0&&k<o.countin,now=o.countin&&b===0&&k===o.countin-1;let col=lit?ELC.GOLDHI:ELC.MUTED;
@@ -8062,7 +8096,7 @@ function earMelLadderHTML(q,lock,full){const[lo,hi]=q.range,A=EAR.ans,last=A.len
   h+=`<button class="earstep${isH?' home':''}${tx===last?' last':''}" style="grid-row:${2*k+1}/span 2" data-earsol="${tx}" ${dis} aria-label="${eSolName(n.s)}${n.o<0?' low':n.o>0?' high':''}${isH?', home note':''}">${ehsign(n.s)}<b>${tx}</b>${EAR.letters?`<small>${pretty(sp.name)}</small>`:''}${isH&&n.o===(q.mode==='min'?-1:0)?'<span class="hm">home</span>':''}</button>`}
  return`<div class="earlad${lock?' listen':''}" role="group" aria-label="Solfa ladder, high to low">${h}</div>`}
 function earMelWrong(q){const g=EAR.res&&EAR.res.given;return g?q.a.slice(1).filter((x,i)=>g[i]!==x).length:0}
-function earMelMount(q){const el=document.getElementById('earMel');if(!el)return;const IV='#ece2c8',GIVEN='#c9b98f',RED='#c8473b',lock=EAR.done,A=EAR.ans,res=EAR.res;
+function earMelMount(q){const el=document.getElementById('earMel');if(!el)return;const IV='#ece2c8',GIVEN='#c9b98f',RED='#d15e5d',lock=EAR.done,A=EAR.ans,res=EAR.res;
  const truth=q.notes.map((n,i)=>({n,col:i===0?GIVEN:IV}));let rows;
  if(!lock)rows=[{cells:q.notes.map((n,i)=>i===0?{n,col:GIVEN}:A[i-1]?{n:eSolParse(A[i-1]),col:IV}:{n:null})}];
  else if(res.ok||res.given===null)rows=[{cells:truth}];
@@ -8294,9 +8328,9 @@ function earChordRowHTML(q){const n=q.rns.length,cn=q.a==='cad64'?3:2,key=q.key;
  const chip=(rn,i,cad)=>{const f=earNumFn(rn,key.mode),[fnm,col]=ELFN[f],c64=/:2$/.test(rn)&&/^V/.test(q.rns[i+1]||''),T=key.mode==='min'?'i':'I';
   const tt=c64?`Cadential 6/4: the tonic chord in second inversion (${T}⁶₄, also written ${T}c), over the dominant bass (bass ${earSolOfMidi(q.ch[i][0],key)}). Read by its spelling it is a tonic chord, as this app's Analysis labels it; many harmony texts hear it as part of the dominant, because its 6th and 4th fall to the 5th and 3rd of V over the same bass.`:fnm;
   // IC_EAR_048 S4: the 6/4 is named "cadential 6/4" inside the cadence bracket as well as before it; its bass solfa moves to the title
-  return`<div class="el-ch" style="--fc:${col}" title="${tt}">${earRnHTML(rn)}<small>${c64?'cadential 6/4':cad?'bass '+earSolOfMidi(q.ch[i][0],key):fnm}</small></div>`};
+  return`<div class="el-ch" style="--fc:${col}" title="${tt}">${earRnHTML(rn)}<small><b class="fn" style="color:var(--fc)">${FNL(f)}</b>${c64?'cadential 6/4':cad?'bass '+earSolOfMidi(q.ch[i][0],key):fnm}</small></div>`};
  const pre=q.rns.slice(0,n-cn).map((rn,i)=>chip(rn,i,false)).join(''),cad=q.rns.slice(n-cn).map((rn,i)=>chip(rn,n-cn+i,true)).join('');
- return`<div class="el-chords" aria-label="${q.rns.map(earRnTxt).join(', ')} in ${keyName(key)}">${pre}<div class="el-cad" data-l="the cadence">${cad}</div><span class="el-key">in ${keyName(key)}</span></div>`}
+ return`<div class="el-chords" aria-label="${q.rns.map(earRnTxt).join(', ')} in ${keyName(key)}">${pre}<div class="el-cad" data-l="the cadence">${cad}</div><span class="el-key">in ${keyName(key)}</span></div>${FNKEY}`}
 /* Blind analysis sentences (IC_EAR_048 S5). A blind item is a real excerpt with no voicing in q, so nothing is said about single voices
    (the leading note falls in two excerpts: chorale bar 14, Jesu bar 6). The numerals come from the excerpt's own chord label (meta.json
    "ch"), the key it cadences in from its label ("in C major (a tonicisation)"), and the mode from the excerpt's key, so a minor V–i says
@@ -8336,7 +8370,7 @@ function earTeachBass(q,res){const g=res.given,a=q.a,key=q.key,heads=a.map((rn,i
   else t=`Chord ${k+1}: you wrote ${gv}; it is ${av}. Sing the bass: it ${q.bass[k]>q.bass[k-1]?'rises':'falls'} to ${sol}, the root of ${av}.`;
   if(bad.length>1)t+=` Chord${bad.length>2?'s':''} ${bad.slice(1).map(i=>i+1).join(' and ')} ${bad.length>2?'are':'is'} marked below.`}
  const rp=[{v:'bassonly',t:'Bass only, with the solfa shown'}];if(bad.length)rp.push({v:'pair',o:String(bad[0]),t:`Hear chords ${bad[0]} and ${bad[0]+1}`});
- const row=`<div class="el-chords" id="earBassRow" aria-label="${a.map(earRnTxt).join(', ')} in ${keyName(key)}">${a.map((rn,i)=>{const[fnm,col]=ELFN[earNumFn(rn,key.mode)];return`<div class="el-ch" data-i="${i}" style="--fc:${col}" title="${fnm}">${earRnHTML(rn)}<small>bass ${earSolOfMidi(q.bass[i],key)}</small></div>`}).join('')}<span class="el-key">in ${keyName(key)}</span></div>`;
+ const row=`<div class="el-chords" id="earBassRow" aria-label="${a.map(earRnTxt).join(', ')} in ${keyName(key)}">${a.map((rn,i)=>{const[fnm,col]=ELFN[earNumFn(rn,key.mode)];return`<div class="el-ch" data-i="${i}" style="--fc:${col}" title="${fnm}">${earRnHTML(rn)}<small><b class="fn" style="color:var(--fc)">${FNL(earNumFn(rn,key.mode))}</b>bass ${earSolOfMidi(q.bass[i],key)}</small></div>`}).join('')}<span class="el-key">in ${keyName(key)}</span></div>${FNKEY}`;
  return{kind:res.kind,head:heads,small:`in ${keyName(key)}`,teach:t,pic:row,replays:rp}}
 const ELDEG={I:'do',ii:'re',iii:'mi',IV:'fa',V:'so',vi:'la'};
 function earMelStep(a,b,key){return Math.abs(eSolMidi(eSolParse(a),key)-eSolMidi(eSolParse(b),key))<=2}

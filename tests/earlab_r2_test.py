@@ -129,9 +129,9 @@ async def run(p, w):
             check(st['staves'] == 2 and st['labels'][:2] == ['YOU WROTE', 'THE MELODY'] and st['stripCls'].endswith('bad'), f'{tag}: wrong -> two labelled staves, red strip ({st["staves"]}, {st["labels"]})')
             check(st['strip'].startswith('Not this time') and ('After note' in st['strip'] or 'You heard the shape' in st['strip']), f'{tag}: wrong strip text (0.48: the teaching sentence): {st["strip"]}')
             check(sol(st, '0') == [a[0]] + wrong and sol(st, '1') == a, f'{tag}: both rows solfa')
-            red = [s['i'] for s in st['rows']['0']['sol'] if s['fill'] == '#c8473b']
+            red = [s['i'] for s in st['rows']['0']['sol'] if s['fill'] == '#d15e5d']
             check(red == [i + 1 for i, x in enumerate(wrong) if x != a[i + 1]], f'{tag}: only wrong notes red ({red})')
-            check(not any(s['fill'] == '#c8473b' for s in st['rows']['1']['sol']), f'{tag}: the melody row has no red')
+            check(not any(s['fill'] == '#d15e5d' for s in st['rows']['1']['sol']), f'{tag}: the melody row has no red')
             r0 = sorted(st['rows']['0']['notes'], key=lambda x: x['i']); r1 = sorted(st['rows']['1']['notes'], key=lambda x: x['i'])
             check(all(abs(r0[i]['cx'] - r1[i]['cx']) < .5 for i in range(n)), f'{tag}: two staves share every note x')
             check(abs(st['ss'] - want_ss) < .1 and st['docW'] <= st['vw'] and st['frameR'] <= st['cardR'] + .5, f'{tag}: wrong reveal size and no overflow')

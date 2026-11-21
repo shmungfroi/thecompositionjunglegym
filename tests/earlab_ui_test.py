@@ -156,8 +156,9 @@ async def run(p):
         m = await pg.evaluate("()=>{const r=document.querySelector('.melres .el-result'),b=r.querySelector(':scope>.el-btn').getBoundingClientRect(),t=r.querySelector('.el-teach').getBoundingClientRect(),p=r.querySelector('.el-replays').getBoundingClientRect(),rr=r.getBoundingClientRect();return{bt:b.top,tt:t.top,pb:p.bottom,bw:b.width,rw:rr.width}}")
         check(m['tt'] < m['pb'] <= m['bt'] + 1, f'{w}px FR-2 melody result order: sentence, replays, Next {m}')
         if w < 500: check(m['bw'] > m['rw'] - 40, f'{w}px FR-2 Next is full width on phones {m}')
-        h = await pg.evaluate("()=>{const l=document.querySelector('#earLet'),cs=getComputedStyle(l),lb=l.closest('label').getBoundingClientRect();return{w:l.getBoundingClientRect().width,acc:cs.accentColor,h:lb.height}}")
-        check(h['w'] >= 17.5 and h['acc'] == 'rgb(201, 162, 74)' and (w >= 500 or h['h'] >= 43.5), f'{w}px FR-19 letter-names checkbox {h}')
+        # 0.49 C5-2 (Fable verify C6): the box is drawn, not native, so accent-color no longer applies. Gold is checked on the ticked ground instead.
+        h = await pg.evaluate("()=>{const l=document.querySelector('#earLet'),cs=getComputedStyle(l),lb=l.closest('label').getBoundingClientRect(),was=l.checked;l.style.transition='none';l.checked=true;const on=getComputedStyle(l).backgroundColor;l.checked=false;const off=getComputedStyle(l).backgroundColor;l.checked=was;l.style.transition='';return{w:l.getBoundingClientRect().width,app:cs.appearance,on,off,h:lb.height}}")
+        check(h['w'] >= 17.5 and h['app'] == 'none' and h['on'] == 'rgb(201, 162, 74)' and h['off'] == 'rgba(0, 0, 0, 0)' and (w >= 500 or h['h'] >= 43.5), f'{w}px FR-19 letter-names checkbox {h}')
         # FR-14: bass numerals in the chip face
         await pg.evaluate(VIEW, ['bass', 3]); await pg.evaluate("()=>{let q;do{q=earGen('bass',3,R)}while(q.a.join()!=='I,ii,V,I');q.plays=1;EAR.q=q;earMark(false,['IV','V','I']);renderEar()}")
         h = await pg.evaluate("()=>{const e=document.querySelector('#earMain .el-answer .rn');return e?getComputedStyle(e).fontFamily:''}")
