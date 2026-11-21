@@ -240,6 +240,21 @@ async def run(p):
     check(not errs, f'desktop page errors {errs[:3]}')
     await pg.close(); await vcheck(b); await b.close()
 
+async def real_click(pg, sel):
+    """Scroll the control into view and give it a real click. The Ear Lab re-renders on transport and tally events, so a
+    control found a moment ago can be replaced: on "not attached to the DOM" the step waits and finds the control again
+    (FABLE_VERIFY_C6_049 S-3). The click itself is unchanged: a real pointer click on the first match."""
+    for k in range(4):
+        try:
+            btn = pg.locator(sel).first
+            await btn.scroll_into_view_if_needed(timeout=5000); await pg.wait_for_timeout(250)
+            await pg.locator(sel).first.click(timeout=5000)
+            return
+        except Exception as e:
+            if k == 3 or 'not attached' not in str(e).lower() and 'detached' not in str(e).lower():
+                raise
+            await pg.wait_for_timeout(200)
+
 async def vcheck(b):
     """V-1 (Fable's verify): after a real click on an answer, Next is on screen or in the visible dock, and the dock never covers the teaching sentence."""
     RNGJS = "window.mk=s=>()=>(s=(s*16807)%2147483647)/2147483647;"
@@ -256,7 +271,7 @@ async def vcheck(b):
             if d == 'rhy': await pg.evaluate("()=>{const q=EAR.q;EAR.ans=q.a.slice();EAR.ans[0]=ladRhyTiles(q.l).find(k=>k!==q.a[0]&&ladW(k)===ladW(q.a[0]))||q.a[0];renderEar()}")
             await pg.evaluate("scrollTo(0,0)"); await pg.wait_for_timeout(150)
             sel = '#earMain [data-earans="imperfect"]' if d == 'cad' else '#earMain [data-earans="3/4"]' if d == 'metre' else '#earMain [data-earchk]'
-            btn = pg.locator(sel).first; await btn.scroll_into_view_if_needed(); await pg.wait_for_timeout(250); await btn.click(); await pg.wait_for_timeout(900)
+            await real_click(pg, sel); await pg.wait_for_timeout(900)
             m = await pg.evaluate("""()=>{const p=document.getElementById('earResult');if(!p)return null;const n=p.querySelector('[data-earnew]').getBoundingClientRect(),t=p.querySelector('.el-teach').getBoundingClientRect(),dk=document.getElementById('earDock'),k=dk.getBoundingClientRect();
               const tab=innerHeight-(innerWidth<=760?68:0),show=dk.classList.contains('show');const dn=show&&dk.querySelector('[data-eardock=next]');const dr=dn?dn.getBoundingClientRect():null;
               return{nextVisible:n.bottom<=tab+.5&&n.top>=57.5,dock:show,dockNext:!!dr&&dr.bottom<=innerHeight&&dr.top>=0,covers:show&&k.top<t.bottom&&k.bottom>t.top}}""")
