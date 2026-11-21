@@ -21,7 +21,9 @@ D12   (0.48 decision 12) homes() (the Keys room) and analyse() agree: minor v / 
 C9    (0.49) the Ear Lab function map (earNumFn) agrees with analyse(): minor v / v7 and VII / VII7 are MD, and so are the
       borrowed v / ♭VII of a major key while MD_MAJOR is on (X when it is off); V, V7, vii°, vii°7 stay D; MD draws in var(--md).
       0.49 C24: every numeral outside the key (borrowed iv / ii° / ♭III / ♭VI in major, I / IV / II in minor, major II or III,
-      i in major ...) is X, as analyse() 'C', root position and inverted; minor vi is X (spelled check; analyse() says T, noted).
+      i in major ...) is X, as analyse() 'C', root position and inverted; minor vi is X (spelled check).
+      0.49 C35: analyse() checks spelling too, so it agrees on all of them, including the 17 minor numerals spelled outside the key
+      (vi, vi°, vi°7, VI°, VI°7, iv°, IV°, ivø7, IVø7, iv°7, IV°7, ii°7, II°7, V+, v+, vii+, ♯VII+), with no exception.
 C8    (0.49) the Chord Library's augmented and diminished 7th texts say "symmetrical" only for equal temperament and name the
       wrap-round interval (diminished 4th / augmented 2nd); the dim7 is vii°7 of four minor keys.
 """
@@ -122,6 +124,10 @@ async def main():
                        ['I7','X'],['IV7','X'],['iii','T'],['ii7','PD'],['viiø7','D'],['vii°7','D']);
             L.min.push(['I','X'],['I7','X'],['II','X'],['ii','X'],['ii7','X'],['iii','X'],['IV','X'],['IV7','X'],['vi','X'],['vii','X'],['viiø7','X'],['♭II','X'],
                        ['III+','T'],['iiø7','PD'],['i7','T'],['iv7','PD']);
+            // 0.49 C35 (IC_C_ENG_049, L108): the 17 minor-key numerals that sound inside the key but are spelled outside it (C♭, D♯, F𝄪 in
+            // C minor): analyse() now checks the spelling as the Ear Lab map does, so both say X (vi is above)
+            const C35=['vi°','vi°7','VI°','VI°7','iv°','IV°','ivø7','IVø7','iv°7','IV°7','ii°7','II°7','V+','v+','vii+','♯VII+'];
+            C35.forEach(x=>L.min.push([x,'X']));
             for(const md of ['min','maj'])for(const k of md==='min'?[9,4,2,0]:[0,7,2,5])for(const [rn,want] of L[md]){const key={k,mode:md},p=parseRoman(rn.replace('♭','b'),key);
               const an=p?withKey(key,()=>analyse(p,key)).f:null,e=earNumFn(rn,md),e2=earNumFn(rn+':1',md);
               o.push({md,k,rn,want:want==='MD'&&md==='maj'&&!MD_MAJOR?'X':want,an:an==='C'?'X':an,e,e2,col:ELFN[e]&&ELFN[e][1]})}
@@ -131,9 +137,8 @@ async def main():
             tag = f"C9 {r['md']}{r['k']} {r['rn']}"
             if r['e'] != r['want'] or r['e2'] != r['want']:
                 FAIL.append(f"{tag}: Ear Lab map {r['e']} / inverted {r['e2']}, expected {r['want']}")
-            # minor vi (A♭–C♭–E♭ in C minor): analyse() checks the key by pitch class only, so it takes C♭ for the leading note B and says T;
-            # the Ear Lab map reads the spelling and says X (outside the key). Reported in tests/reports/C_ENG_049_report.md (C24)
-            if r['an'] != r['e'] and not (r['md'] == 'min' and r['rn'] == 'vi' and r['an'] == 'T' and r['e'] == 'X'):
+            # 0.49 C35: no exception any more (minor vi and the 16 others above: analyse() reads the spelling, as the Ear Lab map does)
+            if r['an'] != r['e']:
                 FAIL.append(f"{tag}: Ear Lab {r['e']} but Analysis {r['an']}")
             if r['e'] == 'MD' and r['col'] != 'var(--md)':
                 FAIL.append(f"{tag}: MD colour {r['col']}")

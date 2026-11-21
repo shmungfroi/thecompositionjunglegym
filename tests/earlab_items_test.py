@@ -222,7 +222,13 @@ def cad_ok(cat, toks, k, mode):
     return False
 
 
-def sec_K(items, real):
+CLOSE_LT = 12
+
+
+def sec_K(items, real, tl=None):
+    # 0.49 C31: the tells are measured on a larger sample (tl, 10,000 items) when given, so sampling noise stays well inside the margin
+    T = tl or items
+    COUNT['EL-7 rung 1 items for the tell checks'] = len(T)
     COUNT['EL-7 rung 1 items'] = len(items)
     if len(items) < 1000:
         fail('K', f'only {len(items)} rung 1 items checked')
@@ -265,38 +271,65 @@ def sec_K(items, real):
         COUNT[f'EL-7 rung 1 distinct items {c}'] = len(v)
     W = 'cadences rung 1'
     A = lambda r: r['a']
-    tell('K', items, 'lowest note (6-semitone bands)', lambda r: min(map(min, r['ch'])) // 6, A, W)
-    tell('K', items, 'highest note (6-semitone bands)', lambda r: max(map(max, r['ch'])) // 6, A, W)
-    tell('K', items, 'register drawn (bass, soprano)', lambda r: (r['reg']['b'], r['reg']['s']), A, W)
-    tell('K', items, 'top note of the first chord', lambda r: r['ch'][0][3], A, W)
-    tell('K', items, 'top note of the last chord', lambda r: r['ch'][-1][3], A, W)
-    tell('K', items, 'highest top note', lambda r: max(c[3] for c in r['ch']), A, W)
-    tell('K', items, 'bass note of the first chord', lambda r: r['ch'][0][0], A, W)
-    tell('K', items, 'bass note of the last chord', lambda r: r['ch'][-1][0], A, W)
-    tell('K', items, 'lowest bass note', lambda r: min(c[0] for c in r['ch']), A, W)
-    tell('K', items, 'key', lambda r: r['k'], A, W)
+    tell('K', T, 'lowest note (6-semitone bands)', lambda r: min(map(min, r['ch'])) // 6, A, W)
+    tell('K', T, 'highest note (6-semitone bands)', lambda r: max(map(max, r['ch'])) // 6, A, W)
+    tell('K', T, 'register drawn (bass, soprano)', lambda r: (r['reg']['b'], r['reg']['s']), A, W)
+    tell('K', T, 'top note of the first chord', lambda r: r['ch'][0][3], A, W)
+    tell('K', T, 'top note of the last chord', lambda r: r['ch'][-1][3], A, W)
+    tell('K', T, 'highest top note', lambda r: max(c[3] for c in r['ch']), A, W)
+    tell('K', T, 'bass note of the first chord', lambda r: r['ch'][0][0], A, W)
+    tell('K', T, 'bass note of the last chord', lambda r: r['ch'][-1][0], A, W)
+    tell('K', T, 'lowest bass note', lambda r: min(c[0] for c in r['ch']), A, W)
+    tell('K', T, 'key', lambda r: r['k'], A, W)
     # BHL 0.48 (Justin 20 Nov 2026, item H): the lowest and highest notes together, at every resolution the independent check used, and the span
     lo = lambda r: min(map(min, r['ch'])); hi = lambda r: max(map(max, r['ch']))
     for w in (1, 2, 3, 4, 6):
-        tell('K', items, f'lowest and highest note together ({w}-semitone bands)' if w > 1 else 'lowest and highest note together (exact)',
+        tell('K', T, f'lowest and highest note together ({w}-semitone bands)' if w > 1 else 'lowest and highest note together (exact)',
              (lambda w: lambda r: (lo(r) // w, hi(r) // w))(w), A, W)
-    tell('K', items, 'span from lowest to highest note (exact)', lambda r: hi(r) - lo(r), A, W)
+    tell('K', T, 'span from lowest to highest note (exact)', lambda r: hi(r) - lo(r), A, W)
     # 0.49 C23: open or close spacing must not give the answer away (each chord, and both together)
-    op = lambda c: c[3] - c[1] > 12
-    tell('K', items, 'spacing of the first chord (open or close)', lambda r: op(r['ch'][0]), A, W)
-    tell('K', items, 'spacing of the last chord (open or close)', lambda r: op(r['ch'][-1]), A, W)
-    tell('K', items, 'spacing of both chords (open or close each)', lambda r: (op(r['ch'][0]), op(r['ch'][-1])), A, W)
+    # 0.49 C32 (L108): open = the soprano an octave or more above the tenor (close = less than an octave; EAR_CLOSE_LT in the app)
+    op = lambda c: c[3] - c[1] >= CLOSE_LT
+    tell('K', T, 'spacing of the first chord (open or close)', lambda r: op(r['ch'][0]), A, W)
+    tell('K', T, 'spacing of the last chord (open or close)', lambda r: op(r['ch'][-1]), A, W)
+    tell('K', T, 'spacing of both chords (open or close each)', lambda r: (op(r['ch'][0]), op(r['ch'][-1])), A, W)
     # 0.49 C12: the final chord's completeness (with the incomplete tonic on it was +16 points); all complete now, so it cannot tell
-    tell('K', items, 'final chord complete', lambda r: len(set(m % 12 for m in r['ch'][-1])) == 3, A, W)
+    tell('K', T, 'final chord complete', lambda r: len(set(m % 12 for m in r['ch'][-1])) == 3, A, W)
     ncl = sum(1 for r in items if not op(r['ch'][0]) or not op(r['ch'][-1]))
     COUNT['C23 rung 1 items with a close-spaced chord'] = f'{ncl} of {len(items)}'
     for c in ('perfect', 'plagal', 'imperfect', 'interrupted'):
         rr = [r for r in items if r['a'] == c]
         COUNT[f'C23 rung 1 {c}: share with a close-spaced chord'] = f'{sum(1 for r in rr if not op(r["ch"][0]) or not op(r["ch"][-1])) / max(1, len(rr)):.1%}'
-    for nm, f in (('tenor-soprano distance of the first chord (exact)', lambda r: r['ch'][0][3] - r['ch'][0][1]),
-                  ('tenor-soprano distance of the last chord (exact)', lambda r: r['ch'][-1][3] - r['ch'][-1][1])):
-        a, c = predict_acc(items, f, A)
-        COUNT[f'info: rung 1 {nm}: accuracy vs chance'] = f'{a:.1%} vs {c:.1%}'
+    # 0.49 C31 (Justin 21 Nov 2026, L108): the top line and the tenor-soprano gap. The chords themselves differ (the last chord is I, V or vi;
+    # the first V, IV or I), so the soprano degrees can never reach chance: on its own (from the pool, exact), the last soprano degree can
+    # come down to +25 points, the first to +25, the line (both) to +38; with the register held, the line cannot go below about +55 and
+    # the last chord's gap below about +17 (tests/reports/C_ENG_049_report.md, C31). Each is checked against the level the balanced
+    # weights (EAR1W) reach, measured exactly (tests/gen_cad1_weights.py) plus 3 points for sampling. Answers that share a chord must not
+    # be told apart by its voicing (5-point margin, chance 50%): perfect / plagal by the final I, perfect / interrupted by the first V.
+    dg = lambda r, i: (r['ch'][i][3] - r['k']) % 12
+    for nm, f, ceil in (('soprano line (degrees of both top notes)', lambda r: (dg(r, 0), dg(r, -1)), .568),
+                        ('final soprano note (degree)', lambda r: dg(r, -1), .253),
+                        ('first soprano note (degree)', lambda r: dg(r, 0), .278),
+                        ('soprano motion (semitones)', lambda r: r['ch'][-1][3] - r['ch'][0][3], .30),
+                        ('tenor-soprano gap of the last chord (exact)', lambda r: r['ch'][-1][3] - r['ch'][-1][1], .206),
+                        ('tenor-soprano gap of the first chord (exact)', lambda r: r['ch'][0][3] - r['ch'][0][1], .073)):
+        a, c = predict_acc(T, f, A)
+        COUNT['tell checks'] += 1
+        COUNT[f'C31 rung 1 {nm}: points above chance (ceiling)'] = f'{100*(a-c):+.1f} ({100*ceil:+.1f} + 3)'
+        if a > c + ceil + .03:
+            fail('K', f'C31: {nm} predicts the answer {a:.0%} of the time (chance {c:.0%}; the balanced weights reach {c+ceil:.0%})')
+    for (x, y, i, nm) in (('perfect', 'plagal', -1, 'last'), ('perfect', 'interrupted', 0, 'first')):
+        rr = [r for r in T if r['a'] in (x, y)]
+        for fn, f in (('soprano degree', lambda r, i=i: dg(r, i)), ('tenor-soprano gap', lambda r, i=i: r['ch'][i][3] - r['ch'][i][1])):
+            tell('K', rr, f'{x} vs {y}: {fn} of the {nm} chord', f, A, W)
+        # the exact voicing of the shared chord (register included) cannot be held to 5 points with everything else: the weights reach
+        # +7.0 (perfect / plagal) and +6.1 (perfect / interrupted) exactly (before C31: +38.7 and +19.2); checked against that + 3
+        a, c = predict_acc(rr, lambda r, i=i: tuple(r['ch'][i]), A)
+        ceil = {'last': .070, 'first': .061}[nm]
+        COUNT['tell checks'] += 1
+        COUNT[f'C31 rung 1 {x} vs {y}: exact voicing of the {nm} chord, points above chance (ceiling)'] = f'{100*(a-c):+.1f} ({100*ceil:+.1f} + 3)'
+        if a > c + ceil + .03:
+            fail('K', f'C31: {x} vs {y}: the exact voicing of the {nm} chord predicts the answer {a:.0%} of the time (chance {c:.0%})')
 
 
 SIX = ['perfect', 'plagal', 'imperfect', 'interrupted', 'phrygian', 'cad64']
@@ -350,15 +383,18 @@ def sec_K2(off, on, flag_default):
             if q['ch'] and any(len(set(m % 12 for m in c)) < 3 for c in q['ch']):
                 fail('K2', f'switch {name}: incomplete chord {q["ch"]}')
                 break
-    # with the switch on, the top line tells less (soprano solfa path 82% -> 78% measured; the cadence's last top note is content)
+    # 0.49 C31 (L108): with the switch off (the default), the weights come from EAR1W, which balances the top line further than the 0.48
+    # switch did, so the default now tells less than the switch on (before C31 it was the other way round)
     for fn in ('soprano solfa path', 'soprano degree, first chord', 'soprano degree, last chord'):
-        if acc_sop[('on', fn)] > acc_sop[('off', fn)] + .005:
-            fail('K2', f'{fn}: switch on {acc_sop[("on", fn)]:.1%} is not below switch off {acc_sop[("off", fn)]:.1%}')
+        if acc_sop[('off', fn)] > acc_sop[('on', fn)] + .005:
+            fail('K2', f'{fn}: switch off (EAR1W) {acc_sop[("off", fn)]:.1%} is not below switch on {acc_sop[("on", fn)]:.1%}')
     # 0.49 C12 (L101, complete chords only) takes away the incomplete tonic's so–mi and re–do top lines, so a complete V–I can only have
     # so–so, ti–do or re–mi on top: with the switch off the path now reads about 92% (82% with the incomplete tonic; 83% with the switch on).
     # The ceiling moves from 86% to 94%; the switch (Justin has not ruled) is what lowers it. tests/reports/C_ENG_049_report.md
-    if acc_sop[('off', 'soprano solfa path')] > .94:
-        fail('K2', f'soprano solfa path predicts {acc_sop[("off", "soprano solfa path")]:.0%} with the switch off (about 92% measured since 0.49 C12)')
+    # 0.49 C31: with EAR1W the path reads about 81% (chance 25%; 92% before C31); the ceiling comes down from 94% to 84%
+    if acc_sop[('off', 'soprano solfa path')] > .84:
+        fail('K2', f'soprano solfa path predicts {acc_sop[("off", "soprano solfa path")]:.0%} with the switch off (about 81% measured since 0.49 C31)')
+
 
 
 def sec_V(d):
@@ -427,6 +463,9 @@ def ic_errors(q):
         if c['inv'] == 1 and c['sev'] is None and (c['third'] - c['root']) % 12 == 4 and (c['fifth'] - c['root']) % 12 == 7 and c['rn'] not in ('vi', 'VI'):
             if pcs.count(c['third']) > 1: E.append(f'ch{i} {c["rn"]}6 doubles its 3rd')
             if c['fifth'] not in pcs: E.append(f'ch{i} {c["rn"]}6 has no 5th')
+        # 0.49 C34 (IC_C_ENG_049 S4, L108): no root-position triad (IV, vi, III, VI, a final I or i ...) doubles its 3rd and leaves out its 5th
+        if c['inv'] == 0 and c['sev'] is None and pcs.count(c['third']) > 1 and c['fifth'] not in pcs:
+            E.append(f'ch{i} {c["rn"]} doubles its 3rd with no 5th')
     for i in range(1, len(V)):
         P, N, cp, cn = V[i - 1], V[i], C[i - 1], C[i]
         for j in range(4):
@@ -607,7 +646,9 @@ async def main():
             const res=[];try{for(let i=0;i<40;i++){EAR.q=earGen('cad',1,R);T.length=0;const inf=elPlay(EAR.q,'all');stopAll();const times=[...new Set(T.map(x=>x[1].toFixed(3)))];res.push(inf&&inf.state==='playing'?times.length:-1)}}finally{window.tone=o}return res}""", RNG)
         if any(n != 3 for n in cue):
             fail('K', f'rung 1 playback is not key chord + two chords: onsets {collections.Counter(cue)}')
-        sec_K(k1, k1r)
+        globals()['CLOSE_LT'] = await pg.evaluate('EAR_CLOSE_LT')
+        k1t = await pg.evaluate("(mk)=>{const R=eval(mk)(41),o=[];for(let i=0;i<10000;i++){const q=earGen('cad',1,R);o.push({a:q.a,k:q.key.k,reg:q.reg,ch:q.ch})}return o}", RNG)
+        sec_K(k1, k1r, k1t)
 
         # ---------------- K2: EL S2 / S1 (IC_EAR2_048) ----------------
         k2 = await pg.evaluate("""(mk)=>{const o={def:RUNG1_SOP_BALANCE};const run=(flag,seed)=>{RUNG1_SOP_BALANCE=flag;const R=eval(mk)(seed),a=[];
