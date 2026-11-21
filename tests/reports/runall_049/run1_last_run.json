@@ -1,0 +1,78 @@
+{
+    "content_lint": {
+        "result": "pass",
+        "seconds": 0
+    },
+    "unit_test": {
+        "result": "pass",
+        "seconds": 13
+    },
+    "score_ids_test": {
+        "result": "FAIL",
+        "seconds": 0
+    },
+    "sound_test": {
+        "result": "pass",
+        "seconds": 64
+    },
+    "earlab_test": {
+        "result": "pass",
+        "seconds": 240
+    },
+    "earlab_r2_test": {
+        "result": "FAIL",
+        "seconds": 69
+    },
+    "earlab_items_test": {
+        "result": "FAIL",
+        "seconds": 189
+    },
+    "earlab_ui_test": {
+        "result": "pass",
+        "seconds": 52
+    },
+    "ladder_ui_test": {
+        "result": "pass",
+        "seconds": 60
+    },
+    "chordshape_test": {
+        "result": "pass",
+        "seconds": 41
+    },
+    "spelling_test": {
+        "result": "pass",
+        "seconds": 150
+    },
+    "terms_test": {
+        "result": "FAIL",
+        "seconds": 646
+    },
+    "counterpoint_test": {
+        "result": "pass",
+        "seconds": 146
+    },
+    "pageerrors_test": {
+        "result": "pass",
+        "seconds": 471
+    },
+    "layout_test": {
+        "result": "FAIL",
+        "seconds": 225
+    },
+    "transport_test": {
+        "result": "pass",
+        "seconds": 754
+    },
+    "score_measure_test": {
+        "result": "pass",
+        "seconds": 86
+    },
+    "analysis_engrave_test": {
+        "result": "pass",
+        "seconds": 212
+    },
+    "cvd_sim": {
+        "result": "pass",
+        "seconds": 1
+    }
+}
