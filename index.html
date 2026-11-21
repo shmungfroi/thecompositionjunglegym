@@ -7299,7 +7299,7 @@ function ladGenRhy(l,r,o={}){l=Math.max(1,Math.min(10,l));if(l===10)return ladGe
   else{const v2=vocab.filter(k=>!['q5','q7_34','q7_43'].includes(k));let tieIn=false;
    for(let b=0;b<nb;b++){const last=b===nb-1,bar=ladFillBar(r,metre,v2,{last,len:last&&anac?LMET[metre].bar-anac:0,tieIn});it.cells.push(bar);tieIn=bar[bar.length-1]==='antB'}}
   // R9 tuplets: at most one per bar, on a beat, replacing a one-beat cell (4/4 and 5/4 items of the tuplet branch)
-  if(tup){let n=0;it.cells.forEach(bar=>{const idx=[];let p=0;bar.forEach((k,i)=>{if(ladW(k)===420&&p%420===0&&LCELL[k].t[0][1]==='n')idx.push(i);p+=ladW(k)});
+  if(tup){let n=0;it.cells.forEach((bar,bi)=>{const idx=[],tied=bi>0&&it.cells[bi-1][it.cells[bi-1].length-1]==='antB';let p=0;bar.forEach((k,i)=>{if(ladW(k)===420&&p%420===0&&LCELL[k].t[0][1]==='n'&&!(tied&&i===0))idx.push(i);p+=ladW(k)});
     if(idx.length&&(r()<.6||!n)){bar[lpick(idx,r)]=lpick(['q5','q7_34','q7_43'],r);n++}});if(!n)continue;it.tup=true}
   if(anac){it.anac=anac;it.anacCells=[anac===420?'q':'e']}
   if(l===8){it.swing=r()<.4&&it.cells.some(b=>b.includes('e2'));it.backbeat=r()<.5}
