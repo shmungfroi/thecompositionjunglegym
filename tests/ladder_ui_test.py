@@ -154,6 +154,20 @@ async def page(b, w, h):
     await pg.evaluate(PRE); await pg.evaluate(STUB)
     return pg, errs
 
+# N3 (Fable's re-check): rung 11 on a phone, the bar map counts the bass too. One note of one part is wrong, in a system after the first.
+N3 = """([part,seed])=>{EAR.mod='home';EAR.sysSel=null;let q,sys,at=-1,j0=-1;
+ for(let t=0;t<600;t++){EAR.drill='mel';EAR.lvl.mel=11;EAR.q=null;EAR.done=false;EAR.res=null;earNew();q=EAR.q;sys=earMelSystems(q,'mel');if(sys.length<3)continue;
+  const sp=earMelSplit(q,ladTruthEntries(q,part).length?earMelTruth(q,part):[],part),first=sys[0].map(b=>b.bi);
+  at=-1;sp.forEach((arr,bi)=>{if(at<0&&!first.includes(bi)){const x=arr.find(x=>!x.rest);if(x){at=bi;j0=x.j}}});if(at>=0)break}
+ for(const pt of['mel','bass']){if(EAR.part!==pt)document.querySelector(`[data-earpart="${pt}"]`).click();
+  const T=ladTruthEntries(q,pt);
+  for(let j=0;j<T.length;j++){const e=T[j];if(e.s===null){document.querySelector(`[data-rest="${e.t}"]`).click();continue}
+   const lb=document.querySelector(`[data-len="${e.t}"]`);if(lb.getAttribute('aria-checked')!=='true')lb.click();
+   let nm=e.s;if(pt===part&&j===j0)nm=[...document.querySelectorAll('[data-earsol]')].map(x=>x.dataset.earsol).find(x=>x!==nm&&!/[a-z]{2}/.test(x))||nm;
+   document.querySelector(`[data-earsol="${nm}"]`).click()}}
+ earCheck();const bi=sys.findIndex(s=>s.some(b=>b.bi===at));
+ return{ok:!!EAR.res&&!EAR.res.mark.ok,bi,nsys:sys.length,map:[...document.querySelectorAll('#earMain .el-sysmap button')].map(b=>({a:b.getAttribute('aria-label'),p:b.getAttribute('aria-pressed'),bad:!!b.querySelector('.bad')}))}}"""
+
 async def run(p):
     b = await cjg.launch(p)
     pg, errs = await page(b, 1366, 900)
@@ -283,6 +297,15 @@ async def run(p):
         await pg.evaluate(SCENE, [11, 'home', 1, 3, True, None]); await pg.wait_for_timeout(150)
         tx = await pg.evaluate("()=>{const e=document.querySelector('#earMain .el-teach');return e?e.textContent:''}")
         check(re.search(r'Melody, (bar(?: \(US: measure\))? \d+|the upbeat): the \w+ note is \S+: you wrote', tx) is not None, f'{w}px r11 wrong note: the sentence names the place {tx[:120]}')
+        # N3: rung 11, a wrong note in one part only, in a system after the first: that system's button says so and is the open one
+        if w < 500:
+            for part in ('bass', 'mel'):
+                r = await pg.evaluate(N3, [part, 0]); await pg.wait_for_timeout(150)
+                check(r['ok'] and r['bi'] > 0, f'{w}px r11 {part} wrong: could be staged outside the first system (self-check) {r}')
+                m = r['map']; i = r['bi']
+                check(len(m) == r['nsys'] and m[i]['bad'] and 'an error here' in m[i]['a'], f'{w}px r11 {part} wrong: the button for its system has the bad mark and "an error here" {m}')
+                check([k for k, x in enumerate(m) if x['p'] == 'true'] == [i], f'{w}px r11 {part} wrong: the reveal opens on that system {m}')
+                check(sum(x['bad'] for x in m) == 1 and sum('an error here' in x['a'] for x in m) == 1, f'{w}px r11 {part} wrong: no other button is marked {m}')
         check(not errs, f'{w}px page errors {errs[:3]}')
         await pg.close()
     await b.close()
