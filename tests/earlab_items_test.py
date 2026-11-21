@@ -661,10 +661,10 @@ async def main():
         k3r = await pg.evaluate("""()=>{const o=[];for(const md of ['maj','min'])for(const c in CADT[3][md])for(const t of CADT[3][md][c])for(const k of earCadKeys(3,md))
             for(const reg of [{b:41,s:64},{b:53,s:76},{b:41,s:76},{b:53,s:64},{b:47,s:70}]){const key={k,mode:md},rns=t.split(' '),P=earCadProg(3,rns,key,reg);
             o.push({a:c,md,k,rns,reg,ch:P.ch,app:P.ch?withKey(key,()=>checkSATB(P.ch,P.L)).filter(e=>e.sev==='error').map(e=>e.rule):['no realisation']})}return o}""")
-        ui = await pg.evaluate("""async(mk)=>{const R=eval(mk)(47);EAR.drill='cad';EAR.lvl.cad=3;const fb={},near={},nearOff={};let labels=null;const RP=()=>{const e=document.querySelector('#earMain .el-result');return e?{cls:e.className,verdict:(e.querySelector('.el-verdict')||{}).textContent||'',teach:(e.querySelector('.el-teach')||{}).textContent||'',chips:[...e.querySelectorAll('.el-ch')].map(c=>({t:c.title,s:(c.querySelector('small')||{}).textContent||''})),opt:(document.querySelector('#earMain .el-opt.is-near')||{}).dataset}:null};
+        ui = await pg.evaluate("""async(mk)=>{const R=eval(mk)(47);EAR.drill='cad';EAR.lvl.cad=3;const fb={},near={},nearOff={};let labels=null;const RP=()=>{const e=document.querySelector('#earMain .el-result');return e?{cls:e.className,verdict:(e.querySelector('.el-verdict')||{}).textContent||'',teach:(e.querySelector('.el-teach')||{}).textContent||'',chips:[...e.querySelectorAll('.el-ch')].map(c=>({t:c.title,s:[...((c.querySelector('small')||{childNodes:[]}).childNodes)].filter(n=>!(n.classList&&n.classList.contains('fn'))).map(n=>n.textContent).join(''),f:(c.querySelector('small b.fn')||{}).textContent||''})),opt:(document.querySelector('#earMain .el-opt.is-near')||{}).dataset}:null};
             const strip=h=>{const d=document.createElement('div');d.innerHTML=h;return d};
             const fbm={};for(const [a,md] of [['phrygian','min'],['cad64','maj'],['cad64','min']]){let q;do{q=earGen('cad',3,R)}while(q.a!==a||q.key.mode!==md);
-              const T=earTeachCad(q,{kind:'shown',given:null}),P=strip(T.pic||'');fbm[a+'|'+md]={teach:T.teach,chips:[...P.querySelectorAll('.el-cad .el-ch')].map(c=>({t:c.title,s:(c.querySelector('small')||{}).textContent||''}))}}
+              const T=earTeachCad(q,{kind:'shown',given:null}),P=strip(T.pic||'');fbm[a+'|'+md]={teach:T.teach,chips:[...P.querySelectorAll('.el-cad .el-ch')].map(c=>({t:c.title,s:[...((c.querySelector('small')||{childNodes:[]}).childNodes)].filter(n=>!(n.classList&&n.classList.contains('fn'))).map(n=>n.textContent).join(''),f:(c.querySelector('small b.fn')||{}).textContent||''}))}}
             for(const a of ['phrygian','cad64']){let q;do{q=earGen('cad',3,R)}while(q.a!==a);const n0=EAR_NEARLY;EAR_NEARLY=false;fb[a]=earTeachCad(q,{kind:'miss',given:CADPARENT[a]}).teach;EAR_NEARLY=n0;
               EAR.q=q;EAR.done=false;EAR.res=null;EAR.ans=[];renderEar();labels=[...document.querySelectorAll('#earMain [data-earans]')].map(b=>b.textContent);
               document.querySelector(`#earMain [data-earans="${CADPARENT[a]}"]`).click();near[a]=RP();
@@ -866,7 +866,7 @@ async def main():
               o.judge[md]={interrupted:earJudge(q,'interrupted'),cad64:earJudge(q,'cad64'),perfect:earJudge(q,'perfect'),imperfect:earJudge(q,'imperfect')};
               for(const flag of [false,true]){CAD64_INT_NEARLY=flag;EAR.st.cad={...EARST0,n:5,ok:4,streak:3,best:3};EAR.q=q;EAR.done=false;EAR.res=null;renderEar();
                 document.querySelector('#earMain [data-earans="cad64"]').click();const e=document.querySelector('#earMain .el-result');o.near[md+'|'+flag]={res:e.querySelector('.el-verdict').textContent+' | '+e.querySelector('.el-teach').textContent,
-                  chips:[...e.querySelectorAll('.el-ch')].map(c=>({t:c.title,s:(c.querySelector('small')||{}).textContent||''})),st:{...earSt()},judge:earJudge(q,'cad64')};
+                  chips:[...e.querySelectorAll('.el-ch')].map(c=>({t:c.title,s:[...((c.querySelector('small')||{childNodes:[]}).childNodes)].filter(n=>!(n.classList&&n.classList.contains('fn'))).map(n=>n.textContent).join(''),f:(c.querySelector('small b.fn')||{}).textContent||''})),st:{...earSt()},judge:earJudge(q,'cad64')};
                 if(!flag){EAR.q=q;EAR.done=false;EAR.res=null;renderEar();document.querySelector('#earMain [data-earans="interrupted"]').click();o.panelRight=o.panelRight||{};
                   o.panelRight[md]=document.querySelector('#earMain .el-result .el-teach').textContent}}
               CAD64_INT_NEARLY=true}
@@ -1066,7 +1066,7 @@ async def main():
                 EAR_NEARLY=nf;CAD64_INT_NEARLY=cf;const j=g===null?'shown':earJudge(q,g),kind=g===null?'shown':j==='correct'?'ok':j==='nearly'?'nearly':'miss';
                 T[`${g}|${nf}|${cf}`]={kind,t:earTeachCad(q,{kind,given:g}).teach}}
               const P=document.createElement('div');P.innerHTML=earChordRowHTML(q);
-              const chips=[...P.querySelectorAll('.el-ch')].map(c=>({t:c.title,s:(c.querySelector('small')||{}).textContent||'',cad:!!c.closest('.el-cad')}));
+              const chips=[...P.querySelectorAll('.el-ch')].map(c=>({t:c.title,s:[...((c.querySelector('small')||{childNodes:[]}).childNodes)].filter(n=>!(n.classList&&n.classList.contains('fn'))).map(n=>n.textContent).join(''),f:(c.querySelector('small b.fn')||{}).textContent||'',cad:!!c.closest('.el-cad')}));
               o.push({l,a:q.a,md:q.key.mode,k:q.key.k,rns:q.rns,ch:q.ch,i64:earCad64Int(q),T,chips})}}finally{EAR_NEARLY=N0;CAD64_INT_NEARLY=C0}return o}""", RNG)
         bad = collections.Counter(); ex = {}
         def flag(rule, q, key, t):
@@ -1125,6 +1125,34 @@ async def main():
                         or f"(bass {'mi' if q['md'] == 'min' else 'so'})" not in c['t']:
                     bad[f"cadential 6/4 chip {'in' if c['cad'] else 'before'} the cadence bracket reads \"{c['s']}\""] += 1
                     ex.setdefault(f"cadential 6/4 chip {'in' if c['cad'] else 'before'} the cadence bracket reads \"{c['s']}\"", f"rung {q['l']} {q['md']} {q['a']} [{' '.join(q['rns'])}]: {c}")
+        # 0.49 C6 (self-check): the function letter <b class="fn"> is read apart from the chip text, and is the right one for every chip.
+        # Independent expectation, from the numeral and the mode (not from earNumFn): T = I/i, iii, vi (major); i, III, VI (minor);
+        # C = a secondary chord such as V7/V; PD = ii, IV (major), iv, ii° (minor); D = V, V7, vii° (both); a cadential 6/4 (I second inversion before V) is T, as its own title says.
+        FL = {'maj': {'I': 'T', 'ii': 'PD', 'iii': 'T', 'IV': 'PD', 'V': 'D', 'vi': 'T', 'vii°': 'D'},
+              'min': {'i': 'T', 'III': 'T', 'iv': 'PD', 'ii°': 'PD', 'V': 'D', 'VI': 'T', 'vii°': 'D'}}
+        WL = {'tonic': 'T', 'pre-dominant': 'PD', 'dominant': 'D', 'modal dominant, soft pull': 'MD', 'outside the key': 'C'}
+        seen_l = collections.Counter(); unknown = collections.Counter()
+        for q in pt:
+            for i, rn in enumerate(q['rns']):
+                c = q['chips'][i]
+                is64 = rn.endswith(':2') and i + 1 < len(q['rns']) and q['rns'][i + 1].startswith('V')
+                base = re.sub(r':\d$', '', rn)
+                base = re.sub(r'7$', '', base)
+                want = 'T' if is64 else 'C' if '/' in base else FL[q['md']].get(base)   # a secondary chord (V7/V) is outside the key: C
+                if want is None:
+                    unknown[(q['md'], rn)] += 1
+                    continue
+                seen_l[(('64' if is64 else base), want)] += 1
+                COUNT['P chip function letters checked'] += 1
+                if c['f'] != want:
+                    fail('P', f"chip function letter for {rn} in {q['md']} reads {c['f']!r}, should be {want!r}: {c}")
+                elif not is64 and not c['t'].startswith('Cadential') and WL.get(c['t']) != c['f']:
+                    fail('P', f"chip letter {c['f']!r} disagrees with its own title {c['t']!r}")
+                if '\u200b' in c['s'] or re.match(r'^(T|PD|D|MD|C)(tonic|pre-dominant|dominant|bass|cadential)', c['s']):
+                    fail('P', f"chip text still carries the letter: {c['s']!r}")
+        for k_, n_ in unknown.items():
+            fail('P', f'chip numeral not in the independent letter table: {k_} ({n_} chips)')
+        COUNT['P chip kinds with a letter checked'] = len(seen_l)
         COUNT['P panel items'] = len(pt)
         for rule, n in bad.items():
             fail('P', f'{rule}: {n} sentences, e.g. {ex[rule]}')
