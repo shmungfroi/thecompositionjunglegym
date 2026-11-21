@@ -305,14 +305,14 @@ def l_rf_check(it, where, melody=False):
                 if p % 420 and not (c == 'e' and p + w == L):
                     fail('L', f'{where}: bar {b+1} cell {c} starts off the beat at {p}')
                 last_fig = melody and b == len(it['cells']) - 1 and c == 'h' and not (m == '4/4' and p < 840 < p + w)   # a melody's ending figure
-                if w == 840 and c != 'synT' and p not in strong and m != '5/4' and not last_fig:
+                if w == 840 and c not in ('synT', 'antA') and p not in strong and m != '5/4' and not last_fig:
                     fail('L', f'{where}: bar {b+1} two-beat cell {c} at {p} (not a strong beat)')
                 if m == '5/4' and it.get('grp'):
                     g0 = it['grp'][0] * 420
                     if p < g0 < p + w:
                         fail('L', f'{where}: bar {b+1} cell {c} crosses the 5/4 grouping {it["grp"]}')
-                if c == 'synT' and not (m == '4/4' and p == 420):
-                    fail('L', f'{where}: tied syncopation away from the bar middle')
+                if c in ('synT', 'antA') and not (m == '4/4' and p == 420):
+                    fail('L', f'{where}: {c} away from beat 2 of 4/4 (its tie shows the bar middle)')
                 if c == 'hd' and p != 0 and m != '5/4':
                     fail('L', f'{where}: dotted minim at {p}')
                 if c in ('w', 'tres', 'charl') and not (m == '4/4' and p == 0 and L == 1680):
@@ -700,7 +700,10 @@ async def ladder_section(pg):
     tot9 = sum(ic['m9k'].values())
     if any(not 0.2 <= v / tot9 <= 0.3 for v in ic['m9k'].values()) or ic['m9r']:
         fail('L', f"M9 kinds {ic['m9k']}, {ic['m9r']} items outside s,..d' (IC S1)")
-    if max(ic['m9key'].values()) > 1.35 * min(ic['m9key'].values()):
+    kv = list(ic['m9key'].values())
+    mu, sd = sum(kv) / len(kv), (sum(kv) / len(kv) * (1 - 1 / len(kv))) ** 0.5
+    COUNT['self-check L15 M9 key counts (2,000 items)'] = json.dumps(ic['m9key'])
+    if len(kv) != 11 or any(abs(v - mu) > 4 * sd for v in kv):   # even within sampling noise (4 sd), all eleven Stage 6 keys
         fail('L', f"M9 keys uneven: {ic['m9key']} (IC S1)")
     if ic['m10r']:
         fail('L', f"M10: {ic['m10r']} items outside s,..d' (IC S2)")
