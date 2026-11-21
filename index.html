@@ -8087,7 +8087,7 @@ function ladSchedRhyBeat(q,t0,o={}){const g=(typeof EAR!=='undefined'&&EAR.res&&
    anacrusis on its own beat), the line at the item's tempo. M11: 'all' both parts, 'melonly', 'bassonly'. M12: 'all' the melody alone,
    'accomp' with the score's accompaniment (needs AN.meta loaded). 'first': the first note only. 'nokey': no key cue. */
 function ladSchedMel(q,variant,t0,o={}){let t=t0;if(variant!=='nokey'){ladCueNotes(q).forEach(m=>tone(m,t,'piano',.55,1.3));t+=1.6}
- if(!q.cells&&q.l<=3){const ns=variant==='first'?q.midi.slice(0,1):q.midi;ns.forEach((m,i)=>c2Tone(m,t+i*.65,.6,1));return{end:t+(ns.length-1)*.65+.6+.05,lead:ELPRE,first:t}}
+ if(!q.cells&&q.l<=3){const ns=variant==='first'?q.midi.slice(0,1):q.midi;ns.forEach((m,i)=>c2Tone(m,t+i*.65,.6,1));if(typeof EAR!=='undefined'&&EAR.done&&!ELT.rendering)earMelFollow(q,0,ns.length,t);return{end:t+(ns.length-1)*.65+.6+.05,lead:ELPRE,first:t}}
  const tk=60/(o.bpm||q.tempo||84)/LADT,ls=q.metre?ladCountIn(q,t,tk):t+.4,line0=ls-(q.anac||0)*tk;let end=ls;
  const mel=variant==='bassonly'?[]:variant==='first'?q.notes.slice(0,1):q.notes;
  mel.forEach(n=>{if(n.midi==null)return;const st=line0+n.on*tk,d=Math.max(.12,n.dur*tk-.03);c2Tone(n.midi,st,d,1);end=Math.max(end,st+d)});
