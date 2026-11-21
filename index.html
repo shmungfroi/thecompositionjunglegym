@@ -1361,8 +1361,9 @@ label.ck{gap:8px;cursor:pointer}
 .el-len.rest:active:not([aria-disabled=true]){background:rgba(201,162,74,.13)}
 .el-len:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
 /* more than seven cells (melody rung 12 only): two rows, lengths above, rests and the rarer lengths below */
-.el-pal.two{flex-wrap:wrap}
-.el-pal.two .el-len{flex:1 1 20%;border-bottom:1px solid var(--line);margin-bottom:-1px}
+.el-pal.two{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}   /* up to twelve cells in two even rows (rung 12 has eleven); never an orphan row */
+.el-pal.two .el-len{min-width:0;border-bottom:1px solid var(--line);margin-bottom:-1px}
+.el-pal.two .el-len:nth-child(6n+1){border-left:0}
 /* phones only: the bar map shares its row with a one-tap Undo, so a slip can be mended without leaving the score */
 .el-sysrow{display:none}
 .el-undo1{display:none}
