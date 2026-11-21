@@ -72,7 +72,7 @@ E2E_RHY = """([l,N])=>{const bad=[];let n=0;
   if(stuck){bad.push({stuck,metre:q.metre,a:q.a.join(' ')});continue}
   earCheck();n++;if(EAR.res.kind!=='ok')bad.push({kind:EAR.res.kind,a:q.a.join(' ')});
   // Fable's verification: the time names at the reveal sit under their own bar (as many names in the answer's first bar as it has cells)
-  else{const sv=document.querySelector('#earCmpW .el-sys:last-of-type svg'),want=earRhyBarsOf(q,q.a)[0].cells.length;if(sv&&sv.querySelectorAll('.melname').length!==want)bad.push({names:sv.querySelectorAll('.melname').length,want,a:q.a.join(' ')})}}
+  else{const ss=[...document.querySelectorAll('#earCmpW .el-sys')],sv=(ss[1]||ss[0]).querySelector('svg'),want=earRhyBarsOf(q,q.a)[0].cells.length;if(sv&&sv.querySelectorAll('.melname').length!==want)bad.push({names:sv.querySelectorAll('.melname').length,want,a:q.a.join(' ')})}}
  return{l,n,nbad:bad.length,bad:bad.slice(0,3)}}"""
 
 # a melody scene: write the first part of the right answer, optionally spoil one note, optionally check
@@ -99,6 +99,12 @@ TARGETS = """()=>{const bad=[];document.querySelectorAll('#earMain button').forE
 COUNT = "(s)=>document.querySelectorAll('#earMain '+s).length"
 OVER = "document.documentElement.scrollWidth-innerWidth"
 
+SEMI = "ladEntriesToLine(q,ladTruthEntries(q,'mel'),'mel').some(x=>x.dur===105)"
+ONEBAR = "()=>earMelSystems(EAR.q,'mel').every(s=>s.filter(b=>b.bi>0).length===1)"
+BARS = "()=>({sys:earMelSystems(EAR.q,'mel').map(s=>s.filter(b=>b.bi>0).length),map:[...document.querySelectorAll('#earMain .el-sysmap button')].length,many:!!document.querySelector('#earMain .el-sysmap.many')})"
+RESTKEYS = "()=>{const g=t=>{const b=document.querySelector(`[data-rest=\"${t}\"]`);return b?b.innerHTML:null};return{r16:g(105),r8:g(210)}}"
+DOUBLE = "()=>[...document.querySelectorAll('#earMain .el-len')].filter(b=>b.offsetParent&&getComputedStyle(b).borderLeftStyle==='double').map(b=>b.dataset.rest||b.dataset.len)"
+KEY2 = "()=>{const b=document.querySelector('#earMain [data-earsol]');b.focus();const lens=[...document.querySelectorAll('#earMain .el-len:not(.rest)')].filter(x=>x.getAttribute('aria-disabled')!=='true');const before=EAR.len;document.dispatchEvent(new KeyboardEvent('keydown',{key:'1',bubbles:true}));b.dispatchEvent(new KeyboardEvent('keydown',{key:'1',bubbles:true}));return{before,after:EAR.len,first:+lens[0].dataset.len,focused:document.activeElement===b||true}}"
 async def page(b, w, h):
     pg = await b.new_page(viewport={'width': w, 'height': h})
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
@@ -150,6 +156,31 @@ async def run(p):
             if mod == 'home' and l == 9: check(await pg.evaluate(COUNT, '.el-mut') == 0, f'{t}: no mutation button under Keep home do')
             if w < 500:
                 tg = await pg.evaluate(TARGETS); check(not tg, f'{t}: targets under 44 px {tg[:5]}')
+        # M1 / M2 / S6: semiquavers get a system to themselves when two bars would crowd them
+        for tag, metre in (('4/4', "q.metre==='4/4'"), ('3/4', "q.metre==='3/4'")):
+            await pg.evaluate(SCENE, [12, 'home', .4, 0, False, metre + '&&' + SEMI]); await pg.wait_for_timeout(150)
+            t = f'{w}px r12 semiquavers {tag}'
+            bs = await pg.evaluate(BARS)
+            want_one = (w < 500) or tag == '4/4'
+            check(all(n == 1 for n in bs['sys']) if want_one else all(n <= 2 for n in bs['sys']), f'{t}: bars to a system {bs}')
+            if w < 500:
+                check(bs['map'] == len(bs['sys']) and bs['map'] >= 2, f'{t}: one bar-map button per bar {bs}')
+                check(bs['many'] == (bs['map'] > 6), f'{t}: bar map scrolls above six {bs}')
+                tg = await pg.evaluate(TARGETS); check(not tg, f'{t}: targets under 44 px {tg[:5]}')
+            check(await pg.evaluate(OVER) <= 0, f'{t}: sideways scroll {await pg.evaluate(OVER)}')
+            check(not await pg.evaluate(SMALL), f'{t}: text under 11 px')
+            rk = await pg.evaluate(RESTKEYS); check(rk['r16'] and rk['r8'] and rk['r16'] != rk['r8'], f'{t}: the semiquaver rest key is not the quaver rest key')
+            check(len(await pg.evaluate(DOUBLE)) == 1, f'{t}: the double rule stands before the first rest key only {await pg.evaluate(DOUBLE)}')
+            k = await pg.evaluate(KEY2); check(k['after'] == k['first'], f'{t}: digit 1 with focus on a ladder row picks the shortest length {k}')
+        # a result with semiquavers (one bar a system too)
+        await pg.evaluate(SCENE, [12, 'home', 1, 0, True, "q.metre==='4/4'&&" + SEMI]); await pg.wait_for_timeout(150)
+        check(await pg.evaluate(OVER) <= 0, f'{w}px r12 semiquaver result: sideways scroll')
+        check(not await pg.evaluate(SMALL), f'{w}px r12 semiquaver result: text under 11 px')
+        # S4: rung 11 bass ladder names count from the bass's own do, said once; the engine's names unchanged
+        await pg.evaluate(SCENE, [11, 'home', 0, 0, False, None]); await pg.evaluate("document.querySelector('[data-earpart=\"bass\"]').click()"); await pg.wait_for_timeout(150)
+        sb = await pg.evaluate("()=>({note:document.querySelectorAll('#earMain .el-lnote').length,marks:[...document.querySelectorAll('#earMain .earlad [data-earsol]')].map(b=>b.dataset.earsol+'>'+b.querySelector('b').textContent)})")
+        check(sb['note'] == 1, f'{w}px r11 bass: the note about octave marks shows once {sb["note"]}')
+        check(any(x.split('>')[0].count(',') == x.split('>')[1].count(',') + 2 for x in sb['marks'] if x.split('>')[0].count(',') >= 2), f'{w}px r11 bass: shown names two marks fewer than data-earsol {sb["marks"][:6]}')
         # the picker: phones fold to tabs (.el-bandtab), "n more" chip (.el-bandmore) appears when the Stage hides rungs
         await pg.evaluate("EAR.drill='mel';EAR.lvl.mel=4;EAR.q=null;EAR.done=false;S.level=4;EAR.all=false;renderEar()")
         check(await pg.evaluate(COUNT, '.el-bandmore') >= 1, f'{w}px picker: .el-bandmore when Stage 4 hides rungs')
@@ -168,6 +199,30 @@ async def run(p):
             await pg.wait_for_timeout(120)
             check(not await pg.evaluate(SMALL), f'{t} result: text under 11 px {(await pg.evaluate(SMALL))[:3]}')
             check(await pg.evaluate(OVER) <= 0, f'{t} result: sideways scroll')
+        # S1 (phones) and the desktop lanes: rhythm rung 10
+        await pg.evaluate("S.level=6;EAR.all=false;EAR.drill='rhy';EAR.lvl.rhy=10;EAR.q=null;EAR.done=false;EAR.res=null;earNew()"); await pg.wait_for_timeout(150)
+        nb = await pg.evaluate("EAR.q.barLen.length")
+        if w < 500:
+            L = await pg.evaluate("()=>({halves:document.querySelectorAll('#earMain .el-half').length,rows:[...document.querySelectorAll('#earMain .el-half')].map(h=>{const r=[...h.querySelectorAll('.el-hrow')].map(x=>x.getBoundingClientRect());const c=h.querySelector('.el-dcell').getBoundingClientRect();return[r.length,r[1].top>=r[0].bottom-1,Math.round(c.width),Math.round(c.height),h.querySelectorAll('.el-dcell').length]})})")
+            check(L['halves'] == 2 * nb, f'{w}px rhythm r10: a kick row over a snare row for each half bar {L}')
+            check(all(r[0] == 2 and r[1] and r[3] >= 44 and r[2] >= 44 and r[4] == 8 for r in L['rows']), f'{w}px rhythm r10: rows stacked, cells at least 44 px {L["rows"][:2]}')
+        else:
+            check(await pg.evaluate(COUNT, '.el-half') == 0 and await pg.evaluate(COUNT, '.el-lane') == 2, f'{w}px rhythm r10: desktop lanes unchanged')
+        # S2: the 5/4 and 7/8 reveal pairs line 1 of yours over line 1 of the answer
+        for metre in ('5/4', '7/8'):
+            ok = await pg.evaluate("""(m)=>{let q=null;for(let t=0;t<600;t++){EAR.drill='rhy';EAR.lvl.rhy=9;EAR.q=null;EAR.done=false;EAR.res=null;earNew();if(EAR.q.metre===m){q=EAR.q;break}}
+              if(!q)return null;for(const k of q.a){const b=document.querySelector(`.el-tile[data-earcell="${k}"]`);if(!b||b.disabled)return 'tile '+k;b.click()}earCheck();return 'ok'}""", metre)
+            if ok != 'ok': check(ok is None, f'{w}px {metre} reveal could not be staged {ok}'); continue
+            await pg.wait_for_timeout(150)
+            if w >= 500:
+                P = await pg.evaluate("()=>{const c=document.querySelector('#earCmpW');const ss=[...c.querySelectorAll('.el-sys')].map(x=>x.getBoundingClientRect());return{paired:c.classList.contains('paired'),n:ss.length,order:ss.every((r,i)=>i===0||r.top>=ss[i-1].top-1),first:[ss[0].top,ss[1].top,ss[0].bottom]}}")
+                check(P['paired'] and P['n'] % 2 == 0 and P['first'][1] >= P['first'][2] - 1 and P['first'][1] - P['first'][2] < 60, f'{w}px {metre} reveal: line 1 of yours sits over line 1 of the answer {P}')
+            check(await pg.evaluate(OVER) <= 0, f'{w}px {metre} reveal: sideways scroll')
+        # S3: the rung 11 sentence names the place
+        await pg.evaluate(SCENE, [11, 'home', 1, 3, True, None]); await pg.wait_for_timeout(150)
+        tx = await pg.evaluate("()=>{const e=document.querySelector('#earMain .el-teach');return e?e.textContent:''}")
+        import re
+        check(re.search(r'Melody, (bar(?: \(US: measure\))? \d+|the upbeat): the \w+ note is \S+: you wrote', tx) is not None, f'{w}px r11 wrong note: the sentence names the place {tx[:120]}')
         check(not errs, f'{w}px page errors {errs[:3]}')
         await pg.close()
     await b.close()

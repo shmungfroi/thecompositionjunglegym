@@ -89,6 +89,10 @@ LADSCENE="""([d,l,mod,frac,spoil,chk,wantS])=>{EAR.mod=mod;S.level=6;const want=
  if(chk)earCheck()}"""
 LADVIEWS=[('long header',['mel',6,'home',0,0,0,None]),('palette desk',['mel',6,'home',.6,0,0,None]),('result state',['mel',6,'home',1,3,1,None]),
  ('rung 7',['mel',7,'home',1,5,1,'q.aug2&&q.aug2.length']),('rung 9 Move do',['mel',9,'move',.7,0,0,"q.readings&&q.kind==='M-V'"]),
+ ('rung 12 semiquavers 4/4',['mel',12,'home',.4,0,0,"q.metre==='4/4'&&ladEntriesToLine(q,ladTruthEntries(q,'mel'),'mel').some(x=>x.dur===105)"]),
+ ('rung 12 semiquavers 3/4',['mel',12,'home',.4,0,0,"q.metre==='3/4'&&ladEntriesToLine(q,ladTruthEntries(q,'mel'),'mel').some(x=>x.dur===105)"]),
+ ('rung 12 semiquavers result',['mel',12,'home',1,0,1,"q.metre==='4/4'&&ladEntriesToLine(q,ladTruthEntries(q,'mel'),'mel').some(x=>x.dur===105)"]),
+ ('rhythm rung 10',['rhy',10,'home',.5,0,0,None]),('rhythm rung 9 7/8 result',['rhy',9,'home',1,0,1,"q.metre==='7/8'"]),
  ('rhythm rung 9',['rhy',9,'home',.5,0,0,None]),('rhythm rung 9 result',['rhy',9,'home',1,1,1,None])]
 async def ladder_views(pg):
     out={}
