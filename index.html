@@ -2030,7 +2030,13 @@ function termBtnSync(b){
  if(!L.length&&b.dataset.tset===undefined)return;
  const cur=b.getAttribute('title')||'';if(b.dataset.tset===undefined||cur!==b.dataset.tset)b.dataset.t0=cur;   // the app's own title (kept, and refreshed if the app changed it)
  // 0.49 C14: the bracket form, "Australian (US: American)", on every hover that names the Australian term; a hover with no title of its own stays "US: x"
- const t0=b.dataset.t0,us='US: '+L.join(', '),nt=L.length?(t0?`${t0} (${us})`:us)+(L.includes(TERMSBY.iac.us)?' · '+TERM_NOTE:''):t0;
+ let nt;
+ // 0.49 RC (L63): a title of the form "Term: reason" pairs each clause with its own bracket, "Dotted minim (US: dotted half note): does not fit this bar (US: measure)",
+ // never one bracket holding the terms of both clauses. Only for a button whose face carries no term of its own (the palette cells, drawn in svg).
+ const ci=ttx?ttx.indexOf(': '):-1,fl=x=>{const o=[];TM_RX.lastIndex=0;let q;while((q=TM_RX.exec(x))){const k=Object.keys(q.groups).find(g=>q.groups[g]!==undefined),u=termUSw(k,q[0]),cnt=/(\d+) $/.exec(x.slice(0,q.index));if(u)o.push(cnt?cnt[1]+' '+u:u)}return o};
+ if(ci>0&&!b.dataset.tk&&!/\S/.test(txt)){const hs=ttx.slice(0,ci),rs=ttx.slice(ci+2),Lh=fl(hs),Lr=fl(rs);
+  if(Lh.length){nt=`${hs} (US: ${Lh.join(', ')}): ${rs}${Lr.length?` (US: ${Lr.join(', ')})`:''}`;L.length=0;L.push(...Lh,...Lr)}}
+ if(nt===undefined){const t0=b.dataset.t0,us='US: '+L.join(', ');nt=L.length?(t0?`${t0} (${us})`:us)+(L.includes(TERMSBY.iac.us)?' · '+TERM_NOTE:''):t0}
  if(nt)b.setAttribute('title',nt);else b.removeAttribute('title');b.dataset.tset=nt;b.dataset.us=L.join('|')}
 /* the bracket: headings, and the first mention in each block (in each room for bar and stave); never on buttons and chips (they get the hover).
  Three forms, so brackets never pile up: " (US: x)" normally; " [US: x]" when the term already sits inside a bracket; and when the term is

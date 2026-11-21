@@ -119,7 +119,7 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
  const shortCad=b=>{const w=nameOf(b).toLowerCase();if(!SHORTCAD[w]||!b.parentElement)return null;
   const sib=[...b.parentElement.children].filter(x=>x!==b&&x.matches(BTN)&&CADNAMES.test(nameOf(x)));return sib.length?SHORTCAD[w]:null};
  // 0.49 C14: a hover reads "Australian (US: American)"; a hover with no title of its own stays "US: American" (then the dot only joins the L5 note)
- const usList=ti=>{const t=ti||'',br=[...t.matchAll(/\(US: ([^)]*)\)/g)];if(br.length)return br[br.length-1][1].split(', ').map(x=>x.replace(/^\d+ /,''));   // the C13 count is checked by the tile table, not here
+ const usList=ti=>{const t=ti||'',br=[...t.matchAll(/\(US: ([^)]*)\)/g)];if(br.length)return br.flatMap(x=>x[1].split(', ')).map(x=>x.replace(/^\d+ /,''));   // 0.49 RC: a "Term: reason" hover has one bracket for each clause (L63)   // the C13 count is checked by the tile table, not here
  const seg=t.split(' · ').filter(x=>/^US: /.test(x));return seg.length?seg[seg.length-1].slice(4).split(', '):[]};
  const ownText=e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT);let t='',n;while((n=w.nextNode()))if(!n.parentElement.closest('[data-notm]')&&n.parentElement.closest(BTN)===e)t+=n.nodeValue+' ';return t};
  // a bracket follows the term, or (0.48 R6 fix) sits inside the term's own following bracket: "Perfect cadence (US: authentic cadence; V–I)"
@@ -148,7 +148,14 @@ CHK_JS = r"""(RULE)=>{window.__TV=new Map();window.__TN={scans:0,abbr:0,buttons:
    // T3 / T6 M3: every term on the button has its hover, in the right form (plural, rest)
    want.forEach(u=>{if(!got.includes(u))add('T3',where+': "'+s.trim().slice(0,60)+'" has no hover "US: '+u+'" (title "'+tl+'")')});
    // T6 H1/H2: no hover names a US term the current text does not contain (stale, piled up, or a wrong N-bar pairing)
-   got.forEach(u=>{if(!want.has(u))add('T6',where+': stale or wrong hover "US: '+u+'" on "'+s.trim().slice(0,60)+'" (title "'+tl+'")')});
+   // 0.49 RC (L63, self-check): a "Term: reason" hover pairs each term with the bracket right after its own clause. The bar named in the reason may carry its bracket
+   // (a hover is read alone); every other US term must still come from the button's own text or title, and each clause's bracket holds only that clause's terms
+   const allowed=new Set([...want,...termsIn(appT).map(([k,w])=>usOf(k,w)).filter(Boolean)]);
+   {const pm=/^(.*?)(?: \(US: ([^)]*)\))?: (.*)$/.exec(tl);if(pm&&/\(US: [^)]*\)[^()]*\(US: /.test(tl)){const own=termsIn(pm[1]).map(([k,w])=>usOf(k,w)).sort().join(', '),b1=(pm[2]||'').split(', ').sort().join(', ');
+     if(own!==b1)add('T6',where+': hover pairs the wrong terms in its first bracket: "'+tl+'"');
+     const lr=[...pm[3].matchAll(/\(US: ([^)]*)\)/g)],rt=termsIn(pm[3].replace(/\s*\(US: [^)]*\)/g,'')).map(([k,w])=>usOf(k,w)).sort().join(', ');
+     if(lr.length!==1||lr[0][1].split(', ').sort().join(', ')!==rt)add('T6',where+': hover pairs the wrong terms in its second bracket: "'+tl+'"')}}
+   got.forEach(u=>{if(!allowed.has(u))add('T6',where+': stale or wrong hover "US: '+u+'" on "'+s.trim().slice(0,60)+'" (title "'+tl+'")')});
    if(got.includes('imperfect authentic')&&!/is still a perfect cadence/.test(tl))add('T6',where+': hover "imperfect authentic" without the note (L5): "'+s.trim().slice(0,60)+'"')});
   // T6 H1: every term in prose and feedback is marked (so it carries a bracket or a tap hover); buttons, chips and scores excepted
   {const tw=document.createTreeWalker(M,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&n.parentElement.closest('svg,script,style,textarea,input,abbr.tm,.tmus,[data-notm],'+BTN)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});let n;
