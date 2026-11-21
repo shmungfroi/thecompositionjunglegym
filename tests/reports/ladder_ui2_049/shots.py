@@ -72,6 +72,7 @@ SCENES = {
  'pal_r12_semi44': ('mel', dict(l=12, want="q.metre==='4/4'&&ladTruthEntries(q,'mel').length&&ladEntriesToLine(q,ladTruthEntries(q,'mel'),'mel').some(x=>x.dur===105)", frac=.4), 31),
  'pal_r12_semi34': ('mel', dict(l=12, want="q.metre==='3/4'&&ladEntriesToLine(q,ladTruthEntries(q,'mel'),'mel').some(x=>x.dur===105)", frac=.4), 33),
  'res_r12_semi': ('mel', dict(l=12, want="q.metre==='4/4'&&ladEntriesToLine(q,ladTruthEntries(q,'mel'),'mel').some(x=>x.dur===105)", frac=1, chk=1), 31),
+ 'rhy_r9_57_result': ('rhy', dict(l=9, want="q.metre==='5/4'", frac=1, chk=1), 41),
  'rhy_r9_sept': ('rhy', dict(l=9, want="q.a.some(k=>/7|sep/i.test(k))", frac=.9), 23),
  'rhy_r9_sept_kk': ('rhy', dict(l=9, want="q.a.some(k=>/7|sep/i.test(k))", frac=.9, names='kk'), 23),
  'rhy_r9_result': ('rhy', dict(l=9, want="q.a.some(k=>/7|sep/i.test(k))", frac=1, chk=1, edit="(()=>{const B=A.slice();const j=B.findIndex(k=>k==='q');if(j>=0)B[j]='e2';return B})()"), 23),
