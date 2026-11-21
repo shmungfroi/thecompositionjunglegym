@@ -679,7 +679,7 @@ async def ladder_section(pg):
         const pal={walks:0,dead:0,hd44:0,qd45:0,h68:0,bass:0};
         for(const l of [4,5,6,7,8,9,10,11])for(let i=0;i<150;i++){const q=ladGenMel(l,R);for(const part of (l===11?['mel','bass']:['mel'])){const E=[];
           for(let st=0;st<200;st++){const P=ladPalette(q,E,part);if(P.done)break;if(!P.lengths.length){pal.dead++;break}
-            if(part==='bass'&&P.lengths.some(x=>x.t!==P.lengths[0].t))pal.bass++;
+            if(part==='bass'&&P.lengths.some(x=>x.t===630||x.rest))pal.bass++;
             if(part==='mel'){if(q.metre==='4/4'&&P.bar>0&&P.bar<q.cells.length&&P.lengths.some(x=>x.t===1260))pal.hd44++;
               if(l<=5&&P.lengths.some(x=>x.t===630))pal.qd45++;if(q.metre==='6/8'&&P.bar===q.cells.length&&P.lengths.some(x=>x.t===840))pal.h68++}
             const c=P.lengths[Math.floor(R()*P.lengths.length)];E.push({s:c.rest?null:'d',t:c.t})}pal.walks++}}

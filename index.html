@@ -7612,24 +7612,26 @@ function ladMelRange(l){return l===1?[0,4]:l===2?[-3,5]:l<=4?[-3,7]:l===5?[-3,5]
 function ladMelKey(it){return[it.a.join(' '),it.metre,it.cells?it.cells.map(b=>b.join(' ')).join('|'):'',it.anac,(it.bass||[]).map(b=>b.sol).join(' ')].join('/')}
 /* ---------------- the duration palette (L103): legal lengths at the current position ---------------- */
 // the grammar of a bar: the rung's cells (plus the ending figures in the last bar, the anacrusis cells in bar 0)
-function ladMelBarVocab(q,b){const M=q.metre;if(b===0)return q.anacCells.slice();return ladMelVocab(q.l,M).filter(k=>!(k==='hd'&&M!=='3/4'))}
-/* the last bar's ending figures (the same set ladMelRhythm draws from), by metre and anacrusis: each figure a list of cell choices.
-   M10 may split a crotchet (and in 6/8 ta ti or tam) that is not the final note. */
-function ladEndFigs(l,metre,anac){const X=['q','e2'],sp=l===10;let F;
- if(metre==='2/4')F=!anac?[[['h']],[['q'],['q']]]:anac===420?[[['q']]]:[[['qd']]];
- else if(metre==='4/4')F=!anac?[[X,X,['h']]]:anac===420?[[['hd']]]:[[X,X,['qd']]];
- else if(metre==='3/4')F=!anac?[[['hd']],[X,['h']]]:anac===420?[[['h']],[X,['q']]]:[[X,['qd']]];
- else F=!anac?[[['cDD']],[['c3','cqe'],['cD']]]:[[['c3','cqe','cD'],['cq']]];
- if(sp)F=F.map(f=>f.map((c,i)=>i===f.length-1?c:[...new Set(c.flatMap(k=>k==='q'?['q','e2']:k==='cD'?['cD','cqe']:k==='cqe'?['cqe','c3']:[k]))]));
- const out=[];F.forEach(f=>{let seqs=[[]];f.forEach(c=>{seqs=seqs.flatMap(s=>c.map(k=>[...s,k]))});out.push(...seqs)});return out}
 // a parse of the entered lengths of one bar against the cells: returns the set of next legal [ticks, kind] (kind n note, r rest)
-function ladBarNext(q,b,ds,L){const M=LMET[q.metre],V=ladMelBarVocab(q,b),out=new Map(),last=b===q.cells.length;
- if(last){ladEndFigs(q.l,q.metre,q.anac).forEach(f=>{const D=f.flatMap(k=>LCELL[k].t.map(([d])=>d));if(D.length>ds.length&&ds.every((d,i)=>D[i]===d))out.set(D[ds.length],1)});return[...out.keys()].sort((a,b)=>b-a)}
- const okAt=(k,p)=>b===0?true:(ladCellOK(k,p,q.metre,L,{end:last})||(last&&['q','h','e2','hd'].includes(k)&&p%M.beat===0&&p+ladW(k)<=L&&!(q.metre==='4/4'&&p<840&&p+ladW(k)>840)));
- const rec=(p,j)=>{if(j===ds.length){if(p>=L)return;V.forEach(k=>{if(okAt(k,p)){const[d]=LCELL[k].t[0];out.set(d,1)}});return}
-  V.forEach(k=>{if(!okAt(k,p))return;const T=LCELL[k].t;let jj=j,ok=true,pp=p;for(let x=0;x<T.length;x++){if(jj===ds.length){out.set(T[x][0],1);ok=false;break}if(ds[jj]!==T[x][0]){ok=false;break}pp+=T[x][0];jj++}
-   if(ok)rec(pp,jj)})};
- rec(0,0);return[...out.keys()].sort((a,b)=>b-a)}
+/* the palette's grammar (IC_LADDER_ENG M-10): a length is offered only when some legal filling of the bar starts with what is entered plus it.
+   Inner bars: the rung's cells under RF (quavers in beat pairs, minims and tam-ti from strong beats, the dotted minim from beat 1 in 3/4 at M6 on,
+   compound beats in 6/8). The last bar may also hold a minim off a strong beat (never across the middle of 4/4), the dotted minim from beat 1 (M6 on)
+   and, filling it to the end, a dotted crotchet (simple) or a crotchet (6/8). The anacrusis bar: its one value (a crotchet upbeat may be two quavers). */
+function ladPalBase(l,m){if(m==='6/8')return['cD','c3','cqe','cDD'];const v=['q','e2','h'];if(l>=6&&m==='3/4')v.push('hd');if(l===9||l===10)v.push('dq');return v}
+function ladPalAt(k,p,m,L,last){const w=ladW(k);if(p+w>L)return false;
+ if(m==='6/8'){if(p%630)return false;if(k==='cDD')return p===0;if(k==='cq')return last&&p+420===L;return true}
+ if(p%420)return false;if(k==='h'||k==='dq'){if(LMET[m].strong.includes(p))return true;return last&&k==='h'&&!(m==='4/4'&&p<840&&p+840>840)}
+ if(k==='hd')return p===0;if(k==='qd')return last&&p+630===L;return true}
+const LPALT={};
+function ladPalTilings(l,m,L,last){const key=[l,m,L,last].join('/');if(LPALT[key])return LPALT[key];let v=ladPalBase(l,m);
+ if(last)v=[...new Set([...v,...(m==='6/8'?['cq','cD','c3','cqe','cDD']:['q','e2','h','qd',...(l>=6?['hd']:[])])])];const out=[];
+ const rec=(p,seq)=>{if(p===L){out.push(seq);return}v.forEach(k=>{if(ladPalAt(k,p,m,L,last))rec(p+ladW(k),[...seq,...LCELL[k].t.map(([d])=>d)])})};rec(0,[]);return LPALT[key]=out}
+function ladBarNext(q,b,ds,L){const last=b===q.cells.length,seqs=b===0?(L===420?[[420],[210,210]]:[[L]]):ladPalTilings(q.l,q.metre,L,last),out=new Set();
+ seqs.forEach(D=>{if(D.length>ds.length&&ds.every((d,i)=>D[i]===d))out.add(D[ds.length])});return[...out].sort((a,b)=>b-a)}
+// M11 bass: minims on strong beats (and beat 2 of 3/4), crotchets on beats, the dotted minim from beat 1 of 3/4; never a dotted crotchet or off the beat
+function ladBassNext(m,L,ds){const seqs=[],rec=(p,seq)=>{if(p===L){seqs.push(seq);return}[1260,840,420].forEach(d=>{if(p+d>L||p%420)return;if(d===1260&&!(m==='3/4'&&p===0))return;
+  if(d===840&&!(LMET[m].strong.includes(p)||(m==='3/4'&&p===420)))return;rec(p+d,[...seq,d])})};rec(0,[]);const out=new Set();
+ seqs.forEach(D=>{if(D.length>ds.length&&ds.every((d,i)=>D[i]===d))out.add(D[ds.length])});return[...out].sort((a,b)=>b-a)}
 /* ladPalette(q, entries, part): entries = what the student has entered AFTER the given first note: [{s:'m'|null (rest), t:ticks}].
    Returns {done, bar (0 = anacrusis), beat, tick (in the bar), lengths:[{t, rest:false|true, label}]}. Rests may stand wherever a note of the
    same length up to a crotchet may (M12: up to a beat). */
@@ -7647,7 +7649,7 @@ function ladPalette(q,entries,part='mel'){const all=[ladFirst(q,part),...(entrie
  if(q.l===12&&part==='mel'){const last=q.notes[q.notes.length-1],tot=all.reduce((a,e)=>a+e.t,0);if(tot>=last.on+last.dur)return{done:true,lengths:[]}}
  let L=[];
  if(q.l===12||part==='bass'){const M=LMET[q.metre]||LMET['4/4'],rem=bl[b]-used,beatPos=used%M.beat;
-  if(part==='bass'){const pos=all.reduce((a,e)=>a+e.t,0)+q.bass[0].on,sl=q.bass.find(x=>x.on===pos);L=sl?[sl.dur]:[]}   // one bass note a slot
+  if(part==='bass')L=ladBassNext(q.metre,bl[b],per[b])
   else L=[1680,1260,840,630,420,315,210,105,140].filter(d=>d<=rem&&(d%M.beat===0?beatPos===0:(beatPos+d<=M.beat||(d===630&&beatPos===0&&!M.comp))));}
  else L=ladBarNext(q,b,per[b],bl[b]);
  const M=LMET[q.metre]||LMET['4/4'];

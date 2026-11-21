@@ -106,10 +106,12 @@ The first note is given (pitch and, from rung 4, its length): `ladFirst(q, part)
 
 * `ladPalette(q, entries, part='mel')` →
   `{done, bar, beat, tick, lengths: [{t, rest, label}]}`: the lengths that are legal **at the current position** and can still lead to a complete bar
-  under the rung's rules (IC M-10): inner bars from the rung's cells (RF: quavers in beat pairs, minims from strong beats, the dotted minim in 3/4 only,
-  tam-ti at M9–M10, compound beats in 6/8); bar 0 = the anacrusis cell; the last bar = the rung's ending figures only (`ladEndFigs(l, metre, anac)`:
-  e.g. 4/4 X X ta-a, 4/4 after a crotchet upbeat ta-a-a, after a quaver upbeat X X tam; 6/8 ta-a-a or X tam; no minim in 6/8, no dotted value at M4–M5).
-  M11 bass: one note a slot, exactly the slot's length (minim in 4/4, dotted minim in 3/4, the last slot shortened by the upbeat: M11 upbeats are crotchets).
+  under the rung's rules (IC M-10): inner bars from the rung's cells under RF (quavers in beat pairs, minims and tam-ti from strong beats, the dotted
+  minim from beat 1 of 3/4 at M6 on, compound beats in 6/8); the last bar may also hold a minim off a strong beat (never across the middle of 4/4), the
+  dotted minim from beat 1 (M6 on) and, filling the bar to its end, a dotted crotchet (simple) or a crotchet (6/8); bar 0 = the upbeat's value (a crotchet
+  upbeat may be two quavers). So: no dotted minim inside 4/4 bars, no dotted crotchet at M4–M5, no minim in 6/8, and every offer can be completed.
+  `ladPalTilings(l, metre, len, last)` lists the legal fillings. M11 bass (`ladBassNext`): minims on strong beats (and beat 2 of 3/4), crotchets on beats,
+  the dotted minim from beat 1 of 3/4; never a dotted crotchet (M11 upbeats are crotchets, so the last bass bar is a minim or minim + crotchet).
   Rests are offered where a note of that length is (up to a crotchet; M12 up to a beat; none in the bass).
   `done: true` once every bar is full. Rungs 1–3: crotchets only. M12: any written value that fits without crossing a beat.
 * `ladBeams(q, entries, part)` → arrays of note indices (the given note = 0) to beam together, per beat (dotted-crotchet beat in 6/8).
