@@ -29,7 +29,8 @@ DIA = {0: ('d', 0), 2: ('r', 1), 4: ('m', 2), 5: ('f', 3), 7: ('s', 4), 9: ('l',
 CHR_UP = {1: ('di', 0), 3: ('ri', 1), 6: ('fi', 3), 8: ('si', 4), 10: ('li', 5)}
 CHR_DN = {1: ('ra', 1), 3: ('me', 2), 6: ('se', 4), 8: ('le', 5), 10: ('te', 6)}
 TICK = 420
-PICK_OUT = {'k545_42-43', 'k545_44-45',      # the recapitulation in F: bars 1-4 transposed (a transposition is not a new item)
+PICK_OUT = {'k545_50-53',                   # the right hand's chord tops over the left hand's scales: not the melody (IC M-11)
+            'k545_42-43', 'k545_44-45',      # the recapitulation in F: bars 1-4 transposed (a transposition is not a new item)
             'k545_63-64', 'k545_65-66',      # the recapitulation's S: bars 18-21 transposed, only the last note differs
             'maple_8-8',                     # a broken-octave accompaniment figure, not the tune
             'maple_42-42',                   # the same figure where the A strain returns
@@ -66,14 +67,15 @@ def melody(key):
                 continue
             off = float(n.getOffsetInHierarchy(meas))
             if n.isRest:
-                by.setdefault(off, [None, float(n.quarterLength), '', False])
+                by.setdefault(off, [None, float(n.quarterLength), '', False, None])
                 continue
-            top = max(x.midi for x in n.pitches)
+            tp = max(n.pitches, key=lambda x: x.midi)
+            top = tp.midi
             tie = n.tie.type if n.tie is not None else ''
             ferm = any('Fermata' in type(e).__name__ for e in n.expressions)
             if off not in by or by[off][0] is None or by[off][0] < top:
-                by[off] = [top, float(n.quarterLength), tie, ferm]
-        for off, (pp, d, tie, ferm) in sorted(by.items()):
+                by[off] = [top, float(n.quarterLength), tie, ferm, tp.step]
+        for off, (pp, d, tie, ferm, step) in sorted(by.items()):
             a = mo + off
             if ev and tie in ('stop', 'continue') and ev[-1][1] == pp and abs(ev[-1][0] + ev[-1][2] - a) < 1e-6:
                 ev[-1][2] += d
@@ -82,7 +84,10 @@ def melody(key):
             # a rest under a sounding note is not a rest of the line
             if pp is None and ev and ev[-1][0] + ev[-1][2] > a + 1e-6:
                 continue
-            ev.append([a, pp, d, mix, ferm])
+            # an inner voice moving under a held top note is not the melody (chopin20 bar 5: the alto F♯ under the soprano's D5; IC M-11)
+            if pp is not None and ev and ev[-1][1] is not None and ev[-1][0] + ev[-1][2] > a + 1e-6 and pp < ev[-1][1]:
+                continue
+            ev.append([a, pp, d, mix, ferm, step])
     # cut overlaps (top-line notes that sound past the next onset)
     for i in range(len(ev) - 1):
         ev[i][2] = min(ev[i][2], ev[i + 1][0] - ev[i][0])
@@ -111,8 +116,22 @@ def ms_of(key, meas_info, q_abs):
     return None
 
 
-def solfa(midi, do, minor, prev=None, nxt=None):
+DOLET = {0: 'C', 1: 'D', 2: 'D', 3: 'E', 4: 'E', 5: 'F', 6: 'F', 7: 'G', 8: 'A', 9: 'A', 10: 'B', 11: 'B'}   # do's letter in the keys used (flat keys for 1, 3, 8, 10)
+UP = {0: 'di', 1: 'ri', 3: 'fi', 4: 'si', 5: 'li'}
+DN = {1: 'ra', 2: 'me', 4: 'se', 5: 'le', 6: 'te'}
+
+
+def solfa(midi, do, minor, prev=None, nxt=None, step=None):
+    """the score's own spelling decides a chromatic syllable (IC S6: A♮ in A♭ is di, not ra); the direction rule only without a letter"""
     rel = (midi - do) % 12
+    if step is not None and rel not in DIA:
+        deg = ('CDEFGAB'.index(step) - 'CDEFGAB'.index(DOLET[do % 12])) % 7
+        alt = (rel - [0, 2, 4, 5, 7, 9, 11][deg] + 6) % 12 - 6
+        s = UP.get(deg) if alt == 1 else DN.get(deg) if alt == -1 else None
+        if s:
+            semis = [0, 2, 4, 5, 7, 9, 11][deg] + alt
+            octv = (midi - (60 + do % 12) - semis) // 12
+            return s + ("'" * octv if octv > 0 else ',' * (-octv)), s
     o = (midi - (60 + do % 12)) // 12 if False else None
     if rel in DIA:
         s, w = DIA[rel]
@@ -244,7 +263,7 @@ def build():
             chrom = 0
             for i, e in enumerate(pitches):
                 nx = pitches[i + 1][1] if i + 1 < len(pitches) else None
-                s, base = solfa(e[1], do, minor, None, nx)
+                s, base = solfa(e[1], do, minor, None, nx, e[5])
                 if base not in ('d', 'r', 'm', 'f', 's', 'l', 't') and not (minor and base in ('si', 'fi')):
                     chrom += 1
                 sols.append(s)
@@ -264,16 +283,26 @@ def build():
             # level: the lowest rung whose material covers it (indicative; rung 12 is its own rung)
             durs = {round(e[2], 4) for e in notes}
             bases = {s.rstrip(",'") for s in sols}
-            if chrom:
+            # (register rung material, IC S7): chromatic → 10; minor si/fi → 7; major te/fi → 8; a leap outside the tonic triad, an anacrusis,
+            # 3/4 or 6/8 or more than two bars → 6; else natural minor → 5, major → 4
+            alts = {b for b in bases if b not in ('d', 'r', 'm', 'f', 's', 'l', 't')}
+            idx = []
+            for x in sols:
+                b0 = x.rstrip(",'")
+                w = {'d': 0, 'r': 1, 'm': 2, 'f': 3, 's': 4, 'l': 5, 't': 6, 'di': 0, 'ri': 1, 'fi': 3, 'si': 4, 'li': 5, 'ra': 1, 'me': 2, 'se': 4, 'le': 5, 'te': 6}[b0]
+                idx.append(w + 7 * (x.count("'") - x.count(',')))
+            tri_w = (0, 2, 4) if not minor else (5, 0, 2)
+            leaps_out = any(abs(a - b) >= 2 and not (a % 7 in tri_w and b % 7 in tri_w) for a, b in zip(idx, idx[1:]))
+            if alts - ({'si', 'fi'} if minor else {'te', 'fi'}):
                 lvl = 10
-            elif bases & {'si', 'fi'} and minor:
+            elif minor and alts:
                 lvl = 7
-            elif bases & {'te', 'fi'}:
+            elif alts:
                 lvl = 8
-            elif ts in ('3/4', '6/8') or anac_q or not durs <= {0.5, 1.0, 2.0} or minor:
-                lvl = 6 if not minor else 6
+            elif leaps_out or anac_q or ts in ('3/4', '6/8') or len(set(n[3] for n in notes)) - (1 if anac_q else 0) > 2:
+                lvl = 6
             else:
-                lvl = 4
+                lvl = 5 if minor else 4
             rhy_extra = bool(durs - {0.5, 1.0, 2.0, 1.5, 3.0, 4.0})   # dotted quavers or semiquavers: beyond the generated rungs' rhythm
             msr = ms_of(key, meas_info, start_q)
             end_q = notes[-1][0] + notes[-1][2]
@@ -290,6 +319,14 @@ def build():
                 mo2, bq2, dq2, ts2 = num_off[b]
                 bl.append(int(round(min(bq2, end_q - mo2) * TICK)))
                 b += 1
+            # D9 outline (IC S8): every bar full and the last one shortened by the anacrusis exactly; a phrase that stops earlier is
+            # completed with rests, one that runs past it is not an excerpt
+            barT = int(round(bq * TICK)) if full_bar not in num_off else int(round(num_off[full_bar][1] * TICK))
+            if bl:
+                want_last = barT - int(round(anac_q * TICK))
+                if bl[-1] > want_last:
+                    reasons.append('last bar longer than the anacrusis allows')
+                bl = [barT] * (len(bl) - 1) + [want_last]
             cands.append(dict(id=cid, score=key, bars=bars_lab, unit=lab, key=('%s %s' % (META[key]['key'].split()[0], META[key]['key'].split()[1]) if (tonic, mode) == parse_key(META[key]['key']) else
                                                                           '%s %s' % (['C', 'D♭', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'][tonic], 'minor' if minor else 'major')),
                               tonic=tonic, mode=mode, do=do, metre=ts, anac=int(round(anac_q * TICK)), level=lvl, rhy_extra=rhy_extra, reasons=reasons,
@@ -297,8 +334,22 @@ def build():
                               notes=[[int(round((e[0] - start_q) * TICK)), int(round(e[2] * TICK)), e[1],
                                       (sols[pitches.index(e)] if e[1] is not None else None)] for e in notes],
                               barLen=bl, ms=[msr[0], mse[0] + 1] if msr and mse else None, msPerQ=msr[1] if msr else None,
-                              credit=META[key]['src'].split('.')[0] + '. ' + META[key]['t']))
+                              credit=credit_of(key)))
     return cands
+
+
+FULL = {'chorale': 'Johann Sebastian Bach', 'ohaupt': 'Johann Sebastian Bach', 'jesu': 'Johann Sebastian Bach', 'k545': 'Wolfgang Amadeus Mozart',
+        'k331a': 'Wolfgang Amadeus Mozart', 'k331d': 'Wolfgang Amadeus Mozart', 'maple': 'Scott Joplin', 'entertainer': 'Scott Joplin',
+        'chopin7': 'Fryderyk Chopin', 'chopin20': 'Fryderyk Chopin'}
+
+
+def credit_of(key):
+    """composer in full, the work, then the score data with encoder and licence as meta.json gives them (IC M-12)"""
+    import re
+    t = META[key]['t']
+    t = re.sub(r'^(Bach|Mozart|Joplin|Chopin), ', '', t)
+    sd = re.search(r'Score data: (.*?CC BY(?:-NC-SA)? 4\.0)', META[key]['src'])
+    return '%s, %s. Score data: %s.' % (FULL[key], t, sd.group(1) if sd else META[key]['src'])
 
 
 def pick(cands):
