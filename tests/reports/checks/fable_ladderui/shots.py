@@ -72,6 +72,8 @@ SCENES = {
  'rhy_r9_sept': ('rhy', dict(l=9, want="q.a.some(k=>/7|sep/i.test(k))", frac=.9), 23),
  'rhy_r9_sept_kk': ('rhy', dict(l=9, want="q.a.some(k=>/7|sep/i.test(k))", frac=.9, names='kk'), 23),
  'rhy_r9_result': ('rhy', dict(l=9, want="q.a.some(k=>/7|sep/i.test(k))", frac=1, chk=1, edit="(()=>{const B=A.slice();const j=B.findIndex(k=>k==='q');if(j>=0)B[j]='e2';return B})()"), 23),
+ 'rhy_r9_78_result': ('rhy', dict(l=9, want="q.metre==='7/8'", frac=1, chk=1), 27),
+ 'rhy_r4_result': ('rhy', dict(l=4, frac=1, chk=1), 29),
  'rhy_r10_lanes': ('rhy', dict(l=10, frac=.6, drums=0), 25),
  'rhy_r10_result': ('rhy', dict(l=10, frac=1, chk=1, drumSkip=2), 25),
 }

@@ -2330,12 +2330,12 @@
   ],
   "res": [
    796,
-   1053
+   1079
   ],
   "gap": null,
   "card": [
    1180,
-   1424
+   1450
   ],
   "small": [],
   "under44": [
@@ -2439,12 +2439,12 @@
   ],
   "res": [
    796,
-   525
+   527
   ],
   "gap": null,
   "card": [
    1180,
-   895
+   897
   ],
   "small": [],
   "under44": [
@@ -2823,12 +2823,12 @@
   ],
   "res": [
    328,
-   1274
+   1300
   ],
   "gap": null,
   "card": [
    362,
-   2120
+   2146
   ],
   "small": [],
   "under44": [],
@@ -2906,12 +2906,12 @@
   ],
   "res": [
    328,
-   1258
+   1172
   ],
   "gap": null,
   "card": [
    362,
-   2127
+   2041
   ],
   "small": [],
   "under44": [],
@@ -2919,6 +2919,339 @@
    "l": 10,
    "metre": "4/4",
    "a": "qr e2 s4 es2 w",
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "rhy_r9_78_result_1366": {
+  "over": 0,
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "pal": null,
+  "len": null,
+  "hold": null,
+  "score": null,
+  "lad": null,
+  "step": null,
+  "half": null,
+  "mut": null,
+  "set": null,
+  "ans": [
+   626,
+   32
+  ],
+  "res": [
+   796,
+   607
+  ],
+  "gap": null,
+  "card": [
+   1180,
+   977
+  ],
+  "small": [],
+  "under44": [
+   "BUTTON:1:40x34",
+   "BUTTON:2:40x34",
+   "BUTTON:3:40x34",
+   "BUTTON:4:40x34",
+   "BUTTON:5:40x34",
+   "BUTTON:6:40x34",
+   "BUTTON:7:40x34",
+   "BUTTON:8:40x34",
+   "on:9:40x34",
+   "BUTTON:10:40x34",
+   "el-btn gold:Next →:76x34",
+   "el-replay:Hear it all,:232x40"
+  ],
+  "scene": {
+   "l": 9,
+   "metre": "7/8",
+   "a": "c3 re e2 ceq re q cD q q c3 e2 er",
+   "res": "ok",
+   "log": []
+  },
+  "errs": []
+ },
+ "rhy_r4_result_1366": {
+  "over": 0,
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "pal": null,
+  "len": null,
+  "hold": null,
+  "score": null,
+  "lad": null,
+  "step": null,
+  "half": null,
+  "mut": null,
+  "set": null,
+  "ans": [
+   626,
+   32
+  ],
+  "res": [
+   796,
+   395
+  ],
+  "gap": null,
+  "card": [
+   1180,
+   765
+  ],
+  "small": [],
+  "under44": [
+   "BUTTON:1:40x34",
+   "BUTTON:2:40x34",
+   "BUTTON:3:40x34",
+   "on:4:40x34",
+   "BUTTON:5:40x34",
+   "BUTTON:6:40x34",
+   "BUTTON:7:40x34",
+   "BUTTON:8:40x34",
+   "BUTTON:9:40x34",
+   "BUTTON:10:40x34",
+   "el-btn gold:Next →:76x34",
+   "el-replay:Hear it all,:232x40"
+  ],
+  "scene": {
+   "l": 4,
+   "metre": "2/4",
+   "a": "es2 q es2 s2e",
+   "res": "ok",
+   "log": []
+  },
+  "errs": []
+ },
+ "res_r9_move_late_1366": {
+  "over": 0,
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "pal": null,
+  "len": null,
+  "hold": [
+   0,
+   0
+  ],
+  "score": [
+   476,
+   976
+  ],
+  "lad": [
+   292,
+   836
+  ],
+  "step": [
+   292,
+   52
+  ],
+  "half": [
+   145,
+   36
+  ],
+  "mut": null,
+  "set": null,
+  "ans": [
+   396,
+   101
+  ],
+  "res": [
+   476,
+   347
+  ],
+  "gap": null,
+  "card": [
+   1180,
+   1824
+  ],
+  "small": [],
+  "under44": [
+   "BUTTON:1:40x34",
+   "BUTTON:2:40x34",
+   "BUTTON:3:40x34",
+   "BUTTON:4:40x34",
+   "BUTTON:5:40x34",
+   "BUTTON:6:40x34",
+   "BUTTON:7:40x34",
+   "BUTTON:8:40x34",
+   "on:9:40x34",
+   "BUTTON:10:40x34",
+   "BUTTON:11:40x34",
+   "BUTTON:12:40x34"
+  ],
+  "scene": {
+   "l": 9,
+   "metre": "4/4",
+   "anac": 210,
+   "kind": "M-V",
+   "a": "d m d m d s l l t d' s f f s m s, d s l s r m r m m r m fi fi m r m fi s r s",
+   "res": "miss",
+   "log": []
+  },
+  "errs": []
+ },
+ "rhy_r9_78_result_390": {
+  "over": 0,
+  "head": [
+   328,
+   188
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "pal": null,
+  "len": null,
+  "hold": null,
+  "score": null,
+  "lad": null,
+  "step": null,
+  "half": null,
+  "mut": null,
+  "set": null,
+  "ans": [
+   256,
+   28
+  ],
+  "res": [
+   328,
+   1177
+  ],
+  "gap": null,
+  "card": [
+   362,
+   2023
+  ],
+  "small": [],
+  "under44": [],
+  "scene": {
+   "l": 9,
+   "metre": "7/8",
+   "a": "c3 re e2 ceq re q cD q q c3 e2 er",
+   "res": "ok",
+   "log": []
+  },
+  "errs": []
+ },
+ "rhy_r4_result_390": {
+  "over": 0,
+  "head": [
+   328,
+   188
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "pal": null,
+  "len": null,
+  "hold": null,
+  "score": null,
+  "lad": null,
+  "step": null,
+  "half": null,
+  "mut": null,
+  "set": null,
+  "ans": [
+   256,
+   28
+  ],
+  "res": [
+   328,
+   541
+  ],
+  "gap": null,
+  "card": [
+   362,
+   1387
+  ],
+  "small": [],
+  "under44": [],
+  "scene": {
+   "l": 4,
+   "metre": "2/4",
+   "a": "es2 q es2 s2e",
+   "res": "ok",
+   "log": []
+  },
+  "errs": []
+ },
+ "res_r9_move_late_390": {
+  "over": 0,
+  "head": [
+   328,
+   188
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "pal": null,
+  "len": null,
+  "hold": [
+   360,
+   327
+  ],
+  "score": [
+   328,
+   217
+  ],
+  "lad": [
+   328,
+   796
+  ],
+  "step": [
+   328,
+   44
+  ],
+  "half": [
+   163,
+   44
+  ],
+  "mut": null,
+  "set": null,
+  "ans": [
+   256,
+   87
+  ],
+  "res": [
+   328,
+   401
+  ],
+  "gap": null,
+  "card": [
+   362,
+   2507
+  ],
+  "small": [],
+  "under44": [
+   "INPUT::18x18"
+  ],
+  "scene": {
+   "l": 9,
+   "metre": "4/4",
+   "anac": 210,
+   "kind": "M-V",
+   "a": "d m d m d s l l t d' s f f s m s, d s l s r m r m m r m fi fi m r m fi s r s",
    "res": "miss",
    "log": []
   },
