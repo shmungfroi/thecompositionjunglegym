@@ -7,13 +7,14 @@ Run: python3 tests/ladder_ui_test.py <repo dir>
   E2E answering with the engine's own right answer through the UI marks right at every melody rung 4 to 12 (both settings at rung 9) and every rhythm rung 1 to 10
   V   the new views at 1366 and 390: 11 px floor, 44 px phone targets, no sideways scroll (.el-bandtab, .el-bandmore, .el-len, .el-undo1, .el-mut, half rungs, .el-tile.tup, .grp.set buttons)
 """
-import sys, asyncio, json, pathlib
+import sys, asyncio, json, pathlib, re
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / 'harness'))
 import cjg
 from playwright.async_api import async_playwright
 
 N = [0]; FAILS = []
+INFO = {}
 def check(c, m):
     N[0] += 1
     if not c: FAILS.append(m)
@@ -104,7 +105,47 @@ ONEBAR = "()=>earMelSystems(EAR.q,'mel').every(s=>s.filter(b=>b.bi>0).length===1
 BARS = "()=>({sys:earMelSystems(EAR.q,'mel').map(s=>s.filter(b=>b.bi>0).length),map:[...document.querySelectorAll('#earMain .el-sysmap button')].length,many:!!document.querySelector('#earMain .el-sysmap.many')})"
 RESTKEYS = "()=>{const g=t=>{const b=document.querySelector(`[data-rest=\"${t}\"]`);return b?b.innerHTML:null};return{r16:g(105),r8:g(210)}}"
 DOUBLE = "()=>[...document.querySelectorAll('#earMain .el-len')].filter(b=>b.offsetParent&&getComputedStyle(b).borderLeftStyle==='double').map(b=>b.dataset.rest||b.dataset.len)"
-KEY2 = "()=>{const b=document.querySelector('#earMain [data-earsol]');b.focus();const lens=[...document.querySelectorAll('#earMain .el-len:not(.rest)')].filter(x=>x.getAttribute('aria-disabled')!=='true');const before=EAR.len;document.dispatchEvent(new KeyboardEvent('keydown',{key:'1',bubbles:true}));b.dispatchEvent(new KeyboardEvent('keydown',{key:'1',bubbles:true}));return{before,after:EAR.len,first:+lens[0].dataset.len,focused:document.activeElement===b||true}}"
+KEY2 = "()=>{const b=document.querySelector('#earMain [data-earsol]');b.focus();const lens=[...document.querySelectorAll('#earMain .el-len:not(.rest)')].filter(x=>x.getAttribute('aria-disabled')!=='true');if(lens.length<2)return{err:'fewer than two live lengths'};EAR.len=+lens[lens.length-1].dataset.len;const before=EAR.len;b.dispatchEvent(new KeyboardEvent('keydown',{key:'1',bubbles:true}));return{before,after:EAR.len,first:+lens[0].dataset.len,focused:document.activeElement===b}}"
+
+# N1 (Fable's sign-off): one bar to a system: the bar map names the bar, the reveal labels say "bar n"
+MAPTXT = "()=>[...document.querySelectorAll('#earMain .el-sysmap button')].map(b=>({t:b.childNodes[0].textContent,a:b.getAttribute('aria-label')}))"
+LABELS = "()=>[...document.querySelectorAll('#earMel svg text:not(.melsol)')].map(t=>t.textContent)"
+# N2 (Fable's sign-off): rung 11, the bass's marks count from the bass's own do. The expectation is worked out here from the MIDI notes, not from earBassOff.
+BASS11 = """(n)=>{const o={items:0,off:{},bad:[],sent:0,rows:0,ladSet:[]};const dm=q=>q.doMidi||ladDo(q.key.do);
+ const write=(q,part,spoilAt)=>{const T=ladTruthEntries(q,part),entered=[];for(let j=0;j<T.length;j++){const e=T[j];let nm=e.s;
+   const lb=document.querySelector(`[data-len="${e.t}"]`);if(lb.getAttribute('aria-checked')!=='true')lb.click();
+   if(spoilAt===j)nm=[...document.querySelectorAll('[data-earsol]')].map(x=>x.dataset.earsol).find(x=>x!==nm&&!/[a-z]{2}/.test(x))||nm;
+   document.querySelector(`[data-earsol="${nm}"]`).click();entered.push(nm)}return entered};
+ for(let it=0;it<n;it++){const mode=it%2?'min':'maj';let q;
+  for(let t=0;t<600;t++){EAR.drill='mel';EAR.lvl.mel=11;EAR.q=null;EAR.done=false;EAR.res=null;earNew();q=EAR.q;if(q.mode===mode)break}
+  if(q.mode!==mode)continue;o.items++;
+  if(EAR.part!=='mel')document.querySelector('[data-earpart="mel"]').click();
+  const melEntered=write(q,'mel',-1);
+  document.querySelector('[data-earpart="bass"]').click();
+  const rowsNow=()=>[...document.querySelectorAll('#earMain .earlad [data-earsol]')].map(b=>({s:b.dataset.earsol,t:b.querySelector('b').textContent,a:b.getAttribute('aria-label')}));
+  let R=rowsNow();const L=Object.fromEntries(R.map(r=>[r.s,r]));o.rows+=R.length;
+  const firstS=ladFirst(q,'bass').s,b0=q.bass[0].midi,dob=b0+(mode==='min'?3:0),oct=(dm(q)-dob)/12;
+  o.off[oct]=(o.off[oct]||0)+1;
+  if(!Number.isInteger(oct)||oct<0||oct>2)o.bad.push('the bass home note is not a whole number of octaves below the melody do: '+oct);
+  if(!L[firstS]||L[firstS].t!==(mode==='min'?'l,':'d'))o.bad.push(`first bass note ${firstS} shows ${L[firstS]&&L[firstS].t}, expected ${mode==='min'?'l,':'d'} (${mode}, ${oct} octaves)`);
+  const ln=document.querySelector('#earMain .el-lnote'),want=oct===0?'':oct===1?'one octave':'two octaves';
+  if(oct===0?!!ln:!(ln&&ln.textContent.includes(want+' below the melody')&&ln.textContent.startsWith('In the bass, d is the do')))o.bad.push(`the line above the ladder for ${oct} octaves reads ${ln&&ln.textContent}`);
+  R.forEach(r=>{const low=(r.t.match(/,/g)||[]).length>0,high=(r.t.match(/'/g)||[]).length>0;if(/ low/.test(r.a)!==low||/ high/.test(r.a)!==high)o.bad.push(`aria "${r.a}" disagrees with the drawn name ${r.t}`)});
+  const bassEntered=write(q,'bass',Math.min(1,ladTruthEntries(q,'bass').length-1));
+  // names under the stave: the melody's (unchanged) and the bass's, each equal to the ladder row's text
+  const have=[...document.querySelectorAll('#earMel text.melsol')].map(t=>t.textContent).sort().join('|');
+  const expect=[ladFirst(q,'mel').s,...melEntered,...[firstS,...bassEntered].map(x=>L[x]?L[x].t:'?'+x)].sort().join('|');
+  const sub=(a,b)=>{const m={};b.forEach(x=>m[x]=(m[x]||0)+1);return a.every(x=>m[x]-->0)};   // a phone draws one system, the desk all of them
+  if(innerWidth>=761?have!==expect:!(have&&sub(have.split('|'),expect.split('|'))))o.bad.push(`stave names at entry ${have} vs ${expect}`);
+  if(earFull(q)){earCheck();const tx=(document.querySelector('#earMain .el-teach')||{}).textContent||'';
+   const m=/Bass, (?:bar(?: \\(US: measure\\))? \\d+|the upbeat): the \\w+ note is (\\S+): you wrote (\\S+?)\\./.exec(tx);
+   if(m){o.sent++;const set=new Set(rowsNow().map(r=>r.t));if(!set.has(m[1])||!set.has(m[2]))o.bad.push(`Bass sentence names ${m[1]} / ${m[2]}, not ladder names: ${tx.slice(0,160)}`)}
+   // at the reveal the bass names under the staves are still the shown names: each shown name is drawn as often as the answer needs, and an engine name that differs is not drawn unless the melody uses it
+   const rv=[...document.querySelectorAll('#earMel text.melsol')].map(t=>t.textContent),eng=[firstS,...ladTruthEntries(q,'bass').map(e=>e.s)],cnt=(a,x)=>a.filter(t=>t===x).length,melN=[ladFirst(q,'mel').s,...ladTruthEntries(q,'mel').map(e=>e.s),...melEntered];
+   const need={};eng.forEach(x=>{const t=L[x]?L[x].t:x;need[t]=(need[t]||0)+1});
+   if(innerWidth>=761)for(const t in need)if(cnt(rv,t)<need[t])o.bad.push(`at the reveal ${t} is drawn ${cnt(rv,t)} times, the answer needs ${need[t]}`);
+   eng.forEach(x=>{if(L[x]&&L[x].t!==x&&!melN.includes(x)&&!Object.keys(need).includes(x)&&cnt(rv,x)>0)o.bad.push(`the engine's name ${x} is drawn at the reveal where ${L[x].t} should be`)})}}
+ return o}"""
 async def page(b, w, h):
     pg = await b.new_page(viewport={'width': w, 'height': h})
     errs = []; pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
@@ -161,8 +202,8 @@ async def run(p):
             await pg.evaluate(SCENE, [12, 'home', .4, 0, False, metre + '&&' + SEMI]); await pg.wait_for_timeout(150)
             t = f'{w}px r12 semiquavers {tag}'
             bs = await pg.evaluate(BARS)
-            want_one = (w < 500) or tag == '4/4'
-            check(all(n == 1 for n in bs['sys']) if want_one else all(n <= 2 for n in bs['sys']), f'{t}: bars to a system {bs}')
+            # one bar to a system at both widths and in both metres: at 1366 the stave is about 440 px, never wide enough for two bars of semiquavers (Fable's sign-off, Should 2)
+            check(all(n == 1 for n in bs['sys']), f'{t}: bars to a system {bs}')
             if w < 500:
                 check(bs['map'] == len(bs['sys']) and bs['map'] >= 2, f'{t}: one bar-map button per bar {bs}')
                 check(bs['many'] == (bs['map'] > 6), f'{t}: bar map scrolls above six {bs}')
@@ -171,7 +212,7 @@ async def run(p):
             check(not await pg.evaluate(SMALL), f'{t}: text under 11 px')
             rk = await pg.evaluate(RESTKEYS); check(rk['r16'] and rk['r8'] and rk['r16'] != rk['r8'], f'{t}: the semiquaver rest key is not the quaver rest key')
             check(len(await pg.evaluate(DOUBLE)) == 1, f'{t}: the double rule stands before the first rest key only {await pg.evaluate(DOUBLE)}')
-            k = await pg.evaluate(KEY2); check(k['after'] == k['first'], f'{t}: digit 1 with focus on a ladder row picks the shortest length {k}')
+            k = await pg.evaluate(KEY2); check('err' not in k and k['before'] != k['first'] and k['after'] == k['first'], f'{t}: digit 1 with focus on a ladder row moves the length from {k.get("before")} to the shortest {k}')
         # a result with semiquavers (one bar a system too)
         await pg.evaluate(SCENE, [12, 'home', 1, 0, True, "q.metre==='4/4'&&" + SEMI]); await pg.wait_for_timeout(150)
         check(await pg.evaluate(OVER) <= 0, f'{w}px r12 semiquaver result: sideways scroll')
@@ -180,7 +221,27 @@ async def run(p):
         await pg.evaluate(SCENE, [11, 'home', 0, 0, False, None]); await pg.evaluate("document.querySelector('[data-earpart=\"bass\"]').click()"); await pg.wait_for_timeout(150)
         sb = await pg.evaluate("()=>({note:document.querySelectorAll('#earMain .el-lnote').length,marks:[...document.querySelectorAll('#earMain .earlad [data-earsol]')].map(b=>b.dataset.earsol+'>'+b.querySelector('b').textContent)})")
         check(sb['note'] == 1, f'{w}px r11 bass: the note about octave marks shows once {sb["note"]}')
-        check(any(x.split('>')[0].count(',') == x.split('>')[1].count(',') + 2 for x in sb['marks'] if x.split('>')[0].count(',') >= 2), f'{w}px r11 bass: shown names two marks fewer than data-earsol {sb["marks"][:6]}')
+        check(all(x.split('>')[0].replace(',', '').replace("'", '') == x.split('>')[1].replace(',', '').replace("'", '') for x in sb['marks']), f'{w}px r11 bass: only the marks change, never the syllable')
+        # N2: over 64 rung 11 items (32 major, 32 minor) the bass names come from the bass's own do, on the ladder, under the stave, in the sentence and in the aria words
+        bo = await pg.evaluate(BASS11, 64)
+        check(bo['items'] >= 60, f'{w}px r11 bass: {bo["items"]} items checked (self-check: at least 60)')
+        check(not bo['bad'], f'{w}px r11 bass names: {bo["bad"][:3]}')
+        check(len([k for k in bo['off'] if bo['off'][k]]) >= 2, f'{w}px r11 bass: the offset is not one fixed number {bo["off"]} (self-check)')
+        check(bo['sent'] >= 20, f'{w}px r11 bass: {bo["sent"]} "Bass, bar n" sentences read (self-check: at least 20)')
+        INFO[f'{w}px r11 bass items / offsets (octaves below the melody do) / sentences'] = f'{bo["items"]} / {bo["off"]} / {bo["sent"]}'
+        # N1: one bar to a system: the bar map and the reveal labels name the bar
+        for cs, want in (('entry', .4), ('result', 1)):
+            await pg.evaluate(SCENE, [12, 'home', want, 0, cs == 'result', "q.anac&&" + SEMI]); await pg.wait_for_timeout(150)
+            has_up = await pg.evaluate("!!EAR.q.anac")
+            check(has_up, f'{w}px r12 semiquavers with an upbeat ({cs}) could be staged (self-check)')
+            if w < 500 and cs == 'entry':
+                mp = await pg.evaluate(MAPTXT)
+                check(mp and mp[0]['t'] == '1' and mp[0]['a'].startswith('Bar 1, with the upbeat') and all(x['t'] != 'up' for x in mp), f'{w}px r12 bar map, one bar a system with the upbeat: first button "1", aria "Bar 1, with the upbeat" {mp[:2]}')
+                check(all(re.fullmatch(r'\d+', x['t']) and x['a'].startswith('Bar ' + x['t']) for x in mp), f'{w}px r12 bar map: a number and "Bar n" for every button {mp}')
+            if cs == 'result':
+                lb = await pg.evaluate(LABELS)
+                check(lb and not any(re.search(r'bars \d+$', x, re.I) for x in lb) and any(re.search(r'bar \d+$', x, re.I) for x in lb), f'{w}px r12 reveal labels: "bar n" for one bar, never "bars n" {lb}')
+                check(any(re.search(r'upbeat . bar 1$', x, re.I) for x in lb) or w < 500, f'{w}px r12 reveal labels: the first system reads "upbeat · bar 1" {lb}')
         # the picker: phones fold to tabs (.el-bandtab), "n more" chip (.el-bandmore) appears when the Stage hides rungs
         await pg.evaluate("EAR.drill='mel';EAR.lvl.mel=4;EAR.q=null;EAR.done=false;S.level=4;EAR.all=false;renderEar()")
         check(await pg.evaluate(COUNT, '.el-bandmore') >= 1, f'{w}px picker: .el-bandmore when Stage 4 hides rungs')
@@ -221,7 +282,6 @@ async def run(p):
         # S3: the rung 11 sentence names the place
         await pg.evaluate(SCENE, [11, 'home', 1, 3, True, None]); await pg.wait_for_timeout(150)
         tx = await pg.evaluate("()=>{const e=document.querySelector('#earMain .el-teach');return e?e.textContent:''}")
-        import re
         check(re.search(r'Melody, (bar(?: \(US: measure\))? \d+|the upbeat): the \w+ note is \S+: you wrote', tx) is not None, f'{w}px r11 wrong note: the sentence names the place {tx[:120]}')
         check(not errs, f'{w}px page errors {errs[:3]}')
         await pg.close()
@@ -230,6 +290,6 @@ async def run(p):
 async def main():
     async with async_playwright() as p:
         await run(p)
-    print(json.dumps({'checks': N[0], 'failures': FAILS[:30], 'n_failures': len(FAILS)}, indent=1, ensure_ascii=False))
+    print(json.dumps({'checks': N[0], 'info': INFO, 'failures': FAILS[:30], 'n_failures': len(FAILS)}, indent=1, ensure_ascii=False))
     sys.exit(1 if FAILS else 0)
 asyncio.run(main())

@@ -8455,7 +8455,7 @@ const earRhyPPB=narrow=>narrow?46:60;
 /* one cell's notes, rests and ties. X(t): the x of a tick within the bar; s: the cell's start tick; returns {svg, ev:[{on,dur,rest,x,tie}]} */
 function earCellDraw(k,X,s,top,base,ink){const C=LCELL[k],ev=[];let t=s,o='';const st=[];let prev=null;
  C.t.forEach(([d,kd],j)=>{const nx=X(t)+5;
-  if(kd==='r'){if(d>=840)o+=`<rect x="${(nx+1).toFixed(1)}" y="${base-5}" width="10" height="5" fill="${ink}"/>`;else o+=elGlyph(d>=420?'restQuarter':d<210?'rest16th':'rest8th',nx+(d>=420?0:1),base+(d>=420?0:1.5),ink);st.push(null)}
+  if(kd==='r'){if(d>=840)o+=`<rect x="${(nx+1).toFixed(1)}" y="${base-5}" width="10" height="5" fill="${ink}"/>`;else o+=elGlyph(d>=420?'restQuarter':'rest8th',nx+(d>=420?0:1),base+(d>=420?0:1.5),ink);st.push(null)}
   else{const stem=d<1680,sx=nx+ELHW-.65;
    o+=elGlyph(d>=1680?'noteheadWhole':d>=840?'noteheadHalf':'noteheadBlack',d>=1680?nx-3:nx,base,ink);if(stem)o+=`<line x1="${sx.toFixed(1)}" y1="${base-1.5}" x2="${sx.toFixed(1)}" y2="${top}" stroke="${ink}" stroke-width="1.3"/>`;
    if([315,630,1260].includes(d))o+=elGlyph('augmentationDot',nx+ELHW+3+(d>=1680?3:0),base-4.3,ink);
@@ -8679,18 +8679,25 @@ function earChrSet(q){const l=q.l;if(l===7||l===11)return['si','fi'];if(l===8)re
  if(l===9){const s=new Set(['fi','si','ri','te']);[...(q.readings?[...q.readings.home,...q.readings.move]:[...q.a])].forEach(x=>{const m=/^([a-z]+)/.exec(x);if(m&&ELOFW[m[1]])s.add(m[1])});return[...s]}return[]}
 // Move do after the mutation: the ladder is named from the new do (semitones above the old one); relative-key items keep their names
 function earLadShift(q){return q.l===9&&EAR.mod==='move'&&EAR.pivot!=null&&q.info&&q.info.shift?7:0}
+/* 0.49 RC (Fable N2): rung 11, the bass's octave marks count from the bass's own do, display only (data-earsol, the engine's names and the marking are untouched).
+   The bass's first note is the root of the tonic chord, so the do at or next above it is the unmarked one: a bass that starts on d or d,, shows d; a minor bass that starts on l,, shows l,.
+   One offset per item (earBassOff) and one helper for the shown name (earBassShow), used for every bass name drawn: the ladder rows and their aria words, the names under the stave
+   at entry and at the reveal, the "Bass, bar n" sentence. earBassNote says which do it is. */
+const earBassOff=q=>q&&q.l===11&&q.bass&&q.bass.length?-Math.ceil(ladSemis(q.bass[0].i,q.bass[0].a)/12):0;
+function earBassShow(q,name){const o=earBassOff(q);if(!o||!name)return name;const m=/^([a-z]+)([,']*)$/.exec(name);if(!m)return name;const oc=(m[2].match(/'/g)||[]).length-(m[2].match(/,/g)||[]).length;return m[1]+elmk(oc+o)}
+const earBassNote=q=>{const o=earBassOff(q);return o?`In the bass, d is the do ${o===1?'one octave':'two octaves'} below the melody's d. Octave marks count from there.`:''};
 /* o: part, lock (the reveal), full (every note written), last (the row tapped last), a2 / a2on (the fa-si gauge), shift (semitones the do moved), homeP (the home note, in semitones from the old do) */
-function earLadderHTML(q,o={}){const part=o.part||'mel',sh=o.shift||0,chr=new Set(o.chr||[]),newDo=lmod(q.key.do+sh,12),letters=EAR.letters,dis=(o.lock||o.full)?'disabled':'',hp=o.homeP||0,bo=part==='bass'&&q.l===11?2:0,shown=(name,oc)=>name+elmk(oc+bo);   // S4: at rung 11 the bass's marks count from its own do, two octaves down; display only
+function earLadderHTML(q,o={}){const part=o.part||'mel',sh=o.shift||0,chr=new Set(o.chr||[]),newDo=lmod(q.key.do+sh,12),letters=EAR.letters,dis=(o.lock||o.full)?'disabled':'',hp=o.homeP||0,bo=part==='bass'?earBassOff(q):0,shown=(name,oc)=>name+elmk(oc+bo);   // S4 / N2: at rung 11 the bass's marks count from its own do (earBassOff); display only
  let lo,hi;if(part==='bass'){const is=q.bass.map(b=>b.i);lo=Math.min(...is,q.range[0]-14);hi=Math.max(...is,q.range[1]-14)}else{lo=q.range[0];hi=q.range[1]}
  const ln=(part==='bass'?q.bass:q.notes)||[],lw=ln.length?Math.min(...ln.map(n=>ladSemis(n.i,n.a))):0,hg=ln.length?Math.max(...ln.map(n=>ladSemis(n.i,n.a))):0,sLo=Math.min(ladSemis(lo,0),lw),sHi=Math.max(ladSemis(hi,0),hg),nm=s=>({pc:lmod(s,12),oc:Math.floor(s/12)}),letter=tx=>{const p=ladParse(tx);return p?pretty(ladSpell(p.i,p.a,newDo).name):''};let h='';
  for(let p=sHi;p>=sLo;p--){const n=nm(p-sh),pc0=lmod(p,12),a2=o.a2&&[5,6,7,8].includes(pc0)&&p-(pc0-5)>=sLo&&p-(pc0-5)+3<=sHi?` a2${pc0===8?' a2top':pc0===5?' a2bot':''}`:'',
    was=sh?earSolOfSemi(p):'';
   if(ELDIAPC[n.pc]!==undefined){const s=ELDIAPC[n.pc],tx=s+elmk(n.oc),isH=lmod(p-hp,12)===0;
-   h+=`<button class="earstep${isH?' home':''}${tx===o.last?' last':''}${a2}" data-earsol="${tx}" ${dis} aria-label="${ELSOLW[s]}${n.oc<0?' low':n.oc>0?' high':''}${isH?', home note':''}${was?', was '+was:''}">${ehsign(s)}<b>${shown(s,n.oc)}</b>${letters?`<small>${letter(tx)}</small>`:''}${was?`<span class="was">was <b>${was}</b></span>`:''}${p===hp?'<span class="hm">home</span>':''}${a2&&pc0===7?'<span class="a2lab" aria-hidden="true"><b>3 semitones</b>fa to si</span>':''}</button>`}
+   h+=`<button class="earstep${isH?' home':''}${tx===o.last?' last':''}${a2}" data-earsol="${tx}" ${dis} aria-label="${ELSOLW[s]}${n.oc+bo<0?' low':n.oc+bo>0?' high':''}${isH?', home note':''}${was?', was '+was:''}">${ehsign(s)}<b>${shown(s,n.oc)}</b>${letters?`<small>${letter(tx)}</small>`:''}${was?`<span class="was">was <b>${was}</b></span>`:''}${p===hp?'<span class="hm">home</span>':''}${a2&&pc0===7?'<span class="a2lab" aria-hidden="true"><b>3 semitones</b>fa to si</span>':''}</button>`}
   else{const f=ELLOWER[n.pc],r=ELRAISE[n.pc],hasF=f&&chr.has(f),hasS=r&&chr.has(r);if(!hasF&&!hasS)continue;
-   const btn=(name,cls,word)=>{const tx=name+elmk(n.oc);return`<button class="earstep chr ${cls}${tx===o.last?' last':''}" data-earsol="${tx}" ${dis} aria-label="${name}${n.oc<0?' low':n.oc>0?' high':''}, ${word} ${ELOFW[name]}${was?', was '+was:''}"><b>${shown(name,n.oc)}</b>${letters?`<small>${letter(tx)}</small>`:''}<span class="of">${word} ${ELOFW[name]}</span>${was?`<span class="was">was <b>${was}</b></span>`:''}</button>`};
+   const btn=(name,cls,word)=>{const tx=name+elmk(n.oc);return`<button class="earstep chr ${cls}${tx===o.last?' last':''}" data-earsol="${tx}" ${dis} aria-label="${name}${n.oc+bo<0?' low':n.oc+bo>0?' high':''}, ${word} ${ELOFW[name]}${was?', was '+was:''}"><b>${shown(name,n.oc)}</b>${letters?`<small>${letter(tx)}</small>`:''}<span class="of">${word} ${ELOFW[name]}</span>${was?`<span class="was">was <b>${was}</b></span>`:''}</button>`};
    h+=`<div class="earhalf${a2}">${hasF?btn(f,'fl','lowered'):''}${hasS?btn(r,'sh','raised'):''}</div>`}}
- return`${bo?`<p class="el-lnote" data-notm>The bass's octave marks count from the bass's own do.</p>`:''}<div class="earlad chr${o.lock?' listen':''}${o.a2on?' a2on':''}" role="group" aria-label="Solfa ladder, high to low">${h}</div>`}
+ return`${bo?`<p class="el-lnote" data-notm>${earBassNote(q)}</p>`:''}<div class="earlad chr${o.lock?' listen':''}${o.a2on?' a2on':''}" role="group" aria-label="Solfa ladder, high to low">${h}</div>`}
 
 /* ---------------- the stave: bars drawn in proportion to time (ladder_ui.js score(), generalised to the engine's ticks, key signatures and two staves) ---------------- */
 const ELDUR={1680:['w',0],1260:['h',1],840:['h',0],630:['q',1],420:['q',0],315:['8',1],210:['8',0],105:['16',0]};
@@ -8732,7 +8739,7 @@ function earScore(el,o){el.innerHTML='';const VF=Vex.Flow,IV='#ece2c8',MUTED='#9
      sns.slice(0,real).forEach((sn,i)=>{sn.setStave(stv);sn.getTickContext().setX(span*at[i]/b.len);const off=sn.getNoteHeadBeginX()-X(at[i]);if(Math.abs(off)>.05)sn.getTickContext().setX(span*at[i]/b.len-off)});
      v.draw(S.ctx,stv);bm.forEach(B=>{const ns=B.notes||[],cs=[...new Set(ns.map(n=>n.getStyle()?n.getStyle().fillStyle:IV))],col=cs.length===1?cs[0]:IV;B.setStyle({fillStyle:col,strokeStyle:col});B.setContext(S.ctx).draw()});
      const base=top+G.above+40+G.below+12/k,hw=(real&&sns[0].getNoteHeadEndX?(sns[0].getNoteHeadEndX()-sns[0].getNoteHeadBeginX())/2:6);
-     sns.slice(0,real).forEach((sn,i)=>{const n=b.notes[i];if(n.rest)return;const cx=X(at[i])+hw,tx=n.under||n.sol;
+     sns.slice(0,real).forEach((sn,i)=>{const n=b.notes[i];if(n.rest)return;const cx=X(at[i])+hw,tx=n.under||n.show||n.sol;
       post.push(()=>{const e=ENG.txt(S,cx,base,tx,'sol',{anchor:'middle',fill:n.ucol||n.tcol||n.col||IV,cls:'melsol'});e.setAttribute('data-gi',n.gi);if(n.near){const bb=e.getBBox(),l=document.createElementNS(NS,'line'),a={x1:bb.x,x2:bb.x+bb.width,y1:base+3.5/k,y2:base+3.5/k,stroke:GOLD,'stroke-width':1.6/k,'stroke-dasharray':`${1.6/k} ${2.6/k}`};for(const q in a)l.setAttribute(q,a[q]);svg.appendChild(l)}})});
      if(s.names&&ri===0)(b.names||[]).forEach(([tk,nm])=>post.push(()=>ENG.txt(S,X(tk)+1,base+G.nm,nm,'lab',{fill:MUTED,cls:'melname'})));
      (b.rules||[]).forEach(([t0,t1])=>{const y=base+G.nm+7/k;post.push(add('rect',{x:X(t0)-1,y,width:X(t1)-X(t0)-7,height:2/k,fill:RED},'melbeat'))});
@@ -8759,10 +8766,15 @@ function earMelBarList(q,part){const bl=[q.anac||0,...q.barLen];return bl.map((l
 // systems of two bars; the upbeat joins the first
 function earMelSystems(q,part){const B=earMelBarList(q,part),out=[],per=earMelPerSys(q);let cur=[];B.forEach(b=>{cur.push(b);if(cur.filter(x=>x.bi>0).length===per){out.push(cur);cur=[]}});if(cur.length)out.push(cur);return out}
 // bars to a system: two, or one when the shortest value is a semiquaver and two bars would give it less than 26 px (SPEC 1.3)
-function earMelPerSys(q){if(!q||q.l<4)return 2;
+// 0.49 RC: the width comes from one place, EAR.melW, the real width of #earMel as last measured (earMelSettle, after each render and each resize), and the answer is kept
+// for the render it is asked in, so the bar map, the systems and the labels never disagree. Until the stave has been measured, a guess stands in; earMelSettle then redraws once if the guess was wrong.
+function earMelPerSys(q){if(!q||q.l<4)return 2;const c=EAR.psc;if(c&&c.q===q&&c.d===EAR.done&&c.w===(EAR.melW||0))return c.v;const v=earMelPerSys0(q);EAR.psc={q,d:EAR.done,w:EAR.melW||0,v};return v}
+function earMelSettle(q){const e=document.getElementById('earMel'),w=e?Math.round(e.clientWidth):0;if(!w)return;const was=EAR.melW;EAR.melW=w;
+ if(was!==w&&EAR.psBuilt!==undefined&&earMelPerSys(q)!==EAR.psBuilt&&!EAR.psRedo){EAR.psRedo=1;try{renderEar()}finally{EAR.psRedo=0}}}
+function earMelPerSys0(q){
  let semi=false;try{semi=earMelTruth(q,'mel').some(x=>x.dur===105)||(EAR.done&&EAR.ans?earMelLine(q,earEnts(q,'mel'),'mel').some(x=>x.dur===105):false)}catch(e){}
  if(!semi)return 2;
- const el=document.getElementById('earMel'),avail=(el&&el.clientWidth)||Math.max(280,Math.min(innerWidth,1100)-44),L=Math.max(...q.barLen,1),adv=(avail-100)/2*105/L;
+ const avail=EAR.melW||Math.max(280,Math.min(innerWidth,1100)-44),L=Math.max(...q.barLen,1),adv=(avail-100)/2*105/L;
  return adv<26?1:2}
 const earMelBarNo=bi=>bi;   // bar 0 is the upbeat; the first full bar is bar 1
 function earMelTag(q,sys){const f=sys[0],up=f.bi===0,n=sys.filter(x=>x.bi>0);return up?`upbeat · bar 1`:`bar ${n[0].bi}`}
@@ -8775,7 +8787,7 @@ const earMelNames=(q,ents,part)=>earMelLine(q,ents,part).map(x=>x.rest?'rest':x.
 function earMelBars(q,part,line,o={}){const split=earMelSplit(q,line,part),tr=o.truth;
  return earMelBarList(q,part).map(B=>{const ns=split[B.bi]||[],bl=earMelBl(q,part);
   const notes=ns.map(x=>{const n={d:x.dur,rest:x.rest,sol:x.sol,doPc:q.key.do,gi:x.j};
-   if(!x.rest){if(x.j===0)n.col=ELC_GIVEN;if(o.pivot!=null&&o.pivot===x.j&&o.pivNm){n.under=o.pivNm;n.ucol=ELC.GOLDHI}else{const as=o.asArr?o.asArr[x.j]:x.as;if(as&&as!==x.sol){n.under=as;n.ucol=ELC.GOLDHI}}
+   if(!x.rest){if(x.j===0)n.col=ELC_GIVEN;if(o.pivot!=null&&o.pivot===x.j&&o.pivNm){n.under=o.pivNm;n.ucol=ELC.GOLDHI}else{const as=o.asArr?o.asArr[x.j]:x.as;if(as&&as!==x.sol){n.under=part==='bass'?earBassShow(q,as):as;n.ucol=ELC.GOLDHI}}if(part==='bass')n.show=earBassShow(q,x.sol);
     const bad=o.bad&&o.bad[x.j];if(bad&&bad.pitch===false){n.col=ELC.RED;n.tcol=ELC.RED}if(bad&&bad.near){n.near=1;n.tcol=ELC.GOLDHI}}
    return n});
   const sol=ns.map(x=>x.j),beams=(o.beams||[]).map(g=>g.filter(j=>sol.includes(j)).map(j=>sol.indexOf(j))).filter(g=>g.length>1&&g.every(i=>!ns[i].rest));
@@ -8814,7 +8826,7 @@ function earMelMount4(q){const el=document.getElementById('earMel');if(!el||!win
  const mkSys=(s,si)=>{const out=[],tagB=earMelTag(q,s);const rowsFor=(truth)=>parts.map(p=>{const x=perP.find(y=>y.p===p),ln=truth?x.tl:x.gl;if(!ln)return null;
    const bars=earMelBars(q,p,ln,{beams:truth?x.tb:x.gb,bad:truth?null:x.bad,rules:truth?null:x.rules,names:truth?x.nmBars:null,brk:truth?x.brk:null,truth,pivot:truth?q.pivot:EAR.pivot,pivNm:pvNm,asArr:truth&&earMoveOn(q)&&q.readings?q.readings.move:null,caret:null});
    const al=earMelBarList(q,p);return{clef:p==='bass'?'bass':'treble',bars:s.map(b=>bars[al.findIndex(a=>a.bi===b.bi)]).filter(Boolean)}}).filter(Boolean);
-  const lab=(w,c)=>`${w} · ${s.length>1||s[0].bi>0?`bars ${s.filter(b=>b.bi>0).map(b=>b.bi).join('–')}`:'upbeat'}`;
+  const lab=w=>{const n=s.filter(b=>b.bi>0).map(b=>b.bi);return`${w} · ${n.length>1?`bars ${n[0]}–${n[n.length-1]}`:n.length?`${s[0].bi===0?'upbeat · ':''}bar ${n[0]}`:'upbeat'}`};   // N1: "bar n" for one bar, "bars a–b" for two
   const hasG=perP[0].gl;
   if(hasG)out.push({label:lab('You wrote'),sig:si===0,tight:true,rows:rowsFor(false)});
   out.push({label:lab(q.l===11?'The answer':'The melody'),lcol:ELC.GOLD,sig:si===0,names:true,rows:rowsFor(true)});return out};
@@ -8841,15 +8853,15 @@ function earMelBarState(q,sys,res){const line=res?earMelTruth(q,'mel'):earMelLin
  return sys.map(b=>{const arr=sp[b.bi]||[],used=arr.reduce((s,x)=>s+x.dur,0);if(!res)return used>=b.len?'so':arr.length?'rh':'';
   const mk=EAR.res&&EAR.res.mark;if(!EAR.res||EAR.res.given===null||!mk||!mk.detail)return'';const D=arr.map(x=>mk.detail[x.j]).filter(Boolean),bad=D.some(d=>d.rhythm===false||(d.pitch===false&&!d.spell)),near=D.some(d=>d.spell);return bad?'bad':near?'near':'ok'})}
 function earMelSysMapHTML(q,sel,res){const sys=earMelSystems(q,'mel');if(sys.length<2)return'';
- return`<div class="el-sysmap${sys.length>6?' many':''}" role="group" aria-label="Bars">${sys.map((s,i)=>{const st=earMelBarState(q,s,res),nb=s.filter(b=>b.bi>0).map(b=>b.bi),t=nb.length>1?`${nb[0]}–${nb[1]}`:s[0].bi===0?'up':`${nb[0]}`,say=st.includes('bad')?', an error here':st.includes('near')?', the other spelling here':'';
-  return`<button data-sys="${i}" aria-pressed="${i===sel}" aria-label="Bars ${t.replace('–',' to ')}${say}">${t}<i>${st.map(c=>`<span class="${c}"></span>`).join('')}</i></button>`}).join('')}</div>`}
+ return`<div class="el-sysmap${sys.length>6?' many':''}" role="group" aria-label="Bars">${sys.map((s,i)=>{const st=earMelBarState(q,s,res),nb=s.filter(b=>b.bi>0).map(b=>b.bi),t=nb.length>1?`${nb[0]}–${nb[1]}`:nb.length?`${nb[0]}`:'up',up=s[0].bi===0,aw=!nb.length?'Upbeat':nb.length>1?`Bars ${nb[0]} to ${nb[1]}`:`Bar ${nb[0]}`,say=st.includes('bad')?', an error here':st.includes('near')?', the other spelling here':'';
+  return`<button data-sys="${i}" aria-pressed="${i===sel}" aria-label="${aw}${up&&nb.length?', with the upbeat':''}${say}">${t}<i>${st.map(c=>`<span class="${c}"></span>`).join('')}</i></button>`}).join('')}</div>`}
 const earMarkKey=near=>`<p class="el-markkey" data-notm><span><i class="p"></i>a wrong note</span><span><i class="r"></i>a beat with the wrong rhythm</span>${near?'<span><i class="n"></i>the other spelling</span>':''}</p>`;
 const earGapHTML=()=>`<div class="el-gap" data-notm role="img" aria-label="fa to so is 2 semitones, a tone. fa to si is 3 semitones, an augmented 2nd."><span class="nm">fa to so</span><span class="gbar"><i></i><i></i></span><span class="say">2 semitones · a tone</span><span class="nm on">fa to si</span><span class="gbar on"><i></i><i></i><i></i></span><span class="say on">3 semitones · an augmented 2nd</span></div>`;
 // the home note of the ladder, in semitones from the item's do
 function earHomeP(q){const old=q.mode==='min'?-3:0;if(q.l===9&&EAR.mod==='move'&&EAR.pivot!=null&&q.newKey){const sh=earLadShift(q);return sh+(q.newKey.mode==='min'?-3:0)}return old}
 function earMelLadder(q,lock,full){const part=earMelPart(),ents=earEnts(q,part),lastE=[...ents].reverse().find(e=>e.s),aug=q.l===7;
  return earLadderHTML(q,{part,lock,full,chr:earChrSet(q),shift:earLadShift(q),homeP:earHomeP(q),a2:aug,a2on:aug&&lock&&!!(q.aug2&&q.aug2.length),last:lastE?lastE.s:null})}
-function earMelDesk4HTML(q){const done=EAR.done,part=earMelPart(),ents=earEnts(q,part),P=ladPalette(q,ents,part),full=earFull(q),sys=earMelSystems(q,'mel'),phone=innerWidth<761,res=EAR.res;
+function earMelDesk4HTML(q){const done=EAR.done,part=earMelPart(),ents=earEnts(q,part),P=ladPalette(q,ents,part),full=earFull(q),sys=earMelSystems(q,'mel');EAR.psBuilt=earMelPerSys(q);const phone=innerWidth<761,res=EAR.res;
  const selDef=done?Math.max(0,earMelFirstBad(q,sys)):Math.max(0,P.done?sys.length-1:sys.findIndex(s=>s.some(b=>b.bi===P.bar))),sel=EAR.sysSel!=null?Math.min(EAR.sysSel,sys.length-1):selDef;
  const map=earMelSysMapHTML(q,sel,done),aria=done?'The melody: '+earMelTruth(q,'mel').map(x=>x.rest?'rest':x.as).join(' ')+'.'+(res.given&&!res.ok?' You wrote: '+earMelNames(q,q.l===11?res.given.mel:res.given,'mel')+'.':''):'Written so far: '+earMelNames(q,earEnts(q,'mel'),'mel');
  if(done){const T=earTeachMel4(q,res);return`<div class="meldesk bylen done"><div class="melres">${earResultHTML(q,T)}</div><div class="melhold"><div class="melscore"><div class="lbl" data-notm>Melody · ${q.barLen.length} bars of ${q.metre}</div>${map?`<div class="el-sysrow">${map}</div>`:''}<div class="melfr" id="earMel" role="img" aria-label="${aria}"></div>${earMarkKey(res.mark&&res.mark.kind==='nearly')}</div></div>
@@ -8906,7 +8918,8 @@ function earTeachMel4(q,res){const g=res.given,mk=res.mark||{},two=q.l===11,gm=t
   // the rung 4 to 10 sentence for the part that is wrong: "Melody, bar 1: the sixth note is r: you wrote m"
   const say=(pn,key,okp)=>{if(okp)return null;try{const tlp=earMelTruth(q,key),gp=g&&g[key],glp=gp?earMelLine(q,gp,key):null;if(!glp)return null;
     const bt=earMelBeats(q,tlp,glp),sl=earMelSolfa(q,tlp,glp),bd=bt.find(x=>!x.ok),w=sl.find(x=>!x.ok&&!x.spell),own=x=>x.bi===0?'the upbeat':`bar ${x.bi}`;
-    if(w){const gg=w.g;return`${pn}, ${own(w)}: the ${ELORD[w.i]||'next'} note is ${w.t.as}: you wrote ${gg?gg.as:'nothing'}.`}
+    const nmS=x=>key==='bass'?earBassShow(q,x):x;   // N2: the bass is named as its ladder and stave name it
+    if(w){const gg=w.g;return`${pn}, ${own(w)}: the ${ELORD[w.i]||'next'} note is ${nmS(w.t.as)}: you wrote ${gg?nmS(gg.as):'nothing'}.`}
     if(bd){const tn=bd.T.map(x=>({dur:x.dur,rest:x.rest})),gn=bd.G.map(x=>({dur:x.dur,rest:x.rest}));return`${pn}, ${own(bd)}${bd.bi===0?'':`, beat ${bd.k}`}: ${earDescribe(tn)||'silent'}: you wrote ${earDescribe(gn)||'nothing'}.`}}catch(e){}return null};
   const sm=say('Melody','mel',!m||m.right),sb=say('Bass','bass',!b||b.right);
   if(sm||sb){ps.push([sm,sb].filter(Boolean).join(' '))}
@@ -8999,7 +9012,7 @@ function earMelMount(q){if(q.l>=4){earMelMount4(q);return}const el=document.getE
  else rows=[{label:'You wrote',cells:q.notes.map((n,i)=>i===0?{n,col:GIVEN}:res.given[i-1]?{n:eSolParse(res.given[i-1]),col:res.given[i-1]===q.a[i]?IV:RED}:{n:null})},{label:'The melody',cells:truth}];
  const [lo,hi]=q.range;EAR.melSig={phone:ENG.desk(),w:Math.round(el.parentElement.clientWidth)};
  return earMelStave(el,q.notes,q.key,{rows,cur:lock?-1:A.length+1,reserve:[eSolOf(lo,q.mode),eSolOf(hi,q.mode)]})}
-window.addEventListener('resize',()=>{clearTimeout(EAR.melRz);EAR.melRz=setTimeout(()=>{const q=EAR.q,el=document.getElementById('earMel');if(!q||q.d!=='mel'||!el)return;const g=EAR.melSig||{};if(g.phone!==ENG.desk()||g.w!==Math.round(el.parentElement.clientWidth))earMelMount(q)},120)});
+window.addEventListener('resize',()=>{clearTimeout(EAR.melRz);EAR.melRz=setTimeout(()=>{const q=EAR.q,el=document.getElementById('earMel');if(!q||q.d!=='mel'||!el)return;const g=EAR.melSig||{};if(g.phone!==ENG.desk()||g.w!==Math.round(el.parentElement.clientWidth)){earMelMount(q);if(q.l>=4)earMelSettle(q)}},120)});
 // replay at the reveal: each note on the stave and its rung light up in time (a state change only, no animation)
 function earMelNowClear(){document.querySelectorAll('#earMain .now').forEach(e=>e.classList.remove('now'))}
 function earMelNow(q,i){earMelNowClear();const rows=document.querySelectorAll('#earMel [data-row]'),last=rows.length?Math.max(...[...rows].map(e=>+e.getAttribute('data-row'))):0;
@@ -9326,7 +9339,7 @@ function renderEar(){const el=$('earMain');if(!el)return;
   <p class="el-ask">${d==='rhy'?earRhyAsk(q,l):(d==='mel'&&earMelAsk(q,l))||ELASK[d]}</p>
   ${T?earResultHTML(q,T):d==='mel'&&q&&EAR.done?'':earStageHTML(q,l)}
   ${earAnswerAreaHTML(q,l)}${earFootHTML(s)}</section>${earTipsHTML(d)}</div>${earDockHTML(q)}`;
- if(q&&d==='mel')earMelMount(q);
+ if(q&&d==='mel'){earMelMount(q);if(q.l>=4)earMelSettle(q)}
  if(EAR.announce&&T){const tmp=document.createElement('div');tmp.innerHTML=`${T.head}. ${T.teach}`;earLiveSay(`${T.kind==='ok'?'Correct':T.kind==='shown'?'Shown':T.kind==='nearly'?'Nearly':'Not this time'}. ${tmp.textContent}`);EAR.announce=false}
  else if(EAR.announce&&q&&d==='mel'){earLiveSay(`${EAR.res.kind==='ok'?'Correct':EAR.res.kind==='shown'?'Shown':'Not this time'}. ${q.a.join(' ')}`);EAR.announce=false}
  const on=el.querySelector('.el-drill.on');if(on&&on.scrollIntoView)on.scrollIntoView({block:'nearest',inline:'nearest'});
