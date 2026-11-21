@@ -175,3 +175,64 @@ The credits also drop the encoder and licence (Craig Stuart Sapp, CC BY-NC-SA 4.
 - `earlab_items_test`: exit 0, `n_failures: 0`.
 
 Both suites check the builder's own rules. The faults above are outside what they test: the melodic si, the M8 mix, the M9 Move do reading, the 5/4 and 7/8 notation, palette offers beyond the legal set, and the consecutive outer voices between bass onsets.
+
+---
+
+## Re-check after the builder's fixes (fd10942) — independent check
+
+I re-ran everything at fd10942, independently as before.
+
+**Method**
+- **Items.** I drew a fresh set of **3,000 seeded items for every rung** (mulberry32) and re-checked them with my own scripts. The scripts are in `/home/claude/scratch_ic2/`, a fresh copy.
+- **My original scripts.** The originals in `/home/claude/scratch_ic/` were untouched. Their mtimes are earlier than the builder's restore, which only touched the `out_*.json` and `pal.json` result files.
+- **Rule changes.** Where the builder says the register changed a rule, I re-derived it from the register myself (rulings below).
+- **Marking.** 2,000 items a rung.
+- **Volume.** 3.28 M melody checks (361 kinds), 1.17 M rhythm checks (211 kinds), 222,462 marking cases (149 kinds), 504,898 palette states, 123 tells, and 40 excerpts.
+
+### Rulings on the rules the builder changed
+
+| point | register says | ruling |
+|---|---|---|
+| **R7 / R8 new-thing counting** | Rule N and R2: "the new metres are on screen, so they are not a hidden new thing". Tells: the new thing is hidden content. D9: the anacrusis is shown. | **The builder is right.** R7 = triplet and tim-ka. R8 = tresillo, Charleston and swing. My original script counted 12/8 and the anacrusis, which was wrong, and I have updated it. Could: the swing mark and "swung" label are printed on the stave, so swing is arguably shown too, like a metre. |
+| **Pivot window, minor → relative major** | M9: "notes common to both keys … before the first note that belongs only to the new key". The register does not define a minor key's note set. | **Both readings are defensible; the builder's is the useful one.** My original set (natural minor plus fi and si) contains the whole major scale, so the window was always the whole item. With harmonic minor as the old key, the major's natural so is the new note, which is how the relative major is heard. **For marking the point is moot:** under D8/L107, relative items need no mutation and a needless mark is right, so the window never decides a relative item. |
+| **chopin20_5-8 top line** | M12: "melody = the highest part; the top note at each onset". | **The builder is right.** "The highest part" decides it. The F♯4 is the alto, sounding under the held soprano D5, so the per-onset rule must skip it. My script now skips any onset that sounds under a held higher note. |
+| **Charleston as tam-ti + two crotchet rests** | Register 3.0: right when "the sounding pattern (onsets of notes **and rests**, held lengths)" is the same. Nearly only where the register says (D11, R8, R9). | **Wrong** under the register as written. Two crotchet rests have a rest onset on beat 4 that the minim rest does not, and this case is not a listed Nearly. The engine marks it wrong in 517 of 517 cases. If Justin wants silence judged by sound, that is a register change (one line), not a defect; the feedback could explain it. |
+| **Tie-in names vs L97** ("ties held on the vowel") | A tied note is held on the vowel of the first note, with no new syllable. | **They follow the rule.** Every tied-in name I saw: q "-i", e2 "-i-ti", h "-i-i", hd "-i-i-i", w "-i-i-i-i", s4 "-i-ka-ti-ka", s2e "-i-ka-ti", es2 "-i-ti-ka", dq "-i-ti", dsq "-i-ka", syn "-i-co-pa", re "-i-sa", tres "-i-ti-i-ta", charl "-i-ti-sa-a". Each tied note becomes "i" for every syllable it held, the cell's other notes keep their own syllables, and the counts are right. A tied-in minim is "-i-i": with the rule "held on the vowel of the first note", that is correct, and "-i-a" would break it. `trq` "tri-i-la" / "ta-a-ta" (konnakol) follows the same rule, but it is still a name outside the approved table, so Justin should confirm it. |
+
+### PASS / FAIL per finding
+
+| finding | re-check | evidence (3,000 items a rung unless stated) |
+|---|---|---|
+| M-1 M7 melodic si | **PASS** | si → la by step 1,145 / 1,145 (melodic) and 1,214 / 1,214 (harmonic); fi → si 143 / 143; no natural fa or so rises (0 cases). Harmonic 998, melodic 967, natural 1,035. |
+| M-2 M8 kinds | **PASS** | Dorian 486, Mixolydian 552, te 496, fi 441 = 24.6 / 27.9 / 25.1 / 22.3% of the new items. |
+| M-3 M11 consecutives | **PASS** | 0 of 16,892 bass changes have consecutive 5ths or 8ves from the last melody note before the change (similar motion). All the earlier checks still pass. |
+| M-4 R6 anticipation of beat 3 | **PASS** | `antA` appears 284 times at R6 (also R7–R10), only at beat 2 of 4/4, named "ti ti-i". |
+| M-5 tie-in names | **PASS** | See the ruling above; both name settings checked. |
+| M-6 M9 Move do reading | **PASS** | Under Move do, a mark anywhere in the window with the answer written in the new key from the mark on is right (2,082 / 2,082). A mark before the window (173) or after it (694) is wrong. No mark is wrong (694). `readings.move` with the true pivot is right (694). A wrong last note is wrong. |
+| M-7 M9 relative kinds / L107 | **PASS** | Under Move do: no mark is right (663 / 663); a needless mark at the start, at the pivot or at the end with every note right is right (1,989 / 1,989), with the L107 note; a mark plus a wrong note is wrong. Under Keep home do: the pivot is ignored, and new-key syllables after the true pivot are right (1,357). |
+| M-8 5/4 and 7/8 notation | **PASS** | ti-ti written as two single quavers is wrong in every R9 item (0 mismatches). |
+| M-9 false Nearly | **PASS** | 0 Nearly results outside the D11, R8 and R9 cases, across all 149 marking kinds. |
+| M-10 palette | **PASS** | 0 illegal offers and 0 legal lengths blocked in 504,898 states (truth walks and random walks, M1–M11, M11 bass included); no dead ends. |
+| M-11 M12 excerpts | **PASS** | `k545_50-53` is gone. `chopin20_5-8` holds D5 as a crotchet and agrees with my top line. |
+| M-12 credits | **PASS** | Composers in full (Johann Sebastian Bach, Wolfgang Amadeus Mozart, Scott Joplin, Fryderyk Chopin), the work, the encoder or institute, and the licence (CC BY-NC-SA 4.0, or CC BY 4.0 for NIFC Chopin). |
+| S1 M9 range, keys, kinds | **PASS** | 0 notes above d' (highest: do + 12). Keys spread evenly (259–296 per key). Kinds: M-V 524, M-vi 504, m-III 490, m-v 532. |
+| S2 M10 range | **PASS** | Every M10 note is inside s,..d'. |
+| S3 M11 new share | **PASS** | The share by content is 0.675, and the new flag agrees with the content in every item. |
+| S4 R7 / R8 hidden share | **PASS** | R7 0.670, R8 0.661 (the flag equals the content). |
+| S5 swing | **PASS** | In 300 swing items rendered through `ladSched`, all 3,904 notes sit at their places, every off-beat onset at two thirds of the beat. |
+| S6 M12 spellings | **PASS** | Solfa comes from the score's letters: `chopin20_3-4` is now "di". |
+| S7 M12 levels | **PASS** | All 40 levels equal my own reading of the register's material. |
+| S8 M12 outlines | **PASS** | Every outline follows D9. |
+| M12 list (40) against `scores/src` | **PASS** | 40 / 40: pitches and rhythm match the source's highest part (inner voices under a held top note are skipped); key and sections from meta.json; solfa from the score's own spellings; metre; D9 outline; phrase ends on a cadence or a tonic-triad note, with half cadences ending on r, t or si as they should. The 40 excerpts include one Maple Leaf (`maple_32-33`) and no Entertainer. |
+| Tells | **PASS** | 123 re-measured; the largest gain is 2.8 points (R9, playing time → last cell), and none is over 5. |
+| Everything else from the first check | **PASS** | All the first round's passing checks still pass: 0 failing keys in the melody and rhythm checkers. |
+| `earlab_test` | **PASS** | One run, `n_failures: 0`. |
+| `earlab_items_test` | **PASS** | One run, `n_failures: 0`. The first attempt was cut off by a server restart and the rerun completed. |
+
+### Remaining notes (Coulds, no defect)
+- **Leniency under Move do.** For the dominant kinds, Move do reads each note after the mark in either key (new do first) and accepts it if it sounds right. A wrong syllable is accepted only if it names the right pitch in the other key, which fits D8 ("marking by pitch"). Because of this, an answer written wholly in old-key syllables with the true pivot marked is also right (694 / 694).
+- **Charleston.** It stays wrong as tam-ti plus two crotchet rests, per the register's definition (ruling above). Say so in the feedback, or change the register.
+- **Builder's labels.** `trq` "tri-i-la" / "ta-a-ta" and the single-note "ti / tam / ta" follow the approved rules, but they are not in the approved table: Justin to confirm.
+- **M12 coverage.** It is thin on the rags: one Maple Leaf excerpt and no Entertainer.
+
+**Re-check verdict: PASS.** All 12 Musts and all 8 Shoulds are fixed and independently verified. No new defects were found.
