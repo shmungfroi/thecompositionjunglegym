@@ -7656,7 +7656,7 @@ function ladPalette(q,entries,part='mel'){const all=[ladFirst(q,part),...(entrie
 function ladTruthEntries(q,part='mel'){const L=ladLines(q,part),out=[];let p=L[0].on+L[0].dur;
  const rests=d=>{while(d>0){const t=[420,315,210,105].find(x=>x<=d&&(x<=d))||d;out.push({s:null,t});d-=t}};
  L.slice(1).forEach(n=>{if(n.on>p)rests(n.on-p);out.push({s:n.sol,t:n.dur});p=n.on+n.dur});
- const end=part==='bass'||!q.barLen?p:(q.anac||0)+q.barLen.reduce((a,b)=>a+b,0);if(end>p&&q.l===12)rests(end-p);return out}
+ return out}   // (an M12 line ends at its last note: the rest of the outline's last bar is silence)
 // automatic beaming: groups of entry indices (in the full line, the given note = 0) beamed together, per beat (dotted crotchet in compound time)
 function ladBeams(q,entries,part='mel'){const all=[ladFirst(q,part),...(entries||[])],M=LMET[q.metre]||LMET['4/4'],bl=[q.anac||0,...(q.barLen||[])],out=[];
  let b=0,used=0,cur=[],key=null;while(b<bl.length-1&&!bl[b])b++;const flush=()=>{if(cur.length>1)out.push(cur);cur=[]};
