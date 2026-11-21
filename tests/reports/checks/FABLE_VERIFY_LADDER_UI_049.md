@@ -2,7 +2,7 @@
 
 Branch `049-fable-uiv`, from `049-int` at 1c5ba27 (the UI, the fixed engine, the C6 colours and the cadence fixes together). Checked against `fable_049/DESIGN_049.md` 2.1 and 2.2, `ladder049.css`, and `fable_049/ladder_ui/SPEC.md` with its CSS and reference markup.
 
-Everything was re-rendered from this build in headless Chrome at 1366×768 and 390×844 (`fable_ladderui/shots.py`, 25 scenes, 146 PNGs, `metrics.json`). Sonnet's own PNGs predate the merge and were not used for the verdict. No real phone was used.
+Everything was re-rendered from this build in headless Chrome at 1366×768 and 390×844 (`fable_ladderui/shots.py`, 25 scenes, 142 PNGs, `metrics.json`). Sonnet's own PNGs predate the merge and were not used for the verdict. No real phone was used.
 
 ## Verdict
 
