@@ -39,6 +39,7 @@ appears), and after every click the page is scanned:
       Targeted cases run first: the Gym reader fed I-IV-V-I, I-IV-I, I-V, V6-I and an empty progression; a page fragment
       with the exact strings the independent check quoted; buttons whose text changes; every Ear Lab cadence feedback
       sentence (right, wrong, Nearly on and off) for every answer pair; the Ear Lab rung 3 cadence buttons.
+  Each Stage runs on a fresh page (TERMS_PAGE=stage, default; =view a fresh page per view; =one the old single page).
   TERMS_FAST=1 runs T1, the targeted T6 cases and every view at Stage 6 without the click sweep (about 2 minutes).
 """
 import sys, os, asyncio, json, pathlib, re, collections
@@ -382,17 +383,39 @@ async def targeted(pg):
     await pg.evaluate("P.length=0;saveP();renderGym()")
 
 
+async def open_page(b, errs, cur):
+    """A fresh page (its own browser context, so its own renderer) with the app loaded and the checker installed."""
+    pg = await b.new_page(viewport={'width': 1440, 'height': 900})
+    pg.on('pageerror', lambda e: errs.append(f'{cur[0]}: {str(e)[:160]} @ {(getattr(e, "stack", "") or "").strip().splitlines()[1:3]}'))
+    pg.on('dialog', lambda d: asyncio.ensure_future(d.dismiss()))
+    await pg.route('**/*', cjg.make_route(REPO))
+    await pg.goto('http://app/index.html')
+    await pg.wait_for_timeout(1500)
+    await pg.evaluate(CHK_JS, RULE)
+    return pg
+
+
+async def collect(pg):
+    """Move the page's violations and scan counts into FAIL / COUNT (each page keeps its own window.__TV and __TN)."""
+    tv = await pg.evaluate("()=>[[...window.__TV.keys()],window.__TN]")
+    for k in tv[0]:
+        sec, _, msg = k.partition('|')
+        if msg not in FAIL[sec]:
+            fail(sec, msg)
+    for k, v in tv[1].items():
+        COUNT[f'page scan: {k}'] += v
+
+
 async def main():
+    # 0.49: one long page crashed the renderer ("Target crashed") on the full run. Each Stage now gets a fresh page
+    # (TERMS_PAGE=stage, the default), or each view its own (TERMS_PAGE=view); TERMS_PAGE=one keeps the old single page.
+    # The checks, views, clicks and their order are the same in every mode.
+    mode = os.environ.get('TERMS_PAGE', 'stage')
     async with async_playwright() as p:
         b = await cjg.launch(p)
-        pg = await b.new_page(viewport={'width': 1440, 'height': 900})
         errs = []
         cur = ['load']
-        pg.on('pageerror', lambda e: errs.append(f'{cur[0]}: {str(e)[:160]} @ {(getattr(e, "stack", "") or "").strip().splitlines()[1:3]}'))
-        pg.on('dialog', lambda d: asyncio.ensure_future(d.dismiss()))
-        await pg.route('**/*', cjg.make_route(REPO))
-        await pg.goto('http://app/index.html')
-        await pg.wait_for_timeout(1500)
+        pg = await open_page(b, errs, cur)
 
         # ---- T1: the shared term list
         T = await pg.evaluate("()=>({terms:TERMS.map(t=>[t.k,t.au,t.us]),iac:TERM_IAC,note:TERM_NOTE})")
@@ -417,17 +440,35 @@ async def main():
         else:
             ok('T1', 'termDual / termTip')
 
-        # ---- T2-T6: install the page checker
-        await pg.evaluate(CHK_JS, RULE)
+        # ---- T2-T6: the checker is installed by open_page
         # ---- T6 targeted cases (0.48 R6 fix round): the strings the independent check IC_R6 quoted
         await targeted(pg)
         # ---- T2-T6: every view, every button
         fast = os.environ.get('TERMS_FAST') == '1'
-        for stage in ([6] if fast else [int(x) for x in os.environ.get('TERMS_STAGES', '4,5,6').split(',')]):
+        stages = [6] if fast else [int(x) for x in os.environ.get('TERMS_STAGES', '4,5,6').split(',')]
+
+        async def fresh():
+            nonlocal pg
+            if mode == 'one':
+                return
+            await collect(pg)
+            await pg.context.close()
+            pg = await open_page(b, errs, cur)
+            COUNT['self-check fresh pages opened'] += 1
+
+        async def set_stage(stage):
             await pg.evaluate(f"document.querySelector('#lvl button[data-l=\"{stage}\"]').click()")
             await pg.wait_for_timeout(200)
+
+        for stage in stages:
+            if mode == 'stage':
+                await fresh()
+            await set_stage(stage)
             for name, js in views():
                 where = f'S{stage} {name}'
+                if mode == 'view':
+                    await fresh()
+                    await set_stage(stage)
                 cur[0] = where
                 await pg.evaluate(js)
                 await pg.wait_for_timeout(900 if name.startswith('analysis') else 350)
@@ -445,13 +486,8 @@ async def main():
                     # a click may navigate away: reopen the view
                     await pg.evaluate(js)
                     await pg.wait_for_timeout(120)
-        tv = await pg.evaluate("()=>[[...window.__TV.keys()],window.__TN]")
-        for k in tv[0]:
-            sec, _, msg = k.partition('|')
-            fail(sec, msg)
-        for k, v in tv[1].items():
-            COUNT[f'page scan: {k}'] = v
-        # ---- T5 idempotence: a second pass changes nothing
+        await collect(pg)
+        # ---- T5 idempotence: a second pass changes nothing (on the page the last sweep used)
         same = await pg.evaluate("""()=>{termPass();const a=document.querySelector('main').innerHTML;termPass();termPass();return a===document.querySelector('main').innerHTML}""")
         if not same:
             fail('T5', 'termPass() is not idempotent')
