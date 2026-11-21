@@ -1,0 +1,272 @@
+{
+ "pal_r12_semi44_1366": {
+  "over": 0,
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "pal": [
+   292,
+   112
+  ],
+  "len": [
+   48,
+   56
+  ],
+  "hold": [
+   0,
+   0
+  ],
+  "score": [
+   476,
+   520
+  ],
+  "lad": [
+   292,
+   687
+  ],
+  "step": [
+   292,
+   52
+  ],
+  "half": [
+   145,
+   36
+  ],
+  "mut": null,
+  "set": null,
+  "ans": null,
+  "res": null,
+  "gap": null,
+  "card": [
+   1180,
+   1331
+  ],
+  "small": [],
+  "under44": [
+   "BUTTON:1:40x34",
+   "BUTTON:2:40x34",
+   "BUTTON:3:40x34",
+   "BUTTON:4:40x34",
+   "BUTTON:5:40x34",
+   "BUTTON:6:40x34",
+   "BUTTON:7:40x34",
+   "BUTTON:8:40x34",
+   "BUTTON:9:40x34",
+   "BUTTON:10:40x34",
+   "BUTTON:11:40x34",
+   "on:12:40x34"
+  ],
+  "scene": {
+   "l": 12,
+   "metre": "4/4",
+   "anac": 0,
+   "kind": null,
+   "a": "d' m' s' t d' r' d' l' s' d'' s' f' m' f' m'",
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "pal_r12_semi34_1366": {
+  "over": 0,
+  "head": [
+   796,
+   126
+  ],
+  "rp": [
+   796,
+   36
+  ],
+  "pal": [
+   292,
+   112
+  ],
+  "len": [
+   48,
+   56
+  ],
+  "hold": [
+   0,
+   0
+  ],
+  "score": [
+   476,
+   228
+  ],
+  "lad": [
+   292,
+   538
+  ],
+  "step": [
+   292,
+   52
+  ],
+  "half": [
+   145,
+   36
+  ],
+  "mut": null,
+  "set": null,
+  "ans": null,
+  "res": null,
+  "gap": null,
+  "card": [
+   1180,
+   1205
+  ],
+  "small": [],
+  "under44": [
+   "BUTTON:1:40x34",
+   "BUTTON:2:40x34",
+   "BUTTON:3:40x34",
+   "BUTTON:4:40x34",
+   "BUTTON:5:40x34",
+   "BUTTON:6:40x34",
+   "BUTTON:7:40x34",
+   "BUTTON:8:40x34",
+   "BUTTON:9:40x34",
+   "BUTTON:10:40x34",
+   "BUTTON:11:40x34",
+   "on:12:40x34"
+  ],
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "anac": 420,
+   "kind": null,
+   "a": "s, m f r r r",
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "pal_r12_semi44_390": {
+  "over": 0,
+  "head": [
+   328,
+   171
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "pal": [
+   328,
+   96
+  ],
+  "len": [
+   54,
+   48
+  ],
+  "hold": [
+   360,
+   304
+  ],
+  "score": [
+   328,
+   107
+  ],
+  "lad": [
+   328,
+   655
+  ],
+  "step": [
+   328,
+   44
+  ],
+  "half": [
+   163,
+   44
+  ],
+  "mut": null,
+  "set": null,
+  "ans": null,
+  "res": null,
+  "gap": null,
+  "card": [
+   362,
+   2174
+  ],
+  "small": [],
+  "under44": [
+   "INPUT::18x18"
+  ],
+  "scene": {
+   "l": 12,
+   "metre": "4/4",
+   "anac": 0,
+   "kind": null,
+   "a": "d' m' s' t d' r' d' l' s' d'' s' f' m' f' m'",
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ },
+ "pal_r12_semi34_390": {
+  "over": 0,
+  "head": [
+   328,
+   171
+  ],
+  "rp": [
+   328,
+   46
+  ],
+  "pal": [
+   328,
+   96
+  ],
+  "len": [
+   54,
+   48
+  ],
+  "hold": [
+   360,
+   284
+  ],
+  "score": [
+   328,
+   87
+  ],
+  "lad": [
+   328,
+   514
+  ],
+  "step": [
+   328,
+   44
+  ],
+  "half": [
+   163,
+   44
+  ],
+  "mut": null,
+  "set": null,
+  "ans": null,
+  "res": null,
+  "gap": null,
+  "card": [
+   362,
+   2059
+  ],
+  "small": [],
+  "under44": [
+   "INPUT::18x18"
+  ],
+  "scene": {
+   "l": 12,
+   "metre": "3/4",
+   "anac": 420,
+   "kind": null,
+   "a": "s, m f r r r",
+   "res": null,
+   "log": []
+  },
+  "errs": []
+ }
+}
