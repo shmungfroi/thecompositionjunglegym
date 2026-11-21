@@ -173,3 +173,60 @@ Not run (not asked; may need updating by the UI build): `earlab_ui_test` (rhythm
 | 44 | chopin20_3-4 | chopin20 | 3-4 | C minor | 4/4 | 10 | yes | 10 | t, di m r ra t, m si f m |
 | 45 | chopin20_5-8 | chopin20 | 5-8 | C minor | 4/4 | 10 | yes | 20 | d' d' t ri t l t si fi m l f m r d d r d t, l, |
 | 46 | chopin20_11-12 | chopin20 | 11-12 | C minor | 4/4 | 6 | yes | 10 | l f m r d d r d t, l, |
+
+---
+
+## After IC_LADDER_ENG (independent check e387974: FAIL on items 1, 2, 3, 5)
+
+All 12 Musts and all 8 Shoulds fixed as deviations from the approved register and decisions; no new decisions taken. Commits after e387974:
+`5f8cd97` engine fixes · `2a9f869` M12 · `9e9872f` follow-ups, regression section L15, ENGINE_API · `22e65be` R9 tuplets under a tie · `bc19645` M9 Keep home do, M12 line end ·
+`3223fa0` M12 answer end · `6ed7af8` palette grammar · `2ef4505` test fixes.
+
+| IC item | fix | regression check (earlab_test, all self-check) |
+|---|---|---|
+| M-1 M7 melodic si | fa and so are raised only when rising by step (f→fi→si→l); natural fa and so only fall or repeat; si always to la by step | L15: every si → la and fi → si by step in 3,000 M7 items |
+| M-2 M8 kinds | the variant is drawn once per item (redraws keep it), so Dorian, Mixolydian, te, fi are a quarter each | L15: each kind 0.20–0.30 of the new items |
+| M-3 M11 consecutives | `ladOuterCheck` also judges the melody note sounding just before each bass change against the bass change (consecutive and direct 5ths / 8ves); the line is redrawn when the note before the final V–I is V's root | L8: 11,628 bass changes in 2,000 items through the independent checker, 0 consecutives |
+| M-4 R6 anticipation of beat 3 | `antA` ("ti ti-i") allowed at beat 2 of 4/4 (its tie shows the bar middle) | L15: generated (≥ 50 in 3,000 R6 items), only at beat 2 of 4/4 |
+| M-5 tie-in names | a note tied in over the barline is held on the vowel ("-i", one per syllable it would have had); the cell's other notes keep their own syllables: ta-a → "-i-i", tika-tika → "-i-ka-ti-ka", tika-ti → "-i-ka-ti" (`LSYLG`, `ladTiedName`). A tuplet never starts under such a tie (its accent would be lost) | L15: names for nine cells against the rule |
+| `trq` label | "tri-i-la" (Kodály), "ta-a-ta" (konnakol): tri-o-la with the first two notes tied, held on the vowel; documented in ENGINE_API | L0 |
+| M-6 M9 Move do | entries after the marked mutation are read against the new do (old do + 7, the frame of `readings.move`), the pivot in either key; under Keep home do a note in the new key's syllables after the true pivot is the same sound and right too | L9: home and move readings right, pivot required under Move do (dominant kinds, 193 items) |
+| M-7 M9 relative kinds | no mutation in a relative modulation: right with none marked; a needless mark with every note right is right with the L107 sentence (`note`); minor → relative major window uses the harmonic minor as the old key, so the major's so is the new note | L9 (194 relative items); L7 re-derives the window (all 501 m-III windows now narrower than the item) |
+| M-8 5/4, 7/8 | `ladRhyLegal`: 5/4 fills each group as a 3/4 / 2/4 half; 7/8 one group cell per group | L15: ti-ti written as two quavers is never right (300 items) |
+| M-9 false Nearly | Nearly only when the register's case is the only difference, cell for cell at the same place | L15: the syn-co-pa Nearly with any other error is wrong |
+| M-10 palette | the grammar is every legal RF filling of the bar (inner bars from the rung's cells, the last bar with its extra values, the upbeat bar; M11 bass: minims, crotchets, dotted minim in 3/4, never a dotted crotchet; M11 upbeats are crotchets) | L15: 1,350 random walks always reach a full line; no dotted minim inside 4/4, no dotted crotchet at M4–M5, no minim in 6/8, no dotted crotchet or rest in the bass |
+| M-11, M-12 M12 | `k545_50-53` out; an inner voice under a held top note is skipped (chopin20_5-8 holds D5); chromatic syllables from the score's own letters (chopin20_3-4 "di"); credits: composer in full, the work, encoder and licence | L15: table, credits, chopin20 spellings |
+| S1 M9 | kind drawn once; phrase 2 placed with the new do a 5th above or a 4th below, whichever keeps s,..d' (no range rejections, so keys even) | L15: kinds 0.20–0.30, no note outside s,..d', key counts within sampling noise |
+| S2 M10 | no lower neighbour below s, | L15 |
+| S3 M11 | a new item must hold an inversion, ii or vi | L15: content share ≥ 0.60 |
+| S4 R7, R8 | the new thing is hidden content only (R7 triplet, tim-ka; R8 tresillo, Charleston, swing) | L15: hidden share ≥ 0.60 (R7 0.665, R8 0.664 in L3) |
+| S5 swing | every off-beat quaver point is moved to two thirds of the beat (onsets and ends) | L15: 40 swing items rendered, every note at its swung place |
+| S6–S8 M12 | spellings from the score; levels by the register's material (jesu 1-2 → 5, k545_56-57 → 6 …); D9 outlines (every bar full, the last shortened by the upbeat; a phrase that ends earlier finishes with rests; excerpts that cannot meet D9 dropped) | L15: every outline is D9 |
+
+**M12 now holds 40 excerpts** (40–60 asked): the D9 outline rule removed most Maple Leaf windows (their 7-semiquaver upbeats leave last bars too long) and two Chopin 7 phrases. The list is in `m12_excerpts.json` / `m12_curate.py --js`.
+
+### The checker's scripts, re-run on this build (copies in /tmp/lad/ic, 5,000 items a rung)
+
+| script | result |
+|---|---|
+| `check_mel.py` | 5,439,325 checks; 1 failing key: the M9 pivot window, 810 items: all minor → relative-major items, where the script still uses the old window (whole item) that M-7 asked to fix |
+| `check_rhy.py` | 1,942,063 checks; R7 and R8 "new flag" and share: the script counts 12/8, anacrusis and backbeat as new, which S4 asked to stop. Tuplet accents: 0 failures after `22e65be` |
+| `mark.py` (148 kinds) | all match except "Charleston written tam-ti + two crotchet rests" (marked wrong: rest onsets count, as the register defines the sound; the checker's own Coulds note this) |
+| `pal_check.py` | 0 illegal offers, 0 legal lengths blocked, no dead ends, M1–M11 |
+| `m12_check.py` | chopin20_5-8: the script's top line still takes the alto F♯ (the change it recommended); jesu_9-11: the D9 rest after the fermata spans the next phrase's opening notes in the source |
+
+Note: my first runs of the checker's scripts wrote into `/home/claude/scratch_ic/` (absolute paths in the scripts). I restored the checker's original output files there from my copy taken before the runs (file times are not the originals) and pointed my copies at `/tmp/lad/icout/`.
+
+### Suites (one at a time, after the last change)
+
+| suite | result |
+|---|---|
+| `earlab_test` | pass, 0 failures, 125 count keys (section L incl. the new L15 regressions) |
+| `earlab_items_test` | pass, 0 failures, 96 count keys |
+| `unit_test` | pass, 959 checks |
+| `content_lint` | pass |
+
+### Still open
+* Tie-in names: the coordinator's note said "a held minim stays -a"; I followed the stated rule "held on the vowel of the first note", so a tied-in minim is "-i-i". If "-i-a" was meant, it is one line in `ladTiedName`.
+* Charleston as tam-ti + two crotchet rests stays wrong (register sound definition); the feedback could say so.
+* M12 has 40 excerpts and no Entertainer or Maple Leaf beyond one; every excerpt still needs the independent theory check.

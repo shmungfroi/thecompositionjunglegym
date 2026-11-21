@@ -62,7 +62,7 @@ Call `earSave()` after changing any of them.
 | `info` | `{mode, var, home, ...}`: `var` = tune type / variant (`pent dia major natmin lapent harm melo dor mix te fi`, M9 `M-V M-vi m-III m-v`, `review:...`) |
 | `aug2` | M7 harmonic minor: indices `i` where notes `i → i+1` are the fa–si augmented 2nd (at most one, D5): **show the gap visually** on the ladder and in the feedback |
 | `chrom` | M10: indices of the inserted chromatic notes |
-| M9 (modulating items): `kind, pivot, pivotWindow, readings, pivotNames, newKey` | kind; the true pivot's note index; `[first, last]` note indices where a marked pivot counts as right; `readings.home` (Keep home do: the old key's syllables, chromatic ones such as fi, ri) and `readings.move` (Move do: the key in force; from the pivot on, the new key's syllables); `pivotNames = [old, new]` (e.g. `['d', 'f']`: write "d = f" under the pivot); `newKey = {do, mode}` |
+| M9 (modulating items): `kind, pivot, pivotWindow, readings, pivotNames, newKey` | kind; the true pivot's note index; `[first, last]` note indices where a marked pivot counts as right; `readings.home` (Keep home do: the old key's syllables, chromatic ones such as fi, ri) and `readings.move` (Move do: the key in force; from the pivot on, the new key's syllables); `pivotNames = [old, new]` (e.g. `['d', 'f,']`: write "d = f" under the pivot); `newKey = {do, mode}`; `newDoMidi` (old do + 7 for the dominant kinds, the old do for the relative ones). Melody range s,..d' in every kind (the new do sits a 5th above or a 4th below).
 | M11: `bass[]` | `{on, dur, midi, i, a, sol, chord, sop}`: the bass line (one note per minim in 4/4, per bar in 3/4), its chord label (`I ii IV V vi` / `i ii°6 iv V VI`, `6` = first inversion) and the melody note above it. Grand staff; bass solfa under the lower stave; the ladder reprints two octaves lower |
 | M12: `excerpt` | `{id, score, bars, ms: [start, end] in AN.meta[score].events, level, credit}`; notes are in the score's own register |
 
@@ -87,7 +87,13 @@ Call `earSave()` after changing any of them.
 * `LCELL[k] = {t: [[ticks, kind]...], f: 's'|'c', tup?: [groups], tieOut?: true}`; kind `n` note, `r` rest, `t` tied continuation. `ladW(k)` = length.
 * `ladRhyTiles(l)` the rung's tiles. Compound tiles (`f: 'c'`) are live only in 6/8 and 12/8; in 7/8 the 2-groups use `e2 q re er` and the 3-groups `c3 cD cqe ceq`.
 * Names: `ladNameTable()` (by `EAR.names`), `LADNAMES`, `LADNAMES_KK`. Tooltips/feedback words: `LADTITLE`, `LADCN`, `LADW` (and `ELCN`, `ELW` now hold every cell).
-* `ladRhyNames(q)` per bar `[{k, name}]`, a tie-in from `antB` names the held note `i…` (the vowel of ti).
+* `ladRhyNames(q)` per bar `[{k, name}]`. **Tie rule (L97, after IC_LADDER_ENG M-5):** a note tied in over the barline (from `antB`, "ti ti-")
+  is held on the vowel of the note it is tied from, one "i" for each syllable it would have had, and the cell's other notes keep their own syllables:
+  ta → "-i", ta-a → "-i-i", ta-a-a → "-i-i-i", ti-ti → "-i-ti", tika-tika → "-i-ka-ti-ka", tika-ti → "-i-ka-ti", ti-tika → "-i-ti-ka", tam-ti → "-i-ti".
+  `ladTiedName(k, table)` gives that name; `LSYLG` holds each cell's syllables note by note. A tuplet never starts under such a tie.
+* `trq` (a swung pair written as a triplet crotchet–quaver; it only appears in Nearly feedback): tri-o-la with its first two notes tied, held on the vowel:
+  **"tri-i-la"** (Kodály names) and **"ta-a-ta"** (Kodály with konnakol tuplets). Single values by value (L97 extension): quaver "ti", dotted crotchet "tam",
+  compound crotchet "ta".
 * `ladMelNames(q)` per bar `[{k, name}]` for the **reveal only** (names are not shown during entry, L103).
 * New thing texts for the "Ready for the next rung?" line: `LMNEW[rung]`, `LRNEWTXT[rung]`.
 * `ladSolInfo('fi')` → `{syl, name, base, alter, sign}`: chromatic syllables have `sign: null` (no hand-sign art, L99): show the solfa name only.
@@ -99,9 +105,14 @@ The first note is given (pitch and, from rung 4, its length): `ladFirst(q, part)
 `[{s: 'm' | "d'" | null (rest), t: ticks}]` (`EAR.ans`). For M11 `EAR.ans = {mel: [...], bass: [...]}` (the part switch).
 
 * `ladPalette(q, entries, part='mel')` →
-  `{done, bar, beat, tick, lengths: [{t, rest, label}]}`: the lengths that are legal **at the current position** (they fit the bar, follow the rung's
-  beat-grouping rules (RF: quavers in beat pairs, minims from strong beats, dotted values where the rung has them, compound beats in 6/8), the
-  anacrusis bar (bar 0) and the short last bar). Rests are offered where a note of that length is (up to a crotchet; M12 up to a beat).
+  `{done, bar, beat, tick, lengths: [{t, rest, label}]}`: the lengths that are legal **at the current position** and can still lead to a complete bar
+  under the rung's rules (IC M-10): inner bars from the rung's cells under RF (quavers in beat pairs, minims and tam-ti from strong beats, the dotted
+  minim from beat 1 of 3/4 at M6 on, compound beats in 6/8); the last bar may also hold a minim off a strong beat (never across the middle of 4/4), the
+  dotted minim from beat 1 (M6 on) and, filling the bar to its end, a dotted crotchet (simple) or a crotchet (6/8); bar 0 = the upbeat's value (a crotchet
+  upbeat may be two quavers). So: no dotted minim inside 4/4 bars, no dotted crotchet at M4–M5, no minim in 6/8, and every offer can be completed.
+  `ladPalTilings(l, metre, len, last)` lists the legal fillings. M11 bass (`ladBassNext`): minims on strong beats (and beat 2 of 3/4), crotchets on beats,
+  the dotted minim from beat 1 of 3/4; never a dotted crotchet (M11 upbeats are crotchets, so the last bass bar is a minim or minim + crotchet).
+  Rests are offered where a note of that length is (up to a crotchet; M12 up to a beat; none in the bass).
   `done: true` once every bar is full. Rungs 1–3: crotchets only. M12: any written value that fits without crossing a beat.
 * `ladBeams(q, entries, part)` → arrays of note indices (the given note = 0) to beam together, per beat (dotted-crotchet beat in 6/8).
 * `ladEntriesToLine(q, entries, part)` → `[{on, dur, rest, sol, midi}]`: the marking format, from the given note.
@@ -114,15 +125,23 @@ The first note is given (pitch and, from rung 4, its length): `ladFirst(q, part)
 * D4: **right only when every note's pitch and rhythm are right.** `detail[j] = {j, pitch, rhythm, spell, given, want}` per note of the answer
   (aligned by onset), for the per-note ticks in the result and "x of y notes" (`nRight`, `n`) in the journal line.
 * Nearly only at M10, when every wrong note has the right pitch spelt with the other chromatic syllable (`spell: true`, e.g. fi for se).
-* M9: pitches are compared as sounds (either reading is fine); the pivot is checked only when `EAR.mod === 'move'`: right if `pivot` is inside
-  `q.pivotWindow`. `pivot: true|false|null` in the result.
+* M9 (D8, L102, L107; IC M-6, M-7). Keep home do: every entry is read against the old do; the pivot is not asked.
+  Move do, dominant kinds (`M-V`, `m-v`): the student marks the mutation (`EAR.pivot`); entries before it are read against the old do, entries after it
+  against the new do (`q.newDoMidi` = old do + 7, the frame of `q.readings.move`), the pivot itself in either key; a note is right when its sound is right.
+  Right needs every note right **and** the mark inside `q.pivotWindow`; no mark = wrong.
+  Move do, relative kinds (`M-vi`, `m-III`): there is no mutation (do stays). Every note right = right with no mark; a needless mark with every note right
+  is still right, and the result's `note` carries the sentence to show ("Every note is right. There is no mutation here: …").
+  `pivot: true|false|null` and `note` in the result.
 * M11: each part separately in `parts.mel` / `parts.bass`; right when both are.
 * M12: rests in the answer are fine where the excerpt is silent.
 
 ### `ladRhyMark(q, ans)` → `{ok, nearly, kind, beats: [{bar, beat, ok, anac?}], why, parts?}`
 * Right: the same cells; or the same sound in cells that keep the rung's rules (RF).
-* Nearly (only these): plain syn-co-pa across the middle of a 4/4 bar where the answer has the tie (D11: "ti ti-i ti"); a septuplet with the other
-  grouping (the accents, R9); a swung pair written as a triplet crotchet–quaver (`trq`, R8). `why` says which.
+* Nearly (only these, and only when that is the **only** difference from the answer, cell for cell at the same place): plain syn-co-pa where the
+  answer has the tied form across the bar's middle (D11: "ti ti-i ti"); a septuplet with the other grouping (the accents, R9); a swung pair written as a
+  triplet crotchet–quaver (`trq`, R8, swing items only). `why` says which.
+* 5/4 fills each group as a 3/4 or 2/4 half (no cell across the grouping); 7/8 writes each group as one group cell (2: ti-ti, ta, ti sa, sa ti;
+  3: ti-ti-ti, tam, ta ti, ti ta). Two single quavers for a ti-ti are not the notation: wrong.
 * R10: `ans = {riff: [cells], drums: {kick: [onsets], snare: [onsets]}}`; `parts = {riff, kick, snare}`.
 * `beats` are the per-beat ticks for the result (bar 0 = the anacrusis).
 
@@ -145,8 +164,10 @@ Helpers: `ladCueNotes(q)`, `ladRhyEvents(cells)` (sounding pattern with ties mer
 
 ## 7. Data
 
-* `LADM12`: 46 phrase excerpts from the ten licensed scores (`m12_curate.py`, table in `m12_excerpts.json` and the build report):
-  `{id, score, bars, tonic, mode, do, metre, anac, level, rhyExtra, tempo, barLen, ms, notes: [[on, dur, midi|null, sol]], credit}`.
+* `LADM12`: 40 phrase excerpts (after IC_LADDER_ENG) from the ten licensed scores (`m12_curate.py`, table in `m12_excerpts.json` and the build report):
+  `{id, score, bars, tonic, mode, do, metre, anac, level, rhyExtra, tempo, barLen, ms, notes: [[on, dur, midi|null, sol]], credit}`. Bar outline as D9
+  (every bar full, the last shortened by the anacrusis; a phrase that ends earlier finishes with rests). `credit`: composer in full, the work, the score data
+  with encoder and licence.
   **Each needs the independent theory check before release.**
 * `LADREC = {mel: [], rhy: []}`: contemporary items (D13), empty until the recordings check. Entry shape (notes and rhythm only, no lyrics,
   no audio): `{id, drill, rung, artist, title, year, link, start, end, credit, checked, key: {do, mode}, metre, anac, notes: [[on, dur, sol]] | {riff, drums}}`.
