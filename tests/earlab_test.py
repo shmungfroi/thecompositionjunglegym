@@ -9,11 +9,12 @@ Sections
   A  cadence models: every template x key x level  (E8, E9, E10)
   B  bass and numerals: every progression x key x level; 6,000 generated questions against the allow-list (E8, E9, E11);
      BHL 0.48 (IC_EAR_048 S3): no cadence model, bass progression or generated question moves ii(6) to IV or ii°(6) to iv
-  C  tells: no answer predictable above chance from length, tempo or register (E10); 0.49 C3: exact-semitone register tells at rungs 2-3
+  C  tells: no answer predictable above chance from length, tempo or register (E10); 0.49 C3: exact-semitone register tells at rungs 2-3;
+     0.49 C33: the spacing pattern of every chord and the final chord's completeness at rungs 1-3; C32: the close/open boundary
   D  pool sizes at level 1 (E11); 0.49 C4 / C23: the rung 1 V–vi pool (open or close spacing, >= 100) against an independent
      exhaustive enumeration; C12: no incomplete chord at rung 1
   A  (also) 0.49 C25: no major triad in first inversion doubles its 3rd or drops its 5th (vi / VI excepted), in every cadence and
-     bass realisation checked by vl_check
+     bass realisation checked by vl_check; C34: no root-position triad doubles its 3rd with no 5th
   E  blind analysis windows, labels and buttons (E1–E5)
   F  blind playback note lengths (E6)
   G  ranges (E14)
@@ -83,6 +84,12 @@ def dbl_check(chs, toks, info, where, sec):
                 fail(sec, f'{where}: chord {i+1} {toks[i]} doubles its 3rd ({c})')
             if f['fifth'] not in {m % 12 for m in c}:
                 fail(sec, f'{where}: chord {i+1} {toks[i]} has no 5th ({c})')
+        # 0.49 C34 (IC_C_ENG_049 S4, L108): no triad in root position (IV, vi, III, VI, a final I or i ...) doubles its 3rd and leaves out
+        # its 5th; vi / VI after V double the 3rd but keep the 5th
+        if f['seventh'] is None and f['inversion'] == 0 and f['third'] is not None and f['fifth'] is not None:
+            COUNT[f'C34 doubling check ({sec}): root-position triads checked'] += 1
+            if sum(1 for m in c if m % 12 == f['third']) > 1 and f['fifth'] not in {m % 12 for m in c}:
+                fail(sec, f'{where}: chord {i+1} {toks[i]} doubles its 3rd and has no 5th ({c})')
 
 
 def vl_check(chs, toks, k, mode, where):
@@ -336,7 +343,7 @@ async def main():
         tells = await pg.evaluate("""()=>{let s=17;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o={cad:[],metre:[],qual:[]};
             for(const l of [1,2,3])for(let i=0;i<5000;i++){const c=earGen('cad',l,R);o.cad.push({l,a:c.a,sub:c.sub||'',md:c.key.mode,n:c.ch.length,lo:Math.min(...c.ch.flat()),hi:Math.max(...c.ch.flat()),
                 s2:c.rns[1],open:c.ch[0].join(','),fin:c.ch[c.ch.length-1][3],fb:c.ch[0][0],lb:c.ch[c.ch.length-1][0],fs:c.ch[0][3],
-                sp:c.ch.map(v=>v[3]-v[1]>12?'o':'c').join(''),comp:c.ch.every(v=>new Set(v.map(m=>mod(m,12))).size>=3),rns:c.rns,k:c.key.k,ch:c.ch});
+                sp:c.ch.map(v=>earClose(v)?'c':'o').join(''),comp:c.ch.every(v=>new Set(v.map(m=>mod(m,12))).size>=3),fcomp:new Set(c.ch[c.ch.length-1].map(m=>mod(m,12))).size>=3,rns:c.rns,k:c.key.k,ch:c.ch});
               const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
               const q=earGen('qual',l,R);o.qual.push({l,a:q.a,lo:q.notes[0],hi:q.notes[q.notes.length-1]})}return o}""")
         MARGIN = 0.05
@@ -361,8 +368,18 @@ async def main():
         # 0.49 C23 / C12 (rung 1): open or close spacing of the first chord, the last chord and both, and the final chord's completeness
         tell('cadences', tells['cad'], 'spacing of the first chord (open or close)', lambda r: r['sp'][0], lambda r: r['a'], (1,))
         tell('cadences', tells['cad'], 'spacing of the last chord (open or close)', lambda r: r['sp'][-1], lambda r: r['a'], (1,))
-        tell('cadences', tells['cad'], 'spacing of every chord (open or close)', lambda r: r['sp'], lambda r: r['a'], (1,))
+        # 0.49 C33 (L108): rungs 2 and 3 too (the spacing pattern of every chord was +7.9 / +15.0, the final chord's completeness +9.3 at rung 3)
+        tell('cadences', tells['cad'], 'spacing of every chord (open or close)', lambda r: r['sp'], lambda r: r['a'], (1, 2, 3))
+        tell('cadences', tells['cad'], 'mode and spacing of every chord', lambda r: (r['md'], r['sp']), lambda r: r['a'], (2, 3))
         tell('cadences', tells['cad'], 'every chord complete', lambda r: r['comp'], lambda r: r['a'], (1,))
+        tell('cadences', tells['cad'], 'final chord complete', lambda r: r['fcomp'], lambda r: r['a'], (1, 2, 3))
+        tell('cadences', tells['cad'], 'mode and final chord complete', lambda r: (r['md'], r['fcomp']), lambda r: r['a'], (2, 3))
+        # 0.49 C32 (L108): close spacing is the soprano LESS than an octave above the tenor (Kostka & Payne); exactly an octave is open.
+        # One named constant in the app (EAR_CLOSE_LT); the checks above read the spacing through it
+        c32 = await pg.evaluate("({lt:EAR_CLOSE_LT,oct:earClose([48,60,64,72]),c11:earClose([48,60,64,71]),o13:earClose([48,60,67,73])})")
+        COUNT['C32 close/open boundary checks'] = 4
+        if c32 != {'lt': 12, 'oct': False, 'c11': True, 'o13': False}:
+            fail('C', f'C32: close spacing should be soprano less than an octave above the tenor (an exact octave is open): {c32}')
         for l in (1, 2, 3):
             rr = [r for r in tells['cad'] if r['l'] == l]
             acc, ch = predict_acc(rr, lambda r: r['sp'], lambda r: r['a'])
