@@ -170,3 +170,148 @@ Pedagogy:
 - Minnesota State, *First-Year Music Theory*, voice-leading chapter: https://minnstate.pressbooks.pub/firstyearmusictheory/chapter/voice-leading/10
 - Iowa State, *Comprehensive Musicianship* 10.3: https://iastate.pressbooks.pub/comprehensivemusicianship/chapter/10-3-part-writing-first-inversion-triads-and-suspensions-tutorial/
 - Aldwell & Schachter and Kostka & Payne are cited through the MTO survey; the checker did not consult the books directly here. The Kostka & Payne definition of close and open structure is quoted from memory: "close: less than an octave between soprano and tenor".
+
+## Re-check: C31–C35 (independent check, 21 Nov 2026; branch at `ec07784`, L108)
+
+What this covers: commits `2578727` and `ec07784` against `fa5fe9d`. The builder's C31–C35 section was used only to find claims. Every number below was measured again with the checker's own code, all of it in `/tmp/ic049` (scratch, not committed):
+- the same strict SATB checker as above;
+- held-out tell measurement on 20,000 seeded questions per rung, with the same seeds as before;
+- a new pool enumerator and linear-programming (LP) floor solver, `lp_floor.py` and `lp2.py`. They use scipy HiGHS and are written apart from `tests/cadweights_lp.py`, which was not read or run.
+
+"Before" means `fa5fe9d`. The close-spacing boundary is C32's: close when the soprano is less than an octave above the tenor.
+
+### Verdicts
+
+| item | verdict |
+|---|---|
+| Strict SATB, rungs 1–3, including re-voiced chords (C33 complete final tonic, C34) | **PASS**: 0 faults |
+| C31 top line and tenor–soprano gap balanced; register still ≤ 5 | **PASS** against Justin's L108 terms. Residues remain (below) |
+| C31 claim "the residues are the floor under the register cap" | **TRUE for the current pool** (within 1.4 points). **Not the limit of the music**: a larger strict pool does much better (below) |
+| C32 close = S–T < octave (`EAR_CLOSE_LT = 12`) | **PASS**: 12 → open, 11 → close; rung 1 spacing tell +2.8 |
+| C33 rungs 2–3 spacing pattern and final completeness | **PASS** |
+| C34 no root-position triad with a doubled 3rd and no 5th | **PASS**: 0 at rungs 2 and 3, grid and questions |
+| C35 Analysis reads spelling; 228 changed readings; no score label changes | **PASS**: all three claims confirmed |
+| Suites, run one at a time | **PASS**: unit_test 1,163 checks, 0 failures; analysis_engrave_test 0 failures; earlab_test 0 failures (76 tell checks); earlab_items_test 0 failures (91 tell checks) |
+
+### Strict SATB (the checker's own rules)
+
+- **Rung 1: 0 faults.**
+  - My own enumeration of the strict rung 1 pool (same rules: ranges, one 3rd or two in vi after V, complete chords, the leading note rises in every voice in V–I) gives **2,094 voicings, identical one for one** to the app's pool in use.
+  - The 20,000 questions have 0 faults and 0 incomplete chords.
+  - V–vi is still 108 / 108, all with weight; 105 distinct came up.
+- **Rung 2: 0 faults** in the 9,600 grid entries (3,376 distinct) and in 20,000 questions.
+- **Rung 3: 0 faults** in the 6,600 grid entries (1,504 distinct) and in 20,000 questions.
+- **C34:** 0 triads with a doubled 3rd and no 5th anywhere. Before: 376 rung 2 questions in 20,000, and 1,087 final minor tonics at rung 3.
+- **Incomplete triads still used:** all are root tripled, 3rd once, no 5th. This is acceptable in strict style.
+  - Rung 2: V 61, VI 6 (per 20,000).
+  - Rung 3: final V after V7/V, 83 (0.4 %). A half cadence ending on an incomplete V is a weakness, not an error (Could).
+- **C33:** every rung 2 and rung 3 final tonic that can be complete now is. Rung 3 final completeness predicts nothing (+0.3).
+- **Root-position doubled 3rd with the 5th kept**, outside vi/VI after V: rung 2 IV 100, III 90, VI 811 (mostly next to V in minor, the usual reason); rung 3 IV 28, iv 81. This is a weakness in a major triad (IV, III), not an error (Could).
+
+### Tells, rung 1 (sampled, 20,000; points over chance 25.2 %)
+
+| feature | before | after | builder (after) |
+|---|---|---|---|
+| soprano line | +66.3 | **+56.0** | +56.7 |
+| soprano degree, first / last chord | +34.8 / +41.4 | **+27.5 / +24.7** | +27.6 / +24.8 |
+| soprano motion | +33.9 | +27.8 | +28.3 |
+| tenor–soprano gap, first / last chord | +11.1 / +30.1 | **+7.4 / +19.9** | +7.4 / +20.1 |
+| both gaps together | +42.5 | +35.7 | |
+| spacing of first / last / both chords (C32) | +3.1 / +3.4 / +6.1 | **−0.4 / +3.1 / +2.8** | +3.5 (both) |
+| final chord complete | −1.2 | −1.2 | |
+| lowest / highest / pair / span | +1.3 / +1.1 / +2.1 / +0.5 | +3.3 / +1.4 / **+3.9** / +3.5 | ≤ +4 |
+| first / last bass, first / last soprano, key | +2.7 / +2.1, +1.1 / +1.5, −0.2 | +3.7 / +3.5, +2.6 / +3.3, +3.5 | ≤ +4 |
+
+The exact tells, computed by the checker from the app's EAR1W weights, match the builder's:
+
+| feature | exact tell |
+|---|---|
+| soprano line | +56.8 |
+| last soprano degree | +25.3 |
+| first soprano degree | +27.8 |
+| tenor–soprano gap, last chord | +20.6 |
+| tenor–soprano gap, first chord | +7.3 |
+| every register feature and spacing of both chords | ≤ +4.0 |
+
+Shared-chord tells (sampled; chance 50.2 %):
+- **Perfect vs plagal**, from the final I: soprano degree 53.0 % (was 85.0), tenor–soprano gap 53.5 % (was 85.5), spacing 50.1 %, doubling 49.7 %. **The exact bass + soprano pitches of the final I: 57.1 % (+6.9).**
+- **Perfect vs interrupted**, from the V: soprano degree 53.7 % (was 59.8), tenor–soprano gap 53.7 %. **The exact V voicing: 56.0 % (+5.8)**; the builder reports +5–7 for the exact shared-chord voicing.
+- Plagal vs IV–V, from the IV: at chance (+1.2).
+
+### Tells, rungs 2–3 (sampled, 20,000; chance 25.5 % / 18.5 %)
+
+| feature | rung 2 before → after | rung 3 before → after |
+|---|---|---|
+| spacing pattern, every chord (C32) | +12.7 → **+1.8** | +6.1 → **+2.9** |
+| same, by number of chords (4 / 5) | +0.9 / +3.0 | n/a / +2.9 |
+| spacing and mode together | +14.9 → +2.1 | +6.6 → +3.0 |
+| final chord complete (and with mode) | +3.2 → **+0.1** (+0.1) | +9.3 → **+0.3** (0.0) |
+| lowest + highest / span / last bass / last soprano | −0.1 / −0.2 / 0.0 / +0.1 → +2.5 / +1.7 / +2.9 / +2.0 | +3.3 / +3.2 / +2.6 / +2.4 → +2.6 / +2.5 / +3.1 / +3.5 |
+| tenor–soprano gap, last chord | +19.1 → +20.1 | +20.4 → +19.4 |
+| soprano degree, last chord | +24.6 → +25.6 | +25.6 → +19.5 |
+| soprano degree / gap, first chord | −0.4 / −0.7 → −0.4 / +0.3 | +2.9 / +2.8 → +1.8 / +2.9 |
+
+The old ≤ 12 spacing definition, which is no longer in force, still reads +10.2 at rung 2 and +14.7 at rung 3. Under C32 the octave counts as open, so this is expected.
+
+### Is +56.7 line / +20.1 last gap the floor? (C31 claim)
+
+The checker built its own LP. It uses the same exact-tell measure as the builder (sum over values of the largest share, divided by the number of answers, minus chance). Its constraints are:
+- the 3 % plain mix;
+- I–V and IV–V at half each in imperfect;
+- the register features (lowest, highest, the pair, span, first and last bass, first and last soprano, key, spacing of both chords) capped;
+- the shared-chord soprano and gap tells (perfect/plagal, perfect/interrupted) at most 4.
+
+Exact tells (points):
+
+| pool (all strict, complete chords) | voicings | register cap | best line | best last gap | both at once (line / gap) |
+|---|---|---|---|---|---|
+| **as in the app** | 2,094 | 4 | 55.4 | 19.2 | **55.4 / 19.2** |
+| as in the app | 2,094 | 5 | 53.4 | 18.2 | 53.4 / 18.2 |
+| as in the app | 2,094 | none | 38.1 | 0.6 | 40.8 / 16.1 |
+| + bass up to D4 | 2,178 | 4 | 55.4 | 19.2 | 55.4 / 19.2 |
+| + vi after V may double its root | 2,153 | 4 | 55.4 | 15.3 | 55.4 / 15.3 |
+| **+ frustrated leading note in V–I** | 2,427 (V–I 170 → 503) | 4 | **46.7** | **1.5** | **46.7 / 2.8** |
+| all three | 2,586 | 4 | 46.7 | 0.2 | 46.7 / 0.7 |
+
+In the table, "frustrated leading note" means the leading note in an inner voice falls to the 5th of I, which gives a complete I. For every row, the first and last soprano degree, the first gap and the shared-chord tells are held at or below the app's levels.
+
+- **With the app's pool and cap 4, the builder is honest.** The app (line +56.8, gap +20.6) is within 1.4 points of the best trade-off the LP can find (+55.4 / +19.2). Raising the register cap to 5 buys only 2 points on the line and 1 on the gap. The soprano line's content floor (+38.1, the chords alone) matches the builder's.
+- **It is not the limit of strict style.** The constraint that binds is a rung 1 rule: in V–I the leading note rises in *every* voice, because the feedback says so. With that rule, a complete final I can only be voiced a few ways.
+  - Allowing the textbook frustrated leading note (Aldwell & Schachter and Kostka & Payne both allow it in an inner voice in V–I; the app's own strict rules at rungs 2–3 already allow it) gives, with the register still capped at 4:
+    - **soprano line +46.7** (from +56.8);
+    - **last gap +2.8** (from +20.6);
+    - shared-chord tells 0–4.
+  - Adding root-doubled vi after V as well takes the last gap to +0.7.
+  - Raising the bass ceiling to D4 does not help.
+- The cost is the rung 1 feedback sentence ("the leading note rises to the home note"). It would need to say that the leading note rises in the top voice and may fall to *so* in an inner voice. Rungs 2–3 already work that way. This is Justin's decision. The checker found no other pool change that helps.
+
+### C32, C34, C35 details
+
+- **C32.** `EAR_CLOSE_LT = 12`; `earClose([48,60,64,72])` = false (octave = open); `earClose([48,60,64,71])` = true. The pool's close-spaced entries went from 1,463 to 1,285 (the exact-octave ones moved to open). Close share by answer is 41–45 %.
+- **C35, scan.** The checker ran its own scan over every root letter × (♮, ♭, ♯, 𝄫, 𝄪) × every app quality (plus It/Fr/Ger+6) × 24 keys: 19,320 chords, through analyse() on `fa5fe9d` and on `ec07784`.
+  - **228 change function**, as claimed: 180 in minor and 48 in major. All become C.
+    - 132 are minor-key chords spelled outside the key: dim7 36, dim 24, aug 24, m7b5 12, m 12, madd9 12, m6 12.
+    - 96 are augmented sixths on odd roots: It+6 48, Ger+6 48.
+  - **132 more** keep their function and only lose `borrowed`. These are major-key chords spelled with notes outside the parallel minor (e.g. iv° F–A♭–C♭). Their function is already C, so `isCol` is unchanged.
+  - Real augmented sixths on ♭VI, ♯IV and II are unchanged.
+- **C35, app numerals.** No numeral the app offers changes: diatonic and colour palettes, 744 readings in 24 keys, identical before and after.
+- **C35, scores.** **No Analysis score label changes.** All 135 harmony labels in `scores/meta.json`, read through parseRoman + analyse(), give identical results before and after. The score view colours labels from the stored `f` (index.html, the `l.f` line in the harmony layer), not from analyse().
+  - Pre-existing, not new: the stored `f` and analyse() differ on 3 labels. These are deliberate numeral_reread decisions.
+
+### Musts / Shoulds / Coulds (re-check)
+
+**Musts:** none. C31–C35 are built as approved, strict and tested.
+
+**Shoulds**
+1. **Justin decides on the frustrated leading note at rung 1** (section above). It is the one change that lowers the residual top-line tells substantially:
+   - last gap +20.6 → about +3;
+   - soprano line +56.8 → about +47;
+   - register stays ≤ 4, and the style stays strict and textbook.
+
+   If he declines, record in the decision log that +56.8 / +20.6 is the accepted residue for this pool. The builder's floor claim is true for that pool.
+2. The exact final-I pitches (bass + soprano) for perfect vs plagal (+6.9), and the exact V voicing for perfect vs interrupted (+5.8), are just over 5. They are pitch-level details, but a cap on the shared chord's exact outer voices would close them.
+3. Rungs 2–3 still have last-chord soprano degree (+25.6 / +19.5) and last tenor–soprano gap (+20.1 / +19.4) tells. The builder notes these as outside C33. They are mostly cadence content, but the same LP treatment as C31 applies when Justin wants it.
+
+**Coulds**
+1. The rung 3 final V after V7/V without its 5th (0.4 %), and rung 2 major root-position IV / III with a doubled 3rd (about 1 %): prefer complete voicings or a root/5th doubling where the grid allows.
+2. Keep the LP generators' scipy dependency noted in the charter's test section (the suites do not need it).
