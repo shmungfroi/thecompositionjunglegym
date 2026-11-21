@@ -81,3 +81,10 @@ Deferred: R19–R22 (counterpoint) — Justin 20 Nov "later".
 | C38 | Test robustness: terms_test needs a fresh page per Stage; earlab_ui_test detached-element flake | Fix the harness | Should | Drafted |
 | C39 | Keys piano solfa names run together at 390 (pre-existing) | Spacing fix | Could | Drafted |
 | C40 | Cadence chips say "T tonic" right above a legend that repeats it | Drop the duplicate | Could | Drafted |
+
+## From the IC re-check of C31–C35 (21 Nov, IC_C_ENG_049 "Re-check", ed5495f: all five PASS, no Musts), status Drafted
+| id | finding | proposed change | pri | status |
+|---|---|---|---|---|
+| C41 | Rung-1 top-line residue (+56 line, +20 last gap) is the floor only because rung 1 requires the leading note to rise in every voice. Allowing the textbook exception (inner-voice leading note falls to so in V–I, already allowed at rungs 2–3) gives +46.7 line, +2.8 last gap, register < 4 | Allow the exception at rung 1 and reword the rung-1 feedback sentence; or accept the residue in the log | Should | Drafted (needs Justin) |
+| C42 | Exact pitches of a shared chord still just over 5: final I bass+soprano (perfect vs plagal) +6.9; exact V voicing (perfect vs interrupted) +5.8 | Cap in the weight solver | Should | Drafted |
+| C43 | Rungs 2–3 last-chord soprano and S–T gap tells about +20 to +26 (outside C33's scope) | Balance with the solver | Should | Drafted |
