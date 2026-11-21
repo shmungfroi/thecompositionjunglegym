@@ -8048,7 +8048,7 @@ const LADACC=Math.pow(10,3/20);   // tuplet group accent: +3 dB on the first not
 /* rhythm playback (R1–R10): count-in, the line (clap at rung 1, tone from rung 2), tuplet accents, swing (2:1), backbeat context (R8),
    drums and riff (R10; variant 'drums' | 'riff' | 'all'), pulse (EAR.rhy.pulse). Tempo: the student's choice (72 or 100) or the item's drawn tempo. */
 function ladSchedRhy(q,variant,t0,o={}){const bpm=o.bpm||(typeof EAR!=='undefined'&&EAR.rhy.bpm)||q.tempo||84,tk=60/bpm/LADT,lead=.15,pulse=o.pulse!==undefined?o.pulse:(typeof EAR==='undefined'||EAR.rhy.pulse),
-  clap=o.clap!==undefined?o.clap:!!q.clap,M=LMET[q.metre],t=t0+lead;const ls=ladCountIn(q,t,tk);
+  clap=o.clap!==undefined?o.clap:!!q.clap,M=LMET[q.metre],t=t0+lead,s0=SEND.v;SEND.v=0;const ls=ladCountIn(q,t,tk);
  const{ev,len}=ladRhyEvents(q.a),swing=!!q.swing,evOut=[],line0=ls-(q.anac||0)*tk;
  // swing (R8): every off-beat quaver point moves to two thirds of the beat (2:1), onsets and ends alike (IC S5)
  const sw=t=>swing&&lmod(t-(q.anac||0),420)===210?t+70:t,at=e=>sw(e.on),dur=e=>sw(e.on+e.dur)-sw(e.on);
@@ -8059,12 +8059,15 @@ function ladSchedRhy(q,variant,t0,o={}){const bpm=o.bpm||(typeof EAR!=='undefine
  if(q.backbeat||q.drums){const D=q.drums?ladDrumOns(q.drums):(()=>{const k=[],s=[];q.barLen.forEach((L,b)=>{const b0=b*M.bar;[0,840].forEach(x=>{if(x<L)k.push(b0+x)});[420,1260].forEach(x=>{if(x<L)s.push(b0+x)})});return{kick:k,snare:s}})();
   if(variant!=='riff'){D.kick.forEach(x=>ladKick(ls+x*tk,q.drums?1:.7));D.snare.forEach(x=>ladSnare(ls+x*tk,q.drums?1:.7))}}
  if(pulse)ladBeatTicks(q.metre,q.grp).forEach(([p])=>{for(let b=0;b<q.barLen.length;b++){const x=b*M.bar+p;if(x<barsT)elBlock(ls+x*tk,false)}});
- return{end:Math.max(end,ls+barsT*tk),lead:lead+ELPRE,bl:M.beat*tk,events:evOut,start:ls-t0+ELPRE,beat:420*tk,gain:clap?Math.sqrt(5/Math.max(2,evOut.length/q.barLen.length)):1}}
+ // L32: the transport ends when the last sound stops (a clap's tail, the last pulse tick or the last tone), not at the written barline:
+ // a line that ends on a rest, or a short clap, left the state 'playing' up to a beat after the sound had stopped
+ const last=SEND.v;SEND.v=Math.max(s0,last);
+ return{end:last>t0?last:Math.max(end,ls+barsT*tk),lead:lead+ELPRE,bl:M.beat*tk,events:evOut,start:ls-t0+ELPRE,beat:420*tk,gain:clap?Math.sqrt(5/Math.max(2,evOut.length/q.barLen.length)):1}}
 // "hear that beat": the given answer's beat, then the right one (o.o = [bar, beat], bar 0 = the anacrusis)
-function ladSchedRhyBeat(q,t0,o={}){const g=(typeof EAR!=='undefined'&&EAR.res&&EAR.res.given)||[],[bar,bt]=o.o||[1,1],bpm=72,tk=60/bpm/LADT,M=LMET[q.metre],lead=.15;
+function ladSchedRhyBeat(q,t0,o={}){const g=(typeof EAR!=='undefined'&&EAR.res&&EAR.res.given)||[],[bar,bt]=o.o||[1,1],bpm=72,tk=60/bpm/LADT,M=LMET[q.metre],lead=.15,s0=SEND.v;SEND.v=0;
  const a0=bar===0?0:(q.anac||0)+(bar-1)*M.bar+(bt-1)*M.beat,a1=bar===0?(q.anac||0):a0+M.beat;let t=t0+lead;
  const one=cells=>{ladRhyEvents(cells).ev.forEach(e=>{if(!e.rest&&e.on>=a0&&e.on<a1){if(q.clap)elClap(t+(e.on-a0)*tk);else elRhyNote(t+(e.on-a0)*tk,Math.min(e.dur,a1-e.on)*tk,q.pitch||72,e.acc?LADACC:1)}});elBlock(t,false);t+=(a1-a0)*tk+.45};
- one(g);one(q.a);return{end:t,lead:lead+ELPRE,bl:M.beat*tk}}
+ one(g);one(q.a);const last=SEND.v;SEND.v=Math.max(s0,last);return{end:last>t0?last:t,lead:lead+ELPRE,bl:M.beat*tk}}   // L32: ends with the last sound, not the 0.45 s gap after it
 /* melody playback. Rungs 1–3: key cue, then one note every 0.65 s (as built). Rung 4 on: key cue (D7), one bar of count-in (with the
    anacrusis on its own beat), the line at the item's tempo. M11: 'all' both parts, 'melonly', 'bassonly'. M12: 'all' the melody alone,
    'accomp' with the score's accompaniment (needs AN.meta loaded). 'first': the first note only. 'nokey': no key cue. */
