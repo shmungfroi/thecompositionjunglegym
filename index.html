@@ -7259,7 +7259,7 @@ function ladFillBar(r,metre,vocab,o={}){const M=LMET[metre],len=o.len||M.bar,ste
   if(rem)out.push(M.comp?'cq':'e');
   if(ladOns(out).every(([,kd])=>kd==='r'))continue;
   if(o.last&&out[out.length-1]==='antB')continue;
-  if(o.tieIn&&LCELL[out[0]].t[0][1]!=='n')continue;
+  if(o.tieIn&&(LCELL[out[0]].t[0][1]!=='n'||LCELL[out[0]].tup))continue;   // a tuplet never starts under a tie (its first accent would be lost)
   return out}
  throw new Error('lad: no fill '+metre)}
 /* ---------------- rhythm ladder (R1–R10) ---------------- */
@@ -7459,6 +7459,7 @@ function ladPitch(l,r,n,wantNew,fv){const S=ladMelSpec(l);   // fv: the variant 
    if(v==='harm'&&lmod(x,7)===4&&lmod(y,7)!==5)bad=true;
    if(v==='melo'&&lmod(x,7)===3&&a===1&&!(lmod(y,7)===4&&b===1))bad=true;
    if(v==='melo'&&lmod(x,7)===4&&a===1&&!(y===x+1&&b===0))bad=true;
+   if(v==='melo'&&[3,4].includes(lmod(x,7))&&a===0&&y>x)bad=true;   // natural fa and so only fall (or repeat) in melodic minor
    if(!ladMoveOK(x,a,y,b,v))bad=true;
    if(v==='harm'&&y===x+1&&lmod(x,7)===3&&a===0&&b===1)aug.push(i);
    if(Math.abs(ladSemis(x,a)-ladSemis(y,b))===6){if(i+2>=out.length)bad=true;else{const z=out[i+2][0];if(!((lmod(y,7)===3&&z===y-1)||(lmod(y,7)===6&&z===y+1)))bad=true}}}
@@ -7488,10 +7489,11 @@ function ladMod(r,n1,n2,kind){kind=kind||lpick(['M-V','M-vi','m-III','m-v'],r);
 function ladKeySet(mode,shiftSemis){const b=mode==='maj'?[0,2,4,5,7,9,11]:[9,11,0,2,4,5,7,6,8];return new Set(b.map(x=>lmod(x+shiftSemis,12)))}
 /* the M9 pivot window (register M9 marking): the true pivot, or any note in the run of notes common to both keys immediately before the first
    note that belongs only to the new key (the last note when no note belongs only to the new key) */
-// the window takes each key's own notes: major diatonic, minor harmonic (with si, without so), so the relative major's so belongs only to it
+// minor to the relative major (IC M-7): the old key's own notes are the harmonic minor (si, no so), so the relative major's so belongs only to
+// the new key; otherwise minor keys carry fi and si
 function ladKeySetH(mode,sh){const b=mode==='maj'?[0,2,4,5,7,9,11]:[9,11,0,2,4,5,8];return new Set(b.map(x=>lmod(x+sh,12)))}
-function ladPivotWindow(notes,info){const kind=info.kind,old=ladKeySetH(kind[0]==='M'?'maj':'min',0),
-  nw=kind==='M-V'?ladKeySetH('maj',7):kind==='M-vi'?ladKeySetH('min',0):kind==='m-III'?ladKeySetH('maj',0):ladKeySetH('min',7);
+function ladPivotWindow(notes,info){const kind=info.kind,old=kind==='m-III'?ladKeySetH('min',0):ladKeySet(kind[0]==='M'?'maj':'min',0),
+  nw=kind==='M-V'?ladKeySet('maj',7):kind==='M-vi'?ladKeySet('min',0):kind==='m-III'?ladKeySet('maj',0):ladKeySet('min',7);
  const pc=x=>lmod(ladSemis(x.i,x.a),12);let first=notes.findIndex((x,j)=>j>info.pivot&&nw.has(pc(x))&&!old.has(pc(x)));const end=first<0?notes.length-1:first-1;
  let st=Math.min(end,info.pivot);while(st>0&&old.has(pc(notes[st-1]))&&nw.has(pc(notes[st-1])))st--;
  return[Math.min(st,info.pivot),Math.max(end,info.pivot)]}
@@ -7597,7 +7599,7 @@ function ladGenMel(l,r,o={}){l=Math.max(1,Math.min(12,l));if(l===12)return ladGe
   if(l===10)it.chrom=info.ins||[];
   if(l===9&&info.kind){it.pivot=info.pivot;it.kind=info.kind;it.pivotWindow=ladPivotWindow(it.notes,info);
    const sh=info.shift;   // D8: both readings. home: the old key's syllables throughout; move: the key in force from the pivot (the pivot carries both names)
-   it.newKey={do:lmod(key+(sh?7:0),12),mode:info.kind==='M-V'||info.kind==='m-III'?'maj':'min'};it.newDoMidi=sh?ladDo(it.newKey.do):dm;
+   it.newKey={do:lmod(key+(sh?7:0),12),mode:info.kind==='M-V'||info.kind==='m-III'?'maj':'min'};it.newDoMidi=sh?dm+7:dm;   // the new do a 5th above the old (the Move do readings' octave frame)
    it.readings={home:it.a.slice(),move:it.notes.map((x,j)=>j<info.pivot?x.sol:ladSylAt(x.midi,it.newDoMidi,x.i-sh))};
    it.pivotNames=[it.notes[info.pivot].sol,it.readings.move[info.pivot]]}
   if(l===11){const mm=info.mode==='min'?'min':'maj',bass=ladBass(r,it.notes,it.metre,it.cells.length,it.anac,key,mm,wantNew);if(!bass)continue;it.bass=bass;it.info={...info,bassChords:bass.map(b=>b.chord)}}
