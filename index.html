@@ -3207,23 +3207,23 @@ function dropN(c,n){const bpc=mod(c.bass.midi,12);let t=c.tones.slice();
  let prev=52;const cl=ord.map(x=>{const m=lowestAbove(mod(x.midi,12),prev+1);prev=m;return at(x,m)});
  cl[4-n]=at(cl[4-n],cl[4-n].midi-12);return cl.sort((a,b)=>a.midi-b.midi)}
 const VTYPES={
- beginner:{n:'Beginner 1–3–5',why:'Root, 3rd and 5th in one hand, just above middle C: the first chord shape every pianist learns. It fits small hands and uses a starter fingering (1–3–5 in root position; other fingerings are fine, especially on black keys), and any extra notes (7ths, 9ths) can be added later.',f:c=>beginnerNotes(c).notes},
- close:{n:'Close',why:'A bass note in the left hand, with the other notes packed close together in the right hand, inside one octave. Compact and clear: the standard two-handed block chord.',f:c=>voicing(c)},
- open:{n:'Open (spread template)',why:'The same notes spread over more than an octave: root low, then the 5th, then the 3rd an octave higher. Wider gaps at the bottom keep the sound clear and resonant, like an orchestra or choir.',
+ beginner:{l:1,n:'Beginner 1–3–5',why:'Root, 3rd and 5th in one hand, just above middle C: the first chord shape every pianist learns. It fits small hands and uses a starter fingering (1–3–5 in root position; other fingerings are fine, especially on black keys), and any extra notes (7ths, 9ths) can be added later.',f:c=>beginnerNotes(c).notes},
+ close:{l:1,n:'Close',why:'A bass note in the left hand, with the other notes packed close together in the right hand, inside one octave. Compact and clear: the standard two-handed block chord.',f:c=>voicing(c)},
+ open:{l:2,n:'Open (spread template)',why:'The same notes spread over more than an octave: root low, then the 5th, then the 3rd an octave higher. Wider gaps at the bottom keep the sound clear and resonant, like an orchestra or choir.',
   f:c=>{const R=at(c.bass,40+mod(mod(c.bass.midi,12)-40,12)),bp=mod(R.midi,12),ord=[c.inv?c.tones[0]:null,tOf(c,/^5$|b5|#5/),tOf(c,/3|^2$|^4$/),tOf(c,/7|^6$/),tOf(c,/9/)].filter(t=>t&&mod(t.midi,12)!==bp);let prev=R.midi;const out=[R];
    ord.forEach(t=>{const m=lowestAbove(mod(t.midi,12),prev+3);out.push(at(t,m));prev=m});if(out.length<3)out.push(at(c.tones[0],lowestAbove(mod(R.midi,12),prev+1)));return out}},
- drop2:{n:'Drop 2',why:'Start with a close four-note chord, then drop the second-highest note down an octave. A favourite of jazz guitar, piano and horn sections: full, even and easy to move.',
+ drop2:{l:5,n:'Drop 2',why:'Start with a close four-note chord, then drop the second-highest note down an octave. A favourite of jazz guitar, piano and horn sections: full, even and easy to move.',
   need:c=>c.tones.length>=4,f:c=>dropN(c,2)},
- drop3:{n:'Drop 3',why:'Like drop 2, but the third-highest note drops an octave. The wide bottom gap suits guitar string sets and spread piano voicings.',
+ drop3:{l:6,n:'Drop 3',why:'Like drop 2, but the third-highest note drops an octave. The wide bottom gap suits guitar string sets and spread piano voicings.',
   need:c=>c.tones.length>=4,f:c=>dropN(c,3)},
- shell:{n:'Shell',why:'Just the root, 3rd and 7th: the three notes that tell you what kind of chord it is. The 5th adds little, so jazz pianists and guitarists leave it out to keep the texture light.',
+ shell:{l:4,n:'Shell',why:'Just the root, 3rd and 7th: the three notes that tell you what kind of chord it is. The 5th adds little, so jazz pianists and guitarists leave it out to keep the texture light.',
   need:c=>tOf(c,/7|^6$/)&&tOf(c,/3/),
   f:c=>{const R=vBass(c),t3=tOf(c,/3/),t7=tOf(c,/7|^6$/);const a=lowestAbove(mod(t7.midi,12),R.midi+1),b=lowestAbove(mod(t3.midi,12),a+1);return[R,at(t7,a),at(t3,b)]}},
- rootless:{n:'Rootless',why:'The bass player covers the root, so the pianist plays 3–5–7–9 (or 7–9–3–5). These are the warm, modern jazz piano sounds. The 9th is added as colour even when the chord symbol doesn\'t show it.',
+ rootless:{l:5,n:'Rootless',why:'The bass player covers the root, so the pianist plays 3–5–7–9 (or 7–9–3–5). These are the warm, modern jazz piano sounds. The 9th is added as colour even when the chord symbol doesn\'t show it.',
   need:c=>tOf(c,/7/)&&tOf(c,/3/)&&!['m7b5','dim7'].includes(c.q.k),
   f:c=>{const t3=tOf(c,/3/),t5=tOf(c,/^5$|b5|#5/),t7=tOf(c,/7/),t9=tOf(c,/9/)||{d:'9',s:14,...spell(c.tones[0].li+1,c.rpc+14+60)};
    let prev=51;return[t3,t5,t7,t9].filter(Boolean).map(x=>{const m=lowestAbove(mod(x.midi,12),prev+1);prev=m;return at(x,m)})}},
- satb:{n:'SATB (four voices)',why:'Four singers: soprano, alto, tenor and bass, each in a school SATB range (soprano C4–G5, alto G3–D5, tenor C3–G4, bass E2–C4), with the gaps between the upper voices never wider than an octave. The foundation of hymns, chorales and classical harmony.',
+ satb:{l:3,n:'SATB (four voices)',why:'Four singers: soprano, alto, tenor and bass, each in a school SATB range (soprano C4–G5, alto G3–D5, tenor C3–G4, bass E2–C4), with the gaps between the upper voices never wider than an octave. The foundation of hymns, chorales and classical harmony.',
   f:c=>{const r=satbRealise([{root:S.root,q:S.q,inv:S.inv}],K);if(!r)return null;const v=r[0];return v.map((m,i)=>{const t=c.tones.find(t=>mod(t.midi,12)===mod(m,12));return at(t,m)})}}
 };
 function vlNotes(){const c=chord(),T=VTYPES[VL.type];if(T.need&&!T.need(c))return null;return T.f(c)}
@@ -3334,7 +3334,9 @@ function chordIssues(V,I){const out=[];
  if(!I.pcs.every(p=>have.includes(p)||(I.fifth&&p===mod(I.fifth.midi,12))||(I.pcs.length>4&&I.bassPc===mod(I.fifth.midi,12)&&I.c.tones.some(t=>/9/.test(t.d)&&mod(t.midi,12)===p))))out.push({sev:'error',rule:'missing',v:[],text:'A chord note is missing.'});
  if(have.some(p=>!I.pcs.includes(p)))out.push({sev:'error',rule:'wrong',v:[],text:'A note doesn\'t belong to this chord.'});
  return out}
-function checkSATB(S4,list){const I=list.map(ch=>chordInfo(ch,K)),iss=[],tagged=x=>x.map(e=>({...e,text:'<span class="c2src">strict SATB</span> '+e.text}));
+/* 0.50 V11 (re-tag 9): every rule is always checked; each finding carries the level where the rule is taught. Above the learner's level the finding is still shown, marked "comes at Level n". */
+const SATBLV={range:3,cross:3,overlap:3,space:3,parallel:3,contrary:3,wrong:3,bass:3,missing:3,leap:3,double:3,hidden:4,unequal:4,aug2:4,aug4:4,leap7:4,seventh:5,lt:5,cad64:5,aug6:6};
+function checkSATB(S4,list){const I=list.map(ch=>chordInfo(ch,K)),iss=[],tagged=x=>x.map(e=>{const lv=SATBLV[e.rule]||3,later=lv>S.level;return{...e,lvl:lv,later,text:'<span class="c2src">strict SATB</span> '+(later?`<span class="c2src">comes at Level ${lv}</span> `:'')+e.text}});
  S4.forEach((V,i)=>chordIssues(V,I[i]).forEach(e=>iss.push({...e,at:[i]})));
  for(let i=0;i<S4.length-1;i++)pairIssues(S4[i],S4[i+1],I[i],I[i+1]).forEach(e=>iss.push({...e,at:[i,i+1]}));
  return tagged(iss)}
