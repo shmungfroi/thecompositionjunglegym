@@ -2081,6 +2081,7 @@ function degColor(d){const n=degNum(d);if(n===1)return'var(--goldhi)';if(n===3||
 
 const LVN=['','First steps','Foundation','Developing','Intermediate','Senior','Advanced','Extension'];
 const LVMIG={4:2,5:4,6:5};
+function lvAt(A){return Math.max(S.level,Math.min(...A.map(x=>x.l||1)))}
 function lvlSet(l){S.level=l;try{localStorage.setItem('cjg_level',l)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}/* saved NSW Stage -> Level, once (Levels framework) */
 let S={root:'B',q:'m7',inv:0,level:5,inst:'piano',vi:0,key:null};
 function chordOf(root,qk,inv=0){
@@ -4010,14 +4011,14 @@ function c6Real(str,key){const r=realise(str,key);return r}
 const c6Step=L=>i=>{document.querySelectorAll('#climbDetail .bargrid .bar').forEach((b,j)=>b.classList.toggle('now',j===i));
  document.querySelectorAll('#climbDetail .c6n').forEach(n=>n.classList.remove('now'));const ch=L[i];if(ch){const n=document.getElementById('c6n'+c6Deg(ch,C6.key));if(n)n.classList.add('now')}};
 function c6PlayEx(){const ex=C6EX.find(x=>x.k===C6.ex),r=c6Real(c6Str(ex,C6.key),C6.key);playCols(r.sat,'climb',c6Step(r.L))}
-function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.filter(x=>x.l<=S.level&&x[mode]);
+function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.filter(x=>x.l<=lvAt(C6EX)&&x[mode]);
  if(!EX.find(x=>x.k===C6.ex))C6.ex=EX.find(x=>x.k==='full')?'full':EX[0].k;const ex=C6EX.find(x=>x.k===C6.ex),r=c6Real(c6Str(ex,key),key),L=r.L;
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  const lab=C6LAB[mode],nm=rn=>{const p=parseRoman(rn,key);return pretty(chordOf(p.root,p.q,0).sym)};
  const full=cadList(C6EX[1][mode],key);
  const fallTxt={p5:'a perfect 5th',d5:'a diminished 5th',other:'not a 5th (the lead-in)'};
  const pairs=ex.k==='full'||ex.k==='sev';
- const QL=C6Q.filter(q=>q.l<=S.level);
+ const QL=C6Q.filter(q=>q.l<=lvAt(C6Q));
  const W=C6.walk,wDone=W.length===8;
  $('climbDetail').innerHTML=`
  <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 6 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c6Key">${keySel}</select></label></div>
@@ -4077,7 +4078,7 @@ function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.f
   <div class="chips" style="margin-top:12px"><button class="mini gold" data-load="${C6EX[1][mode]}|${mode}">⤴ Start from the full circle in the Gym</button><button class="mini" data-openj>What happened in today's composition? Write it in your journal</button></div></section>`;
  withKey(key,()=>drawSATB($('c6Staff'),r.sat,L));
  $('c6Key').onchange=e=>{C6.key={...CKEYS[+e.target.value]};C6.walk=[0];C6.walkMsg='';renderClimb6()};setCrumb()}
-function c6QNew(){const keys=CKEYS.filter(k=>S.level>=3||k.mode==='maj'),key=rnd(keys),QL=C6Q.filter(q=>q.l<=S.level),i=Math.floor(Math.random()*QL.length);
+function c6QNew(){const keys=CKEYS.filter(k=>S.level>=3||k.mode==='maj'),key=rnd(keys),QL=C6Q.filter(q=>q.l<=lvAt(C6Q)),i=Math.floor(Math.random()*QL.length);
  const str=[0,...QL[i].d,0].map(d=>C6LAB[key.mode][d]).join(' '),r=realise(str,key);C6.quiz.q={i,key,sat:r.sat};C6.quiz.ans=null;playSat(r.sat)}
 function c6Walk(d){const key=C6.key,lab=C6LAB[key.mode],W=C6.walk,cur=W[W.length-1],want=mod(cur+3,7);
  const p=parseRoman(lab[d],key);play(voicing(chordOf(p.root,p.q,0)).map(x=>x.midi));
@@ -4127,13 +4128,13 @@ function c7Targets(key){return key.mode==='maj'?['ii','iii','IV','V','vi']:['III
 function c7Base(mode){return mode==='maj'?['I','vi','IV','ii','V','I']:['i','VI','iv','V','i']}
 function c7Built(mode){const out=[];c7Base(mode).forEach((rn,i)=>{if(C7.ins[mode+i])out.push('V7/'+rn);out.push(rn)});return out.join(' ')}
 function c7PlayEx(){const ex=C7EX.find(x=>x.k===C7.ex),r=realise(ex[C7.key.mode],C7.key);playCols(r.sat,'climb',i=>document.querySelectorAll('#c7Bars .bar').forEach((b,j)=>b.classList.toggle('now',j===i)))}
-function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.filter(x=>x.l<=S.level&&x[mode]);
+function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.filter(x=>x.l<=lvAt(C7EX)&&x[mode]);
  if(!EX.find(x=>x.k===C7.ex))C7.ex=EX[0].k;const ex=C7EX.find(x=>x.k===C7.ex),r=realise(ex[mode],key),L=r.L;
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  const tgt=c7Targets(key).map(t=>{const sd=parseRoman('V7/'+t,key),tc=parseRoman(t,key),ch={...sd,inv:0},nw=c7New(ch,key);return{t,sd,tc,nw}});
  const built=c7Built(mode),B=realise(built,key),iss=B.sat?withKey(key,()=>checkSATB(B.sat,B.L)):null,bErr=iss?iss.filter(e=>e.sev==='error'):[],bWarn=iss?iss.filter(e=>e.sev==='warn'):[];
  const base=c7Base(mode),nIns=Object.keys(C7.ins).filter(k=>k.startsWith(mode)&&C7.ins[k]).length;
- const quizL=C7EX.filter(x=>x.l<=S.level&&x.maj&&x.k!=='dec'&&x.k!=='lt');
+ const quizL=C7EX.filter(x=>x.l<=lvAt(C7EX)&&x.maj&&x.k!=='dec'&&x.k!=='lt');
  $('climbDetail').innerHTML=`
  <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 7 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c7Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Secondary dominants</h1>
@@ -4185,7 +4186,7 @@ function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.f
   <div class="chips" style="margin-top:12px"><button class="mini gold" data-load="${mode==='maj'?'I V7/vi vi V7/ii ii V7/V V I':'i V7/iv iv V7/VI VI V7 i'}|${mode}">⤴ Start from a phrase with two detours</button><button class="mini" data-openj>What story does it tell? Write it in your journal</button></div></section>`;
  withKey(key,()=>{drawSATB($('c7Staff'),r.sat,L);if(B.sat)drawSATB($('c7bStaff'),B.sat,B.L)});
  $('c7Key').onchange=e=>{C7.key={...CKEYS[+e.target.value]};renderClimb7()};setCrumb()}
-function c7QNew(){const keys=CKEYS.filter(k=>k.mode==='maj'),key=rnd(keys),L=C7EX.filter(x=>x.l<=S.level&&x.maj&&x.k!=='dec'&&x.k!=='lt'),x=rnd(L),r=realise(x.maj,key);C7.quiz.q={k:x.k,key,str:x.maj,sat:r.sat};C7.quiz.ans=null;playSat(r.sat)}
+function c7QNew(){const keys=CKEYS.filter(k=>k.mode==='maj'),key=rnd(keys),L=C7EX.filter(x=>x.l<=lvAt(C7EX)&&x.maj&&x.k!=='dec'&&x.k!=='lt'),x=rnd(L),r=realise(x.maj,key);C7.quiz.q={k:x.k,key,str:x.maj,sat:r.sat};C7.quiz.ans=null;playSat(r.sat)}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-c7ex],[data-c7play],[data-c7q],[data-c7a],[data-c7i],[data-c7b]');if(!t)return;const d=t.dataset;
  if(d.c7ex){C7.ex=d.c7ex;renderClimb7();c7PlayEx();return}
  if(d.c7play!==undefined){c7PlayEx();return}
@@ -4224,14 +4225,14 @@ const C8Q=[{k:'none',n:'Nothing borrowed (IV)',x:'IV',l:3},{k:'iv',n:'iv',x:'iv'
 const C8SW={maj:[[{r:'I'}],[{r:'vi'},{r:'bVI',l:4}],[{r:'IV'},{r:'iv',l:3},{r:'bII:1',l:6},{r:'It6',l:6}],[{r:'V'},{r:'bVII',l:3}],[{r:'I'}]],
  min:[[{r:'i'}],[{r:'VI'}],[{r:'iv'},{r:'IV',l:4},{r:'bII:1',l:6},{r:'It6',l:6}],[{r:'V'}],[{r:'i'},{r:'I',l:4}]]};
 const c8Rn=r=>r.replace(/b(?=[IVX])/g,'♭').replace(/:1$/,'⁶').replace(/:2$/,'⁶₄').replace(/^(It|Fr|Ger)6$/,'$1⁺⁶');
-function c8Choice(mode){const ch=C8SW[mode].map((alts,i)=>{const A=alts.filter(a=>(a.l||4)<=S.level);return(A[(C8.sw[mode+i]||0)%A.length]||A[0]).r});
+function c8Choice(mode){const ch=C8SW[mode].map((alts,i)=>{const A=alts.filter(a=>(a.l||1)<=S.level);return(A[(C8.sw[mode+i]||0)%A.length]||A[0]).r});
  const forced=/^(It6|bII:1)$/.test(ch[2]);if(forced)ch[3]=['V',mode==='maj'?'I:2 V':'i:2 V'][(C8.sw[mode+'f']||0)%2];return{ch,forced}}
 function c8Built(mode){return c8Choice(mode).ch.join(' ')}
 function c8NewNotes(ch,key){const set=c7Scale(key);return chordOf(ch.root,ch.q,0).tones.filter(t=>!set.includes(mod(t.midi,12)))}
 function c8Bars(L,key,id){return`<div class="bargrid c7grid" ${id?`id="${id}"`:''}>${L.map(c=>{const nw=c8NewNotes(c,key),f0=fnOf(c,key),f=nw.length&&!(MD_MAJOR&&f0==='MD')?'C':f0;const ch=chordOf(c.root,c.q,c.inv||0),aug=/\+6/.test(c.q);
   return`<div class="bar ${nw.length?'sec':''} ${f==='MD'?'md':''}" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><b>${aug?pretty(c.root)+'<small class="a6"> '+c.q.replace('+6','⁺⁶')+'</small>':pretty(ch.sym)+(c.inv?'/'+pretty(ch.bass.name):'')}</b><span>${c8Rn(c.rn)}</span>${nw.length?`<em class="nn">${nw.map(t=>`${pretty(t.name)} <i>${c7Sol(t.name,key)}</i>`).join(' · ')}</em>`:''}</div>`}).join('')}</div>${FNKEY}`}
 function c8PlayEx(){const ex=C8EX.find(x=>x.k===C8.ex),r=realise(ex[C8.key.mode],C8.key);playCols(r.sat,'climb',i=>document.querySelectorAll('#c8Bars .bar').forEach((b,j)=>b.classList.toggle('now',j===i)))}
-function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.filter(x=>x.l<=S.level&&x[mode]);
+function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.filter(x=>x.l<=lvAt(C8EX)&&x[mode]);
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  if(!EX.length){$('climbDetail').innerHTML=`<div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 8 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c8Key">${keySel}</select></label></div><h1 class="disp">Borrowed and chromatic chords</h1><p class="sub">At Stage 4 this climb starts in a major key. Choose a major key above, or move up to Stage 5 for minor-key colour.</p>`;$('c8Key').onchange=e=>{C8.key={...CKEYS[+e.target.value]};renderClimb8()};setCrumb();return}
  if(!EX.find(x=>x.k===C8.ex))C8.ex=EX[0].k;const ex=C8EX.find(x=>x.k===C8.ex),r=realise(ex[mode],key),L=r.L;
@@ -4240,7 +4241,7 @@ function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.f
  const built=c8Built(mode),B=realise(built,key),iss=B.sat?withKey(key,()=>checkSATB(B.sat,B.L)):null,bErr=iss?iss.filter(e=>e.sev==='error'):[],bWarn=iss?iss.filter(e=>e.sev==='warn'):[];
  const CH8=c8Choice(mode),nSw=CH8.ch.filter((r,i)=>r!==C8SW[mode][i][0].r).length;
  const a6=['It6','Fr6','Ger6'].map(rn=>{const p=parseRoman(rn,key);return{rn,p,t:chordOf(p.root,p.q,0).tones}});
- const N=parseRoman('bII',key),QL=C8Q.filter(q=>q.l<=S.level);
+ const N=parseRoman('bII',key),QL=C8Q.filter(q=>q.l<=lvAt(C8Q));
  $('climbDetail').innerHTML=`
  <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 8 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c8Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Borrowed and chromatic chords</h1>
@@ -4277,7 +4278,7 @@ function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.f
   </section>
   <section class="card"><h3>Try · ${mode==='maj'?'cloud it over':'let the light in'}<span class="sp"></span><button class="mini gold" data-c8b="play">▶ Play</button><button class="mini" data-load="${built}|${mode}">⤴ Gym</button></h3>
    <p class="note" style="margin:0 0 10px">A plain phrase in ${kn}. Tap a chord to swap it for a borrowed${S.level>=6?' or chromatic':''} version. The four voices are rewritten and the part-writing checker reads the result.</p>
-   <div class="c7build">${C8SW[mode].map((alts,i)=>{const CH=c8Choice(mode),A=alts.filter(a=>(a.l||4)<=S.level),cur=CH.ch[i],f64=i===3&&CH.forced,p=parseRoman(cur.split(' ').pop().replace(/:\d/,''),key),sw=f64||(A.length>1),on=f64?cur!=='V':cur!==A[0].r;
+   <div class="c7build">${C8SW[mode].map((alts,i)=>{const CH=c8Choice(mode),A=alts.filter(a=>(a.l||1)<=S.level),cur=CH.ch[i],f64=i===3&&CH.forced,p=parseRoman(cur.split(' ').pop().replace(/:\d/,''),key),sw=f64||(A.length>1),on=f64?cur!=='V':cur!==A[0].r;
      return`${i?'<i>→</i>':''}<button class="c7plus c8sw ${on?'on':''}" ${f64?'data-c8f="1"':sw?`data-c8s="${i}"`:'disabled'}>${cur.split(' ').map(c8Rn).join(' → ')}<small>${/\+6/.test(p.q)?pretty(p.root)+' '+p.q.replace('+6','⁺⁶'):pretty(chordOf(p.root,p.q,0).sym)}${sw?' ⟲':''}</small></button>`}).join('')}</div>
    ${CH8.forced?'<p class="note" style="margin:8px 0 0">A Neapolitan or augmented 6th has one job: to lead into V. It can go straight to V, or through the cadential 6/4 (I⁶₄ → V), the other standard path in common-practice harmony. Tap ⟲ to choose.</p>':''}
    ${B.sat?c8Bars(B.L,key,'c8bBars'):''}
@@ -4294,7 +4295,7 @@ function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.f
   <div class="chips" style="margin-top:12px"><button class="mini gold" data-load="${mode==='maj'?'I vi IV iv I bVI bVII I':'i VI iv V i iv V I'}|${mode}">⤴ Start from a phrase with borrowed chords</button><button class="mini" data-openj>What do you want to say? Write it in your journal</button></div></section>`;
  withKey(key,()=>{drawSATB($('c8Staff'),r.sat,L);if(B.sat)drawSATB($('c8bStaff'),B.sat,B.L)});
  $('c8Key').onchange=e=>{C8.key={...CKEYS[+e.target.value]};renderClimb8()};setCrumb()}
-function c8QNew(){const key=rnd(CKEYS.filter(k=>k.mode==='maj')),QL=C8Q.filter(q=>q.l<=S.level),q=rnd(QL),r=realise('I '+q.x+' I',key);C8.quiz.q={k:q.k,key,sat:r.sat};C8.quiz.ans=null;playSat(r.sat)}
+function c8QNew(){const key=rnd(CKEYS.filter(k=>k.mode==='maj')),QL=C8Q.filter(q=>q.l<=lvAt(C8Q)),q=rnd(QL),r=realise('I '+q.x+' I',key);C8.quiz.q={k:q.k,key,sat:r.sat};C8.quiz.ans=null;playSat(r.sat)}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-c8ex],[data-c8play],[data-c8q],[data-c8a],[data-c8s],[data-c8b],[data-c8f]');if(!t)return;const d=t.dataset;
  if(d.c8f!==undefined){const k=C8.key.mode+'f';C8.sw[k]=(C8.sw[k]||0)+1;renderClimb8();const r=realise(c8Built(C8.key.mode),C8.key);if(r.sat)playSat(r.sat);logIt('borrowed chords: '+c8Built(C8.key.mode));return}
  if(d.c8ex){C8.ex=d.c8ex;renderClimb8();c8PlayEx();return}
