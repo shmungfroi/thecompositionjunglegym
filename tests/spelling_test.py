@@ -634,7 +634,7 @@ CLIMBS_JS = r"""async()=>{
   const rn=[...document.querySelectorAll('#climbDetail svg text.rnl')].map(e=>({s:e.dataset.rnraw,b:e.dataset.sym||''}));
   DOM.push({ctx:CTX,key:key?{k:key.k,mode:key.mode}:null,bars,rn})};
  const R=(key)=>{try{renderClimbDetail()}catch(e){ERR.push(CTX+': '+String(e).slice(0,200))}scrape(key)};
- const LV=[1,2,3,4,5,6,7];ROOM='climbs';
+ const LV=window.__LV||[1,2,3,4,5,6,7];/* 0.50: a climb opened below its range shows its first level (re-tag table 5 ranges: c6 3, c7 4, c8 3, c9 4, c10 6, c11 2) */ROOM='climbs';
  const quiz=(fn,n)=>{for(let i=0;i<n;i++){try{fn()}catch(e){ERR.push(CTX+' quiz: '+String(e).slice(0,160))}stopAll()}};
  for(const lv of LV){S.level=lv;
   // climb 3
@@ -647,33 +647,33 @@ CLIMBS_JS = r"""async()=>{
    for(let v=0;v<16;v++){C5.v={inv:!!(v&1),pedal:!!(v&2),iv:!!(v&4),sus:!!(v&8)};CTX=`c5 L${lv} ${keyName(key)} ${f.k} rot${rot} v${v}`;if(v===0)R(f.k==='aeol'?{k:(key.k+9)%12,mode:'min'}:key);else{const{list}=c5List();voiceProg(list)}}}}
   C5.v={inv:false,pedal:false,iv:false,sus:false};
   // climb 6
-  CL.open=5;for(const key of CKEYS){C6.key={...key};C6.walk=[0];for(const x of C6EX.filter(x=>x.l<=lv&&x[key.mode])){C6.ex=x.k;CTX=`c6 L${lv} ${keyName(key)} ${x.k}`;R(key)}
+  CL.open=5;for(const key of CKEYS){C6.key={...key};C6.walk=[0];for(const x of C6EX.filter(x=>x.l<=Math.max(lv,3)&&x[key.mode])){C6.ex=x.k;CTX=`c6 L${lv} ${keyName(key)} ${x.k}`;R(key)}
    CTX=`c6 L${lv} ${keyName(key)} walk`;for(let s=0;s<7;s++){try{c6Walk(mod(C6.walk[C6.walk.length-1]+3,7))}catch(e){ERR.push(CTX+': '+e)}}stopAll();R(key);C6.walk=[0]}
   CTX=`c6 L${lv} quiz`;quiz(c6QNew,40);
   // climb 7
-  CL.open=6;for(const key of CKEYS){C7.key={...key};for(const x of C7EX.filter(x=>x.l<=lv&&x[key.mode])){C7.ex=x.k;CTX=`c7 L${lv} ${keyName(key)} ${x.k}`;R(key)}
+  CL.open=6;for(const key of CKEYS){C7.key={...key};for(const x of C7EX.filter(x=>x.l<=Math.max(lv,4)&&x[key.mode])){C7.ex=x.k;CTX=`c7 L${lv} ${keyName(key)} ${x.k}`;R(key)}
    const n=c7Base(key.mode).length;for(let m=0;m<(1<<n);m++){C7.ins={};for(let i=0;i<n;i++)if(m&(1<<i))C7.ins[key.mode+i]=1;CTX=`c7 L${lv} ${keyName(key)} built ${c7Built(key.mode)}`;realise(c7Built(key.mode),key)}C7.ins={}}
   CTX=`c7 L${lv} quiz`;quiz(c7QNew,40);
   // climb 8
-  CL.open=7;for(const key of CKEYS){C8.key={...key};for(const x of C8EX.filter(x=>x.l<=lv&&x[key.mode])){C8.ex=x.k;CTX=`c8 L${lv} ${keyName(key)} ${x.k}`;R(key)}
-   const md=key.mode,sizes=C8SW[md].map(a=>a.filter(z=>(z.l||4)<=lv).length);
+  CL.open=7;for(const key of CKEYS){C8.key={...key};for(const x of C8EX.filter(x=>x.l<=Math.max(lv,3)&&x[key.mode])){C8.ex=x.k;CTX=`c8 L${lv} ${keyName(key)} ${x.k}`;R(key)}
+   const md=key.mode,sizes=C8SW[md].map(a=>a.filter(z=>(z.l||1)<=lv).length);
    const combos=sizes.reduce((acc,n)=>acc.flatMap(c=>[...Array(n).keys()].map(i=>c.concat([i]))),[[]]);
    for(const c of combos)for(const f of [0,1]){C8.sw={};c.forEach((i,j)=>C8.sw[md+j]=i);C8.sw[md+'f']=f;CTX=`c8 L${lv} ${keyName(key)} built ${c8Built(md)}`;realise(c8Built(md),key)}C8.sw={}}
   CTX=`c8 L${lv} quiz`;quiz(c8QNew,40);
   // climb 9
-  CL.open=8;for(const key of C9KEYS){C9.key={...key};for(const x of C9EX.filter(x=>x.l<=Math.max(lv,5)&&x[key.mode]))for(const vt of ['guide','shell','rootless'])for(const st of ['A','B']){C9.ex=x.k;C9.vt=vt;C9.start=st;CTX=`c9 L${lv} ${keyName(key)} ${x.k} ${vt} ${st}`;R(key)}}
+  CL.open=8;for(const key of C9KEYS){C9.key={...key};for(const x of C9EX.filter(x=>x.l<=Math.max(lv,4)&&x[key.mode]))for(const vt of ['guide','shell','rootless'])for(const st of ['A','B']){C9.ex=x.k;C9.vt=vt;C9.start=st;CTX=`c9 L${lv} ${keyName(key)} ${x.k} ${vt} ${st}`;R(key)}}
   CTX=`c9 L${lv} quiz`;quiz(c9QNew,40);
   // climb 10
-  CL.open=9;for(const key of C9KEYS){C10.key={...key};for(const x of C10EX.filter(x=>x.l<=Math.max(lv,5)&&x[key.mode]))for(const sub of [false,true])for(const vt of ['guide','shell','rootless']){C10.ex=x.k;C10.sub=sub;C10.vt=vt;CTX=`c10 L${lv} ${keyName(key)} ${x.k} sub${+sub} ${vt}`;R(key)}
+  CL.open=9;for(const key of C9KEYS){C10.key={...key};for(const x of C10EX.filter(x=>x.l<=Math.max(lv,6)&&x[key.mode]))for(const sub of [false,true])for(const vt of ['guide','shell','rootless']){C10.ex=x.k;C10.sub=sub;C10.vt=vt;CTX=`c10 L${lv} ${keyName(key)} ${x.k} sub${+sub} ${vt}`;R(key)}
    for(let m=0;m<16;m++){C10.sw={};for(let i=0;i<4;i++)if(m&(1<<i))C10.sw[i+1]=1;CTX=`c10 L${lv} ${keyName(key)} built ${c10Built()}`;R(key)}C10.sw={}}
   CTX=`c10 L${lv} quiz`;quiz(c10QNew,40);
   // climb 11
-  CL.open=10;for(const key of C11KEYS){C11.key={...key};for(const v of C11V.filter(v=>v.l<=Math.max(lv,4))){C11.ver=v.k;CTX=`c11 L${lv} ${keyName(key)} ${v.k}`;R(key);c11Voice(v.r.split(' ').map(r=>c11Ch(r,key)),c11Mel(key))}
+  CL.open=10;for(const key of C11KEYS){C11.key={...key};for(const v of C11V.filter(v=>v.l<=Math.max(lv,2))){C11.ver=v.k;CTX=`c11 L${lv} ${keyName(key)} ${v.k}`;R(key);c11Voice(v.r.split(' ').map(r=>c11Ch(r,key)),c11Mel(key))}
    CTX=`c11 L${lv} ${keyName(key)} vocabulary`;[2,5,6].filter(l=>l<=lv).forEach(l=>C11VOC[l].forEach(r=>c11Ch(r,key)))}
   // climb 12
   CL.open=11;for(const tab of ['vamp','plane','med','static']){C12.tab=tab;CTX=`c12 L${lv} ${tab}`;R(null)}
  }
- S.level=6;const C12OUT={vamp:[],plane:[],cue:[],tin:[]};
+ S.level=7;const C12OUT={vamp:[],plane:[],cue:[],tin:[]};
  for(const m of C12MODES)for(const t of [0,2,4,5,7,9]){C12.mode=m.k;C12.tonic=t;const v=c12Vamp();C12OUT.vamp.push({mode:m.k,toks:m.r.split(' '),key:{k:t,mode:m.mode},L:v.L.map(nm),cols:v.cols,tn:v.tn,cn:v.cn.name,ch:m.ch});C12.tab='vamp';CTX=`c12 vamp ${m.k} ${t}`;R(null)}
  for(const sh of C12SHAPES)for(const pl of ['real','dia'])for(let mi=0;mi<C12MEL.length;mi++){C12.shape=sh.k;C12.plane=pl;C12.mel=mi;
   C12OUT.plane.push({shape:sh.k,plane:pl,mel:mi,ch:c12Plane().map(c=>({n:c.n,names:c.n.map((m,j)=>spell(c.li[j],m).name),mel:c.mel}))});C12.tab='plane';CTX=`c12 plane ${sh.k} ${pl} ${mi}`;R(null)}
@@ -1015,11 +1015,18 @@ async def main():
         await collect_scan(pg, 'Chords room (inversions; guitar, ukulele, bass)')
         COUNT['G Chords room views scanned (every inversion on piano; guitar, ukulele, bass)'] = await pg.evaluate("()=>window.__NV||0")
         check_chords_room(R)
-        await pg.goto('http://app/index.html#climbs/3')
-        await pg.wait_for_timeout(1200)
-        await pg.evaluate(SCAN_JS)
-        C = await pg.evaluate(CLIMBS_JS)
-        await collect_scan(pg, 'Climbs')
+        # 0.50: one fresh page per level (seven levels in one page ran the renderer out of memory)
+        C = {'CAP': [], 'DOM': [], 'ERR': [], 'C12': None}
+        for lv in (1, 2, 3, 4, 5, 6, 7):
+            await pg.goto('http://app/index.html#climbs/3')
+            await pg.wait_for_timeout(1200)
+            await pg.evaluate(SCAN_JS)
+            await pg.evaluate(f"()=>{{window.__LV=[{lv}]}}")
+            Cl = await pg.evaluate(CLIMBS_JS)
+            await collect_scan(pg, f'Climbs L{lv}')
+            for k in ('CAP', 'DOM', 'ERR'):
+                C[k] += Cl[k]
+            C['C12'] = C['C12'] or Cl['C12']
         COUNT['climb progressions captured'] = len([c for c in C['CAP'] if c['t'] in ('real', 'list', 'jazz')])
         COUNT['climb renders'] = len(C['DOM'])
         check_climbs(C)

@@ -1927,29 +1927,29 @@ const ROOTS=['C','C#','Db','D','D#','Eb','E','F','F#','Gb','G','G#','Ab','A','A#
 // degree label -> semitones from root
 const DEG={'1':0,'b2':1,'2':2,'b3':3,'3':4,'4':5,'#4':6,'b5':6,'5':7,'#5':8,'#6':10,'6':9,'bb7':9,'b7':10,'7':11,'9':14,'b9':13,'11':17,'13':21};
 const Q=[
- {k:'5',n:'power chord',d:['1','5'],l:1,s:2,t:'Just the root and the 5th, with no 3rd, so it is neither major nor minor. With distortion it sounds huge but stays clear: the engine of rock, punk, grunge and metal riffs.'},
- {k:'',n:'major',d:['1','3','5'],l:1,s:1,t:'The bright, settled triad that most music calls home. Root, major 3rd and perfect 5th: the 3rd decides its open, sunny colour.'},
- {k:'m',n:'minor',d:['1','b3','5'],l:1,s:1,t:'The major triad with its 3rd lowered a semitone. That one note moves the colour from open to inward: reflective, serious, sometimes tender.'},
- {k:'7',n:'dominant seventh',d:['1','3','5','b7'],l:2,s:4,t:'A major triad with a minor 7th on top. The 3rd and 7th form a tritone that wants to resolve, so this chord pulls strongly to the chord a 5th below: the engine of the perfect cadence, and the home chord of the blues.'},
- {k:'sus2',n:'suspended second',d:['1','2','5'],l:2,s:3,t:'No 3rd at all: the 2nd stands in its place, so the chord is neither major nor minor. Open, airy and unresolved; loved in pop, rock and film.'},
- {k:'sus4',n:'suspended fourth',d:['1','4','5'],l:2,s:3,t:'The 4th replaces the 3rd and leans on it, wanting to fall back down a step. Historically a suspension held over from the chord before; now also a colour of its own.'},
- {k:'dim',n:'diminished',d:['1','b3','b5'],l:3,s:5,t:'Two stacked minor 3rds. Tense and unstable, it rarely stays long; it usually acts as a dominant, leading up by step into the chord that follows.'},
- {k:'aug',n:'augmented',d:['1','3','#5'],l:3,s:5,t:'Two stacked major 3rds. On a piano (equal temperament) it is symmetrical: from the top note up to the root again is a diminished 4th, which sounds the same as a major 3rd, so its three notes split the octave into three equal parts and every inversion sounds like another augmented triad in root position. Dreamlike, it hangs in the air; often a passing chord that pushes a 5th upward by a semitone.'},
- {k:'maj7',n:'major seventh',d:['1','3','5','7'],l:3,s:6,t:'A major triad with a major 7th a semitone below the octave. That clash makes it lush and bittersweet rather than plain: the sound of bossa nova, neo-soul and late-night ballads.'},
- {k:'m7',n:'minor seventh',d:['1','b3','5','b7'],l:3,s:6,t:'A minor triad with a minor 7th: soft, mellow and smooth. A staple of jazz, soul, funk and modal harmony. Its function depends entirely on the key and the chords around it.'},
- {k:'6',n:'major sixth',d:['1','3','5','6'],l:4,s:7,t:'A major triad with an added 6th: sweet, vintage and stable. Swing endings, early rock and roll and film-musical finales.'},
- {k:'add9',n:'added ninth',d:['1','3','5','9'],l:4,s:8,t:'A major triad with a 9th added but no 7th. Shimmering and open; a favourite of guitar-based pop and worship music.'},
- {k:'madd9',n:'minor added ninth',d:['1','b3','5','9'],l:4,s:8,t:'A minor triad with an added 9th and no 7th. Wistful and open: a favourite of singer-songwriters and film scores.'},
- {k:'m6',n:'minor sixth',d:['1','b3','5','6'],l:4,s:7,t:'A minor triad with a major 6th: dark but with a glint of light. Tango, film noir and gypsy jazz; often the home chord of a minor key in jazz.'},
- {k:'m7b5',n:'half-diminished seventh',d:['1','b3','b5','b7'],l:4,s:10,t:'A diminished triad with a minor 7th. The ii chord of a minor key: it prepares the dominant in a minor ii–V–i, and its uneasy colour suits suspense.'},
- {k:'dim7',n:'diminished seventh',d:['1','b3','b5','bb7'],l:5,s:11,t:'Three stacked minor 3rds. On a piano (equal temperament) it is symmetrical: from the 7th up to the root again is an augmented 2nd, which sounds the same as a minor 3rd, so its four notes split the octave into four equal parts and every inversion sounds like another diminished 7th in root position. Respelled, the same four sounds are the leading-note 7th (vii°7) of four different minor keys a minor 3rd apart, so it can pivot to many keys. Highly unstable and dramatic; a favourite of Romantic opera and silent-film villains.'},
- {k:'9',n:'dominant ninth',d:['1','3','5','b7','9'],l:5,s:12,t:'A dominant 7th with a 9th on top: fuller and funkier. It still pulls to the chord a 5th below. Funk, soul and blues bands live on it.'},
- {k:'maj9',n:'major ninth',d:['1','3','5','7','9'],l:5,s:12,t:'A major 7th with a 9th added: the most luxurious tonic chord in jazz and neo-soul.'},
- {k:'m9',n:'minor ninth',d:['1','b3','5','b7','9'],l:5,s:12,t:'A minor 7th with a 9th: warm, smoky, modal. The opening chord of countless jazz and R&B grooves.'},
+ {k:'5',n:'power chord',d:['1','5'],l:1,stp:2,t:'Just the root and the 5th, with no 3rd, so it is neither major nor minor. With distortion it sounds huge but stays clear: the engine of rock, punk, grunge and metal riffs.'},
+ {k:'',n:'major',d:['1','3','5'],l:1,stp:1,t:'The bright, settled triad that most music calls home. Root, major 3rd and perfect 5th: the 3rd decides its open, sunny colour.'},
+ {k:'m',n:'minor',d:['1','b3','5'],l:1,stp:1,t:'The major triad with its 3rd lowered a semitone. That one note moves the colour from open to inward: reflective, serious, sometimes tender.'},
+ {k:'7',n:'dominant seventh',d:['1','3','5','b7'],l:2,stp:4,t:'A major triad with a minor 7th on top. The 3rd and 7th form a tritone that wants to resolve, so this chord pulls strongly to the chord a 5th below: the engine of the perfect cadence, and the home chord of the blues.'},
+ {k:'sus2',n:'suspended second',d:['1','2','5'],l:2,stp:3,t:'No 3rd at all: the 2nd stands in its place, so the chord is neither major nor minor. Open, airy and unresolved; loved in pop, rock and film.'},
+ {k:'sus4',n:'suspended fourth',d:['1','4','5'],l:2,stp:3,t:'The 4th replaces the 3rd and leans on it, wanting to fall back down a step. Historically a suspension held over from the chord before; now also a colour of its own.'},
+ {k:'dim',n:'diminished',d:['1','b3','b5'],l:3,stp:5,t:'Two stacked minor 3rds. Tense and unstable, it rarely stays long; it usually acts as a dominant, leading up by step into the chord that follows.'},
+ {k:'aug',n:'augmented',d:['1','3','#5'],l:3,stp:5,t:'Two stacked major 3rds. On a piano (equal temperament) it is symmetrical: from the top note up to the root again is a diminished 4th, which sounds the same as a major 3rd, so its three notes split the octave into three equal parts and every inversion sounds like another augmented triad in root position. Dreamlike, it hangs in the air; often a passing chord that pushes a 5th upward by a semitone.'},
+ {k:'maj7',n:'major seventh',d:['1','3','5','7'],l:3,stp:6,t:'A major triad with a major 7th a semitone below the octave. That clash makes it lush and bittersweet rather than plain: the sound of bossa nova, neo-soul and late-night ballads.'},
+ {k:'m7',n:'minor seventh',d:['1','b3','5','b7'],l:3,stp:6,t:'A minor triad with a minor 7th: soft, mellow and smooth. A staple of jazz, soul, funk and modal harmony. Its function depends entirely on the key and the chords around it.'},
+ {k:'6',n:'major sixth',d:['1','3','5','6'],l:4,stp:7,t:'A major triad with an added 6th: sweet, vintage and stable. Swing endings, early rock and roll and film-musical finales.'},
+ {k:'add9',n:'added ninth',d:['1','3','5','9'],l:4,stp:8,t:'A major triad with a 9th added but no 7th. Shimmering and open; a favourite of guitar-based pop and worship music.'},
+ {k:'madd9',n:'minor added ninth',d:['1','b3','5','9'],l:4,stp:8,t:'A minor triad with an added 9th and no 7th. Wistful and open: a favourite of singer-songwriters and film scores.'},
+ {k:'m6',n:'minor sixth',d:['1','b3','5','6'],l:4,stp:7,t:'A minor triad with a major 6th: dark but with a glint of light. Tango, film noir and gypsy jazz; often the home chord of a minor key in jazz.'},
+ {k:'m7b5',n:'half-diminished seventh',d:['1','b3','b5','b7'],l:4,stp:10,t:'A diminished triad with a minor 7th. The ii chord of a minor key: it prepares the dominant in a minor ii–V–i, and its uneasy colour suits suspense.'},
+ {k:'dim7',n:'diminished seventh',d:['1','b3','b5','bb7'],l:5,stp:11,t:'Three stacked minor 3rds. On a piano (equal temperament) it is symmetrical: from the 7th up to the root again is an augmented 2nd, which sounds the same as a minor 3rd, so its four notes split the octave into four equal parts and every inversion sounds like another diminished 7th in root position. Respelled, the same four sounds are the leading-note 7th (vii°7) of four different minor keys a minor 3rd apart, so it can pivot to many keys. Highly unstable and dramatic; a favourite of Romantic opera and silent-film villains.'},
+ {k:'9',n:'dominant ninth',d:['1','3','5','b7','9'],l:5,stp:12,t:'A dominant 7th with a 9th on top: fuller and funkier. It still pulls to the chord a 5th below. Funk, soul and blues bands live on it.'},
+ {k:'maj9',n:'major ninth',d:['1','3','5','7','9'],l:5,stp:12,t:'A major 7th with a 9th added: the most luxurious tonic chord in jazz and neo-soul.'},
+ {k:'m9',n:'minor ninth',d:['1','b3','5','b7','9'],l:5,stp:12,t:'A minor 7th with a 9th: warm, smoky, modal. The opening chord of countless jazz and R&B grooves.'},
  {k:'It+6',n:'Italian augmented sixth',d:['1','3','#6'],l:9,t:'le, do and fi: the augmented 6th between le and fi expands outward to so.'},
  {k:'Fr+6',n:'French augmented sixth',d:['1','3','#4','#6'],l:9,t:'le, do, re and fi: the Italian sixth plus re.'},
  {k:'Ger+6',n:'German augmented sixth',d:['1','3','5','#6'],l:9,t:'le, do, ma and fi: sounds like a dominant 7th, but le falls and fi rises a semitone to so. The chord moves to V, often through I⁶₄ first.'},
- {k:'7sus4',n:'dominant seventh suspended fourth',d:['1','4','5','b7'],l:4,s:9,t:'A dominant 7th with the 4th in place of the 3rd. It delays the pull of the dominant; often resolves to a plain 7th before landing.'}
+ {k:'7sus4',n:'dominant seventh suspended fourth',d:['1','4','5','b7'],l:4,stp:9,t:'A dominant 7th with the 4th in place of the 3rd. It delays the pull of the dominant; often resolves to a plain 7th before landing.'}
 ];
 const ALIAS={'5':'5','':'', 'M':'', 'maj':'', 'm':'m','min':'m','-':'m','7':'7','dom7':'7','sus2':'sus2','sus4':'sus4','sus':'sus4','dim':'dim','°':'dim','o':'dim','aug':'aug','+':'aug','maj7':'maj7','M7':'maj7','Δ':'maj7','Δ7':'maj7','ma7':'maj7','m7':'m7','min7':'m7','-7':'m7','6':'6','add9':'add9','madd9':'madd9','m(add9)':'madd9','m6':'m6','m7b5':'m7b5','ø':'m7b5','ø7':'m7b5','min7b5':'m7b5','dim7':'dim7','°7':'dim7','o7':'dim7','9':'9','maj9':'maj9','M9':'maj9','m9':'m9','min9':'m9','7sus4':'7sus4','7sus':'7sus4'};
 const mod=(a,n)=>((a%n)+n)%n;
@@ -3427,23 +3427,23 @@ const KS={tab:'scales',tonic:'C',sc:'maj',desc:false,inst:'piano',clef:'treble',
 const degSemi=d=>{const n=parseInt(d.replace(/[#b]/g,''));let a=0;for(const ch of d.replace(/\d/g,''))a+=ch==='#'?1:-1;return NAT[(n-1)%7]+a+12*Math.floor((n-1)/7)};
 function degPretty(d){return d.replace(/bb/g,'𝄫').replace(/##/g,'𝄪').replace(/b/g,'♭').replace(/#/g,'♯')}
 const SCALES=[
- {k:'maj',n:'Major',a:'Ionian mode',g:'Major & minor',l:1,s:2,d:['1','2','3','4','5','6','7'],sol:'d r m f s l t',pk:[0,0],t:'The scale most Western music calls home. Two identical four-note halves (tetrachords) joined by a whole tone; the semitones between mi–fa and ti–do give it its pull toward do.'},
- {k:'nmin',n:'Natural minor',a:'Aeolian mode',g:'Major & minor',l:2,s:4,d:['1','2','b3','4','5','b6','b7'],sol:'l t d r m f s',pk:[2,3],ch:null,t:'The relative minor: the same notes as the major scale, but home is la. Darker and more inward. With no leading note, it sounds folk-like, modal and unresolved.'},
- {k:'hmin',n:'Harmonic minor',g:'Major & minor',l:3,s:6,d:['1','2','b3','4','5','b6','7'],sol:'l t d r m f si',pk:[2,3],ch:['7'],t:'Natural minor with the 7th raised (so becomes si). That gives minor keys a leading note and a major V chord, but leaves an augmented 2nd between fa and si: the "exotic" sound of Baroque laments and film villains.'},
- {k:'mmin',n:'Melodic minor (classical)',g:'Major & minor',l:3,s:6,d:['1','2','b3','4','5','6','7'],sol:'l t d r m fi si',desc:{d:['1','b7','b6','5','4','b3','2','1'],sol:'l s f m r d t l'},pk:[2,3],ch:['6','7'],t:'Raises both the 6th and 7th going up (fi, si) to smooth out the augmented 2nd, then falls as the natural minor. Jazz players use the rising form in both directions.'},
- {k:'ion',n:'Ionian',a:'= the major scale',g:'Modes',l:3,s:7,d:['1','2','3','4','5','6','7'],sol:'d r m f s l t',pk:[0,0],t:'The mode on do: the major scale under its modal name. Compare every other mode against it.'},
- {k:'dor',n:'Dorian',a:'mode on re',g:'Modes',l:3,s:7,d:['1','2','b3','4','5','6','b7'],sol:'r m f s l t d',pk:[6,10],ch:['6'],t:'A minor mode with a raised 6th. That one brighter note gives it a cool, soulful, folk-rock colour: minor but not sad.'},
- {k:'phr',n:'Phrygian',a:'mode on mi',g:'Modes',l:4,s:8,d:['1','b2','b3','4','5','b6','b7'],sol:'m f s l t d r',pk:[5,8],ch:['b2'],t:'A minor mode with a lowered 2nd right above home. That semitone gives it a dark, Spanish or metal edge.'},
- {k:'lyd',n:'Lydian',a:'mode on fa',g:'Modes',l:4,s:8,d:['1','2','3','#4','5','6','7'],sol:'f s l t d r m',pk:[4,7],ch:['#4'],t:'A major mode with a raised 4th. Bright, floating and dreamlike: a favourite of film composers for wonder and flight.'},
- {k:'mix',n:'Mixolydian',a:'mode on so',g:'Modes',l:3,s:7,d:['1','2','3','4','5','6','b7'],sol:'s l t d r m f',pk:[3,5],ch:['b7'],t:'A major mode with a lowered 7th. Bluesy, rocking and relaxed; the ♭VII chord is its signature.'},
- {k:'loc',n:'Locrian',a:'mode on ti',g:'Modes',l:5,s:10,d:['1','b2','b3','4','b5','b6','b7'],sol:'t d r m f s l',pk:[1,1],ch:['b5'],t:'The only mode whose home chord is diminished (a ♭5 above the tonic). Unstable and rarely home for long, though heavy metal uses its colour.'},
- {k:'mpent',n:'Major pentatonic',g:'Pentatonic & blues',l:1,s:1,d:['1','2','3','5','6'],sol:'d r m s l',pk:[0,0],t:'Five notes, no semitones: the major scale without fa and ti. Found in folk music on every continent; impossible to sound "wrong", so ideal for first improvisations.'},
- {k:'npent',n:'Minor pentatonic',g:'Pentatonic & blues',l:2,s:3,d:['1','b3','4','5','b7'],sol:'l d r m s',pk:[2,3],t:'The same five notes as the major pentatonic, with la as home. The backbone of blues, rock and pop guitar solos.'},
- {k:'blues',n:'Blues scale',g:'Pentatonic & blues',l:2,s:5,d:['1','b3','4','b5','5','b7'],sol:'l d r ma m s',pk:[2,3],ch:['b5'],t:'The minor pentatonic plus the "blue note", a ♭5 squeezed between 4 and 5. Bend into it, slide through it, never stop on it for long.'},
- {k:'whole',n:'Whole-tone',g:'Beyond',l:4,s:9,d:['1','2','3','#4','#5','b7'],sol:'d r m fi si ta',pk:null,t:'Six notes, all a whole tone apart. With no semitones there is no pull to any note, so it floats: Debussy, dream sequences, the moment the harp shimmers.'},
- {k:'chrom',n:'Chromatic',g:'Beyond',l:4,s:9,d:['1','#1','2','#2','3','4','#4','5','#5','6','#6','7'],sol:'d di r ri m f fi s si l li t',desc:{d:['1','7','b7','6','b6','5','b5','4','3','b3','2','b2','1'],sol:'d t ta l le s se f m ma r ra d'},pk:[0,0],t:'All twelve notes. By convention it is spelled with sharps going up and flats coming down.'},
- {k:'phrd',n:'Phrygian dominant',a:'5th mode of harmonic minor',g:'Beyond',l:5,s:11,d:['1','b2','3','4','5','b6','b7'],sol:'m f si l t d r',pk:[5,8],ch:['b2','3'],t:'Harmonic minor starting on its 5th (mi). The ♭2 and major 3rd together give the Flamenco, klezmer and Middle-Eastern-flavoured sound.'},
- {k:'oct',n:'Octatonic',a:'semitone–tone diminished',us:'half–whole diminished',g:'Beyond',l:5,s:12,d:['1','b2','#2','3','#4','5','6','b7'],sol:'d ra ri m fi s l ta',pk:null,t:'Eight notes alternating semitones and whole tones. Symmetrical and tense: Stravinsky, Bartók, Messiaen and jazz players over dominant 7♭9 chords.'}
+ {k:'maj',n:'Major',a:'Ionian mode',g:'Major & minor',l:1,stp:2,d:['1','2','3','4','5','6','7'],sol:'d r m f s l t',pk:[0,0],t:'The scale most Western music calls home. Two identical four-note halves (tetrachords) joined by a whole tone; the semitones between mi–fa and ti–do give it its pull toward do.'},
+ {k:'nmin',n:'Natural minor',a:'Aeolian mode',g:'Major & minor',l:2,stp:4,d:['1','2','b3','4','5','b6','b7'],sol:'l t d r m f s',pk:[2,3],ch:null,t:'The relative minor: the same notes as the major scale, but home is la. Darker and more inward. With no leading note, it sounds folk-like, modal and unresolved.'},
+ {k:'hmin',n:'Harmonic minor',g:'Major & minor',l:3,stp:6,d:['1','2','b3','4','5','b6','7'],sol:'l t d r m f si',pk:[2,3],ch:['7'],t:'Natural minor with the 7th raised (so becomes si). That gives minor keys a leading note and a major V chord, but leaves an augmented 2nd between fa and si: the "exotic" sound of Baroque laments and film villains.'},
+ {k:'mmin',n:'Melodic minor (classical)',g:'Major & minor',l:3,stp:6,d:['1','2','b3','4','5','6','7'],sol:'l t d r m fi si',desc:{d:['1','b7','b6','5','4','b3','2','1'],sol:'l s f m r d t l'},pk:[2,3],ch:['6','7'],t:'Raises both the 6th and 7th going up (fi, si) to smooth out the augmented 2nd, then falls as the natural minor. Jazz players use the rising form in both directions.'},
+ {k:'ion',n:'Ionian',a:'= the major scale',g:'Modes',l:3,stp:7,d:['1','2','3','4','5','6','7'],sol:'d r m f s l t',pk:[0,0],t:'The mode on do: the major scale under its modal name. Compare every other mode against it.'},
+ {k:'dor',n:'Dorian',a:'mode on re',g:'Modes',l:3,stp:7,d:['1','2','b3','4','5','6','b7'],sol:'r m f s l t d',pk:[6,10],ch:['6'],t:'A minor mode with a raised 6th. That one brighter note gives it a cool, soulful, folk-rock colour: minor but not sad.'},
+ {k:'phr',n:'Phrygian',a:'mode on mi',g:'Modes',l:4,stp:8,d:['1','b2','b3','4','5','b6','b7'],sol:'m f s l t d r',pk:[5,8],ch:['b2'],t:'A minor mode with a lowered 2nd right above home. That semitone gives it a dark, Spanish or metal edge.'},
+ {k:'lyd',n:'Lydian',a:'mode on fa',g:'Modes',l:4,stp:8,d:['1','2','3','#4','5','6','7'],sol:'f s l t d r m',pk:[4,7],ch:['#4'],t:'A major mode with a raised 4th. Bright, floating and dreamlike: a favourite of film composers for wonder and flight.'},
+ {k:'mix',n:'Mixolydian',a:'mode on so',g:'Modes',l:3,stp:7,d:['1','2','3','4','5','6','b7'],sol:'s l t d r m f',pk:[3,5],ch:['b7'],t:'A major mode with a lowered 7th. Bluesy, rocking and relaxed; the ♭VII chord is its signature.'},
+ {k:'loc',n:'Locrian',a:'mode on ti',g:'Modes',l:5,stp:10,d:['1','b2','b3','4','b5','b6','b7'],sol:'t d r m f s l',pk:[1,1],ch:['b5'],t:'The only mode whose home chord is diminished (a ♭5 above the tonic). Unstable and rarely home for long, though heavy metal uses its colour.'},
+ {k:'mpent',n:'Major pentatonic',g:'Pentatonic & blues',l:1,stp:1,d:['1','2','3','5','6'],sol:'d r m s l',pk:[0,0],t:'Five notes, no semitones: the major scale without fa and ti. Found in folk music on every continent; impossible to sound "wrong", so ideal for first improvisations.'},
+ {k:'npent',n:'Minor pentatonic',g:'Pentatonic & blues',l:2,stp:3,d:['1','b3','4','5','b7'],sol:'l d r m s',pk:[2,3],t:'The same five notes as the major pentatonic, with la as home. The backbone of blues, rock and pop guitar solos.'},
+ {k:'blues',n:'Blues scale',g:'Pentatonic & blues',l:2,stp:5,d:['1','b3','4','b5','5','b7'],sol:'l d r ma m s',pk:[2,3],ch:['b5'],t:'The minor pentatonic plus the "blue note", a ♭5 squeezed between 4 and 5. Bend into it, slide through it, never stop on it for long.'},
+ {k:'whole',n:'Whole-tone',g:'Beyond',l:4,stp:9,d:['1','2','3','#4','#5','b7'],sol:'d r m fi si ta',pk:null,t:'Six notes, all a whole tone apart. With no semitones there is no pull to any note, so it floats: Debussy, dream sequences, the moment the harp shimmers.'},
+ {k:'chrom',n:'Chromatic',g:'Beyond',l:4,stp:9,d:['1','#1','2','#2','3','4','#4','5','#5','6','#6','7'],sol:'d di r ri m f fi s si l li t',desc:{d:['1','7','b7','6','b6','5','b5','4','3','b3','2','b2','1'],sol:'d t ta l le s se f m ma r ra d'},pk:[0,0],t:'All twelve notes. By convention it is spelled with sharps going up and flats coming down.'},
+ {k:'phrd',n:'Phrygian dominant',a:'5th mode of harmonic minor',g:'Beyond',l:5,stp:11,d:['1','b2','3','4','5','b6','b7'],sol:'m f si l t d r',pk:[5,8],ch:['b2','3'],t:'Harmonic minor starting on its 5th (mi). The ♭2 and major 3rd together give the Flamenco, klezmer and Middle-Eastern-flavoured sound.'},
+ {k:'oct',n:'Octatonic',a:'semitone–tone diminished',us:'half–whole diminished',g:'Beyond',l:5,stp:12,d:['1','b2','#2','3','#4','5','6','b7'],sol:'d ra ri m fi s l ta',pk:null,t:'Eight notes alternating semitones and whole tones. Symmetrical and tense: Stravinsky, Bartók, Messiaen and jazz players over dominant 7♭9 chords.'}
 ];
 const SGROUPS=['Major & minor','Modes','Pentatonic & blues','Beyond'];
 const HANDS={d:'closed fist',r:'flat hand, fingers slanting upward',m:'flat hand, palm down, level',f:'fist, thumb pointing down',s:'flat hand, palm facing you, thumb up',l:'hand relaxed, hanging from the wrist',t:'index finger pointing up diagonally'};
@@ -3583,22 +3583,22 @@ function renderCircle(){const R1=168,R2=118,R3=74,cx=190,cy=190;let s=`<svg view
  drawLine($('ksSigStaff'),[],KS.clef,maj,'q')}
 /* ---------- intervals ---------- */
 const IVS=[
- {k:'m2',n:'minor 2nd',num:2,s:1,l:2,s:3,c:'dis',so:'ti → do'},{k:'M2',n:'major 2nd',num:2,s:2,l:1,s:1,c:'dis',so:'do → re'},
- {k:'m3',n:'minor 3rd',num:3,s:3,l:1,s:1,c:'imp',so:'la → do'},{k:'M3',n:'major 3rd',num:3,s:4,l:1,s:2,c:'imp',so:'do → mi'},
- {k:'P4',n:'perfect 4th',num:4,s:5,l:1,s:2,c:'p4',so:'so → do′'},{k:'A4',n:'augmented 4th',num:4,s:6,l:3,s:5,c:'dis',so:'fa → ti',tt:1},
- {k:'d5',n:'diminished 5th',num:5,s:6,l:3,s:5,c:'dis',so:'ti → fa′',tt:1},{k:'P5',n:'perfect 5th',num:5,s:7,l:1,s:2,c:'perf',so:'do → so'},
- {k:'m6',n:'minor 6th',num:6,s:8,l:2,s:3,c:'imp',so:'mi → do′'},{k:'M6',n:'major 6th',num:6,s:9,l:1,s:2,c:'imp',so:'so → mi′'},
- {k:'m7',n:'minor 7th',num:7,s:10,l:2,s:4,c:'dis',so:'so → fa′'},{k:'M7',n:'major 7th',num:7,s:11,l:3,s:5,c:'dis',so:'do → ti'},
- {k:'P8',n:'octave',num:8,s:12,l:1,s:2,c:'perf',so:'do → do′'},
- {k:'A2',n:'augmented 2nd',num:2,s:3,l:4,s:6,c:'dis',so:'fa → si (harmonic minor)'},{k:'A5',n:'augmented 5th',num:5,s:8,l:4,s:6,c:'dis',so:'do → si (harmonic minor)'},
- {k:'d7',n:'diminished 7th',num:7,s:9,l:4,s:6,c:'dis',so:'si → fa′ (harmonic minor)'},{k:'A6',n:'augmented 6th',num:6,s:10,l:6,s:11,c:'dis',so:'le → fi′'}];
+ {k:'m2',n:'minor 2nd',num:2,s:1,l:2,stp:3,c:'dis',so:'ti → do'},{k:'M2',n:'major 2nd',num:2,s:2,l:1,stp:1,c:'dis',so:'do → re'},
+ {k:'m3',n:'minor 3rd',num:3,s:3,l:1,stp:1,c:'imp',so:'la → do'},{k:'M3',n:'major 3rd',num:3,s:4,l:1,stp:2,c:'imp',so:'do → mi'},
+ {k:'P4',n:'perfect 4th',num:4,s:5,l:1,stp:2,c:'p4',so:'so → do′'},{k:'A4',n:'augmented 4th',num:4,s:6,l:3,stp:5,c:'dis',so:'fa → ti',tt:1},
+ {k:'d5',n:'diminished 5th',num:5,s:6,l:3,stp:5,c:'dis',so:'ti → fa′',tt:1},{k:'P5',n:'perfect 5th',num:5,s:7,l:1,stp:2,c:'perf',so:'do → so'},
+ {k:'m6',n:'minor 6th',num:6,s:8,l:2,stp:3,c:'imp',so:'mi → do′'},{k:'M6',n:'major 6th',num:6,s:9,l:1,stp:2,c:'imp',so:'so → mi′'},
+ {k:'m7',n:'minor 7th',num:7,s:10,l:2,stp:4,c:'dis',so:'so → fa′'},{k:'M7',n:'major 7th',num:7,s:11,l:3,stp:5,c:'dis',so:'do → ti'},
+ {k:'P8',n:'octave',num:8,s:12,l:1,stp:2,c:'perf',so:'do → do′'},
+ {k:'A2',n:'augmented 2nd',num:2,s:3,l:4,stp:6,c:'dis',so:'fa → si (harmonic minor)'},{k:'A5',n:'augmented 5th',num:5,s:8,l:4,stp:6,c:'dis',so:'do → si (harmonic minor)'},
+ {k:'d7',n:'diminished 7th',num:7,s:9,l:4,stp:6,c:'dis',so:'si → fa′ (harmonic minor)'},{k:'A6',n:'augmented 6th',num:6,s:10,l:6,stp:11,c:'dis',so:'le → fi′'}];
 const CONS={perf:'Perfect consonance: hollow, open, completely stable.',imp:'Imperfect consonance: sweet and stable; the sound of harmony in 3rds and 6ths.',p4:'Consonant as a melody and in rock and folk harmony, but in classical part-writing a 4th above the bass is treated as a dissonance.',dis:'Dissonance: it rubs, creates tension and wants to move somewhere.'};
 const ivInv=iv=>{const n=9-iv.num,q=iv.k[0]==='m'?'M':iv.k[0]==='M'?'m':iv.k[0]==='A'?'d':iv.k[0]==='d'?'A':'P';return IVS.find(x=>x.k===q+n)||{k:q+n,n:({P:'perfect',M:'major',m:'minor',A:'augmented',d:'diminished'})[q]+' '+n+(n===1?'st (unison)':n===2?'nd':n===3?'rd':'th')}};
 function ivNotes(start,iv,dir){const li=LET.indexOf(start[0]),pc=pcOf(start),m0=dir==='down'||pc<7?60+pc:48+pc;
  const a=spell(li,m0),b=dir==='down'?spell(li-(iv.num-1),m0-iv.s):spell(li+iv.num-1,m0+iv.s);return[a,b]}
 function renderIntervals(){let iv=IVS.find(x=>x.k===KS.iv.k);if(iv.l>S.level){KS.iv.k='M3';iv=IVS.find(x=>x.k==='M3')}
  $('ivRoot').innerHTML=ksPads('data-kis',KS.iv.start);
- $('ivType').innerHTML=[[4,'Stage 4'],[5,'Stage 5'],[6,'Stage 6']].filter(([l])=>l<=S.level).map(([l,lab])=>`<div class="qg"><span class="gl">${l===4?'Core':l===5?'Adding':'Advanced'}</span>${IVS.filter(x=>x.l===l).map(x=>`<button class="qp ${x.k===iv.k?'on':''}" data-kiv="${x.k}"><b>${x.k}</b><small>${x.n}</small></button>`).join('')}</div>`).join('');
+ $('ivType').innerHTML=[1,2,3,4,5,6,7].filter(l=>l<=S.level&&IVS.some(x=>x.l===l)).map(l=>`<div class="qg"><span class="gl">Level ${l}</span>${IVS.filter(x=>x.l===l).map(x=>`<button class="qp ${x.k===iv.k?'on':''}" data-kiv="${x.k}"><b>${x.k}</b><small>${x.n}</small></button>`).join('')}</div>`).join('');
  $('ivDir').innerHTML=['up','down'].map(d=>`<button class="ip ${KS.iv.dir===d?'on':''}" data-kivd="${d}">${d==='up'?'Going up ↑':'Going down ↓'}</button>`).join('');
  const [a,b]=ivNotes(KS.iv.start,iv,KS.iv.dir),inv=ivInv(iv);
  const bad=Math.abs(b.acc)>2;
@@ -3701,22 +3701,22 @@ document.addEventListener('click',e=>{if(e.target.closest('[data-ttog]'))$('tTog
    ===================================================================== */
 const CL={open:null,key:{k:0,mode:'maj'},ex:'perfect',det:{q:null,right:0,n:0}};
 const CADS=[
- {k:'perfect',n:'Perfect cadence',us:'authentic cadence',ch:'V → I',maj:'I IV V I',min:'i iv V i',l:1,s:1,feel:'A full stop. Finished, settled, home.',
+ {k:'perfect',n:'Perfect cadence',us:'authentic cadence',ch:'V → I',maj:'I IV V I',min:'i iv V i',l:1,stp:1,feel:'A full stop. Finished, settled, home.',
   why:'The dominant (V) holds the leading note (ti), which rises a semitone to do, and the bass leaps from so down to do. Tension, then release.',
   where:'The final chords of most hymns, anthems and classical movements, and the end of any chorus that lands firmly on home.'},
- {k:'plagal',n:'Plagal cadence',us:'plagal cadence',ch:'IV → I',maj:'I vi IV I',min:'i VI iv i',l:2,s:2,feel:'A soft full stop: the "Amen" at the end of a hymn.',
+ {k:'plagal',n:'Plagal cadence',us:'plagal cadence',ch:'IV → I',maj:'I vi IV I',min:'i VI iv i',l:2,stp:2,feel:'A soft full stop: the "Amen" at the end of a hymn.',
   why:'No leading note, so there is no pull, just a gentle settling. fa falls to mi (or le to so in minor) and the bass moves fa → do.',
   where:'Sung "Amen"s, gospel endings and rock codas that lean back onto home.'},
- {k:'imperfect',n:'Imperfect cadence',us:'half cadence',ch:'? → V',maj:'I vi ii V',min:'i VI iv V',l:1,s:1,feel:'A comma, or a question mark. We have stopped, but we are not home.',
+ {k:'imperfect',n:'Imperfect cadence',us:'half cadence',ch:'? → V',maj:'I vi ii V',min:'i VI iv V',l:1,stp:1,feel:'A comma, or a question mark. We have stopped, but we are not home.',
   why:'The phrase pauses on the dominant, so the leading note hangs in the air waiting to resolve. The ear expects an answer.',
   where:'The end of the first phrase in countless songs, folk tunes and classical themes: the question before the answer.'},
- {k:'interrupted',n:'Interrupted cadence',us:'deceptive cadence',ch:'V → vi',maj:'I IV V vi',min:'i iv V VI',l:2,s:2,feel:'A swerve. We expected home and got somewhere close by but surprising.',
+ {k:'interrupted',n:'Interrupted cadence',us:'deceptive cadence',ch:'V → vi',maj:'I IV V vi',min:'i iv V VI',l:2,stp:2,feel:'A swerve. We expected home and got somewhere close by but surprising.',
   why:'V sets up I, the leading note still rises to do, but the bass steps up to la instead of falling to do. vi shares two notes with I, so it sounds like home with the lights off.',
   where:'Just before a final chorus or a big ending, to delay the arrival and make the real ending land harder.'},
- {k:'phrygian',n:'Phrygian cadence',us:'Phrygian half cadence',ch:'iv⁶ → V (minor)',maj:null,min:'i VI iv:1 V',l:5,s:7,feel:'A darker question: the bass sinks by a semitone onto the dominant.',
+ {k:'phrygian',n:'Phrygian cadence',us:'Phrygian half cadence',ch:'iv⁶ → V (minor)',maj:null,min:'i VI iv:1 V',l:5,stp:7,feel:'A darker question: the bass sinks by a semitone onto the dominant.',
   why:'In a minor key the bass falls le → so, a semitone, while the top rises to ti. Named after the Phrygian mode\'s falling semitone.',
   where:'Baroque slow movements and the end of a slow movement before a fast finale.'},
- {k:'c64',n:'Cadential 6/4',us:'cadential 6/4',ch:'I⁶₄ → V → I',maj:'IV I:2 V I',min:'iv i:2 V i',l:5,s:7,feel:'A grand, decorated perfect cadence: the bass sits on so while the upper parts lean before resolving.',
+ {k:'c64',n:'Cadential 6/4',us:'cadential 6/4',ch:'I⁶₄ → V → I',maj:'IV I:2 V I',min:'iv i:2 V i',l:5,stp:7,feel:'A grand, decorated perfect cadence: the bass sits on so while the upper parts lean before resolving.',
   why:'The "I⁶₄" is really a decorated V: the 6th and 4th above the bass fall by step to the 5th and 3rd of V.',
   where:'Classical concertos (just before the cadenza) and the end of many hymns and anthems.'}];
 const CPERIOD={maj:['I IV I V','I IV V I'],min:['i iv i V','i iv V i']};
