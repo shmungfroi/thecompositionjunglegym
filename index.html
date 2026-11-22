@@ -7121,14 +7121,19 @@ const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},lett
  // readiness (rd[drill][rung] = the last 10 answered: 1 right, 0 wrong). Saved rungs keep their number (register 0.3).
  names:EARSAVE.names==='kk'?'kk':'k',mod:EARSAVE.mod==='move'?'move':'home',reached:EARSAVE.reached&&typeof EARSAVE.reached==='object'?EARSAVE.reached:{},band:0,sugNow:false,sugSeen:{},len:null,pivot:null,part:'mel',sysSel:null,glossQ:undefined,rd:EARSAVE.rd&&typeof EARSAVE.rd==='object'?EARSAVE.rd:{}};
 function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all,rhy:EAR.rhy,names:EAR.names,mod:EAR.mod,rd:EAR.rd,reached:EAR.reached})}
-const EDR=[['metre','Pulse and metre','4–5'],['rhy','Rhythm dictation','4–6'],['qual','Chord quality','4–6'],['cad','Cadences','5–6'],['bass','Bass and numerals','5–6'],['mel','Melodic dictation','4–6'],['blind','Blind analysis','5–6']];
+/* 0.50 V9 (re-tag 8, approved 22 Nov): every drill has 21 rungs, 3 per level (rung = 3 x (level - 1) + step). The generators keep their
+   internal rung numbers (saved progress and the ladder rules key on them); EARSLOT gives each built internal rung its place 1-21.
+   Places with no built rung are 'not yet'. A built rung that holds content from two places sits at the later one. */
+const EARSLOT={metre:[2,5,8],rhy:[2,4,5,7,8,9,11,13,15,16],qual:[1,7,13],cad:[4,5,13],bass:[3,4,10],mel:[2,3,4,5,6,9,10,12,13,15,16,18],blind:[7,10,13]};
+const EARSTAGE=Object.fromEntries(Object.entries(EARSLOT).map(([d,a])=>[d,a.map(n=>Math.ceil(n/3))]));
+function rn(d,n){const a=EARSLOT[d];return a&&a[n-1]?a[n-1]:n}
+const EDR=[['metre','Pulse and metre'],['rhy','Rhythm dictation'],['qual','Chord quality'],['cad','Cadences'],['bass','Bass and numerals'],['mel','Melodic dictation'],['blind','Blind analysis']].map(([k,n])=>{const v=EARSTAGE[k],a=Math.min(...v),b=Math.max(...v);return[k,n,a===b?`${a}`:`${a}–${b}`]});   // 0.50: level range from EARSLOT
 /* EL-11: each drill's levels are rungs (Rung 1, 2, 3). One Stage table, EARSTAGE (0.48 design spec, section 3): the Stage at which each
    rung starts. A drill or rung is offered when its Stage is at or below the top-bar Stage switch (4/5/6); everything else sits behind
    "Show all" (EAR.all, saved; changing the Stage clears it). The drill and rung in use always show, and a drill outside the Stage offers
    all its rungs, so a student is never stranded. Stage per rung approved by Justin (19 Nov 2026): metre rung 3 (5/4, 7/8) is Stage 5, so
    Pulse and metre reads "Stage 4–5" (EDR agrees). */
 // 0.49 ladders (LADDER_REGISTER_049 section 1): melodic dictation has 12 rungs and rhythm dictation 10; the other drills keep three
-const EARSTAGE={metre:[2,2,4],rhy:[2,2,2,4,4,4,4,5,5,5],qual:[2,4,5],cad:[4,4,5],bass:[4,4,5],mel:[2,2,2,2,4,4,4,4,5,5,5,5],blind:[4,4,5]};
 function earRungs(d){return EARSTAGE[d].map((_,i)=>i+1)}
 function earStage(){return typeof S!=='undefined'&&S.level>=1&&S.level<=7?S.level:5}
 function earStageTxt(a,b){return a===b?`Level ${a}`:`Levels ${a}–${b}`}
@@ -8057,7 +8062,7 @@ function ladMelMark(q,ans,o={}){if(q.l===11){const A=ans&&!Array.isArray(ans)?an
 /* ---------------- readiness (D10): last 10 answered (right or wrong) per drill and rung; Shown, Skipped and Nearly left out ---------------- */
 function ladRdPush(rd,drill,rung,kind){if(kind!=='ok'&&kind!=='miss')return rd;rd[drill]=rd[drill]||{};const a=(rd[drill][rung]||[]).concat(kind==='ok'?1:0);rd[drill][rung]=a.slice(-10);return rd}
 function ladRdState(rd,drill,rung,shown){const a=(rd&&rd[drill]&&rd[drill][rung])||[],ok=a.reduce((s,x)=>s+x,0),nx=rung+1,has=(shown||[]).includes(nx);
- return{last:a.slice(),n:a.length,ok,ready:ok>=8&&has,next:has?nx:null,text:has?`Ready for the next rung? Rung ${nx}: ${(drill==='mel'?LMNEW:LRNEWTXT)[nx]||''}`:''}}
+ return{last:a.slice(),n:a.length,ok,ready:ok>=8&&has,next:has?nx:null,text:has?`Ready for the next rung? Rung ${rn(drill,nx)}: ${(drill==='mel'?LMNEW:LRNEWTXT)[nx]||''}`:''}}
 /* ---------------- recordings (D13): stored transcriptions, notes and rhythm only; no lyrics, no audio. Empty until the recordings check. ----------------
    entry: {id, drill:'mel'|'rhy', rung:12|10, artist, title, year, link, start:'m:ss', end:'m:ss', credit, checked:false,
            key:{do:pc, mode}, metre, anac, notes:[[on, dur, sol]] (melody) | {riff:[cells by bar], drums:{kick,snare}} (rhythm)} */
@@ -8403,9 +8408,9 @@ function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===n
  EAR.res={ok:ok===true,nearly:kind==='nearly',given,kind};EAR.focus='[data-earnew]';EAR.announce=true;
  // undo and redo end once the answer is marked
  HIST.ear.u=[];HIST.ear.r=[];hBtns();
- logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${kind==='ok'?'correct':kind==='shown'?'shown':kind==='nearly'?'nearly':'missed'}`)}
+ logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${rn(EAR.drill,earLvl())}: ${kind==='ok'?'correct':kind==='shown'?'shown':kind==='nearly'?'nearly':'missed'}`)}
 // a question left before it was answered is recorded as skipped; returns true if one was
-function earSkip(){if(!EAR.q||EAR.done||EAR.q.plays===0)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: skipped`);return true}
+function earSkip(){if(!EAR.q||EAR.done||EAR.q.plays===0)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${rn(EAR.drill,earLvl())}: skipped`);return true}
 // the rung in use: an open question's own rung, else the rung chosen for this drill (shown even when it is above the Stage), else the first rung shown
 function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill];return l||earRungsShown(EAR.drill)[0]}
 // R4 family answers (imperfect for a Phrygian cadence, perfect for a cadential 6/4) are Nearly (EAR_NEARLY) or wrong; the result panel's
@@ -8443,17 +8448,17 @@ function earPickerHTML(d,l){const bands=earBands(d),top=earStage(),st=earReady(d
  for(const b of bands){const isCur=b.rungs.includes(l);
   if(!(EAR.all||b.stage<=top||isCur)){hid+=b.rungs.length;hs.push(b.stage);continue}
   const isOpen=open===b.stage,sg=b.rungs.includes(sug),a=b.rungs[0],z=b.rungs[b.rungs.length-1];
-  h+=`<button class="el-bandtab${isOpen?' open':''}${sg?' sug':''}" data-band="${b.stage}" aria-expanded="${isOpen}" aria-label="Stage ${b.stage}, rungs ${a} to ${z}${sg?', suggested next':''}"><small>Stage ${b.stage}</small><b>${a}–${z}</b></button>`;
-  h+=`<div class="el-band${isCur?' cur':''}${isOpen?' open':''}" role="group" aria-label="Stage ${b.stage}"><span class="el-bandlab" data-notm>Stage ${b.stage}</span>${b.rungs.map(n=>{const dn=rd.includes(n);
-   return`<button data-earlv="${n}" aria-pressed="${n===l}" aria-label="Rung ${n}, Stage ${b.stage}${dn?', 8 of the last 10 reached':''}${n===sug?', suggested next':''}" class="${n===l?'on':''}${dn?' done':''}${n===sug?' sug':''}">${n}</button>`}).join('')}</div>`}
+  h+=`<button class="el-bandtab${isOpen?' open':''}${sg?' sug':''}" data-band="${b.stage}" aria-expanded="${isOpen}" aria-label="Level ${b.stage}, rungs ${rn(d,a)} to ${rn(d,z)}${sg?', suggested next':''}"><small>Level ${b.stage}</small><b>${rn(d,a)}–${rn(d,z)}</b></button>`;
+  h+=`<div class="el-band${isCur?' cur':''}${isOpen?' open':''}" role="group" aria-label="Level ${b.stage}"><span class="el-bandlab" data-notm>Level ${b.stage}</span>${b.rungs.map(n=>{const dn=rd.includes(n);
+   return`<button data-earlv="${n}" aria-pressed="${n===l}" aria-label="Rung ${rn(d,n)}, Level ${b.stage}${dn?', 8 of the last 10 reached':''}${n===sug?', suggested next':''}" class="${n===l?'on':''}${dn?' done':''}${n===sug?' sug':''}">${rn(d,n)}</button>`}).join('')}</div>`}
  if(hid){const lab=earStageTxt(hs[0],hs[hs.length-1]),sg=sug&&hs.includes(stageOf(sug));
   h+=`<button class="el-bandmore${sg?' sug':''}" data-earall aria-pressed="false" aria-label="Show ${hid} more rungs, ${lab}${sg?', suggested next':''}"><b>${hid} more</b><span class="sep"> · </span><small>${lab}</small></button>`}
- return`<div class="el-rp" role="group" aria-label="Rung">${h}</div><p class="el-rungline" data-notm><span><b>Rung ${l} of ${ELLONG[d]}</b> · ${earStageTxt(stageOf(l),stageOf(l))} · ${earRungWhat(d,l)}</span>${earLast10HTML(d,l)}</p>`}
+ return`<div class="el-rp" role="group" aria-label="Rung">${h}</div><p class="el-rungline" data-notm><span><b>Rung ${rn(d,l)} of 21</b> · ${earStageTxt(stageOf(l),stageOf(l))} · ${earRungWhat(d,l)}</span>${earLast10HTML(d,l)}</p>`}
 /* the suggestion, as the last row of the result panel */
 function earSugHTML(d,l){if(!earLong(d)||!EAR.sugNow||!EAR.done)return'';const st=earReady(d,l);if(!st.ready)return'';const n=st.next,sn=EARSTAGE[d][n-1],cross=sn>EARSTAGE[d][l-1],txt=(d==='mel'?LMNEW:LRNEWTXT)[n]||'';
  return`<div class="el-sug" role="status" data-notm><svg class="ico" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M9 27V5M21 27V5M9 22h12M9 16h12M9 10h12"/><path d="M15 13V3m-3.2 3.2L15 3l3.2 3.2" stroke-width="1.6"/></svg>
-  <p><b>${st.ok} of your last ${st.n} right.</b> Ready for rung ${n}?<small>${cross?`Rung ${n} starts Stage ${sn}. `:''}New on rung ${n}: ${txt}.</small></p>
-  <div class="acts"><button class="el-btn line" data-earlv="${n}" data-earsug>Try rung ${n}</button><button class="el-btn" data-earstay>Stay on rung ${l}</button></div></div>`}
+  <p><b>${st.ok} of your last ${st.n} right.</b> Ready for rung ${rn(d,n)}?<small>${cross?`Rung ${rn(d,n)} starts Level ${sn}. `:''}New on rung ${rn(d,n)}: ${txt}.</small></p>
+  <div class="acts"><button class="el-btn line" data-earlv="${n}" data-earsug>Try rung ${rn(d,n)}</button><button class="el-btn" data-earstay>Stay on rung ${rn(d,l)}</button></div></div>`}
 /* after an answer: the dot is earned and stays; the row shows once, and not again until the count has dropped under 8 and climbed back */
 function earUiMarked(kind){const d=EAR.drill;if(!earLong(d)||(kind!=='ok'&&kind!=='miss'))return;const l=earLvl(),st=earReady(d,l),k=d+l;EAR.sugSeen=EAR.sugSeen||{};
  if(st.ok>=8){const R=EAR.reached[d]=EAR.reached[d]||[];if(!R.includes(l)){R.push(l);earSave()}}
@@ -9351,7 +9356,7 @@ function renderEar(){const el=$('earMain');if(!el)return;
  const T=q&&EAR.done&&EAR.res&&d!=='mel'?earTeach(q,EAR.res):null;
  el.innerHTML=`<div class="el-drills" role="tablist" aria-label="Ear Lab drills">${tabs.map(([k,n])=>`<button class="el-drill${d===k?' on':''}" role="tab" aria-selected="${d===k}" data-eardr="${k}"><b>${n}</b><small>${earStageTag(k)}</small></button>`).join('')}${allBtn}</div>
  <div class="el-cols"><section class="card" id="earCard"><div class="el-head${earLong(d)?' long':''}"><div><div class="el-tag">${earStageTag(d)}</div><h2 class="el-title">${elDrillName(d)}</h2></div>${tally}
-  <div class="el-rungrow">${earLong(d)?earPickerHTML(d,l):`<div class="el-rungs" role="group" aria-label="Rung">${rungs.map(n=>`<button data-earlv="${n}" aria-pressed="${l===n}" class="${l===n?'on':''}" title="${earRungStages(d,n)}">Rung ${n}</button>`).join('')}</div>${hidR&&!EAR.all?`<button class="el-all" data-earall aria-pressed="false">show all rungs</button>`:''}</div>`}</div></div>
+  <div class="el-rungrow">${earLong(d)?earPickerHTML(d,l):`<div class="el-rungs" role="group" aria-label="Rung">${rungs.map(n=>`<button data-earlv="${n}" aria-pressed="${l===n}" class="${l===n?'on':''}" title="${earRungStages(d,n)}">Rung ${rn(d,n)}</button>`).join('')}</div>${hidR&&!EAR.all?`<button class="el-all" data-earall aria-pressed="false">show all rungs</button>`:''}</div>`}</div></div>
   <p class="el-ask">${d==='rhy'?earRhyAsk(q,l):(d==='mel'&&earMelAsk(q,l))||ELASK[d]}</p>
   ${T?earResultHTML(q,T):d==='mel'&&q&&EAR.done?'':earStageHTML(q,l)}
   ${earAnswerAreaHTML(q,l)}${earFootHTML(s)}</section>${earTipsHTML(d)}</div>${earDockHTML(q)}`;
@@ -9425,7 +9430,7 @@ document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.cl
  if(d.earresetno!==undefined){EAR.resetAsk=false;EAR.focus='[data-earreset]';renderEar();return}
  if(d.earresetyes!==undefined){EAR.resetAsk=false;EAR.resetUndo={drill:EAR.drill,st:{...earSt()}};EAR.st[EAR.drill]={...EARST0};earSave();EAR.focus='[data-earresetundo]';renderEar();return}
  if(d.earresetundo!==undefined){const u=EAR.resetUndo;if(u){EAR.st[u.drill]=u.st;EAR.resetUndo=null;earSave();toast('Score restored')}EAR.focus='[data-earreset]';renderEar();return}
- if(d.earjournal!==undefined){const s=earSt();logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${earLvl()}: ${s.ok}/${s.n} correct, best streak ${s.best}, ${s.shown} shown, ${s.skipped} skipped${s.nearly?`, ${s.nearly} nearly`:''}`);toast('Saved to the process log in your journal');return}
+ if(d.earjournal!==undefined){const s=earSt();logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${rn(EAR.drill,earLvl())}: ${s.ok}/${s.n} correct, best streak ${s.best}, ${s.shown} shown, ${s.skipped} skipped${s.nearly?`, ${s.nearly} nearly`:''}`);toast('Saved to the process log in your journal');return}
  if(d.earscore){AN.score=d.earscore;AN.tab='score';location.hash='analysis';room('analysis');return}});
 // Esc answers the inline Reset question with "Keep it"
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ROOM==='ear'&&EAR.resetAsk){EAR.resetAsk=false;EAR.focus='[data-earreset]';renderEar()}});
