@@ -1,0 +1,189 @@
+/* =====================================================================
+   0.50 LEVELS (Fable, DESIGN_050). Append to the end of the main <style> in index.html, as written.
+   Order: 0 level mark · 1 level control and top bar · 2 ordered lists · 3 Ear Lab 21-rung picker
+   ===================================================================== */
+
+/* ---- 0. the level mark: one small numeral, used by the level control, the lists and the rung picker ----
+   plain   = a level you have already met (solid ring)
+   .now    = your level (filled disc)
+   .ahead  = above your level (dashed ring)                                                            */
+.lvm{flex:none;display:inline-grid;place-items:center;box-sizing:border-box;width:20px;height:20px;border:1px solid rgba(201,162,74,.6);border-radius:50%;background:var(--ink);font:400 11px/1 Outfit,sans-serif;font-variant-numeric:lining-nums;letter-spacing:0;color:var(--gold)}
+.lvm.now{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:700}
+.lvm.ahead{border-style:dashed;border-color:rgba(156,146,124,.75);color:var(--muted)}
+.lvm.lg{width:26px;height:26px;font-size:14px}
+
+/* ---- 1. level control ---- */
+.lvc{position:relative;flex:none}
+.lvbtn{display:flex;align-items:center;gap:9px;height:38px;padding:0 13px 0 5px;border:1px solid var(--line);border-radius:22px;background:var(--panel);text-align:left;white-space:nowrap;cursor:pointer;transition:border-color .15s}
+.lvbtn:hover,.lvbtn[aria-expanded=true]{border-color:var(--gold)}
+.lvbtn-t{display:grid;gap:2px}
+.lvbtn-t b{font-weight:400;font-size:14px;line-height:1.1;color:var(--ivory)}
+.lvbtn-t small{font-size:11px;line-height:1.1;letter-spacing:.3px;color:var(--muted)}
+.lvbtn .car,.lvbh .car{flex:none;width:10px;height:6px;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.lvbtn[aria-expanded=true] .car{transform:rotate(180deg);stroke:var(--goldhi)}
+
+.lvpop{position:absolute;top:calc(100% + 11px);right:0;z-index:9;width:340px;padding:16px 16px 14px;background:#14110b;border:1px solid var(--line);border-top-color:var(--gold);border-radius:14px;box-shadow:0 22px 44px -14px rgba(0,0,0,.95)}
+.lvpop[hidden]{display:none}
+.lvhd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 10px 8px 2px}
+.lvhd .lbl{margin:0}
+.lvhd small{font-size:11px;letter-spacing:.3px;color:var(--muted)}
+
+.lvlist{--lvh:40px;display:grid}
+.lvopt{position:relative;display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:12px;height:var(--lvh);padding:0 10px 0 6px;border:1px solid transparent;border-radius:10px;background:none;text-align:left;cursor:pointer;transition:border-color .15s,background-color .15s}
+.lvopt b{font-weight:400;font-size:15px;color:var(--ivory)}
+.lvopt small{font-size:11px;letter-spacing:.3px;color:var(--muted);white-space:nowrap}
+.lvopt:hover{border-color:rgba(201,162,74,.6)}
+.lvopt[aria-checked=true]{border-color:var(--gold);background:rgba(201,162,74,.14)}
+.lvopt[aria-checked=true] b{color:var(--goldhi)}
+/* the ladder: a hairline from each disc up to the one before it; gold as far as your level */
+.lvopt+.lvopt::before{content:"";position:absolute;left:18px;top:calc((26px - var(--lvh))/2 - 1px);width:1px;height:calc(var(--lvh) - 26px);background:var(--line)}
+.lvopt.upto::before{background:rgba(201,162,74,.6)}
+
+.lvnote{margin:10px 2px 0;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.lvcur{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.lvcur label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.lvcur select{min-width:150px;padding:7px 10px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+
+/* area names in the rail: names only, no numerals */
+.rail .lv{margin:10px 0 0;padding:9px 0 1px;border-top:1px solid var(--line);font-family:"Poiret One",Outfit,sans-serif;font-size:13px;line-height:1;letter-spacing:.6px;text-align:center;color:var(--gold)}
+
+/* top bar: the search field keeps a usable width at every size */
+.search{flex:1 1 260px;min-width:200px}
+.jbtn .ji{margin-right:5px}
+@media (min-width:761px) and (max-width:1100px){.top .tw{display:none}}
+@media (min-width:761px) and (max-width:900px){
+ .lvbtn{gap:6px;padding:0 10px 0 5px}.lvbtn-t{display:none}
+ .jbtn .jt{display:none}.jbtn .ji{margin:0}.top .jbtn{padding:7px 12px}
+ .lvpop{width:320px}
+}
+@media (max-width:760px){
+ .search{flex:1 1 100%;min-width:0}
+ /* top row: wordmark, then the level button (32 px tall, 44 px tap area) */
+ .lvbtn{position:relative;height:32px;gap:7px;padding:0 11px 0 4px}
+ .lvbtn::after{content:"";position:absolute;inset:-8px -4px -4px}
+ .lvbtn .lvm.lg{width:24px;height:24px;font-size:12.5px}
+ .lvbtn-t small{display:none}
+ .lvpop{display:none}                          /* on phones the list lives in the More sheet */
+ .msb{max-height:88vh}
+ .lvlist{--lvh:44px}
+ .lvcur select:not(#_){min-height:44px}
+ .mslv{margin-top:16px}
+ .mslv .lvnote{margin-top:8px}
+}
+
+/* ---- 2. ordered lists: new at your level, then everything else from Level 1 up ---- */
+/* 2a. single-column lists (pickers). One rail runs down the left: a gradient bar beside what is new, a hairline with level marks beside the rest. */
+.lvlst{--row:32px;display:grid;gap:0}
+.lvband{position:relative;padding-left:30px}
+.lvband::before{content:"";position:absolute;left:9px;top:0;bottom:0;width:1px;background:var(--line)}
+.lvband.new::before{left:8px;top:30px;bottom:6px;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--lush),var(--pink))}
+.lvband.ahead::before{background:none;border-left:1px dashed rgba(156,146,124,.45)}
+.lvband:last-child::before{bottom:8px}
+.lvband+.lvband{margin-top:8px;padding-top:4px}
+.lvband+.lvband::after{content:"";position:absolute;left:30px;right:0;top:0;height:1px;background:var(--line)}
+
+.lvbh{position:relative;display:flex;align-items:center;gap:8px;min-height:30px;margin:0;padding:0 10px 0 0;font:600 11px/1.2 Outfit,sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--muted);list-style:none}
+.lvbh::-webkit-details-marker{display:none}
+summary.lvbh{cursor:pointer;border-radius:6px}
+summary.lvbh:hover{color:var(--goldhi)}
+.lvband.new>.lvbh{color:var(--gold)}
+.lvbh>.lvm,.lvbh>.car{position:absolute;left:-30px;top:50%;margin-top:-10px}
+.lvbh>.car{left:-25px;margin-top:-3px;background:var(--panel2);box-shadow:0 0 0 5px var(--panel2);transform:rotate(-90deg)}
+details[open]>.lvbh>.car{transform:none}
+.lvbh .n{margin-left:auto;font-weight:400;letter-spacing:.5px;font-variant-numeric:tabular-nums}
+
+.lvgrp{position:relative}
+.lvgrp+.lvgrp{margin-top:6px}
+.lvgrp>.lvm{position:absolute;left:-30px;top:calc((var(--row) - 20px)/2)}
+
+.lvrow{display:grid;grid-template-columns:84px minmax(0,1fr);align-items:baseline;column-gap:8px;width:100%;min-height:var(--row);padding:5px 10px;border:1px solid transparent;border-radius:9px;background:none;text-align:left;cursor:pointer;transition:border-color .15s,background-color .15s}
+.lvrow b{font-size:15px;font-weight:600;line-height:1.3;color:var(--ivory)}
+.lvrow span{overflow:hidden;font-size:12.5px;line-height:1.3;color:var(--muted);white-space:nowrap;text-overflow:ellipsis}
+.lvrow:hover{border-color:rgba(201,162,74,.6)}
+.lvrow.on{border-color:var(--gold);background:rgba(201,162,74,.14)}
+.lvrow.on b{color:var(--goldhi)}
+.lvrow:focus-visible{outline-offset:-2px}
+.lvnone{margin:0;padding:5px 10px;font-size:12.5px;line-height:1.4;color:var(--muted)}
+@media (max-width:760px){.lvlst{--row:46px}.lvrow{align-items:center;padding:0 12px}.lvbh{min-height:44px}.lvband.new::before{top:38px}}
+
+/* 2b. card galleries (Forms, Climbs, Analysis scores): the same three bands, as headed groups of cards */
+.lvlst.cards{gap:26px}
+.lvlst.cards .lvband{padding:0;margin:0}
+.lvlst.cards .lvband::before,.lvlst.cards .lvband::after{display:none}
+.lvch{position:relative;font-weight:400;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);list-style:none}
+.lvch::-webkit-details-marker{display:none}
+.lvch .disp{font-size:30px;font-weight:400;line-height:1.1;color:var(--goldhi)}
+.lvch small{font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.lvband.new>.lvch{border-bottom-color:transparent}
+.lvband.new>.lvch::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,var(--lush),var(--gold) 34%,var(--pink) 62%,transparent 92%)}
+summary.lvch{cursor:pointer;border-radius:6px}
+summary.lvch .disp{font-size:24px;color:var(--ivory)}
+summary.lvch:hover .disp{color:var(--goldhi)}
+summary.lvch .car{align-self:center;width:12px;height:7px;margin-left:auto;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transform:rotate(-90deg);transition:transform .15s}
+details[open]>summary.lvch .car{transform:none}
+details:not([open])>summary.lvch{margin-bottom:0}
+
+/* compact card: every band except "new" */
+.climbs.cmp{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.climb.cmp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:0 12px;min-height:62px;padding:10px 14px;border-radius:12px;text-align:left;cursor:pointer;transition:border-color .15s}
+.climb.cmp:hover{border-color:rgba(201,162,74,.6)}
+.climb.cmp .tx{display:grid;gap:3px;min-width:0}
+.climb.cmp .tx b{font-family:"Poiret One",Outfit,sans-serif;font-weight:400;font-size:19px;line-height:1.15;color:var(--goldhi)}
+.climb.cmp .tx small{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.climb.cmp .arr{font-size:15px;color:var(--muted)}
+.climb.cmp:hover .arr{color:var(--goldhi)}
+.climb.cmp.dim{cursor:default}
+@media (max-width:760px){.lvlst.cards{gap:22px}.lvch .disp{font-size:26px}summary.lvch .disp{font-size:22px}.lvch small{flex:1 1 100%;font-size:11px}summary.lvch{padding-right:22px}summary.lvch .car{position:absolute;right:2px;top:10px}.climbs.cmp{grid-template-columns:1fr}}
+
+/* ---- 3. Ear Lab: 21 rungs, three to a level ---- */
+.el-rp7{display:flex;align-items:flex-end;gap:8px}
+.el-lg{position:relative;flex:1 1 0;min-width:0;display:grid;gap:6px}
+.el-lg+.el-lg::before{content:"";position:absolute;left:-8px;bottom:17px;width:8px;height:1px;background:var(--line)}       /* the rail between two levels */
+.el-lgcap{display:flex;align-items:center;gap:5px;height:20px;padding-left:3px;overflow:hidden;font-size:11px;line-height:1.2;letter-spacing:.2px;color:var(--muted);white-space:nowrap}
+.el-lgcap i{font-style:normal;color:var(--ivory);font-variant-numeric:lining-nums}
+.el-lg.you .el-lgcap{color:var(--goldhi)}
+.el-lgr{display:flex;height:34px;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden}
+.el-lg.you .el-lgr{border-color:rgba(201,162,74,.6)}
+.el-lgr button{position:relative;flex:1 1 0;min-width:0;height:100%;padding:0;background:none;border:0;font-size:14px;color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums lining-nums}
+.el-lgr>*+*{border-left:1px solid var(--line)}
+.el-lgr button:hover{color:var(--goldhi)}
+.el-lgr button.on{background:var(--gold);color:var(--ink);font-weight:600}
+.el-lgr button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+.el-lgr button.on:focus-visible{outline-color:var(--ink)}
+.el-lgr button.done::after{content:"";position:absolute;left:50%;bottom:4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--gold)}
+.el-lgr button.on.done::after{background:var(--ink)}
+.el-lgr button.sug,.el-ltab.sug{box-shadow:inset 0 0 0 1.5px var(--goldhi);color:var(--goldhi)}
+/* rungs that are not written yet: a run of them is one quiet cell that says so */
+.el-ny{flex:var(--n,1) 1 0;min-width:0;display:grid;place-items:center;padding:0 2px;font-size:11px;line-height:1.05;letter-spacing:.2px;text-align:center;color:var(--muted);background:repeating-linear-gradient(135deg,transparent 0 6px,rgba(156,146,124,.07) 6px 7px)}
+.el-lgr>.el-ny+*,.el-lgr>*+.el-ny{border-left-style:dashed;border-left-color:rgba(156,146,124,.4)}
+.el-lg.none .el-lgr{border-style:dashed;border-color:rgba(156,146,124,.4)}
+.el-lg.none .el-lgcap i{color:var(--muted)}
+.el-ltab,.el-lcap{display:none}
+
+@media (max-width:900px){
+ /* seven level tabs over one row of three rungs */
+ .el-rp7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0 3px;align-items:stretch}
+ .el-lg{display:contents}
+ .el-lg+.el-lg::before,.el-lgcap{display:none}
+ .el-ltab{grid-row:1;position:relative;display:grid;place-items:center;min-width:0;min-height:44px;padding:0;border:1px solid var(--line);border-radius:var(--r-m);background:none;font-size:15px;color:var(--ivory);cursor:pointer;font-variant-numeric:lining-nums}
+ .el-ltab b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;font-weight:400}
+ .el-ltab.has b{background:var(--gold);color:var(--ink);font-weight:600}                                /* the level that holds the rung in use */
+ .el-ltab.you::after{content:"";position:absolute;left:50%;bottom:4px;width:14px;height:2px;margin-left:-7px;border-radius:2px;background:linear-gradient(90deg,var(--lush),var(--pink))}   /* your level */
+ .el-ltab.none{border-style:dashed;border-color:rgba(156,146,124,.4);color:var(--muted)}
+ .el-lg.open .el-ltab{z-index:1;margin-bottom:-1px;min-height:51px;padding-bottom:6px;border-color:rgba(201,162,74,.6);border-style:solid;border-bottom-color:#1a160e;border-radius:var(--r-m) var(--r-m) 0 0;background:#1a160e}
+ .el-lg.open .el-ltab.you::after{bottom:10px}
+ .el-lg:not(.open) .el-ltab{margin-bottom:6px}
+ .el-lgr{display:none;grid-column:1 / -1;grid-row:2;height:50px;border-color:rgba(201,162,74,.6);border-style:solid;border-radius:var(--r-m);background:#1a160e}
+ .el-lg.none .el-lgr{border-style:solid;border-color:rgba(201,162,74,.6)}
+ .el-lg.open .el-lgr{display:flex}
+ .el-lg.open:first-child .el-lgr{border-top-left-radius:0}
+ .el-lg.open:last-child .el-lgr{border-top-right-radius:0}
+ .el-lgr button{font-size:16px}
+ .el-lgr button.done::after{bottom:8px}
+ .el-ny{font-size:12.5px}
+ .el-lcap{grid-column:1 / -1;grid-row:3;display:none;margin:8px 2px 0;font-size:12.5px;line-height:1.3;color:var(--muted)}
+ .el-lg.open .el-lcap{display:block}
+ .el-lcap b{font-weight:400;color:var(--ivory)}
+ .el-lcap em{font-style:normal;color:var(--goldhi)}
+}
+@media (prefers-reduced-motion:reduce){.lvbtn,.lvbtn .car,.lvbh .car,.lvopt,.lvrow,.climb.cmp,summary.lvch .car{transition:none}}

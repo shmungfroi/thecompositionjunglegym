@@ -634,7 +634,7 @@ CLIMBS_JS = r"""async()=>{
   const rn=[...document.querySelectorAll('#climbDetail svg text.rnl')].map(e=>({s:e.dataset.rnraw,b:e.dataset.sym||''}));
   DOM.push({ctx:CTX,key:key?{k:key.k,mode:key.mode}:null,bars,rn})};
  const R=(key)=>{try{renderClimbDetail()}catch(e){ERR.push(CTX+': '+String(e).slice(0,200))}scrape(key)};
- const LV=[4,5,6];ROOM='climbs';
+ const LV=[1,2,3,4,5,6,7];ROOM='climbs';
  const quiz=(fn,n)=>{for(let i=0;i<n;i++){try{fn()}catch(e){ERR.push(CTX+' quiz: '+String(e).slice(0,160))}stopAll()}};
  for(const lv of LV){S.level=lv;
   // climb 3
@@ -669,7 +669,7 @@ CLIMBS_JS = r"""async()=>{
   CTX=`c10 L${lv} quiz`;quiz(c10QNew,40);
   // climb 11
   CL.open=10;for(const key of C11KEYS){C11.key={...key};for(const v of C11V.filter(v=>v.l<=Math.max(lv,4))){C11.ver=v.k;CTX=`c11 L${lv} ${keyName(key)} ${v.k}`;R(key);c11Voice(v.r.split(' ').map(r=>c11Ch(r,key)),c11Mel(key))}
-   CTX=`c11 L${lv} ${keyName(key)} vocabulary`;[4,5,6].filter(l=>l<=lv).forEach(l=>C11VOC[l].forEach(r=>c11Ch(r,key)))}
+   CTX=`c11 L${lv} ${keyName(key)} vocabulary`;[2,5,6].filter(l=>l<=lv).forEach(l=>C11VOC[l].forEach(r=>c11Ch(r,key)))}
   // climb 12
   CL.open=11;for(const tab of ['vamp','plane','med','static']){C12.tab=tab;CTX=`c12 L${lv} ${tab}`;R(null)}
  }
@@ -1025,7 +1025,7 @@ async def main():
         check_climbs(C)
         await pg.wait_for_timeout(300)
         # every room as first opened, at every level
-        for lv in (4, 5, 6):
+        for lv in (1, 2, 3, 4, 5, 6, 7):
             await pg.goto('http://app/index.html#seed')
             await pg.wait_for_timeout(500)
             await pg.evaluate(SCAN_JS)

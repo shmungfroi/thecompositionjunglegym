@@ -1521,7 +1521,7 @@ label.ck{gap:8px;cursor:pointer}
  <span class="t disp"><span class="tw">COMPOSITION </span>JUNGLE GYM</span>
  <span class="crumb">Seed Bank · <b id="crumbSym">Bm7</b></span>
  <form class="search" id="searchForm"><input id="q" placeholder="Type a chord: Bm7, E♭9…" autocomplete="off"><button>Find</button></form>
- <div class="lvl" id="lvl"><button data-l="4">Stage 4</button><button data-l="5">Stage 5</button><button data-l="6" class="on">Stage 6</button></div>
+ <div class="lvl" id="lvl" role="group" aria-label="Level"><button data-l="1" title="Level 1 · First steps">1</button><button data-l="2" title="Level 2 · Foundation">2</button><button data-l="3" title="Level 3 · Developing">3</button><button data-l="4" title="Level 4 · Intermediate">4</button><button data-l="5" title="Level 5 · Senior" class="on">5</button><button data-l="6" title="Level 6 · Advanced">6</button><button data-l="7" title="Level 7 · Extension">7</button></div>
  <button class="tstop" id="tStop" hidden title="Stop all sound (Esc)">■ Stop</button>
  <button class="jbtn" id="openJ">✎ Journal</button>
 </header>
@@ -1927,29 +1927,29 @@ const ROOTS=['C','C#','Db','D','D#','Eb','E','F','F#','Gb','G','G#','Ab','A','A#
 // degree label -> semitones from root
 const DEG={'1':0,'b2':1,'2':2,'b3':3,'3':4,'4':5,'#4':6,'b5':6,'5':7,'#5':8,'#6':10,'6':9,'bb7':9,'b7':10,'7':11,'9':14,'b9':13,'11':17,'13':21};
 const Q=[
- {k:'5',n:'power chord',d:['1','5'],l:4,t:'Just the root and the 5th, with no 3rd, so it is neither major nor minor. With distortion it sounds huge but stays clear: the engine of rock, punk, grunge and metal riffs.'},
- {k:'',n:'major',d:['1','3','5'],l:4,t:'The bright, settled triad that most music calls home. Root, major 3rd and perfect 5th: the 3rd decides its open, sunny colour.'},
- {k:'m',n:'minor',d:['1','b3','5'],l:4,t:'The major triad with its 3rd lowered a semitone. That one note moves the colour from open to inward: reflective, serious, sometimes tender.'},
- {k:'7',n:'dominant seventh',d:['1','3','5','b7'],l:4,t:'A major triad with a minor 7th on top. The 3rd and 7th form a tritone that wants to resolve, so this chord pulls strongly to the chord a 5th below: the engine of the perfect cadence, and the home chord of the blues.'},
- {k:'sus2',n:'suspended second',d:['1','2','5'],l:4,t:'No 3rd at all: the 2nd stands in its place, so the chord is neither major nor minor. Open, airy and unresolved; loved in pop, rock and film.'},
- {k:'sus4',n:'suspended fourth',d:['1','4','5'],l:4,t:'The 4th replaces the 3rd and leans on it, wanting to fall back down a step. Historically a suspension held over from the chord before; now also a colour of its own.'},
- {k:'dim',n:'diminished',d:['1','b3','b5'],l:5,t:'Two stacked minor 3rds. Tense and unstable, it rarely stays long; it usually acts as a dominant, leading up by step into the chord that follows.'},
- {k:'aug',n:'augmented',d:['1','3','#5'],l:5,t:'Two stacked major 3rds. On a piano (equal temperament) it is symmetrical: from the top note up to the root again is a diminished 4th, which sounds the same as a major 3rd, so its three notes split the octave into three equal parts and every inversion sounds like another augmented triad in root position. Dreamlike, it hangs in the air; often a passing chord that pushes a 5th upward by a semitone.'},
- {k:'maj7',n:'major seventh',d:['1','3','5','7'],l:5,t:'A major triad with a major 7th a semitone below the octave. That clash makes it lush and bittersweet rather than plain: the sound of bossa nova, neo-soul and late-night ballads.'},
- {k:'m7',n:'minor seventh',d:['1','b3','5','b7'],l:5,t:'A minor triad with a minor 7th: soft, mellow and smooth. A staple of jazz, soul, funk and modal harmony. Its function depends entirely on the key and the chords around it.'},
- {k:'6',n:'major sixth',d:['1','3','5','6'],l:5,t:'A major triad with an added 6th: sweet, vintage and stable. Swing endings, early rock and roll and film-musical finales.'},
- {k:'add9',n:'added ninth',d:['1','3','5','9'],l:5,t:'A major triad with a 9th added but no 7th. Shimmering and open; a favourite of guitar-based pop and worship music.'},
- {k:'madd9',n:'minor added ninth',d:['1','b3','5','9'],l:6,t:'A minor triad with an added 9th and no 7th. Wistful and open: a favourite of singer-songwriters and film scores.'},
- {k:'m6',n:'minor sixth',d:['1','b3','5','6'],l:6,t:'A minor triad with a major 6th: dark but with a glint of light. Tango, film noir and gypsy jazz; often the home chord of a minor key in jazz.'},
- {k:'m7b5',n:'half-diminished seventh',d:['1','b3','b5','b7'],l:6,t:'A diminished triad with a minor 7th. The ii chord of a minor key: it prepares the dominant in a minor ii–V–i, and its uneasy colour suits suspense.'},
- {k:'dim7',n:'diminished seventh',d:['1','b3','b5','bb7'],l:6,t:'Three stacked minor 3rds. On a piano (equal temperament) it is symmetrical: from the 7th up to the root again is an augmented 2nd, which sounds the same as a minor 3rd, so its four notes split the octave into four equal parts and every inversion sounds like another diminished 7th in root position. Respelled, the same four sounds are the leading-note 7th (vii°7) of four different minor keys a minor 3rd apart, so it can pivot to many keys. Highly unstable and dramatic; a favourite of Romantic opera and silent-film villains.'},
- {k:'9',n:'dominant ninth',d:['1','3','5','b7','9'],l:6,t:'A dominant 7th with a 9th on top: fuller and funkier. It still pulls to the chord a 5th below. Funk, soul and blues bands live on it.'},
- {k:'maj9',n:'major ninth',d:['1','3','5','7','9'],l:6,t:'A major 7th with a 9th added: the most luxurious tonic chord in jazz and neo-soul.'},
- {k:'m9',n:'minor ninth',d:['1','b3','5','b7','9'],l:6,t:'A minor 7th with a 9th: warm, smoky, modal. The opening chord of countless jazz and R&B grooves.'},
+ {k:'5',n:'power chord',d:['1','5'],l:1,s:2,t:'Just the root and the 5th, with no 3rd, so it is neither major nor minor. With distortion it sounds huge but stays clear: the engine of rock, punk, grunge and metal riffs.'},
+ {k:'',n:'major',d:['1','3','5'],l:1,s:1,t:'The bright, settled triad that most music calls home. Root, major 3rd and perfect 5th: the 3rd decides its open, sunny colour.'},
+ {k:'m',n:'minor',d:['1','b3','5'],l:1,s:1,t:'The major triad with its 3rd lowered a semitone. That one note moves the colour from open to inward: reflective, serious, sometimes tender.'},
+ {k:'7',n:'dominant seventh',d:['1','3','5','b7'],l:2,s:4,t:'A major triad with a minor 7th on top. The 3rd and 7th form a tritone that wants to resolve, so this chord pulls strongly to the chord a 5th below: the engine of the perfect cadence, and the home chord of the blues.'},
+ {k:'sus2',n:'suspended second',d:['1','2','5'],l:2,s:3,t:'No 3rd at all: the 2nd stands in its place, so the chord is neither major nor minor. Open, airy and unresolved; loved in pop, rock and film.'},
+ {k:'sus4',n:'suspended fourth',d:['1','4','5'],l:2,s:3,t:'The 4th replaces the 3rd and leans on it, wanting to fall back down a step. Historically a suspension held over from the chord before; now also a colour of its own.'},
+ {k:'dim',n:'diminished',d:['1','b3','b5'],l:3,s:5,t:'Two stacked minor 3rds. Tense and unstable, it rarely stays long; it usually acts as a dominant, leading up by step into the chord that follows.'},
+ {k:'aug',n:'augmented',d:['1','3','#5'],l:3,s:5,t:'Two stacked major 3rds. On a piano (equal temperament) it is symmetrical: from the top note up to the root again is a diminished 4th, which sounds the same as a major 3rd, so its three notes split the octave into three equal parts and every inversion sounds like another augmented triad in root position. Dreamlike, it hangs in the air; often a passing chord that pushes a 5th upward by a semitone.'},
+ {k:'maj7',n:'major seventh',d:['1','3','5','7'],l:3,s:6,t:'A major triad with a major 7th a semitone below the octave. That clash makes it lush and bittersweet rather than plain: the sound of bossa nova, neo-soul and late-night ballads.'},
+ {k:'m7',n:'minor seventh',d:['1','b3','5','b7'],l:3,s:6,t:'A minor triad with a minor 7th: soft, mellow and smooth. A staple of jazz, soul, funk and modal harmony. Its function depends entirely on the key and the chords around it.'},
+ {k:'6',n:'major sixth',d:['1','3','5','6'],l:4,s:7,t:'A major triad with an added 6th: sweet, vintage and stable. Swing endings, early rock and roll and film-musical finales.'},
+ {k:'add9',n:'added ninth',d:['1','3','5','9'],l:4,s:8,t:'A major triad with a 9th added but no 7th. Shimmering and open; a favourite of guitar-based pop and worship music.'},
+ {k:'madd9',n:'minor added ninth',d:['1','b3','5','9'],l:4,s:8,t:'A minor triad with an added 9th and no 7th. Wistful and open: a favourite of singer-songwriters and film scores.'},
+ {k:'m6',n:'minor sixth',d:['1','b3','5','6'],l:4,s:7,t:'A minor triad with a major 6th: dark but with a glint of light. Tango, film noir and gypsy jazz; often the home chord of a minor key in jazz.'},
+ {k:'m7b5',n:'half-diminished seventh',d:['1','b3','b5','b7'],l:4,s:10,t:'A diminished triad with a minor 7th. The ii chord of a minor key: it prepares the dominant in a minor ii–V–i, and its uneasy colour suits suspense.'},
+ {k:'dim7',n:'diminished seventh',d:['1','b3','b5','bb7'],l:5,s:11,t:'Three stacked minor 3rds. On a piano (equal temperament) it is symmetrical: from the 7th up to the root again is an augmented 2nd, which sounds the same as a minor 3rd, so its four notes split the octave into four equal parts and every inversion sounds like another diminished 7th in root position. Respelled, the same four sounds are the leading-note 7th (vii°7) of four different minor keys a minor 3rd apart, so it can pivot to many keys. Highly unstable and dramatic; a favourite of Romantic opera and silent-film villains.'},
+ {k:'9',n:'dominant ninth',d:['1','3','5','b7','9'],l:5,s:12,t:'A dominant 7th with a 9th on top: fuller and funkier. It still pulls to the chord a 5th below. Funk, soul and blues bands live on it.'},
+ {k:'maj9',n:'major ninth',d:['1','3','5','7','9'],l:5,s:12,t:'A major 7th with a 9th added: the most luxurious tonic chord in jazz and neo-soul.'},
+ {k:'m9',n:'minor ninth',d:['1','b3','5','b7','9'],l:5,s:12,t:'A minor 7th with a 9th: warm, smoky, modal. The opening chord of countless jazz and R&B grooves.'},
  {k:'It+6',n:'Italian augmented sixth',d:['1','3','#6'],l:9,t:'le, do and fi: the augmented 6th between le and fi expands outward to so.'},
  {k:'Fr+6',n:'French augmented sixth',d:['1','3','#4','#6'],l:9,t:'le, do, re and fi: the Italian sixth plus re.'},
  {k:'Ger+6',n:'German augmented sixth',d:['1','3','5','#6'],l:9,t:'le, do, ma and fi: sounds like a dominant 7th, but le falls and fi rises a semitone to so. The chord moves to V, often through I⁶₄ first.'},
- {k:'7sus4',n:'dominant seventh suspended fourth',d:['1','4','5','b7'],l:6,t:'A dominant 7th with the 4th in place of the 3rd. It delays the pull of the dominant; often resolves to a plain 7th before landing.'}
+ {k:'7sus4',n:'dominant seventh suspended fourth',d:['1','4','5','b7'],l:4,s:9,t:'A dominant 7th with the 4th in place of the 3rd. It delays the pull of the dominant; often resolves to a plain 7th before landing.'}
 ];
 const ALIAS={'5':'5','':'', 'M':'', 'maj':'', 'm':'m','min':'m','-':'m','7':'7','dom7':'7','sus2':'sus2','sus4':'sus4','sus':'sus4','dim':'dim','°':'dim','o':'dim','aug':'aug','+':'aug','maj7':'maj7','M7':'maj7','Δ':'maj7','Δ7':'maj7','ma7':'maj7','m7':'m7','min7':'m7','-7':'m7','6':'6','add9':'add9','madd9':'madd9','m(add9)':'madd9','m6':'m6','m7b5':'m7b5','ø':'m7b5','ø7':'m7b5','min7b5':'m7b5','dim7':'dim7','°7':'dim7','o7':'dim7','9':'9','maj9':'maj9','M9':'maj9','m9':'m9','min9':'m9','7sus4':'7sus4','7sus':'7sus4'};
 const mod=(a,n)=>((a%n)+n)%n;
@@ -2079,7 +2079,10 @@ function spell(li,midi){li=mod(li,7);let a=mod(midi,12)-NAT[li];if(a>6)a-=12;if(
 function degNum(d){return parseInt(d.replace(/[#b]/g,''))}
 function degColor(d){const n=degNum(d);if(n===1)return'var(--goldhi)';if(n===3||n===2&&!d.startsWith('b')||n===4)return'var(--green)';if(n===5)return'var(--ivory)';if(n===7||n===6)return'var(--red)';return'var(--violet)'}
 
-let S={root:'B',q:'m7',inv:0,level:6,inst:'piano',vi:0,key:null};
+const LVN=['','First steps','Foundation','Developing','Intermediate','Senior','Advanced','Extension'];
+const LVMIG={4:2,5:4,6:5};
+function lvlSet(l){S.level=l;try{localStorage.setItem('cjg_level',l)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}/* saved NSW Stage -> Level, once (Levels framework) */
+let S={root:'B',q:'m7',inv:0,level:5,inst:'piano',vi:0,key:null};
 function chordOf(root,qk,inv=0){
  const q=Q.find(x=>x.k===qk),rl=LET.indexOf(root[0]),rpc=pcOf(root);
  const tones=q.d.map(d=>{const s=DEG[d];return{d,s,...spell(rl+degNum(d)-1,rpc+s+60)}});
@@ -2649,7 +2652,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-
  if(t.dataset.v!==undefined){S.vi=+t.dataset.v;document.querySelectorAll('.vbox').forEach((b,i)=>b.classList.toggle('on',i===S.vi));const x=instMidis(chord());play(x.m,x.gap,x.k);return}
  if(t.dataset.i){S.inst=t.dataset.i;S.vi=0;const k=smpKind(S.inst==='piano'?'piano':S.inst==='bass'?'bass':S.inst);if(k)loadSamples(k);renderInst(chord());return}
  if(t.dataset.gtone){S.gtone=t.dataset.gtone;loadSamples(smpKind('guitar'));renderInst(chord());return}
- if(t.dataset.l){S.level=+t.dataset.l;if(typeof EAR!=='undefined'&&EAR.all){EAR.all=false;earSave()}try{localStorage.setItem('cjg_stage',S.level)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
+ if(t.dataset.l){S.level=+t.dataset.l;if(typeof EAR!=='undefined'&&EAR.all){EAR.all=false;earSave()}try{localStorage.setItem('cjg_level',S.level)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
  if(t.dataset.room)return;
  if(t.dataset.m!==undefined){play([+t.dataset.m],0,S.inst==='piano'?'piano':'pluck')}
 });
@@ -2664,7 +2667,7 @@ $('toOracle').onclick=()=>toast('The Oracle opens in the next build: this chord 
 $('searchForm').onsubmit=e=>{e.preventDefault();const v=$('q').value.trim().replace('♯','#').replace('♭','b');const m=v.match(/^([A-Ga-g])([#b]?)(.*?)(?:\/([A-Ga-g][#b]?))?$/);
  if(!m){toast('Try a chord symbol like Bm7, F#dim7 or Ebmaj9');return}
  const r=m[1].toUpperCase()+m[2],qa=ALIAS[m[3]];if(qa===undefined||!ROOTS.includes(r)){toast(`I don't know "${v}" yet. Try Bm7, F#dim7, Ebmaj9…`);return}
- S.root=r;S.q=qa;S.inv=0;S.vi=0;const qq=Q.find(x=>x.k===qa);if(qq.l>S.level){S.level=6;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b.dataset.l==='6'))}
+ S.root=r;S.q=qa;S.inv=0;S.vi=0;const qq=Q.find(x=>x.k===qa);if(qq.l>S.level){lvlSet(qq.l)}
  if(m[4]){const c=chord(),i=c.tones.findIndex(t=>mod(t.midi,12)===pcOf(m[4][0].toUpperCase()+m[4].slice(1)));if(i>0)S.inv=i}
  render();play(voicing(chord()).map(x=>x.midi));logIt('searched '+v);$('q').blur()};
 
@@ -2890,7 +2893,7 @@ function renderGym(){
   `<div class="pc add">${P.length?'Add more from the key below, type numerals, or draw from the Oracle':'Your climb is empty. Tap chords below, load a famous climb, or draw cards in the Oracle.'}</div>`;
  const cd=cadence();cad.innerHTML=cd?`<b>${cd[0]}.</b> ${cd[1]}`:'Add two or more chords and I\'ll read how your phrase ends.';
  // palette
- const lvl=S.level,sev=G.sev&&lvl>=5;$('gSev').style.display=lvl>=5?'':'none';$('gSev').textContent=sev?'Showing sevenths':'Showing triads';
+ const lvl=S.level,sev=G.sev&&lvl>=3;$('gSev').style.display=lvl>=3?'':'none';$('gSev').textContent=sev?'Showing sevenths':'Showing triads';
  const pal=(arr)=>arr.map(r=>{const p=parseRoman(r,K);if(!p)return'';const a=analyse(p,K);return`<button style="--c:${FN[a.f]}" data-add="${r}"><b>${a.num}</b><small>${pretty(chordOf(p.root,p.q).sym)}</small></button>`}).join('');
  $('palD').innerHTML=pal(diatonicRomans(K,sev));
  const col=colourRomans(K,sev,lvl);$('palCWrap').style.display=col.length?'':'none';$('palC').innerHTML=pal(col);
@@ -3037,7 +3040,7 @@ function renderOracle(){
  if(!$('deal'))return;fillKeySels();
  document.querySelectorAll('#otabs button').forEach(b=>b.classList.toggle('on',b.dataset.o===O.tab));
  ['cards','dice','strat'].forEach(t=>$('o-'+t).hidden=t!==O.tab);
- $('oSev').parentElement.style.display=S.level>=5?'':'none';$('oCol').parentElement.style.display=S.level>=5?'':'none';
+ $('oSev').parentElement.style.display=S.level>=3?'':'none';$('oCol').parentElement.style.display=S.level>=5?'':'none';
  $('deal').innerHTML=O.hand.length?O.hand.map((c,i)=>c?`<div class="tc ${c.kept?'kept':''} ${c.fresh?'flip':''}" style="--c:${FN[c.f]};animation-delay:${i*.08}s" data-tc="${i}">
    <div class="suit">${SUIT[c.f]}</div><div class="orn">❦</div><div class="num disp">${c.num}</div><div class="cs">${pretty(chordOf(c.root,c.q).sym)}</div><div class="hint">${HINT[c.f]}</div>
    <button class="lock" data-keep="${i}">${c.kept?'kept':'keep'}</button></div>`:'').join(''):'<div class="empty">Draw a hand. Keep the cards you like, then draw again to replace the rest.</div>';
@@ -3096,7 +3099,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-load],[dat
   if(a==='inv'){const n=chordOf(ch.root,ch.q).tones.length;ch.inv=((ch.inv||0)+1)%n;play(voiceProg([ch]).flatMap(v=>[v.bass.midi,...v.rh.map(x=>x.midi)]))}
   if(a==='dup')P.splice(i+1,0,{...ch});
   if(a==='del'){P.splice(i,1);G.sel=-1}
-  if(a==='seed'){S.root=ch.root;S.q=ch.q;S.inv=ch.inv||0;S.vi=0;if(Q.find(x=>x.k===ch.q).l>S.level){S.level=6;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b.dataset.l==='6'))}location.hash='seed';room('seed');return}
+  if(a==='seed'){S.root=ch.root;S.q=ch.q;S.inv=ch.inv||0;S.vi=0;if(Q.find(x=>x.k===ch.q).l>S.level){lvlSet(Q.find(x=>x.k===ch.q).l)}location.hash='seed';room('seed');return}
   saveP();renderGym();return}
  if(t.dataset.pi!==undefined){const i=+t.dataset.pi;G.sel=i;renderGym();const v=voiceProg(P)[i];play([v.bass.midi,...v.rh.map(x=>x.midi)]);return}
  if(t.dataset.add){const p=parseRoman(t.dataset.add,K);P.push({...p,inv:0,beats:gBar()});saveP();renderGym();const v=voiceProg(P)[P.length-1];play([v.bass.midi,...v.rh.map(x=>x.midi)]);logIt('added '+t.dataset.add);return}
@@ -3421,23 +3424,23 @@ const KS={tab:'scales',tonic:'C',sc:'maj',desc:false,inst:'piano',clef:'treble',
 const degSemi=d=>{const n=parseInt(d.replace(/[#b]/g,''));let a=0;for(const ch of d.replace(/\d/g,''))a+=ch==='#'?1:-1;return NAT[(n-1)%7]+a+12*Math.floor((n-1)/7)};
 function degPretty(d){return d.replace(/bb/g,'𝄫').replace(/##/g,'𝄪').replace(/b/g,'♭').replace(/#/g,'♯')}
 const SCALES=[
- {k:'maj',n:'Major',a:'Ionian mode',g:'Major & minor',l:4,d:['1','2','3','4','5','6','7'],sol:'d r m f s l t',pk:[0,0],t:'The scale most Western music calls home. Two identical four-note halves (tetrachords) joined by a whole tone; the semitones between mi–fa and ti–do give it its pull toward do.'},
- {k:'nmin',n:'Natural minor',a:'Aeolian mode',g:'Major & minor',l:4,d:['1','2','b3','4','5','b6','b7'],sol:'l t d r m f s',pk:[2,3],ch:null,t:'The relative minor: the same notes as the major scale, but home is la. Darker and more inward. With no leading note, it sounds folk-like, modal and unresolved.'},
- {k:'hmin',n:'Harmonic minor',g:'Major & minor',l:5,d:['1','2','b3','4','5','b6','7'],sol:'l t d r m f si',pk:[2,3],ch:['7'],t:'Natural minor with the 7th raised (so becomes si). That gives minor keys a leading note and a major V chord, but leaves an augmented 2nd between fa and si: the "exotic" sound of Baroque laments and film villains.'},
- {k:'mmin',n:'Melodic minor (classical)',g:'Major & minor',l:5,d:['1','2','b3','4','5','6','7'],sol:'l t d r m fi si',desc:{d:['1','b7','b6','5','4','b3','2','1'],sol:'l s f m r d t l'},pk:[2,3],ch:['6','7'],t:'Raises both the 6th and 7th going up (fi, si) to smooth out the augmented 2nd, then falls as the natural minor. Jazz players use the rising form in both directions.'},
- {k:'ion',n:'Ionian',a:'= the major scale',g:'Modes',l:5,d:['1','2','3','4','5','6','7'],sol:'d r m f s l t',pk:[0,0],t:'The mode on do: the major scale under its modal name. Compare every other mode against it.'},
- {k:'dor',n:'Dorian',a:'mode on re',g:'Modes',l:5,d:['1','2','b3','4','5','6','b7'],sol:'r m f s l t d',pk:[6,10],ch:['6'],t:'A minor mode with a raised 6th. That one brighter note gives it a cool, soulful, folk-rock colour: minor but not sad.'},
- {k:'phr',n:'Phrygian',a:'mode on mi',g:'Modes',l:5,d:['1','b2','b3','4','5','b6','b7'],sol:'m f s l t d r',pk:[5,8],ch:['b2'],t:'A minor mode with a lowered 2nd right above home. That semitone gives it a dark, Spanish or metal edge.'},
- {k:'lyd',n:'Lydian',a:'mode on fa',g:'Modes',l:5,d:['1','2','3','#4','5','6','7'],sol:'f s l t d r m',pk:[4,7],ch:['#4'],t:'A major mode with a raised 4th. Bright, floating and dreamlike: a favourite of film composers for wonder and flight.'},
- {k:'mix',n:'Mixolydian',a:'mode on so',g:'Modes',l:5,d:['1','2','3','4','5','6','b7'],sol:'s l t d r m f',pk:[3,5],ch:['b7'],t:'A major mode with a lowered 7th. Bluesy, rocking and relaxed; the ♭VII chord is its signature.'},
- {k:'loc',n:'Locrian',a:'mode on ti',g:'Modes',l:6,d:['1','b2','b3','4','b5','b6','b7'],sol:'t d r m f s l',pk:[1,1],ch:['b5'],t:'The only mode whose home chord is diminished (a ♭5 above the tonic). Unstable and rarely home for long, though heavy metal uses its colour.'},
- {k:'mpent',n:'Major pentatonic',g:'Pentatonic & blues',l:4,d:['1','2','3','5','6'],sol:'d r m s l',pk:[0,0],t:'Five notes, no semitones: the major scale without fa and ti. Found in folk music on every continent; impossible to sound "wrong", so ideal for first improvisations.'},
- {k:'npent',n:'Minor pentatonic',g:'Pentatonic & blues',l:4,d:['1','b3','4','5','b7'],sol:'l d r m s',pk:[2,3],t:'The same five notes as the major pentatonic, with la as home. The backbone of blues, rock and pop guitar solos.'},
- {k:'blues',n:'Blues scale',g:'Pentatonic & blues',l:4,d:['1','b3','4','b5','5','b7'],sol:'l d r ma m s',pk:[2,3],ch:['b5'],t:'The minor pentatonic plus the "blue note", a ♭5 squeezed between 4 and 5. Bend into it, slide through it, never stop on it for long.'},
- {k:'whole',n:'Whole-tone',g:'Beyond',l:5,d:['1','2','3','#4','#5','b7'],sol:'d r m fi si ta',pk:null,t:'Six notes, all a whole tone apart. With no semitones there is no pull to any note, so it floats: Debussy, dream sequences, the moment the harp shimmers.'},
- {k:'chrom',n:'Chromatic',g:'Beyond',l:5,d:['1','#1','2','#2','3','4','#4','5','#5','6','#6','7'],sol:'d di r ri m f fi s si l li t',desc:{d:['1','7','b7','6','b6','5','b5','4','3','b3','2','b2','1'],sol:'d t ta l le s se f m ma r ra d'},pk:[0,0],t:'All twelve notes. By convention it is spelled with sharps going up and flats coming down.'},
- {k:'phrd',n:'Phrygian dominant',a:'5th mode of harmonic minor',g:'Beyond',l:6,d:['1','b2','3','4','5','b6','b7'],sol:'m f si l t d r',pk:[5,8],ch:['b2','3'],t:'Harmonic minor starting on its 5th (mi). The ♭2 and major 3rd together give the Flamenco, klezmer and Middle-Eastern-flavoured sound.'},
- {k:'oct',n:'Octatonic',a:'semitone–tone diminished',us:'half–whole diminished',g:'Beyond',l:6,d:['1','b2','#2','3','#4','5','6','b7'],sol:'d ra ri m fi s l ta',pk:null,t:'Eight notes alternating semitones and whole tones. Symmetrical and tense: Stravinsky, Bartók, Messiaen and jazz players over dominant 7♭9 chords.'}
+ {k:'maj',n:'Major',a:'Ionian mode',g:'Major & minor',l:1,s:2,d:['1','2','3','4','5','6','7'],sol:'d r m f s l t',pk:[0,0],t:'The scale most Western music calls home. Two identical four-note halves (tetrachords) joined by a whole tone; the semitones between mi–fa and ti–do give it its pull toward do.'},
+ {k:'nmin',n:'Natural minor',a:'Aeolian mode',g:'Major & minor',l:2,s:4,d:['1','2','b3','4','5','b6','b7'],sol:'l t d r m f s',pk:[2,3],ch:null,t:'The relative minor: the same notes as the major scale, but home is la. Darker and more inward. With no leading note, it sounds folk-like, modal and unresolved.'},
+ {k:'hmin',n:'Harmonic minor',g:'Major & minor',l:3,s:6,d:['1','2','b3','4','5','b6','7'],sol:'l t d r m f si',pk:[2,3],ch:['7'],t:'Natural minor with the 7th raised (so becomes si). That gives minor keys a leading note and a major V chord, but leaves an augmented 2nd between fa and si: the "exotic" sound of Baroque laments and film villains.'},
+ {k:'mmin',n:'Melodic minor (classical)',g:'Major & minor',l:3,s:6,d:['1','2','b3','4','5','6','7'],sol:'l t d r m fi si',desc:{d:['1','b7','b6','5','4','b3','2','1'],sol:'l s f m r d t l'},pk:[2,3],ch:['6','7'],t:'Raises both the 6th and 7th going up (fi, si) to smooth out the augmented 2nd, then falls as the natural minor. Jazz players use the rising form in both directions.'},
+ {k:'ion',n:'Ionian',a:'= the major scale',g:'Modes',l:3,s:7,d:['1','2','3','4','5','6','7'],sol:'d r m f s l t',pk:[0,0],t:'The mode on do: the major scale under its modal name. Compare every other mode against it.'},
+ {k:'dor',n:'Dorian',a:'mode on re',g:'Modes',l:3,s:7,d:['1','2','b3','4','5','6','b7'],sol:'r m f s l t d',pk:[6,10],ch:['6'],t:'A minor mode with a raised 6th. That one brighter note gives it a cool, soulful, folk-rock colour: minor but not sad.'},
+ {k:'phr',n:'Phrygian',a:'mode on mi',g:'Modes',l:4,s:8,d:['1','b2','b3','4','5','b6','b7'],sol:'m f s l t d r',pk:[5,8],ch:['b2'],t:'A minor mode with a lowered 2nd right above home. That semitone gives it a dark, Spanish or metal edge.'},
+ {k:'lyd',n:'Lydian',a:'mode on fa',g:'Modes',l:4,s:8,d:['1','2','3','#4','5','6','7'],sol:'f s l t d r m',pk:[4,7],ch:['#4'],t:'A major mode with a raised 4th. Bright, floating and dreamlike: a favourite of film composers for wonder and flight.'},
+ {k:'mix',n:'Mixolydian',a:'mode on so',g:'Modes',l:3,s:7,d:['1','2','3','4','5','6','b7'],sol:'s l t d r m f',pk:[3,5],ch:['b7'],t:'A major mode with a lowered 7th. Bluesy, rocking and relaxed; the ♭VII chord is its signature.'},
+ {k:'loc',n:'Locrian',a:'mode on ti',g:'Modes',l:5,s:10,d:['1','b2','b3','4','b5','b6','b7'],sol:'t d r m f s l',pk:[1,1],ch:['b5'],t:'The only mode whose home chord is diminished (a ♭5 above the tonic). Unstable and rarely home for long, though heavy metal uses its colour.'},
+ {k:'mpent',n:'Major pentatonic',g:'Pentatonic & blues',l:1,s:1,d:['1','2','3','5','6'],sol:'d r m s l',pk:[0,0],t:'Five notes, no semitones: the major scale without fa and ti. Found in folk music on every continent; impossible to sound "wrong", so ideal for first improvisations.'},
+ {k:'npent',n:'Minor pentatonic',g:'Pentatonic & blues',l:2,s:3,d:['1','b3','4','5','b7'],sol:'l d r m s',pk:[2,3],t:'The same five notes as the major pentatonic, with la as home. The backbone of blues, rock and pop guitar solos.'},
+ {k:'blues',n:'Blues scale',g:'Pentatonic & blues',l:2,s:5,d:['1','b3','4','b5','5','b7'],sol:'l d r ma m s',pk:[2,3],ch:['b5'],t:'The minor pentatonic plus the "blue note", a ♭5 squeezed between 4 and 5. Bend into it, slide through it, never stop on it for long.'},
+ {k:'whole',n:'Whole-tone',g:'Beyond',l:4,s:9,d:['1','2','3','#4','#5','b7'],sol:'d r m fi si ta',pk:null,t:'Six notes, all a whole tone apart. With no semitones there is no pull to any note, so it floats: Debussy, dream sequences, the moment the harp shimmers.'},
+ {k:'chrom',n:'Chromatic',g:'Beyond',l:4,s:9,d:['1','#1','2','#2','3','4','#4','5','#5','6','#6','7'],sol:'d di r ri m f fi s si l li t',desc:{d:['1','7','b7','6','b6','5','b5','4','3','b3','2','b2','1'],sol:'d t ta l le s se f m ma r ra d'},pk:[0,0],t:'All twelve notes. By convention it is spelled with sharps going up and flats coming down.'},
+ {k:'phrd',n:'Phrygian dominant',a:'5th mode of harmonic minor',g:'Beyond',l:5,s:11,d:['1','b2','3','4','5','b6','b7'],sol:'m f si l t d r',pk:[5,8],ch:['b2','3'],t:'Harmonic minor starting on its 5th (mi). The ♭2 and major 3rd together give the Flamenco, klezmer and Middle-Eastern-flavoured sound.'},
+ {k:'oct',n:'Octatonic',a:'semitone–tone diminished',us:'half–whole diminished',g:'Beyond',l:5,s:12,d:['1','b2','#2','3','#4','5','6','b7'],sol:'d ra ri m fi s l ta',pk:null,t:'Eight notes alternating semitones and whole tones. Symmetrical and tense: Stravinsky, Bartók, Messiaen and jazz players over dominant 7♭9 chords.'}
 ];
 const SGROUPS=['Major & minor','Modes','Pentatonic & blues','Beyond'];
 const HANDS={d:'closed fist',r:'flat hand, fingers slanting upward',m:'flat hand, palm down, level',f:'fist, thumb pointing down',s:'flat hand, palm facing you, thumb up',l:'hand relaxed, hanging from the wrist',t:'index finger pointing up diagonally'};
@@ -3527,7 +3530,7 @@ function renderScales(){let sc=SCALES.find(s=>s.k===KS.sc);if(sc.l>S.level){KS.s
  const C3=scaleChords(KS.tonic,KS.sc,false),C7=scaleChords(KS.tonic,KS.sc,true);
  if(!C3){$('ksChords').innerHTML=`<p class="note" style="margin:0">${sc.n} scales don't stack into seven 3rd-based chords. ${sc.k.includes('pent')||sc.k==='blues'?'Use the chords of the related key: '+(sc.pk[1]?'the minor':'the major')+' key on '+pretty(KS.tonic)+', or power chords.':'They suit planing, clusters and symmetrical harmony instead.'}</p>`}
  else{const row=(L,lab)=>`<div class="lbl">${lab}</div><div class="kchords">${L.map(c=>`<button class="kc ${c.ch?'ch':''}" ${c.inQ?`data-kgo="${c.root}|${c.q}"`:''} style="--c:${c.f?FN[c.f]:'var(--line)'}"><span class="rn">${c.num}</span><b>${pretty(c.sym)}</b></button>`).join('')}</div>`;
-  $('ksChords').innerHTML=row(C3,'Triads')+(S.level>=5?row(C7,'Sevenths'):'')+
+  $('ksChords').innerHTML=row(C3,'Triads')+(S.level>=3?row(C7,'Sevenths'):'')+
    `<div class="kfoot">${['maj','ion','nmin','hmin','mmin'].includes(KS.sc)?'<span style="--c:var(--green)">● home</span><span style="--c:var(--gold)">● away</span><span style="--c:var(--red)">● pull</span>':'<span style="--c:var(--violet)">◆ violet ring: contains the mode\'s character note</span>'} · Tap a chord to open it in the Chord Library.</div>`+
    (['maj','ion','nmin','hmin'].includes(KS.sc)?`<button class="mini gold" data-kgym="1" style="margin-top:10px">⤴ Take this key to the Gym</button>`:'')}
  renderKsSongs(sc);
@@ -3577,15 +3580,15 @@ function renderCircle(){const R1=168,R2=118,R3=74,cx=190,cy=190;let s=`<svg view
  drawLine($('ksSigStaff'),[],KS.clef,maj,'q')}
 /* ---------- intervals ---------- */
 const IVS=[
- {k:'m2',n:'minor 2nd',num:2,s:1,l:4,c:'dis',so:'ti → do'},{k:'M2',n:'major 2nd',num:2,s:2,l:4,c:'dis',so:'do → re'},
- {k:'m3',n:'minor 3rd',num:3,s:3,l:4,c:'imp',so:'la → do'},{k:'M3',n:'major 3rd',num:3,s:4,l:4,c:'imp',so:'do → mi'},
- {k:'P4',n:'perfect 4th',num:4,s:5,l:4,c:'p4',so:'so → do′'},{k:'A4',n:'augmented 4th',num:4,s:6,l:5,c:'dis',so:'fa → ti',tt:1},
- {k:'d5',n:'diminished 5th',num:5,s:6,l:5,c:'dis',so:'ti → fa′',tt:1},{k:'P5',n:'perfect 5th',num:5,s:7,l:4,c:'perf',so:'do → so'},
- {k:'m6',n:'minor 6th',num:6,s:8,l:4,c:'imp',so:'mi → do′'},{k:'M6',n:'major 6th',num:6,s:9,l:4,c:'imp',so:'so → mi′'},
- {k:'m7',n:'minor 7th',num:7,s:10,l:5,c:'dis',so:'so → fa′'},{k:'M7',n:'major 7th',num:7,s:11,l:5,c:'dis',so:'do → ti'},
- {k:'P8',n:'octave',num:8,s:12,l:4,c:'perf',so:'do → do′'},
- {k:'A2',n:'augmented 2nd',num:2,s:3,l:6,c:'dis',so:'fa → si (harmonic minor)'},{k:'A5',n:'augmented 5th',num:5,s:8,l:6,c:'dis',so:'do → si (harmonic minor)'},
- {k:'d7',n:'diminished 7th',num:7,s:9,l:6,c:'dis',so:'si → fa′ (harmonic minor)'},{k:'A6',n:'augmented 6th',num:6,s:10,l:6,c:'dis',so:'le → fi′'}];
+ {k:'m2',n:'minor 2nd',num:2,s:1,l:2,s:3,c:'dis',so:'ti → do'},{k:'M2',n:'major 2nd',num:2,s:2,l:1,s:1,c:'dis',so:'do → re'},
+ {k:'m3',n:'minor 3rd',num:3,s:3,l:1,s:1,c:'imp',so:'la → do'},{k:'M3',n:'major 3rd',num:3,s:4,l:1,s:2,c:'imp',so:'do → mi'},
+ {k:'P4',n:'perfect 4th',num:4,s:5,l:1,s:2,c:'p4',so:'so → do′'},{k:'A4',n:'augmented 4th',num:4,s:6,l:3,s:5,c:'dis',so:'fa → ti',tt:1},
+ {k:'d5',n:'diminished 5th',num:5,s:6,l:3,s:5,c:'dis',so:'ti → fa′',tt:1},{k:'P5',n:'perfect 5th',num:5,s:7,l:1,s:2,c:'perf',so:'do → so'},
+ {k:'m6',n:'minor 6th',num:6,s:8,l:2,s:3,c:'imp',so:'mi → do′'},{k:'M6',n:'major 6th',num:6,s:9,l:1,s:2,c:'imp',so:'so → mi′'},
+ {k:'m7',n:'minor 7th',num:7,s:10,l:2,s:4,c:'dis',so:'so → fa′'},{k:'M7',n:'major 7th',num:7,s:11,l:3,s:5,c:'dis',so:'do → ti'},
+ {k:'P8',n:'octave',num:8,s:12,l:1,s:2,c:'perf',so:'do → do′'},
+ {k:'A2',n:'augmented 2nd',num:2,s:3,l:4,s:6,c:'dis',so:'fa → si (harmonic minor)'},{k:'A5',n:'augmented 5th',num:5,s:8,l:4,s:6,c:'dis',so:'do → si (harmonic minor)'},
+ {k:'d7',n:'diminished 7th',num:7,s:9,l:4,s:6,c:'dis',so:'si → fa′ (harmonic minor)'},{k:'A6',n:'augmented 6th',num:6,s:10,l:6,s:11,c:'dis',so:'le → fi′'}];
 const CONS={perf:'Perfect consonance: hollow, open, completely stable.',imp:'Imperfect consonance: sweet and stable; the sound of harmony in 3rds and 6ths.',p4:'Consonant as a melody and in rock and folk harmony, but in classical part-writing a 4th above the bass is treated as a dissonance.',dis:'Dissonance: it rubs, creates tension and wants to move somewhere.'};
 const ivInv=iv=>{const n=9-iv.num,q=iv.k[0]==='m'?'M':iv.k[0]==='M'?'m':iv.k[0]==='A'?'d':iv.k[0]==='d'?'A':'P';return IVS.find(x=>x.k===q+n)||{k:q+n,n:({P:'perfect',M:'major',m:'minor',A:'augmented',d:'diminished'})[q]+' '+n+(n===1?'st (unison)':n===2?'nd':n===3?'rd':'th')}};
 function ivNotes(start,iv,dir){const li=LET.indexOf(start[0]),pc=pcOf(start),m0=dir==='down'||pc<7?60+pc:48+pc;
@@ -3668,10 +3671,10 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-ktab],[dat
  if(d.kinst){KS.inst=d.kinst;renderScales();return}
  if(d.kplay){const T=scaleTones(KS.tonic,KS.sc,false);if(d.kplay==='up')play(T.map(x=>x.midi),.3,'piano');else play(scaleTones(KS.tonic,KS.sc,true).map(x=>x.midi),.3,'piano');return}
  if(d.kss){if(d.kss==='stop'){KS.sing=null;micStop();$('ksSingBox').innerHTML='';document.querySelectorAll('#ksTiles .stile').forEach(e=>e.classList.remove('now'));return}singScale();return}
- if(d.kgo){const[r,q]=d.kgo.split('|');S.root=r;S.q=q;S.inv=0;S.vi=0;if(Q.find(x=>x.k===q).l>S.level){S.level=6;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b.dataset.l==='6'))}location.hash='seed';room('seed');play(voicing(chord()).map(x=>x.midi));return}
+ if(d.kgo){const[r,q]=d.kgo.split('|');S.root=r;S.q=q;S.inv=0;S.vi=0;if(Q.find(x=>x.k===q).l>S.level){lvlSet(Q.find(x=>x.k===q).l)}location.hash='seed';room('seed');play(voicing(chord()).map(x=>x.midi));return}
  if(d.kgym){const mode=KS.sc==='maj'||KS.sc==='ion'?'maj':'min';setKey(pcOf(KS.tonic),mode);location.hash='gym';room('gym');toast('The Gym is now in '+keyName(K));return}
  if(d.ci!==undefined){CSEL={i:+d.ci,minor:!!d.cmin};renderCircle();const tn=CSEL.minor?CMIN[CSEL.i]:CMAJ[CSEL.i];play(scaleTones(tn,CSEL.minor?'nmin':'maj',false).map(x=>x.midi),.16,'piano');return}
- if(d.kmode){const[tn,sk]=d.kmode.split('|');KS.tonic=tn;KS.sc=sk;KS.desc=false;if(SCALES.find(s=>s.k===sk).l>S.level){S.level=6;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b.dataset.l==='6'))}KS.tab='scales';renderKeysRoom();window.scrollTo(0,0);play(scaleTones(KS.tonic,KS.sc,false).map(x=>x.midi),.22,'piano');return}
+ if(d.kmode){const[tn,sk]=d.kmode.split('|');KS.tonic=tn;KS.sc=sk;KS.desc=false;if(SCALES.find(s=>s.k===sk).l>S.level){lvlSet(SCALES.find(s=>s.k===sk).l)}KS.tab='scales';renderKeysRoom();window.scrollTo(0,0);play(scaleTones(KS.tonic,KS.sc,false).map(x=>x.midi),.22,'piano');return}
  if(d.kis){KS.iv.start=d.kis;renderIntervals();const[a,b]=ivNotes(KS.iv.start,IVS.find(x=>x.k===KS.iv.k),KS.iv.dir);play([a.midi,b.midi],.6,'piano');return}
  if(d.kiv){KS.iv.k=d.kiv;renderIntervals();const[a,b]=ivNotes(KS.iv.start,IVS.find(x=>x.k===KS.iv.k),KS.iv.dir);play([a.midi,b.midi],.6,'piano');logIt('looked at the interval '+d.kiv);return}
  if(d.kivd){KS.iv.dir=d.kivd;renderIntervals();const[a,b]=ivNotes(KS.iv.start,IVS.find(x=>x.k===KS.iv.k),KS.iv.dir);play([a.midi,b.midi],.6,'piano');return}
@@ -3695,22 +3698,22 @@ document.addEventListener('click',e=>{if(e.target.closest('[data-ttog]'))$('tTog
    ===================================================================== */
 const CL={open:null,key:{k:0,mode:'maj'},ex:'perfect',det:{q:null,right:0,n:0}};
 const CADS=[
- {k:'perfect',n:'Perfect cadence',us:'authentic cadence',ch:'V → I',maj:'I IV V I',min:'i iv V i',l:4,feel:'A full stop. Finished, settled, home.',
+ {k:'perfect',n:'Perfect cadence',us:'authentic cadence',ch:'V → I',maj:'I IV V I',min:'i iv V i',l:1,s:1,feel:'A full stop. Finished, settled, home.',
   why:'The dominant (V) holds the leading note (ti), which rises a semitone to do, and the bass leaps from so down to do. Tension, then release.',
   where:'The final chords of most hymns, anthems and classical movements, and the end of any chorus that lands firmly on home.'},
- {k:'plagal',n:'Plagal cadence',us:'plagal cadence',ch:'IV → I',maj:'I vi IV I',min:'i VI iv i',l:4,feel:'A soft full stop: the "Amen" at the end of a hymn.',
+ {k:'plagal',n:'Plagal cadence',us:'plagal cadence',ch:'IV → I',maj:'I vi IV I',min:'i VI iv i',l:2,s:2,feel:'A soft full stop: the "Amen" at the end of a hymn.',
   why:'No leading note, so there is no pull, just a gentle settling. fa falls to mi (or le to so in minor) and the bass moves fa → do.',
   where:'Sung "Amen"s, gospel endings and rock codas that lean back onto home.'},
- {k:'imperfect',n:'Imperfect cadence',us:'half cadence',ch:'? → V',maj:'I vi ii V',min:'i VI iv V',l:4,feel:'A comma, or a question mark. We have stopped, but we are not home.',
+ {k:'imperfect',n:'Imperfect cadence',us:'half cadence',ch:'? → V',maj:'I vi ii V',min:'i VI iv V',l:1,s:1,feel:'A comma, or a question mark. We have stopped, but we are not home.',
   why:'The phrase pauses on the dominant, so the leading note hangs in the air waiting to resolve. The ear expects an answer.',
   where:'The end of the first phrase in countless songs, folk tunes and classical themes: the question before the answer.'},
- {k:'interrupted',n:'Interrupted cadence',us:'deceptive cadence',ch:'V → vi',maj:'I IV V vi',min:'i iv V VI',l:4,feel:'A swerve. We expected home and got somewhere close by but surprising.',
+ {k:'interrupted',n:'Interrupted cadence',us:'deceptive cadence',ch:'V → vi',maj:'I IV V vi',min:'i iv V VI',l:2,s:2,feel:'A swerve. We expected home and got somewhere close by but surprising.',
   why:'V sets up I, the leading note still rises to do, but the bass steps up to la instead of falling to do. vi shares two notes with I, so it sounds like home with the lights off.',
   where:'Just before a final chorus or a big ending, to delay the arrival and make the real ending land harder.'},
- {k:'phrygian',n:'Phrygian cadence',us:'Phrygian half cadence',ch:'iv⁶ → V (minor)',maj:null,min:'i VI iv:1 V',l:6,feel:'A darker question: the bass sinks by a semitone onto the dominant.',
+ {k:'phrygian',n:'Phrygian cadence',us:'Phrygian half cadence',ch:'iv⁶ → V (minor)',maj:null,min:'i VI iv:1 V',l:5,s:7,feel:'A darker question: the bass sinks by a semitone onto the dominant.',
   why:'In a minor key the bass falls le → so, a semitone, while the top rises to ti. Named after the Phrygian mode\'s falling semitone.',
   where:'Baroque slow movements and the end of a slow movement before a fast finale.'},
- {k:'c64',n:'Cadential 6/4',us:'cadential 6/4',ch:'I⁶₄ → V → I',maj:'IV I:2 V I',min:'iv i:2 V i',l:6,feel:'A grand, decorated perfect cadence: the bass sits on so while the upper parts lean before resolving.',
+ {k:'c64',n:'Cadential 6/4',us:'cadential 6/4',ch:'I⁶₄ → V → I',maj:'IV I:2 V I',min:'iv i:2 V i',l:5,s:7,feel:'A grand, decorated perfect cadence: the bass sits on so while the upper parts lean before resolving.',
   why:'The "I⁶₄" is really a decorated V: the 6th and 4th above the bass fall by step to the 5th and 3rd of V.',
   where:'Classical concertos (just before the cadenza) and the end of many hymns and anthems.'}];
 const CPERIOD={maj:['I IV I V','I IV V I'],min:['i iv i V','i iv V i']};
@@ -3800,12 +3803,12 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-clopen],[d
 const C4={key:{k:0,mode:'maj'},ex:'trick',melody:null,step:-1};
 const C4KEYS=[0,7,2,9,4,5,10].map(k=>({k,mode:'maj'}));
 const C4EX=[
- {k:'trick',n:'The three-chord trick',l:4,bars:'I IV V I',st:'Folk · hymns · campfire',p:'Home, away, pull, home: the whole of tonal harmony in four chords.'},
- {k:'folk',n:'Folk / country verse',l:4,bars:'I IV I V I IV V I',st:'Folk · country',p:'Two phrases: the first stops on V (a question), the second comes home (the answer).'},
- {k:'rnr',n:'Rock and roll turnaround',l:4,bars:'I IV V IV',st:'Rock and roll · garage · punk',p:'Round and round with no full stop: V falls back to IV instead of resolving, so the loop keeps driving.'},
- {k:'blues',n:'Twelve-bar blues',l:4,bars:'I7 I7 I7 I7 IV7 IV7 I7 I7 V7 IV7 I7 V7',st:'Blues · rock and roll · jazz',p:'Three lines of four bars. Every chord is a dominant 7th, which is "wrong" by classical rules and exactly right for the blues.'},
- {k:'quick',n:'Blues with a quick change',l:5,bars:'I7 IV7 I7 I7 IV7 IV7 I7 I7 V7 IV7 I7 V7',st:'Blues · jazz',p:'The IV chord arrives early, in bar 2, then the form carries on as usual.'},
- {k:'mblues',n:'Minor blues',l:5,bars:'i7 i7 i7 i7 iv7 iv7 i7 i7 VI7 V7 i7 V7',st:'Blues · jazz · soul',p:'The same shape in a minor key. Bar 9 slides down onto the dominant from VI7, a semitone above it.'}];
+ {k:'trick',n:'The three-chord trick',l:1,bars:'I IV V I',st:'Folk · hymns · campfire',p:'Home, away, pull, home: the whole of tonal harmony in four chords.'},
+ {k:'folk',n:'Folk / country verse',l:1,bars:'I IV I V I IV V I',st:'Folk · country',p:'Two phrases: the first stops on V (a question), the second comes home (the answer).'},
+ {k:'rnr',n:'Rock and roll turnaround',l:2,bars:'I IV V IV',st:'Rock and roll · garage · punk',p:'Round and round with no full stop: V falls back to IV instead of resolving, so the loop keeps driving.'},
+ {k:'blues',n:'Twelve-bar blues',l:2,bars:'I7 I7 I7 I7 IV7 IV7 I7 I7 V7 IV7 I7 V7',st:'Blues · rock and roll · jazz',p:'Three lines of four bars. Every chord is a dominant 7th, which is "wrong" by classical rules and exactly right for the blues.'},
+ {k:'quick',n:'Blues with a quick change',l:3,bars:'I7 IV7 I7 I7 IV7 IV7 I7 I7 V7 IV7 I7 V7',st:'Blues · jazz',p:'The IV chord arrives early, in bar 2, then the form carries on as usual.'},
+ {k:'mblues',n:'Minor blues',l:4,bars:'i7 i7 i7 i7 iv7 iv7 i7 i7 VI7 V7 i7 V7',st:'Blues · jazz · soul',p:'The same shape in a minor key. Bar 9 slides down onto the dominant from VI7, a semitone above it.'}];
 const C4MEL=[[0,4],[5,9],[7,4],[2,-1],[4,7],[9,5],[11,14],[12]];
 function c4List(ex,key){return ex.bars.split(' ').map(r=>{const k2=ex.k==='mblues'?{k:key.k,mode:'min'}:key;const p=parseRoman(r,k2);return{...p,inv:0,beats:4,rn:r}})}
 function c4Play(list,onStep,pat){const op=G.pat;G.pat=pat||'pulse';playList(list,'climb',onStep,false);G.pat=op}
@@ -3889,11 +3892,11 @@ const C5ROT=[
  {s:2,n:'vi–IV–I–V',home:'vi (feels minor)',feel:'The same four chords, but starting on la makes the loop feel minor: wistful, yearning, often used for verses.'},
  {s:3,n:'IV–I–V–vi',home:'unsettled',feel:'Starts away from home and ends on vi: it never quite lands, so it floats and builds.'}];
 const C5FAM=[
- {k:'pop',n:'The four-chord loop',r:'I V vi IV',l:4,p:'Rotate it with the wheel.'},
- {k:'fifties',n:'The fifties progression',r:'I vi IV V',l:4,p:'Doo-wop and early rock ballads: the same chords in a different order, ending on V so it loops back.'},
- {k:'axis2',n:'I–IV–vi–V',r:'I IV vi V',l:4,p:'The same four chords reshuffled: IV first gives it an open, hopeful lift.'},
- {k:'desc',n:'vi–V–IV–V',r:'vi V IV V',l:5,p:'A rocking minor-feel loop that never touches I: home is implied, never stated.'},
- {k:'aeol',n:'The minor (Aeolian) loop',r:'i VI III VII',l:5,p:'The minor-key cousin: four chords from natural minor, no leading note. Epic, dark, cinematic.'}];
+ {k:'pop',n:'The four-chord loop',r:'I V vi IV',l:1,p:'Rotate it with the wheel.'},
+ {k:'fifties',n:'The fifties progression',r:'I vi IV V',l:1,p:'Doo-wop and early rock ballads: the same chords in a different order, ending on V so it loops back.'},
+ {k:'axis2',n:'I–IV–vi–V',r:'I IV vi V',l:2,p:'The same four chords reshuffled: IV first gives it an open, hopeful lift.'},
+ {k:'desc',n:'vi–V–IV–V',r:'vi V IV V',l:2,p:'A rocking minor-feel loop that never touches I: home is implied, never stated.'},
+ {k:'aeol',n:'The minor (Aeolian) loop',r:'i VI III VII',l:2,p:'The minor-key cousin: four chords from natural minor, no leading note. Epic, dark, cinematic.'}];
 function c5Romans(){if(C5.fam!=='pop'){const f=C5FAM.find(x=>x.k===C5.fam);return f.r.split(' ')}const r=[];for(let i=0;i<4;i++)r.push(C5LOOP[(C5.rot+i)%4]);return r}
 function c5List(){const mode=C5.fam==='aeol'?'min':'maj',key={k:C5.fam==='aeol'?(C5.key.k+9)%12:C5.key.k,mode};const out=[];
  c5Romans().forEach(rn=>{let r=rn;if(C5.v.iv&&r==='IV')r='iv';const p=parseRoman(r,key);let inv=0;
@@ -3974,10 +3977,10 @@ const C6={key:{k:0,mode:'maj'},ex:'full',quiz:{q:null,ans:null,right:0,n:0},walk
 const C6LAB={maj:['I','ii','iii','IV','V','vi','vii°'],min:['i','ii°','III','iv','V','VI','VII']};
 const C6ORDER=[0,3,6,2,5,1,4];   // degrees in falling-5ths order: I IV vii° iii vi ii V
 const C6EX=[
- {k:'short',n:'The short circle',l:4,maj:'I vi ii V I',min:'i VI ii° V i',st:'Pop · jazz · show tunes',p:'Home, then three falling 5ths back home. The last four chords are the circle in miniature.'},
- {k:'full',n:'The full diatonic circle',l:5,maj:'I IV vii° iii vi ii V I',min:'i iv VII III VI ii° V i',st:'Baroque · Classical · disco · jazz',p:'Every chord in the key, each root falling a 5th, until the circle closes on home.'},
- {k:'sev',n:'The circle of 7ths',l:6,maj:'Imaj7 IVmaj7 viiø7 iii7 vi7 ii7 V7 I',min:'i7 iv7 VII7 IIImaj7 VImaj7 iiø7 V7 i',st:'Baroque sequences · jazz standards',p:'A 7th on every chord. Each 7th falls by step into the next chord: a chain of small tensions and releases.'},
- {k:'chain',n:'The dominant chain',l:6,maj:'I V7/vi V7/ii V7/V V7 I',min:null,st:'Ragtime · early jazz · a preview of climb 7',p:'Every chord on the way home becomes a dominant 7th, so each one pulls hard into the next.'}];
+ {k:'short',n:'The short circle',l:3,maj:'I vi ii V I',min:'i VI ii° V i',st:'Pop · jazz · show tunes',p:'Home, then three falling 5ths back home. The last four chords are the circle in miniature.'},
+ {k:'full',n:'The full diatonic circle',l:4,maj:'I IV vii° iii vi ii V I',min:'i iv VII III VI ii° V i',st:'Baroque · Classical · disco · jazz',p:'Every chord in the key, each root falling a 5th, until the circle closes on home.'},
+ {k:'sev',n:'The circle of 7ths',l:5,maj:'Imaj7 IVmaj7 viiø7 iii7 vi7 ii7 V7 I',min:'i7 iv7 VII7 IIImaj7 VImaj7 iiø7 V7 i',st:'Baroque sequences · jazz standards',p:'A 7th on every chord. Each 7th falls by step into the next chord: a chain of small tensions and releases.'},
+ {k:'chain',n:'The dominant chain',l:5,maj:'I V7/vi V7/ii V7/V V7 I',min:null,st:'Ragtime · early jazz · a preview of climb 7',p:'Every chord on the way home becomes a dominant 7th, so each one pulls hard into the next.'}];
 // listening list: two authoritative theory texts (Hutchinson, Music Theory for the 21st-Century Classroom, 9.1; UTK Music Theory Materials composition index)
 const C6HEAR=[
  {g:'Baroque',w:'Passacaglia, Suite in G minor HWV 432',a:'George Frideric Handel',y:'1720',f:'The whole theme is the minor circle: i–iv–VII–III–VI–ii°–V–i, then varied again and again.',q:'Handel Passacaglia G minor HWV 432'},
@@ -3987,7 +3990,7 @@ const C6HEAR=[
  {g:'Jazz',w:'Autumn Leaves',a:'Joseph Kosma, Johnny Mercer, Jacques Prévert',y:'1945',f:'Listen to Cannonball Adderley (1958): ii–V–I–IV in the relative major, then ii°–V–i in minor. The 7ths form a guide-tone line.',q:'Autumn Leaves Cannonball Adderley'},
  {g:'Jazz · pop',w:'Fly Me to the Moon',a:'Bart Howard',y:'1954',f:'Listen to Frank Sinatra with Count Basie (1964): the first line climbs down the circle chord by chord.',q:'Fly Me to the Moon Frank Sinatra Count Basie'},
  {g:'Disco',w:'I Will Survive',a:'Gloria Gaynor (Perren and Fekaris)',y:'1978',f:'The whole song loops the minor circle in A minor: Am–Dm–G–C–F–Bø–E.',q:'I Will Survive Gloria Gaynor'}];
-const C6Q=[{n:'V–I',d:[4],l:4},{n:'ii–V–I',d:[1,4],l:4},{n:'vi–ii–V–I',d:[5,1,4],l:4},{n:'iii–vi–ii–V–I',d:[2,5,1,4],l:5},{n:'IV–vii°–iii–vi–ii–V–I',d:[3,6,2,5,1,4],l:6}];
+const C6Q=[{n:'V–I',d:[4],l:2},{n:'ii–V–I',d:[1,4],l:3},{n:'vi–ii–V–I',d:[5,1,4],l:3},{n:'iii–vi–ii–V–I',d:[2,5,1,4],l:4},{n:'IV–vii°–iii–vi–ii–V–I',d:[3,6,2,5,1,4],l:5}];
 function c6Str(ex,key){return ex[key.mode]}
 function c6Deg(ch,key){return mod(LET.indexOf(ch.root[0])-tonicLetter(key),7)}
 function c6Fall(a,b){const s=mod(pcOf(a.root)-pcOf(b.root),12),l=mod(LET.indexOf(a.root[0])-LET.indexOf(b.root[0]),7);
@@ -4074,7 +4077,7 @@ function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.f
   <div class="chips" style="margin-top:12px"><button class="mini gold" data-load="${C6EX[1][mode]}|${mode}">⤴ Start from the full circle in the Gym</button><button class="mini" data-openj>What happened in today's composition? Write it in your journal</button></div></section>`;
  withKey(key,()=>drawSATB($('c6Staff'),r.sat,L));
  $('c6Key').onchange=e=>{C6.key={...CKEYS[+e.target.value]};C6.walk=[0];C6.walkMsg='';renderClimb6()};setCrumb()}
-function c6QNew(){const keys=CKEYS.filter(k=>S.level>=5||k.mode==='maj'),key=rnd(keys),QL=C6Q.filter(q=>q.l<=S.level),i=Math.floor(Math.random()*QL.length);
+function c6QNew(){const keys=CKEYS.filter(k=>S.level>=3||k.mode==='maj'),key=rnd(keys),QL=C6Q.filter(q=>q.l<=S.level),i=Math.floor(Math.random()*QL.length);
  const str=[0,...QL[i].d,0].map(d=>C6LAB[key.mode][d]).join(' '),r=realise(str,key);C6.quiz.q={i,key,sat:r.sat};C6.quiz.ans=null;playSat(r.sat)}
 function c6Walk(d){const key=C6.key,lab=C6LAB[key.mode],W=C6.walk,cur=W[W.length-1],want=mod(cur+3,7);
  const p=parseRoman(lab[d],key);play(voicing(chordOf(p.root,p.q,0)).map(x=>x.midi));
@@ -4198,11 +4201,11 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-c7ex],[dat
    ===================================================================== */
 const C8={key:{k:0,mode:'maj'},ex:'iv',quiz:{q:null,ans:null,right:0,n:0},sw:{}};
 const C8EX=[
- {k:'iv',n:'Borrowed iv',l:4,maj:'I IV iv I',min:null,st:'Pop · rock · film',p:'IV turns minor for one chord: la sinks to le. The most bittersweet semitone in pop.'},
- {k:'bVII',n:'The rock ♭VII',l:4,maj:'I bVII IV I',min:null,st:'Rock · Celtic · film',p:'A major chord a tone below home. No leading note, so the return to I feels open and strong, not polite.'},
- {k:'bVI',n:'♭VI–♭VII–I',l:5,maj:'I IV bVI bVII I',min:null,st:'Film · games · rock anthems',p:'Two borrowed chords climb by step to home: a heroic, victorious ending.'},
- {k:'pic',n:'The Picardy 3rd',l:5,maj:null,min:'i iv V I',st:'Baroque · hymns · film',p:'A minor-key piece ends on a major chord: the clouds part on the final bar.'},
- {k:'dec',n:'Interrupted ♭VI',l:6,maj:'I IV V bVI',min:null,st:'Romantic · film · power ballads',p:'V promises home and swerves to ♭VI: an interrupted cadence with a darker floor.'},
+ {k:'iv',n:'Borrowed iv',l:3,maj:'I IV iv I',min:null,st:'Pop · rock · film',p:'IV turns minor for one chord: la sinks to le. The most bittersweet semitone in pop.'},
+ {k:'bVII',n:'The rock ♭VII',l:3,maj:'I bVII IV I',min:null,st:'Rock · Celtic · film',p:'A major chord a tone below home. No leading note, so the return to I feels open and strong, not polite.'},
+ {k:'bVI',n:'♭VI–♭VII–I',l:4,maj:'I IV bVI bVII I',min:null,st:'Film · games · rock anthems',p:'Two borrowed chords climb by step to home: a heroic, victorious ending.'},
+ {k:'pic',n:'The Picardy 3rd',l:4,maj:null,min:'i iv V I',st:'Baroque · hymns · film',p:'A minor-key piece ends on a major chord: the clouds part on the final bar.'},
+ {k:'dec',n:'Interrupted ♭VI',l:5,maj:'I IV V bVI',min:null,st:'Romantic · film · power ballads',p:'V promises home and swerves to ♭VI: an interrupted cadence with a darker floor.'},
  {k:'N6',n:'The Neapolitan 6th',l:6,maj:'I bII:1 V I',min:'i bII:1 V i',st:'Classical · Romantic · film scores',p:'A major chord on ra, usually in first inversion, as a darker way into V. ra falls to ti.'},
  {k:'It',n:'Italian augmented 6th',l:6,maj:'I IV It6 V I',min:'i iv It6 V i',st:'Classical · jazz',p:'le, do and fi. The outer notes are an augmented 6th apart, and they spread outward to so.'},
  {k:'Fr',n:'French augmented 6th',l:6,maj:'I IV Fr6 V I',min:'i iv Fr6 V i',st:'Romantic · French art song',p:'The Italian sixth plus re: two tritones, a hazy, shimmering pull.'},
@@ -4217,9 +4220,9 @@ const C8HEAR=[
  {g:'Classical',w:'Symphony No. 5, first movement',a:'Ludwig van Beethoven',y:'1808',f:'An Italian augmented 6th leads into the dominant.',q:'Beethoven Symphony 5 first movement'},
  {g:'Film · jazz',w:'The Pink Panther Theme',a:'Henry Mancini',y:'1963',f:'A German augmented 6th: the slinky chord that sounds like a dominant 7th and slides outward instead.',q:'Pink Panther Theme Henry Mancini'},
  {g:'Musical theatre',w:'"Friend Like Me", Aladdin',a:'Alan Menken and Howard Ashman',y:'1992',f:'Listen for the German augmented 6th in this big-band showstopper.',q:'Friend Like Me Aladdin'}];
-const C8Q=[{k:'none',n:'Nothing borrowed (IV)',x:'IV',l:4},{k:'iv',n:'iv',x:'iv',l:4},{k:'bVII',n:'♭VII',x:'bVII',l:4},{k:'bVI',n:'♭VI',x:'bVI',l:5},{k:'bIII',n:'♭III',x:'bIII',l:6}];
-const C8SW={maj:[[{r:'I'}],[{r:'vi'},{r:'bVI',l:5}],[{r:'IV'},{r:'iv',l:4},{r:'bII:1',l:6},{r:'It6',l:6}],[{r:'V'},{r:'bVII',l:4}],[{r:'I'}]],
- min:[[{r:'i'}],[{r:'VI'}],[{r:'iv'},{r:'IV',l:5},{r:'bII:1',l:6},{r:'It6',l:6}],[{r:'V'}],[{r:'i'},{r:'I',l:5}]]};
+const C8Q=[{k:'none',n:'Nothing borrowed (IV)',x:'IV',l:3},{k:'iv',n:'iv',x:'iv',l:3},{k:'bVII',n:'♭VII',x:'bVII',l:3},{k:'bVI',n:'♭VI',x:'bVI',l:4},{k:'bIII',n:'♭III',x:'bIII',l:5}];
+const C8SW={maj:[[{r:'I'}],[{r:'vi'},{r:'bVI',l:4}],[{r:'IV'},{r:'iv',l:3},{r:'bII:1',l:6},{r:'It6',l:6}],[{r:'V'},{r:'bVII',l:3}],[{r:'I'}]],
+ min:[[{r:'i'}],[{r:'VI'}],[{r:'iv'},{r:'IV',l:4},{r:'bII:1',l:6},{r:'It6',l:6}],[{r:'V'}],[{r:'i'},{r:'I',l:4}]]};
 const c8Rn=r=>r.replace(/b(?=[IVX])/g,'♭').replace(/:1$/,'⁶').replace(/:2$/,'⁶₄').replace(/^(It|Fr|Ger)6$/,'$1⁺⁶');
 function c8Choice(mode){const ch=C8SW[mode].map((alts,i)=>{const A=alts.filter(a=>(a.l||4)<=S.level);return(A[(C8.sw[mode+i]||0)%A.length]||A[0]).r});
  const forced=/^(It6|bII:1)$/.test(ch[2]);if(forced)ch[3]=['V',mode==='maj'?'I:2 V':'i:2 V'][(C8.sw[mode+'f']||0)%2];return{ch,forced}}
@@ -4310,9 +4313,9 @@ DEG['b13']=20;
 const C9={key:{k:0,mode:'maj'},ex:'maj',vt:'rootless',start:'A',quiz:{q:null,ans:null,right:0,n:0},gt:Array(8).fill(null)};
 const C9KEYS=[{k:0,mode:'maj'},{k:5,mode:'maj'},{k:10,mode:'maj'},{k:3,mode:'maj'},{k:7,mode:'maj'},{k:2,mode:'maj'},{k:9,mode:'min'},{k:2,mode:'min'},{k:7,mode:'min'},{k:0,mode:'min'}];
 const C9EX=[
- {k:'maj',n:'Major ii–V–I',l:5,maj:'ii7 V7 Imaj7 Imaj7',min:null,p:'The engine of jazz. Two falling 5ths into home, with a 7th on every chord.'},
- {k:'min',n:'Minor ii–V–i',l:5,maj:null,min:'iiø7 V7 i7 i7',p:'The dark twin: a half-diminished ii, and a V with a flattened 9th and 13th borrowed from the minor scale.'},
- {k:'turn',n:'The turnaround',l:5,maj:'Imaj7 vi7 ii7 V7 Imaj7 vi7 ii7 V7 Imaj7',min:null,p:'I–vi–ii–V: the loop that sends a tune back to the top. Three of its four moves are falling 5ths.'},
+ {k:'maj',n:'Major ii–V–I',l:4,maj:'ii7 V7 Imaj7 Imaj7',min:null,p:'The engine of jazz. Two falling 5ths into home, with a 7th on every chord.'},
+ {k:'min',n:'Minor ii–V–i',l:4,maj:null,min:'iiø7 V7 i7 i7',p:'The dark twin: a half-diminished ii, and a V with a flattened 9th and 13th borrowed from the minor scale.'},
+ {k:'turn',n:'The turnaround',l:4,maj:'Imaj7 vi7 ii7 V7 Imaj7 vi7 ii7 V7 Imaj7',min:null,p:'I–vi–ii–V: the loop that sends a tune back to the top. Three of its four moves are falling 5ths.'},
  {k:'std',n:'The standard eight bars',l:6,maj:'ii7 V7 Imaj7 IVmaj7 viiø7 III7 vi7 vi7',min:null,p:'A ii–V–I in the major key, then a minor ii–V–i into the relative minor: the shape of Autumn Leaves.'},
  {k:'chain',n:'ii–Vs down a tone',l:6,maj:'iii7 VI7 IImaj7 IImaj7 ii7 V7 Imaj7 Imaj7 i7 IV7 bVIImaj7 bVIImaj7',min:null,p:'Each ii–V–I lands a whole tone lower than the last: three keys in twelve bars, all joined by smooth guide tones.'}];
 const C9FORMS={m7:{A:['b3','5','b7','9'],B:['b7','9','b3','5'],ext:'m9'},'7':{A:['3','13','b7','9'],B:['b7','9','3','13'],ext:'13'},'7b9':{A:['3','b13','b7','b9'],B:['b7','b9','3','b13'],ext:'7♭9♭13'},maj7:{A:['3','5','7','9'],B:['7','9','3','5'],ext:'maj9'},m7b5:{A:['b3','b5','b7','1'],B:['b7','1','b3','b5'],ext:'m7♭5'}};
@@ -4369,7 +4372,7 @@ function c9Cur(){const ex=C9EX.find(x=>x.k===C9.ex),L=c9List(ex[C9.key.mode],C9.
 // guide-tone melody over the standard eight bars
 function c9GtList(){return c9List(C9EX.find(x=>x.k==='std').maj,{k:C9.key.mode==='maj'?C9.key.k:mod(C9.key.k+3,12),mode:'maj'})}
 function c9GtLine(){const L=c9GtList();let prev=null;return L.map((ch,i)=>{const c=C9.gt[i];if(c==null)return null;const g=c9Guide(ch)[c==='3'?0:1];const m=prev?near(mod(g.midi,12),prev.midi):near(mod(g.midi,12),67);const n=at9(g,m);prev=n;return n})}
-function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.filter(x=>x.l<=Math.max(S.level,5)&&x[mode]);
+function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.filter(x=>x.l<=Math.max(S.level,4)&&x[mode]);
  if(!EX.find(x=>x.k===C9.ex))C9.ex=EX[0].k;const{ex,L,V}=c9Cur();
  const keySel=C9KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  const VT=[['guide','Guide tones (3rd + 7th)'],['shell','Shells (root, 3rd, 7th)'],['rootless','Rootless (A and B)']];
@@ -4419,7 +4422,7 @@ function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.f
    <div class="checker">${gtMsg||'<div class="note">Choose a guide tone in every bar.</div>'}</div></section>
  </div>
  <section class="card"><h3>Try · in the Gym and the Oracle</h3>
-  <div class="chips">${C9EX.filter(x=>x.l<=Math.max(S.level,5)).map(x=>x.maj?`<button class="chip" data-load="${x.maj}|maj">⤒ ${x.n}</button>`:`<button class="chip" data-load="${x.min}|min">⤒ ${x.n}</button>`).join('')}</div>
+  <div class="chips">${C9EX.filter(x=>x.l<=Math.max(S.level,4)).map(x=>x.maj?`<button class="chip" data-load="${x.maj}|maj">⤒ ${x.n}</button>`:`<button class="chip" data-load="${x.min}|min">⤒ ${x.n}</button>`).join('')}</div>
   <p class="note" style="margin:12px 0 0">Challenge 1: in the Gym, take the major ii–V–I and change the last chord to vi7. Then to a minor ii–V a tone lower. Each change is one decision a composer makes at the end of a phrase.</p>
   <p class="note" style="margin:8px 0 0">Challenge 2: in Level 2 (Voices), load your Gym progression, choose <b>Rootless</b>, and find the voicing that moves least.</p></section>
  <section class="card"><h3>Make · a tune from ii–Vs</h3>
@@ -4453,9 +4456,9 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-c9ex],[dat
    ===================================================================== */
 const C10={key:{k:0,mode:'maj'},ex:'iiVI',sub:true,vt:'rootless',quiz:{q:null,ans:null,right:0,n:0},sw:{}};
 const C10EX=[
- {k:'iiVI',n:'ii–♭II7–I',l:4,maj:['ii7 V7 Imaj7 Imaj7','ii7 bII7 Imaj7 Imaj7'],min:null,p:'Swap V7 for the dominant 7th a tritone away. The bass no longer falls a 5th: it slides down a semitone into home.'},
- {k:'minor',n:'Minor: iiø7–♭II7–i',l:5,maj:null,min:['iiø7 V7 i7 i7','iiø7 bII7 i7 i7'],p:'The same swap in a minor key: a dark, slinky slide into the minor home.'},
- {k:'turn',n:'The chromatic turnaround',l:5,maj:['Imaj7 VI7 ii7 V7 Imaj7','Imaj7 bIII7 ii7 bII7 Imaj7'],min:null,p:'Substitute both dominants of I–VI7–ii–V7 and the bass walks down by semitones from ♭III to home.'},
+ {k:'iiVI',n:'ii–♭II7–I',l:6,maj:['ii7 V7 Imaj7 Imaj7','ii7 bII7 Imaj7 Imaj7'],min:null,p:'Swap V7 for the dominant 7th a tritone away. The bass no longer falls a 5th: it slides down a semitone into home.'},
+ {k:'minor',n:'Minor: iiø7–♭II7–i',l:6,maj:null,min:['iiø7 V7 i7 i7','iiø7 bII7 i7 i7'],p:'The same swap in a minor key: a dark, slinky slide into the minor home.'},
+ {k:'turn',n:'The chromatic turnaround',l:6,maj:['Imaj7 VI7 ii7 V7 Imaj7','Imaj7 bIII7 ii7 bII7 Imaj7'],min:null,p:'Substitute both dominants of I–VI7–ii–V7 and the bass walks down by semitones from ♭III to home.'},
  {k:'chain',n:'A dominant chain, half substituted',l:6,maj:['Imaj7 III7 VI7 II7 V7 Imaj7','Imaj7 III7 bIII7 II7 bII7 Imaj7'],min:null,p:'Climb 6\'s chain of dominants with every other chord swapped: the roots now fall a semitone at a time.'},
  {k:'iiv',n:'Substituting the whole ii–V',l:6,maj:['ii7 V7 Imaj7 Imaj7','bvi7 bII7 Imaj7 Imaj7'],min:null,p:'Move ii along with V: the ii–V a tritone away still lands on the same home. A trick Duke Ellington uses in Satin Doll.'}];
 const C10HEAR=[
@@ -4480,7 +4483,7 @@ function c10Wheel(key){const R=84,cx=110,cy=110,ord=[0,7,2,9,4,11,6,1,8,3,10,5],
 function c10Cur(){const ex=C10EX.find(x=>x.k===C10.ex),L=c9List(c10Str(ex,C10.key.mode,C10.sub),C10.key);return{ex,L,V:c9Voice(L,C10.vt,'A')}}
 const c10Step=i=>document.querySelectorAll('#c10Bars .bar').forEach((b,j)=>b.classList.toggle('now',j===i));
 function c10Built(){return C10CH.split(' ').map((r,i)=>C10.sw[i]?C10SUB[i]:r).join(' ')}
-function renderClimb10(){const key=C10.key,mode=key.mode,kn=keyName(key),EX=C10EX.filter(x=>x.l<=Math.max(S.level,5)&&x[mode]);
+function renderClimb10(){const key=C10.key,mode=key.mode,kn=keyName(key),EX=C10EX.filter(x=>x.l<=Math.max(S.level,6)&&x[mode]);
  if(!EX.find(x=>x.k===C10.ex))C10.ex=EX[0].k;const{ex,L,V}=c10Cur(),O=c9List(c10Str(ex,mode,false),key);
  const keySel=C9KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  const Vd=parseRoman('V7',key),Sd=parseRoman('bII7',key),tv=chordOf(Vd.root,'7',0).tones,ts=chordOf(Sd.root,'7',0).tones;
@@ -4563,19 +4566,19 @@ const C11KEYS=[0,7,5,2,10].map(k=>({k,mode:'maj'}));
 // "Twinkle, Twinkle, Little Star" (traditional French melody, public domain): first phrase, one melody pitch per half bar
 const C11MEL=[{d:0,n:2},{d:4,n:2},{d:5,n:2},{d:4,n:1},{d:3,n:2},{d:2,n:2},{d:1,n:2},{d:0,n:1}];
 const C11V=[
- {k:'plain',n:'The way everyone learns it',l:4,r:'I I IV I IV I V I',p:'Three chords, I, IV and V: correct, safe and a little plain.'},
- {k:'subs',n:'Relative substitutes',l:4,r:'I iii vi iii ii vi V I',p:'Every chord swapped for a relative that shares two notes with it. Same tune, more shade.'},
+ {k:'plain',n:'The way everyone learns it',l:2,r:'I I IV I IV I V I',p:'Three chords, I, IV and V: correct, safe and a little plain.'},
+ {k:'subs',n:'Relative substitutes',l:2,r:'I iii vi iii ii vi V I',p:'Every chord swapped for a relative that shares two notes with it. Same tune, more shade.'},
  {k:'chrom',n:'Classical colour',l:5,r:'I V7/IV IV #i°7 ii I:2 V7 I',p:'A secondary dominant, a passing diminished 7th that pushes the bass up by semitones, and a cadential 6/4.'},
  {k:'jazz',n:'Jazz colour',l:6,r:'Imaj7 V7/ii ii7 iii7 bIII9 II9 V7 Imaj7',p:'7ths on everything, a secondary dominant, then two dominant 9ths sliding down by semitones into V.'}];
 const C11TOOLS=[
- {k:'rel',n:'Relative substitute',l:4,r:'I vi ii V I',keep:'two of the three notes',how:'Swap I for vi or iii, IV for ii. They share two notes, so most melody notes still fit.'},
- {k:'pedal',n:'Change the bass',l:4,r:'I V:1 vi I:1 IV',keep:'the chords',how:'Inversions turn leaping roots into a stepwise bass line under the same harmony.'},
+ {k:'rel',n:'Relative substitute',l:2,r:'I vi ii V I',keep:'two of the three notes',how:'Swap I for vi or iii, IV for ii. They share two notes, so most melody notes still fit.'},
+ {k:'pedal',n:'Change the bass',l:2,r:'I V:1 vi I:1 IV',keep:'the chords',how:'Inversions turn leaping roots into a stepwise bass line under the same harmony.'},
  {k:'sec',n:'Secondary dominant',l:5,r:'I V7/ii ii V7 I',keep:'where the phrase goes',how:'Put the V7 of the next chord in front of it (climb 7).'},
  {k:'dim',n:'Passing diminished 7th',l:5,r:'I #i°7 ii7 V7 I',keep:'the bass line, moving up',how:'Between two chords a tone apart, slip in a diminished 7th on the semitone between them.'},
  {k:'bor',n:'Borrowed chord',l:5,r:'I IV iv I',keep:'the function',how:'Take iv, ♭VI or ♭VII from the parallel minor (climb 8).'},
  {k:'tri',n:'Tritone substitution',l:6,r:'ii7 bII7 Imaj7',keep:'the guide tones',how:'Swap a dominant 7th for the one a tritone away (climb 10).'},
  {k:'back',n:'The backdoor ii–V',l:6,r:'iv7 bVII7 Imaj7',keep:'the arrival on I',how:'Come home from ♭VII7 instead of V7: a softer, sideways arrival through the back door.'}];
-const C11VOC={4:['I','ii','iii','IV','V','vi'],5:['Imaj7','ii7','iii7','IVmaj7','V7','vi7','V7/ii','V7/iii','V7/IV','V7/V','V7/vi','#i°7','#ii°7','#iv°7','iv','bVI','bVII','I:2'],6:['bII7','bIII7','bVI7','bVII7','iv7','I6','V9','II9','bIII9','bII9']};
+const C11VOC={2:['I','ii','iii','IV','V','vi'],5:['Imaj7','ii7','iii7','IVmaj7','V7','vi7','V7/ii','V7/iii','V7/IV','V7/V','V7/vi','#i°7','#ii°7','#iv°7','iv','bVI','bVII','I:2'],6:['bII7','bIII7','bVI7','bVII7','iv7','I6','V9','II9','bIII9','bII9']};
 const C11HEAR=[
  {g:'Jazz · original',w:'Tune Up',a:'Miles Davis (often credited to Eddie Vinson)',y:'1953',f:'A chain of ii–V–Is, each landing a whole tone lower. Listen to this first.',q:'Tune Up Miles Davis 1953'},
  {g:'Jazz · reharmonised',w:'Countdown',a:'John Coltrane',y:'1960',f:'Tune Up reharmonised: Coltrane fills each ii–V–I with rapid key changes a major 3rd apart (the "Coltrane changes").',q:'Countdown John Coltrane Giant Steps'},
@@ -4609,7 +4612,7 @@ function c11Draw(el,rns,key){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,c
  ENG.finish(S)}
 function c11Rn(r){if(r==='I6')return'I add6';return r.replace(/:2$/,'⁶₄').replace(/:1$/,'⁶').replace(/b(?=[IVX])/g,'♭').replace('#','♯')}
 function c11Motion(a,b){const d=mod(pcOf(a.root)-pcOf(b.root),12);return d===7?'↓5th':d===1?'↘ semitone':d===11?'↗ semitone':d===0?'same root':d===5?'↑5th':d===2||d===10?'step':'3rd'}
-function c11Opts(i,key,mel){const out=[];[4,5,6].filter(l=>l<=S.level).forEach(l=>C11VOC[l].forEach(r=>{const ch=c11Ch(r,key);if(ch.root&&c11Fit(ch,mel[i]))out.push(r)}));return[...new Set(out)]}
+function c11Opts(i,key,mel){const out=[];[2,5,6].filter(l=>l<=S.level).forEach(l=>C11VOC[l].forEach(r=>{const ch=c11Ch(r,key);if(ch.root&&c11Fit(ch,mel[i]))out.push(r)}));return[...new Set(out)]}
 function c11Review(rns,key){const L=rns.map(r=>c11Ch(r,key)),notes=[];let strong=0;
  for(let i=0;i<L.length-1;i++){const m=c11Motion(L[i],L[i+1]),c=chordOf(L[i].root,L[i].q,0),dom=['7','9'].includes(L[i].q)||(L[i].q===''&&mod(pcOf(L[i].root)-key.k,12)===7);
   if(m==='↓5th'||(dom&&m==='↘ semitone'))strong++;if(L[i].q==='dim7'&&m!=='↗ semitone'&&mod(pcOf(L[i+1].root)-pcOf(L[i].root),12)!==1)notes.push(`Slot ${i+1}: a diminished 7th usually rises a semitone to the next chord's root (common-practice and jazz habit); used as a chromatic passing chord it can also move by step down.`);
@@ -4620,10 +4623,10 @@ function c11Review(rns,key){const L=rns.map(r=>c11Ch(r,key)),notes=[];let strong
  const pen=L[L.length-2];if(home&&!(['7','9',''].includes(pen.q)&&(mod(pcOf(pen.root)-key.k,12)===7||mod(pcOf(pen.root)-key.k,12)===1||mod(pcOf(pen.root)-key.k,12)===10)))notes.push('The cadence isn\'t a V–I (or a tritone sub ♭II7–I, or the backdoor ♭VII7–I of jazz): the ending will feel softer. A plagal IV–I is another gentle option.');
  return{strong,notes}}
 const c11Step=i=>document.querySelectorAll('#c11Slots .bar').forEach((b,j)=>b.classList.toggle('now',j===i));
-function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V.filter(v=>v.l<=Math.max(S.level,4));if(!VS.find(v=>v.k===C11.ver))C11.ver='plain';const ver=C11V.find(v=>v.k===C11.ver),rns=ver.r.split(' '),mel=c11Mel(key),L=rns.map(r=>c11Ch(r,key));
+function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V.filter(v=>v.l<=Math.max(S.level,2));if(!VS.find(v=>v.k===C11.ver))C11.ver='plain';const ver=C11V.find(v=>v.k===C11.ver),rns=ver.r.split(' '),mel=c11Mel(key),L=rns.map(r=>c11Ch(r,key));
  if(!C11.mine)C11.mine=C11V[0].r.split(' ');const mine=C11.mine,rev=c11Review(mine,key),ML=mine.map(r=>c11Ch(r,key));
  const keySel=C11KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
- const T=C11TOOLS.filter(t=>t.l<=Math.max(S.level,4));
+ const T=C11TOOLS.filter(t=>t.l<=Math.max(S.level,2));
  $('climbDetail').innerHTML=`
  <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 11 · Stage 6</span><span class="sp"></span><label class="note">Key <select id="c11Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Reharmonisation</h1>
@@ -4655,7 +4658,7 @@ function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V.filter(v=>v.l
    ${C11.quiz.q?`<div class="gans">${VS.map(v=>`<button class="chip ${C11.quiz.ans!=null?(v.k===C11.quiz.q.k?'right':v.k===C11.quiz.ans?'wrong':''):''}" data-c11a="${v.k}">${v.n}</button>`).join('')}</div>${C11.quiz.ans!=null?`<div class="${C11.quiz.ans===C11.quiz.q.k?'ok':'iss warn'}" style="margin-top:10px">${C11.quiz.ans===C11.quiz.q.k?'✓ Yes: ':'Not quite. It was '}<b>${C11V.find(v=>v.k===C11.quiz.q.k).n}</b> in ${keyName(C11.quiz.q.key)}.</div>`:''}`:''}
   </section>
   <section class="card"><h3>Try · your reharmonisation<span class="sp"></span><button class="mini gold" data-c11m="play">▶ Play</button><button class="mini" data-c11m="reset">Start again</button><button class="mini" data-load="${mine.join(' ')}|maj">⤴ Gym</button></h3>
-   <p class="note" style="margin:0 0 10px">For each half bar, only the chords that fit the melody note are offered (Stage ${S.level} vocabulary). Choose one in every slot, then listen.</p>
+   <p class="note" style="margin:0 0 10px">For each half bar, only the chords that fit the melody note are offered (Level ${S.level} vocabulary). Choose one in every slot, then listen.</p>
    <div class="c11mine">${mine.map((r,i)=>{const ch=ML[i],O=c11Opts(i,key,mel);return`<div class="mb"><small>slot ${i+1} · melody ${pretty(mel[i].name)}${i?` · ${c11Motion(ML[i-1],ch)}`:''}</small><b>${pretty(chordOf(ch.root,ch.q,ch.inv).sym)}${ch.inv?'/'+pretty(chordOf(ch.root,ch.q,ch.inv).bass.name):''} <span class="note">${c11Rn(r)}</span></b><div>${O.map(o=>`<button class="chip ${o===r?'on':''}" data-c11o="${i}|${o}">${c11Rn(o)}</button>`).join('')}</div></div>`}).join('')}</div>
    <div class="checker"><div class="ok">${rev.strong} strong move${rev.strong===1?'':'s'} (a root falling a 5th, or a dominant sliding down a semitone).</div>${rev.notes.map(n=>`<div class="iss warn"><span class="ic">!</span>${n}</div>`).join('')}</div>
    <div class="staff" id="c11mStaff"></div></section>
@@ -4673,7 +4676,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-c11v],[dat
  if(d.c11v){C11.ver=d.c11v;renderClimb11();c11Play(C11V.find(v=>v.k===C11.ver).r.split(' '),C11.key,c11Step);return}
  if(d.c11play!==undefined){c11Play(C11V.find(v=>v.k===C11.ver).r.split(' '),C11.key,c11Step);return}
  if(d.c11t){const tl=C11TOOLS.find(x=>x.k===d.c11t);withKey(C11.key,()=>playList(tl.r.split(' ').map(r=>({...c11Ch(r,C11.key),beats:4})),'climb',null,false));return}
- if(d.c11q==='new'){const key=rnd(C11KEYS),v=rnd(C11V.filter(v=>v.l<=Math.max(S.level,4)));C11.quiz.q={k:v.k,key};C11.quiz.ans=null;c11Play(v.r.split(' '),key,null);renderClimb11();return}
+ if(d.c11q==='new'){const key=rnd(C11KEYS),v=rnd(C11V.filter(v=>v.l<=Math.max(S.level,2)));C11.quiz.q={k:v.k,key};C11.quiz.ans=null;c11Play(v.r.split(' '),key,null);renderClimb11();return}
  if(d.c11q==='again'&&C11.quiz.q){c11Play(C11V.find(v=>v.k===C11.quiz.q.k).r.split(' '),C11.quiz.q.key,null);return}
  if(d.c11a&&C11.quiz.q&&C11.quiz.ans==null){C11.quiz.ans=d.c11a;C11.quiz.n++;if(C11.quiz.ans===C11.quiz.q.k)C11.quiz.right++;renderClimb11();if(C11.quiz.n%5===0)logIt(`which telling: ${C11.quiz.right}/${C11.quiz.n}`);return}
  if(d.c11o){const[i,r]=d.c11o.split('|');C11.mine[+i]=r;renderClimb11();const ch=c11Ch(r,C11.key),c=chordOf(ch.root,ch.q,ch.inv);play([...voicing(c).map(x=>x.midi),c11Mel(C11.key)[+i].midi]);return}
@@ -4687,17 +4690,17 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-c11v],[dat
 DEG['b6']=8;
 const C12={tab:'vamp',tonic:2,mode:'dor',shape:'dom9',plane:'real',mel:0,cue:['I'],tin:{line:0,pos:'sup'},quiz:{q:null,ans:null,right:0,n:0}};
 const C12MODES=[
- {k:'dor',n:'Dorian',mode:'min',r:'i7 IV7',ch:'6',chn:'raised 6th',l:4,feel:'Minor, but with a bright 6th: cool, open, a groove that never needs to resolve.'},
- {k:'mix',n:'Mixolydian',mode:'maj',r:'I bVII',ch:'b7',chn:'flattened 7th',l:4,feel:'Major without a leading note: earthy, rock, folk and Celtic.'},
- {k:'aeo',n:'Aeolian',mode:'min',r:'i VI',ch:'b6',chn:'flattened 6th',l:4,feel:'Natural minor: sad, epic, cinematic.'},
+ {k:'dor',n:'Dorian',mode:'min',r:'i7 IV7',ch:'6',chn:'raised 6th',l:5,feel:'Minor, but with a bright 6th: cool, open, a groove that never needs to resolve.'},
+ {k:'mix',n:'Mixolydian',mode:'maj',r:'I bVII',ch:'b7',chn:'flattened 7th',l:5,feel:'Major without a leading note: earthy, rock, folk and Celtic.'},
+ {k:'aeo',n:'Aeolian',mode:'min',r:'i VI',ch:'b6',chn:'flattened 6th',l:5,feel:'Natural minor: sad, epic, cinematic.'},
  {k:'lyd',n:'Lydian',mode:'maj',r:'I II',ch:'#4',chn:'raised 4th',l:5,feel:'Major with a raised 4th: floating, dreamlike, the sound of wonder in film.'},
  {k:'phr',n:'Phrygian',mode:'min',r:'i bII',ch:'b2',chn:'flattened 2nd',l:5,feel:'Minor with a flattened 2nd: dark, tense, flamenco and metal.'}];
 const C12SHAPES=[
- {k:'tri',n:'Major triads',iv:[-8,-5,0],ls:[-5,-3,0],l:4,who:'pop, rock, film brass'},
- {k:'org',n:'Open 4ths and octaves',iv:[-12,-5,0],ls:[-7,-3,0],l:4,who:'medieval organum, Debussy\'s sunken cathedral'},
- {k:'q3',n:'Quartal (two 4ths)',iv:[-10,-5,0],ls:[-6,-3,0],l:5,who:'modal jazz, McCoy Tyner, TV themes'},
+ {k:'tri',n:'Major triads',iv:[-8,-5,0],ls:[-5,-3,0],l:5,who:'pop, rock, film brass'},
+ {k:'org',n:'Open 4ths and octaves',iv:[-12,-5,0],ls:[-7,-3,0],l:5,who:'medieval organum, Debussy\'s sunken cathedral'},
+ {k:'q3',n:'Quartal (two 4ths)',iv:[-10,-5,0],ls:[-6,-3,0],l:7,who:'modal jazz, McCoy Tyner, TV themes'},
  {k:'dom9',n:'Dominant 9ths',iv:[-14,-10,-4,0],ls:[-8,-6,-2,0],l:5,who:'Ravel\'s Pavane, Debussy'},
- {k:'sowhat',n:'The "So What" chord',iv:[-19,-14,-9,-4,0],ls:[-11,-8,-5,-2,0],l:6,who:'Bill Evans on Kind of Blue'}];
+ {k:'sowhat',n:'The "So What" chord',iv:[-19,-14,-9,-4,0],ls:[-11,-8,-5,-2,0],l:7,who:'Bill Evans on Kind of Blue'}];
 const C12MEL=[{n:'Pentatonic tune',d:[4,7,9,7,4,2,0,2,4]},{n:'Rising line',d:[0,2,4,5,7,9,11,12]},{n:'Falling call',d:[12,9,7,4,7,2,0]}];
 const C12MED=[{k:'iii',n:'iii',up:2,s:4,q:'m',ct:2,dia:true},{k:'vi',n:'vi',up:5,s:9,q:'m',ct:2,dia:true},{k:'III',n:'III',up:2,s:4,q:'',ct:1},{k:'bIII',n:'♭III',up:2,s:3,q:'',ct:1},{k:'VI',n:'VI',up:5,s:9,q:'',ct:1},{k:'bVI',n:'♭VI',up:5,s:8,q:'',ct:1}];
 const C12TIN=[{n:'Falling scale from A',d:[12,10,8,7,5,3,2,0],mode:'min'},{n:'Rising scale from A',d:[0,2,3,5,7,8,10,12],mode:'min'},{n:'Neighbour-note line',d:[7,8,7,5,3,5,7,0],mode:'min'}];
@@ -4736,7 +4739,7 @@ function c12Draw(el,cols,sig){if(!window.Vex||!cols.length){el.innerHTML='';retu
   return[{voices:[new VF.Voice({num_beats:4,beat_value:4}).setStrict(false).addTickables(cs.map(c=>mk(c=>[...up(c),...lo(c)].filter(m=>m>=60),'treble',c)))]},{voices:[new VF.Voice({num_beats:4,beat_value:4}).setStrict(false).addTickables(cs.map(c=>mk(c=>[...up(c),...lo(c)].filter(m=>m<60),'bass',c)))]}]};
  const S=ENG.score(el,{task:'exercise',n:nb,staves:one?[{clef:'treble'}]:[{clef:'treble'},{clef:'bass'}],gap:6,conn:one?null:'brace',time:'4/4',top:40,bottom:40,build});
  ENG.finish(S)}
-function renderClimb12(){const L=Math.max(S.level,4),tabs=[['vamp','Modal vamps'],['plane','Planing and quartal'],['med','Chromatic mediants'],['static','Static harmony']];
+function renderClimb12(){const L=Math.max(S.level,5),tabs=[['vamp','Modal vamps'],['plane','Planing and quartal'],['med','Chromatic mediants'],['static','Static harmony']];
  const MODES=C12MODES.filter(m=>m.l<=L),SH=C12SHAPES.filter(s=>s.l<=L);if(!MODES.find(m=>m.k===C12.mode))C12.mode='dor';if(!SH.find(s=>s.k===C12.shape))C12.shape=SH[SH.length-1].k;
  const vp=c12Vamp(),pl=c12Plane(),cue=c12Cue(),tin=c12Tin();
  const tonSel=[0,2,4,5,7,9].map(k=>`<option value="${k}" ${k===C12.tonic?'selected':''}>${C12NAMES[k]}</option>`).join('');
@@ -4839,13 +4842,13 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-c12t],[dat
    ===================================================================== */
 const C1={view:'same',drone:2,mode:'dor',pads:[],quiz:{q:null,ans:null,right:0,n:0},droneOn:false};
 const C1M=[
- {k:'lyd',n:'Lydian',iv:[0,2,4,6,7,9,11],deg:3,c:3,cn:'raised 4th',parent:3,l:5,feel:'The brightest: major with a raised 4th. Floating, wondrous, a little unreal.'},
- {k:'ion',n:'Ionian (major)',iv:[0,2,4,5,7,9,11],deg:0,c:6,cn:'leading note, a semitone below home',parent:0,l:4,feel:'The major scale: bright and settled. Its leading note pulls hard to home.'},
- {k:'mix',n:'Mixolydian',iv:[0,2,4,5,7,9,10],deg:4,c:6,cn:'flattened 7th',parent:4,l:4,feel:'Major with a flattened 7th: earthy, open, the sound of bagpipes, folk and rock.'},
- {k:'dor',n:'Dorian',iv:[0,2,3,5,7,9,10],deg:1,c:5,cn:'raised 6th',parent:1,l:4,feel:'Minor with a raised 6th: serious but warm, the sound of folk song and modal jazz.'},
- {k:'aeo',n:'Aeolian (natural minor)',iv:[0,2,3,5,7,8,10],deg:5,c:5,cn:'flattened 6th',parent:5,l:4,feel:'Natural minor: sad, noble, ancient.'},
- {k:'phr',n:'Phrygian',iv:[0,1,3,5,7,8,10],deg:2,c:1,cn:'flattened 2nd',parent:2,l:5,feel:'Minor with a flattened 2nd: dark, tense, Spanish and metal.'},
- {k:'loc',n:'Locrian',iv:[0,1,3,5,6,8,10],deg:6,c:4,cn:'diminished 5th',parent:6,l:6,feel:'The darkest: even the 5th is flattened, so home itself is unstable. Rarely a whole piece, often a moment.'}];
+ {k:'lyd',n:'Lydian',iv:[0,2,4,6,7,9,11],deg:3,c:3,cn:'raised 4th',parent:3,l:4,feel:'The brightest: major with a raised 4th. Floating, wondrous, a little unreal.'},
+ {k:'ion',n:'Ionian (major)',iv:[0,2,4,5,7,9,11],deg:0,c:6,cn:'leading note, a semitone below home',parent:0,l:1,feel:'The major scale: bright and settled. Its leading note pulls hard to home.'},
+ {k:'mix',n:'Mixolydian',iv:[0,2,4,5,7,9,10],deg:4,c:6,cn:'flattened 7th',parent:4,l:3,feel:'Major with a flattened 7th: earthy, open, the sound of bagpipes, folk and rock.'},
+ {k:'dor',n:'Dorian',iv:[0,2,3,5,7,9,10],deg:1,c:5,cn:'raised 6th',parent:1,l:3,feel:'Minor with a raised 6th: serious but warm, the sound of folk song and modal jazz.'},
+ {k:'aeo',n:'Aeolian (natural minor)',iv:[0,2,3,5,7,8,10],deg:5,c:5,cn:'flattened 6th',parent:5,l:2,feel:'Natural minor: sad, noble, ancient.'},
+ {k:'phr',n:'Phrygian',iv:[0,1,3,5,7,8,10],deg:2,c:1,cn:'flattened 2nd',parent:2,l:4,feel:'Minor with a flattened 2nd: dark, tense, Spanish and metal.'},
+ {k:'loc',n:'Locrian',iv:[0,1,3,5,6,8,10],deg:6,c:4,cn:'diminished 5th',parent:6,l:5,feel:'The darkest: even the 5th is flattened, so home itself is unstable. Rarely a whole piece, often a moment.'}];
 const C1FIN={ion:'C',dor:'D',phr:'E',lyd:'F',mix:'G',aeo:'A',loc:'B'};
 const C1DRONES=['C','D','E','G','A'];
 const C1HEAR=[
@@ -4866,7 +4869,7 @@ function c1DroneStop(){const a=AC;C1DR.forEach(({o,g})=>{try{g.gain.cancelSchedu
 function c1Play(seq,tonic,onStep,gap){stopAll();c1DroneStart(tonic);PLAY.on=true;PLAY.src='climb';const a=ac(),spb=gap||.42;let t=a.currentTime+1;
  seq.forEach((n,i)=>{tone(n.midi,t,'piano');PLAY.timers.push(setTimeout(()=>onStep&&onStep(i),(t-a.currentTime)*1000));t+=spb});PLAY.timers.push(setTimeout(()=>{c1DroneStop();stopAll()},(t-a.currentTime)*1000+1400))}
 function c1Melody(mk,tonic){const N=c1Notes(mk,tonic),c=C1M.find(x=>x.k===mk).c;return[0,2,4,c,4,2,1,0].map(i=>N[i])}
-function renderClimb1(){const L=Math.max(S.level,4),MS=C1M.filter(m=>m.l<=L);if(!MS.find(m=>m.k===C1.mode))C1.mode='dor';const m=C1M.find(x=>x.k===C1.mode),tonic=c1Tonic(),N=c1Notes(m.k,tonic);
+function renderClimb1(){const L=Math.max(S.level,1),MS=C1M.filter(m=>m.l<=L);if(!MS.find(m=>m.k===C1.mode))C1.mode='dor';const m=C1M.find(x=>x.k===C1.mode),tonic=c1Tonic(),N=c1Notes(m.k,tonic);
  $('climbDetail').innerHTML=`
  <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 1 · Stages 4–6</span><span class="sp"></span>
   <span class="note">Drone:</span><span class="chips">${[['same','one drone, every mode'],['white','white-note modes']].map(([k,l])=>`<button class="chip ${C1.view===k?'on':''}" data-c1v="${k}">${l}</button>`).join('')}</span>${C1.view==='same'?`<label class="note">on <select id="c1Dr">${C1DRONES.map((d,i)=>`<option value="${i}" ${i===C1.drone?'selected':''}>${d}</option>`).join('')}</select></label>`:''}</div>
@@ -4929,7 +4932,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-c1v],[data
  if(d.c1pp==='play'){const tn=c1Tonic(),N=c1Notes(C1.mode,tn);if(C1.pads.length)c1Play(C1.pads.map(i=>N[i]),tn,null,.45);return}
  if(d.c1pp==='clear'){C1.pads=[];renderClimb1();return}
  if(d.c1pp==='log'){const N=c1Notes(C1.mode,c1Tonic());if(C1.pads.length){logIt(`improvised over a drone in ${pretty(N[0].name)} ${C1M.find(x=>x.k===C1.mode).n}: ${C1.pads.map(i=>solTxt(N[i].sol)).join(' ')}`);toast('Saved to your process log')}return}
- if(d.c1q==='new'){const MS=C1M.filter(x=>x.l<=Math.max(S.level,4)),x=rnd(MS);C1.quiz.q={k:x.k};C1.quiz.ans=null;c1Play(c1Melody(x.k,'D'),'D',null,.5);renderClimb1();return}
+ if(d.c1q==='new'){const MS=C1M.filter(x=>x.l<=Math.max(S.level,1)),x=rnd(MS);C1.quiz.q={k:x.k};C1.quiz.ans=null;c1Play(c1Melody(x.k,'D'),'D',null,.5);renderClimb1();return}
  if(d.c1q==='again'&&C1.quiz.q){c1Play(c1Melody(C1.quiz.q.k,'D'),'D',null,.5);return}
  if(d.c1a&&C1.quiz.q&&C1.quiz.ans==null){C1.quiz.ans=d.c1a;C1.quiz.n++;if(C1.quiz.ans===C1.quiz.q.k)C1.quiz.right++;renderClimb1();if(C1.quiz.n%5===0)logIt(`which mode: ${C1.quiz.right}/${C1.quiz.n}`);return}
 });
@@ -4950,12 +4953,12 @@ const C2EXAMPLES={"V3":{"sp":1,"pos":"above","good":{"cf":["D4","F4","E4","D4","
    ===================================================================== */
 const C2L='CDEFGAB',C2N=[0,2,4,5,7,9,11];
 const C2M=[
- {k:'dor',n:'Dorian',fin:'D',l:4,fux:true,cf:['D4','F4','E4','D4','G4','F4','A4','G4','F4','E4','D4'],feel:'Minor with a raised 6th. Fux\'s own first cantus.'},
- {k:'aeo',n:'Aeolian',fin:'A',l:4,cf:['A3','C4','B3','A3','D4','C4','E4','D4','C4','B3','A3'],feel:'Natural minor; G is raised to G♯ at the cadence.'},
- {k:'ion',n:'Ionian',fin:'C',l:4,cf:['C4','D4','E4','C4','F4','E4','G4','F4','E4','D4','C4'],feel:'The major mode: B already leads up to C.'},
- {k:'mix',n:'Mixolydian',fin:'G',l:5,cf:['G3','C4','A3','B3','C4','F4','E4','D4','C4','B3','A3','G3'],feel:'Major with a flattened 7th; F is raised to F♯ at the cadence.'},
- {k:'phr',n:'Phrygian',fin:'E',l:6,cf:['E4','G4','F4','E4','A4','G4','C5','B4','A4','G4','F4','E4'],feel:'The semitone is above home (F–E), so the cadence works the other way round.'},
- {k:'lyd',n:'Lydian',fin:'F',l:6,cf:['F4','A4','G4','B4','C5','A4','D5','C5','A4','G4','F4'],feel:'Major with a raised 4th: watch the tritone between F and B.'}];
+ {k:'dor',n:'Dorian',fin:'D',l:3,fux:true,cf:['D4','F4','E4','D4','G4','F4','A4','G4','F4','E4','D4'],feel:'Minor with a raised 6th. Fux\'s own first cantus.'},
+ {k:'aeo',n:'Aeolian',fin:'A',l:3,cf:['A3','C4','B3','A3','D4','C4','E4','D4','C4','B3','A3'],feel:'Natural minor; G is raised to G♯ at the cadence.'},
+ {k:'ion',n:'Ionian',fin:'C',l:3,cf:['C4','D4','E4','C4','F4','E4','G4','F4','E4','D4','C4'],feel:'The major mode: B already leads up to C.'},
+ {k:'mix',n:'Mixolydian',fin:'G',l:4,cf:['G3','C4','A3','B3','C4','F4','E4','D4','C4','B3','A3','G3'],feel:'Major with a flattened 7th; F is raised to F♯ at the cadence.'},
+ {k:'phr',n:'Phrygian',fin:'E',l:5,cf:['E4','G4','F4','E4','A4','G4','C5','B4','A4','G4','F4','E4'],feel:'The semitone is above home (F–E), so the cadence works the other way round.'},
+ {k:'lyd',n:'Lydian',fin:'F',l:5,cf:['F4','A4','G4','B4','C5','A4','D5','C5','A4','G4','F4'],feel:'Major with a raised 4th: watch the tritone between F and B.'}];
 /* fifth species: a rhythm pattern per bar (h minim, q crotchet, e quaver; ~ = last note tied into the next bar) */
 const C2RH={rh:['r4','h'],'rh~':['r4','h~'],hh:['h','h'],'hh~':['h','h~'],qqqq:['q','q','q','q'],hqq:['h','q','q'],'qqh~':['q','q','h~'],qeeqq:['q','e','e','q','q'],qqqee:['q','q','q','e','e'],hqee:['h','q','e','e'],w:['w']};
 const C2RHLAB={rh:'𝄼 𝅗𝅥','rh~':'𝄼 𝅗𝅥⁀',hh:'𝅗𝅥 𝅗𝅥','hh~':'𝅗𝅥 𝅗𝅥⁀',qqqq:'♩♩♩♩',hqq:'𝅗𝅥 ♩♩','qqh~':'♩♩ 𝅗𝅥⁀',qeeqq:'♩♫♩♩',qqqee:'♩♩♩♫',hqee:'𝅗𝅥 ♩♫',w:'𝅝'};
@@ -5293,11 +5296,11 @@ function cClef(av,def){if(!C2.cclef)return def;return av>=67?'treble':av>=55?'al
 function rKey(cl){return cl==='treble'?'b/4':cl==='alto'?'c/4':cl==='tenor'?'a/3':'d/3'}
 const C2={cclef:!!LS.get('cjg_cclef'),mode:'dor',sp:1,pos:'above',pw:false,cp:{},br:{},quiz:{q:null,ans:null,right:0,n:0},done:{},rb:'sp',cant:{fin:'D',n:11,notes:Array(11).fill(null)},set:null,c3:{arr:'low',v:null,cp:{},sp:1,spv:null}};
 const C2SP=[
- {k:1,n:'First species',r:'note against note',l:4,d:'One semibreve against each note of the cantus. Every pair must be a consonance, so the whole art is in how the two lines move.'},
- {k:2,n:'Second species',r:'two against one',l:5,d:'Two minims against each cantus note. Downbeats are consonant; the weak beat may be a dissonance only as a passing note, moving by step between two consonances.'},
- {k:3,n:'Third species',r:'four against one',l:5,d:'Four crotchets against each cantus note. Every downbeat is consonant; a dissonant crotchet must be a passing note, a neighbour note, or part of the cambiata figure.'},
+ {k:1,n:'First species',r:'note against note',l:3,d:'One semibreve against each note of the cantus. Every pair must be a consonance, so the whole art is in how the two lines move.'},
+ {k:2,n:'Second species',r:'two against one',l:4,d:'Two minims against each cantus note. Downbeats are consonant; the weak beat may be a dissonance only as a passing note, moving by step between two consonances.'},
+ {k:3,n:'Third species',r:'four against one',l:4,d:'Four crotchets against each cantus note. Every downbeat is consonant; a dissonant crotchet must be a passing note, a neighbour note, or part of the cambiata figure.'},
  {k:4,n:'Fourth species',r:'syncopation',l:5,d:'The counterpoint is tied across every barline (a ligature), so it always moves half a bar after the cantus. The tied note may clash with the new cantus note (a suspension) and must then fall by step to a consonance.'},
- {k:5,n:'Fifth species',r:'florid',l:6,d:'Florid counterpoint mixes everything: minims, crotchets, tied notes and pairs of quavers, chosen bar by bar. Each note value keeps the rules of its own species, and suspensions may be decorated before they resolve.'},
+ {k:5,n:'Fifth species',r:'florid',l:5,d:'Florid counterpoint mixes everything: minims, crotchets, tied notes and pairs of quavers, chosen bar by bar. Each note value keeps the rules of its own species, and suspensions may be decorated before they resolve.'},
  {k:6,n:'Three voices',r:'first to fourth species, 3 parts',l:6,d:'Two counterpoints against the cantus, note against note.'}];
 const C2SRC={F:['Fux','Stated by Fux in Gradus ad Parnassum (1725).'],E:['Fux\'s examples','Drawn from how Fux\'s own worked examples behave rather than a rule he states.'],L:['later teaching','A convention of later teachers who built on Fux (e.g. Jeppesen, Salzer & Schachter, Open Music Theory).'],A:['this app','A limit chosen for these exercises.']};
 /* the rule book: code, name, tag, species, source, rule, why */
@@ -5433,7 +5436,7 @@ function c2RenderMine(){hBtns();const M=c2Mode(C2.mode),spc=c2Spc(),cp=c2Mine(),
 function c2CadRow(M){const cf=c2CF(M),pen=cf[cf.length-2],fin=c2Fin(M),rise=c2Rise(M),cpPen=rise?c2Pitch(fin.dn+1):c2Pitch(fin.dn-1,c2Raise(M)?1:0);
  return`<tr ${M.k===C2.mode?'class="hl"':''}><td><b>${M.n}</b></td><td>${fin.name}</td><td>${pretty(pen.name)} → ${fin.name} <span class="note">(${c2Sol(pen)}–${c2Sol(fin)})</span></td><td>${pretty(cpPen.name)} → ${fin.name} <span class="note">(${c2Sol(cpPen)}–${c2Sol(fin)})</span></td><td>${c2Raise(M)?`${c2Sub(M)} raised to <b>${c2Sub(M)}♯</b>${rise?' (in the cantus)':''}`:c2Fin(M).name==='E'?'none: the semitone F–E is in the cantus':`none: ${c2Sub(M)}–${fin.name} is already a semitone`}</td></tr>`}
 /* rule book */
-function c2RBHTML(){const L=Math.max(S.level,4),sp=String(C2.sp),f=C2.rb;
+function c2RBHTML(){const L=Math.max(S.level,3),sp=String(C2.sp),f=C2.rb;
  const list=C2RB.filter(r=>f==='all'?true:f==='c'?r[3]==='c':r[3]!=='c'&&r[3].split(' ').includes(sp));
  const groups=[['H','Harmony between the voices'],['V','Motion'],['M','The melody of your line'],['S2','Second species'],['S3','Third species'],['S4','Fourth species'],['S5','Fifth species'],['K','The cadence'],['C','Writing a cantus firmus']];
  return`<div class="chips" style="margin-bottom:10px">${[['sp',`Rules for ${C2SP.find(s=>s.k===C2.sp).n.toLowerCase()}`],['c','Writing a cantus'],['all','All rules']].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-c2rb="${k}">${l}</button>`).join('')}</div>
@@ -5460,7 +5463,7 @@ function c2CantIss(){const strs=c2CantStrs(),filled=strs.filter(Boolean).length;
 function c2RenderCant(){hBtns();const w=$('c2CantW');if(!w)return;const sl=w.scrollLeft;w.innerHTML=c2CantHTML();w.scrollLeft=sl;$('c2CantIss').innerHTML=c2CantIss();
  const strs=c2CantStrs();if(window.Vex&&$('c2CantStaff')){const ns=strs.map(s=>s?{...c2Parse(s),under:c2Sol(c2Parse(s))}:null).filter(Boolean);const n2=[];strs.forEach((s,i)=>{if(i)n2.push({bar:true});if(s){const p=c2Parse(s);n2.push({name:p.name,oct:p.oct,under:c2Sol(p)})}else n2.push({rest:true})});drawLine($('c2CantStaff'),n2,ns.length&&ns.reduce((s,p)=>s+p.midi,0)/ns.length<57?'bass':'treble','C','w','C|')}
  const ok=strs.every(Boolean)&&!c2CantusCheck(C2.cant.fin,strs).iss.some(x=>x.sev==='err');$('c2CantUse').disabled=!ok}
-function c2SetCantus(){const strs=c2CantStrs(),f=C2.cant.fin;C2OWN={k:'own',n:`Your cantus (${C2MODEN[f]})`,fin:f,l:4,cf:strs,feel:`Your own cantus firmus in ${C2MODEN[f]}${c2Rise({cf:strs})?', rising into the final':''}.`};C2.mode='own';C2.set=null;logIt(`wrote a cantus firmus in ${C2MODEN[f]}: ${strs.join(' ')}`)}
+function c2SetCantus(){const strs=c2CantStrs(),f=C2.cant.fin;C2OWN={k:'own',n:`Your cantus (${C2MODEN[f]})`,fin:f,l:3,cf:strs,feel:`Your own cantus firmus in ${C2MODEN[f]}${c2Rise({cf:strs})?', rising into the final':''}.`};C2.mode='own';C2.set=null;logIt(`wrote a cantus firmus in ${C2MODEN[f]}: ${strs.join(' ')}`)}
 function c2Settable(){const M=C2OWN,L=Math.max(S.level,4),jobs=[];C2SP.filter(s=>s.l<=L&&s.k!==6).forEach(s=>(L>=5?['above','below']:['above']).forEach(p=>jobs.push([s.k,p])));
  C2.set={jobs,res:{},key:M.cf.join('')};const step=i=>{if(!C2.set||C2.set.key!==M.cf.join('')||i>=jobs.length)return;const[sp,pos]=jobs[i];
   let ok=sp===5?[3,5,8].some(k=>c2Solve(M,5,pos,11,null,4000,c2Plan(M.cf.length,k))):!!c2Solve(M,sp,pos,11,null,6000);if(!ok&&sp===2)ok=!!c2Solve(M,25,pos,11,null,6000)&&'w';if(!ok&&sp===4)for(let b=1;b<=M.cf.length-3&&!ok;b++)if(c2Solve(M,4,pos,11,null,3000,[b]))ok='b';
@@ -5764,18 +5767,18 @@ const FORMS=[
 ];
 const FBKEYS={maj:[{k:5,mode:'maj'},{k:10,mode:'maj'},{k:0,mode:'maj'},{k:7,mode:'maj'},{k:4,mode:'maj'},{k:9,mode:'maj'}],min:[{k:0,mode:'min'},{k:9,mode:'min'},{k:2,mode:'min'},{k:7,mode:'min'},{k:5,mode:'min'}]};
 const FB={
- blues12:{mode:'maj',l:4,vars:[
+ blues12:{mode:'maj',l:2,vars:[
   {k:'basic',n:'Basic',d:'The plainest version: I for four bars, IV for two, I for two, then V–IV–I and V to go round again.',bars:[['I7'],['I7'],['I7'],['I7'],['IV7'],['IV7'],['I7'],['I7'],['V7'],['IV7'],['I7'],['V7']]},
   {k:'quick',n:'Quick change',d:'IV in bar 2, a quick visit before settling on I. Very common in Chicago blues.',bars:[['I7'],['IV7'],['I7'],['I7'],['IV7'],['IV7'],['I7'],['I7'],['V7'],['IV7'],['I7'],['V7']]},
   {k:'turn',n:'With a turnaround',d:'Bars 11–12 split into two chords each (I–IV, I–V): a turnaround that pushes back to the top.',bars:[['I7'],['IV7'],['I7'],['I7'],['IV7'],['IV7'],['I7'],['I7'],['V7'],['IV7'],['I7','IV7'],['I7','V7']]}],
   pal:['I7','IV7','V7','Imaj7','ii7','v7','VI7','#iv°7'],
   listen:['"Hound Dog" (Big Mama Thornton, 1952)','"Sweet Home Chicago" (Robert Johnson; many later versions)','"Johnny B. Goode" (Chuck Berry)','"Pride and Joy" (Stevie Ray Vaughan)']},
- jazzblues:{mode:'maj',l:5,vars:[
+ jazzblues:{mode:'maj',l:4,vars:[
   {k:'jazz',n:'Jazz blues',d:'The standard jazz blues: a ii–V into IV in bar 4, a passing diminished in bar 6, VI7 leading to a ii–V in bars 9–10, and a I–VI–ii–V turnaround.',bars:[['I7'],['IV7'],['I7'],['v7','I7'],['IV7'],['#iv°7'],['I7'],['VI7'],['ii7'],['V7'],['I7','VI7'],['ii7','V7']]},
   {k:'simple',n:'Halfway',d:'Only the second half is jazzed: VI7 in bar 8, ii–V in bars 9–10, a I–VI–ii–V turnaround.',bars:[['I7'],['IV7'],['I7'],['I7'],['IV7'],['IV7'],['I7'],['VI7'],['ii7'],['V7'],['I7','VI7'],['ii7','V7']]}],
   pal:['I7','IV7','V7','ii7','v7','VI7','#iv°7','Imaj7'],
   listen:['"C Jam Blues" (Duke Ellington)','"Straight, No Chaser" (Thelonious Monk)','"Tenor Madness" (Sonny Rollins)','"Bag\'s Groove" (Milt Jackson)']},
- minblues:{mode:'min',l:5,vars:[
+ minblues:{mode:'min',l:4,vars:[
   {k:'std',n:'Minor blues',d:'i for four bars, iv for two, i for two, then ♭VI7 sliding down a semitone to V7, and back to i.',bars:[['i7'],['i7'],['i7'],['i7'],['iv7'],['iv7'],['i7'],['i7'],['VI7'],['V7'],['i7'],['V7']]},
   {k:'iiv',n:'With a minor ii–V',d:'Bars 9–10 use the minor ii–V (iiø7–V7) instead, and bar 12 turns around with iiø7–V7.',bars:[['i7'],['iv7'],['i7'],['i7'],['iv7'],['iv7'],['i7'],['i7'],['iiø7'],['V7'],['i7'],['iiø7','V7']]}],
   pal:['i7','iv7','V7','VI7','iiø7','i6'],
@@ -6092,7 +6095,7 @@ function rdRefrainCheck(bars){const out=[],add=(sev,code,msg)=>out.push({sev,cod
  if(bars[7].every(Boolean)&&!(l(7)==='I'&&(bars[7].length>1?['V','V7'].includes(bars[7][0]):['V','V7'].includes(l(6)))))add('err','RF3','Bar 8 must end with a perfect cadence (V or V7 to I). The refrain always closes completely, so the episode can set off from a firm home.');
  if(bars[4].every(Boolean)&&f(4)!==f(0))add('warn','RF4','Bar 5 usually starts like bar 1, so the refrain is a parallel period that is easy to recognise when it comes back.');
  const named=[];if(['V','V7'].includes(l(3))&&f(4)===f(0))named.push('parallel period');if(bars.some(b=>b.includes('vi')))named.push('vi for colour');return{out,named}}
-FB.rondo={mode:'maj',l:5,len:8,keys:[{k:0,mode:'maj'},{k:7,mode:'maj'},{k:5,mode:'maj'},{k:2,mode:'maj'},{k:10,mode:'maj'}],
+FB.rondo={mode:'maj',l:3,len:8,keys:[{k:0,mode:'maj'},{k:7,mode:'maj'},{k:5,mode:'maj'},{k:2,mode:'maj'},{k:10,mode:'maj'}],
  secs:[{lab:'Phrase 1 · question',a:'a',from:0,to:3},{lab:'Phrase 2 · answer',a:'a′',from:4,to:7}],marks:{3:'imperfect cadence',7:'perfect cadence'},
  vars:[{k:'A',n:'model refrain',d:'',bars:RDS.A.bars}],pal:['I','ii','IV','V','V7','vi','I7','V7/V'],check:rdRefrainCheck,
  render:el=>{const fk='rondo',s=FB.rondo,f=FORMS.find(x=>x.k===fk),home=fKey(fk),sel=F.v.rdS||'A',model=F.v.rdM||'five',ord=rdOrder(),r=rdCheck(ord),mine=fMine(fk),mres=rdRefrainCheck(mine);
@@ -6366,7 +6369,7 @@ const sfSec=s=>{const m=String(s||'').trim().match(/^(\d+):(\d{1,2})$/);return m
 function sfMapStrip(map){const pts=sfMapSecs().map(([l,k])=>[l,k,sfSec(map[k])]).filter(x=>x[2]!=null).sort((a,b)=>a[2]-b[2]),end=sfSec(map.end);if(pts.length<2||end==null)return'<p class="note" style="margin-top:8px">Enter at least two start times and the end time to draw the map.</p>';
  const bad=pts.some((p,i)=>i&&p[2]===pts[i-1][2])||end<=pts[pts.length-1][2];const col=k=>k[0]==='P'?'var(--gold)':k[0]==='S'?'var(--green)':k==='D'?'var(--violet)':'#7fb3c8';
  return`<div class="fstrip" style="margin-top:12px">${pts.map((p,i)=>{const nx=i<pts.length-1?pts[i+1][2]:end;return`<span style="flex:${Math.max(1,nx-p[2])};--c:${col(p[1])}" title="${p[0]}">${p[0].replace(/:.*/,'')}</span>`}).join('')}</div>${bad?'<p class="note" style="color:var(--red)">Check the times: each section must start after the one before, and the end must come last.</p>':''}`}
-FB.sonata={mode:'maj',l:6,len:8,keys:[{k:0,mode:'maj'},{k:7,mode:'maj'},{k:2,mode:'maj'},{k:5,mode:'maj'},{k:10,mode:'maj'},{k:9,mode:'maj'}],vars:[],pal:[],render:el=>renderSonata(el,'sonata')};
+FB.sonata={mode:'maj',l:5,len:8,keys:[{k:0,mode:'maj'},{k:7,mode:'maj'},{k:2,mode:'maj'},{k:5,mode:'maj'},{k:10,mode:'maj'},{k:9,mode:'maj'}],vars:[],pal:[],render:el=>renderSonata(el,'sonata')};
 FB.sonrondo={mode:'maj',l:6,len:8,keys:FB.sonata.keys,vars:[],pal:[],render:el=>renderSonata(el,'sonrondo')};
 document.addEventListener('change',e=>{if(ROOM!=='forms'||!['sonata','sonrondo'].includes(F.open))return;const t=e.target,fk=F.open;
  if(t.id==='sfKeySel'){F.key[fk]=fKeys(fk)[+t.value];fSave();renderForms();return}
@@ -6496,7 +6499,7 @@ function c13LadderHTML(cells,ctx,id,other,rows){const n=cells.length;rows=rows||
  <tr><td class="rl">Hold</td>${cells.map((c,i)=>`<td><button class="c2c ${c==='h'?'on':''}" data-c13c="${id},${i},h" ${i===0?'disabled':''}>${c==='h'?'—':'⌒'}</button></td>`).join('')}</tr></table>`}
 function c13Iss(iss){return`<ul class="c2iss">${iss.filter(x=>x.sev==='err').map(x=>`<li class="e"><b>${x.code} · Must.</b> ${x.msg}</li>`).join('')}${iss.filter(x=>x.sev==='warn').map(x=>`<li class="w"><b>${x.code} · Should.</b> ${x.msg}</li>`).join('')}</ul>`}
 function c13Sub(){if(C13.ownOn)return C13.own;return C13SUB[C13.sys][C13.sub].cells}
-function renderClimb13(){const L=Math.max(S.level,5),SYS=C13.sys,subs=C13SUB[SYS];if(!subs[C13.sub])C13.sub='A';const sd=subs[C13.sub];const tab=L<6&&C13.tab==='fugue'?'canon':C13.tab;
+function renderClimb13(){const L=Math.max(S.level,4),SYS=C13.sys,subs=C13SUB[SYS];if(!subs[C13.sub])C13.sub='A';const sd=subs[C13.sub];const tab=L<6&&C13.tab==='fugue'?'canon':C13.tab;
  C13.cur=tab==='canon'||C13.ownOn?(SYS==='modal'?{mk:C13.modeK}:{key:C13.key}):sd;const ctx=c13Ctx();
  const ctxName=ctx.modal?`${ctx.M.n} (on ${ctx.M.fin})`:keyName(ctx.key);
  $('climbDetail').innerHTML=`
@@ -6836,10 +6839,10 @@ const PHM={
  PAC:{n:'Perfect cadence',s:'V–I, ends on do: a full stop',kind:'cad',str:3,bars:[{m:[[3,1],[2,1],[1,2]],c:[['ii',2],['V',2]]},{m:[[0,4]],c:[['I',4]]}]}
 };
 const PHEX=[
- {k:'phrase',n:'Phrase',l:4,slots:['a','PAC'],d:'Four bars that travel and arrive. A phrase is one musical sentence ending in a cadence.'},
- {k:'parallel',n:'Parallel period',l:5,slots:['a','HC','a','PAC'],d:'Question and answer that start the same way. The first phrase ends on V with an imperfect cadence, the second on I with a perfect cadence.'},
- {k:'contrasting',n:'Contrasting period',l:5,slots:['a','HC','b','PAC'],d:'Question and answer that start differently. It is still a period, because the weak cadence is answered by a stronger one.'},
- {k:'sentence',n:'Sentence',l:5,slots:['a','a5','frag','PAC'],d:'An idea, the idea again, then a speeding-up continuation that drives to the cadence: 2 + 2 + 4.'}
+ {k:'phrase',n:'Phrase',l:1,slots:['a','PAC'],d:'Four bars that travel and arrive. A phrase is one musical sentence ending in a cadence.'},
+ {k:'parallel',n:'Parallel period',l:1,slots:['a','HC','a','PAC'],d:'Question and answer that start the same way. The first phrase ends on V with an imperfect cadence, the second on I with a perfect cadence.'},
+ {k:'contrasting',n:'Contrasting period',l:1,slots:['a','HC','b','PAC'],d:'Question and answer that start differently. It is still a period, because the weak cadence is answered by a stronger one.'},
+ {k:'sentence',n:'Sentence',l:3,slots:['a','a5','frag','PAC'],d:'An idea, the idea again, then a speeding-up continuation that drives to the cadence: 2 + 2 + 4.'}
 ];
 const PHT={phrase:'A phrase (4 bars)',period:'A period (8 bars)',sentence:'A sentence (8 bars)'};
 function phKey(){const k=F.key.phrase;return k&&PHKEYS.some(x=>x.k===k.k)?k:PHKEYS[0]}
@@ -6957,7 +6960,7 @@ function renderPhrase(el){const st=phState(),key=phKey(),ex=PHEX.find(x=>x.k===(
  <section class="card ask"><span class="disp">Ask</span><span class="q">Sing the first two lines of a song you know well. Does the first line sound finished, or does it leave you hanging? How does the second line answer it?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <div class="grid clgrid">
   <section class="card"><h3>Hear</h3>
-   <div class="cads">${PHEX.map(x=>`<button class="cad ${x.k===ex.k?'on':''}" data-phex="${x.k}"><b>${x.n}</b><span>Stage ${x.l}</span><small>${x.d}</small></button>`).join('')}</div>
+   <div class="cads">${PHEX.map(x=>`<button class="cad ${x.k===ex.k?'on':''}" data-phex="${x.k}"><b>${x.n}</b><span>Level ${x.l}</span><small>${x.d}</small></button>`).join('')}</div>
    <div class="go" style="margin-top:12px"><button class="mini gold" data-phplay="model">▶ Play</button><button class="mini" data-fplay="stop">■ Stop</button><button class="mini" data-phcopy>Copy into Try →</button></div>
    <div class="lbl" style="margin-top:16px">Listen for</div>
    <ul class="note" style="margin:0 0 10px 18px;padding:0;line-height:1.6"><li>Bar 4: does the music stop on V (a question) or on I (an answer)?</li><li>Bar 5: does the opening come back (parallel), or is it new (contrasting)?</li><li>In the sentence, bars 5–6: the idea breaks into one-bar pieces and the chords change faster.</li></ul>
@@ -7115,10 +7118,10 @@ const EDR=[['metre','Pulse and metre','4–5'],['rhy','Rhythm dictation','4–6'
    all its rungs, so a student is never stranded. Stage per rung approved by Justin (19 Nov 2026): metre rung 3 (5/4, 7/8) is Stage 5, so
    Pulse and metre reads "Stage 4–5" (EDR agrees). */
 // 0.49 ladders (LADDER_REGISTER_049 section 1): melodic dictation has 12 rungs and rhythm dictation 10; the other drills keep three
-const EARSTAGE={metre:[4,4,5],rhy:[4,4,4,5,5,5,5,6,6,6],qual:[4,5,6],cad:[5,5,6],bass:[5,5,6],mel:[4,4,4,4,5,5,5,5,6,6,6,6],blind:[5,5,6]};
+const EARSTAGE={metre:[2,2,4],rhy:[2,2,2,4,4,4,4,5,5,5],qual:[2,4,5],cad:[4,4,5],bass:[4,4,5],mel:[2,2,2,2,4,4,4,4,5,5,5,5],blind:[4,4,5]};
 function earRungs(d){return EARSTAGE[d].map((_,i)=>i+1)}
-function earStage(){return typeof S!=='undefined'&&[4,5,6].includes(S.level)?S.level:6}
-function earStageTxt(a,b){return a===b?`Stage ${a}`:`Stage ${a}–${b}`}
+function earStage(){return typeof S!=='undefined'&&S.level>=1&&S.level<=7?S.level:5}
+function earStageTxt(a,b){return a===b?`Level ${a}`:`Levels ${a}–${b}`}
 function earStageTag(d){const v=EARSTAGE[d];return earStageTxt(Math.min(...v),Math.max(...v))}
 function earDrillOn(d,g=earStage()){return EARSTAGE[d][0]<=g}
 function earRungOn(d,r,g=earStage()){return EARSTAGE[d][r-1]<=g}
@@ -9469,7 +9472,7 @@ setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
   if(busy()&&performance.now()>=PLAY.guard)stopAll();unmark();const key=sig(b);
   setTimeout(()=>{if(!busy())return;PK=key;const m=b.isConnected&&/^\s*▶/.test(b.textContent)?b:find();if(m)mark(m)},40)},true)})();
 /* remember the stage between visits */
-(()=>{try{const l=+localStorage.getItem('cjg_stage');if([4,5,6].includes(l)){S.level=l;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}}catch(e){}})();
+(()=>{try{let l=+localStorage.getItem('cjg_level');if(!(l>=1&&l<=7)){const o=+localStorage.getItem('cjg_stage');l=LVMIG[o]||0;if(l)localStorage.setItem('cjg_level',l)}if(l>=1&&l<=7){S.level=l;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}}catch(e){}})();
 /* journal drafts are kept as you type */
 (()=>{try{const D=JSON.parse(localStorage.getItem('cjg_jdraft')||'[]');[1,2,3,4].forEach(i=>{const t=$('j'+i);if(!t)return;if(D[i-1]&&!t.value)t.value=D[i-1];t.addEventListener('input',()=>{try{localStorage.setItem('cjg_jdraft',JSON.stringify([1,2,3,4].map(k=>$('j'+k)?$('j'+k).value:'')))}catch(e){}})})}catch(e){}})();
 render();renderLog();applyRoute(location.hash.slice(1));termInit();

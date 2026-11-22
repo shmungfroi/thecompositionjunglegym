@@ -1,0 +1,6 @@
+/* Mock-ups only: the app loads Outfit and Poiret One from Google Fonts; these are local copies (SIL OFL 1.1) so the mock-ups render offline. */
+@font-face{font-family:'Outfit';font-weight:300;src:url(../fonts/outfit-latin-300-normal.woff2) format('woff2')}
+@font-face{font-family:'Outfit';font-weight:400;src:url(../fonts/outfit-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Outfit';font-weight:600;src:url(../fonts/outfit-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Outfit';font-weight:700;src:url(../fonts/outfit-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Poiret One';font-weight:400;src:url(../fonts/poiret-one-latin-400-normal.woff2) format('woff2')}
