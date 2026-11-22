@@ -2081,6 +2081,10 @@ function degColor(d){const n=degNum(d);if(n===1)return'var(--goldhi)';if(n===3||
 
 const LVN=['','First steps','Foundation','Developing','Intermediate','Senior','Advanced','Extension'];
 const LVMIG={4:2,5:4,6:5};
+/* 0.50 V8 (re-tag 2, Q3; 22 Nov: notation only): keys a learner writes in follow the level. Level 1: C, G, F major and A minor; 2: up to 2 sharps or flats; 3: 3; 4: 4; 5+: all. Listening-only drills keep all keys (0.49 C3: fewer keys let pitch give the answer away). */
+function keyAcc(k,mode){const M={0:0,7:1,2:2,9:3,4:4,11:5,6:6,1:-5,8:-4,3:-3,10:-2,5:-1};return M[mode==='min'?(k+3)%12:k]}
+function keyInBand(k,mode,lv){const a=Math.abs(keyAcc(k,mode));if(lv<=1)return mode==='maj'?a<=1:k===9;return lv>=5||a<=lv}
+function keysInBand(ks,mode,lv){const f=ks.filter(k=>keyInBand(k,mode,lv));return f.length?f:ks}
 function lvAt(A){return Math.max(S.level,Math.min(...A.map(x=>x.l||1)))}
 function lvlSet(l){S.level=l;try{localStorage.setItem('cjg_level',l)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}/* saved NSW Stage -> Level, once (Levels framework) */
 let S={root:'B',q:'m7',inv:0,level:5,inst:'piano',vi:0,key:null};
@@ -7493,7 +7497,7 @@ function earMelRange(l){return l===1?[0,4]:l===2?[-3,5]:[-3,4]}
 function earMelOK(a,b,l,mode){const d=Math.abs(a-b);if(d===0)return l===1;if(d===1)return!(mode==='min'&&((mod(a,7)===5&&mod(b,7)===6)||(mod(a,7)===6&&mod(b,7)===5)));
  // level 1 (d r m f s): steps, repeated notes, and the 3rds of the tonic triad (s–m, m–d), the first intervals in Kodály teaching
  if(l===1)return d===2&&[0,2,4].includes(a)&&[0,2,4].includes(b);const tri=mode==='maj'?[0,2,4]:[0,2,4];return d<=5&&tri.includes(mod(a,7))&&tri.includes(mod(b,7))}
-function earGenMel(l,r){const mode=l===3?'min':'maj',key={k:mode==='maj'?epick(CKEYS2.maj,r):epick(CKEYS2.min,r),mode},n=l===1?5:l===2?6:7,[lo,hi]=earMelRange(l);
+function earGenMel(l,r){const mode=l===3?'min':'maj',lv=(EARSTAGE.mel||[])[l-1]||S.level,ks=keysInBand(CKEYS2[mode],mode,lv),key={k:epick(ks,r),mode},n=l===1?5:l===2?6:7,[lo,hi]=earMelRange(l);
  const starts=l===1?[0,2,4]:[0];
  for(let tries=0;tries<500;tries++){const seq=[epick(starts,r)];let ok=true;for(let i=1;i<n-1;i++){const c=[];for(let x=lo;x<=hi;x++)if(earMelOK(seq[i-1],x,l,mode)&&!(x===seq[i-1]&&i>1&&seq[i-2]===x))c.push(x);if(!c.length){ok=false;break}seq.push(epick(c,r))}
   const endC=l===1?[0,2,4]:[0];const last=endC.filter(x=>earMelOK(seq[seq.length-1],x,l,mode));if(!ok||!last.length)continue;seq.push(epick(last,r));
@@ -7507,8 +7511,9 @@ function earGenMel(l,r){const mode=l===3?'min':'maj',key={k:mode==='maj'?epick(C
    Reference model: tests/reports/ladder_049/ladder_proto.py (its pools, shares and tell tables are the acceptance targets).
    ===================================================================== */
 const LADT=420;  // rule U: ticks per crotchet (LCM of 12, 5 and 7): semiquaver 105, quaver 210, triplet quaver 140, quintuplet 84, septuplet 60
-const LADKEYS={4:[0,7,2,9,5,10,3],5:[0,7,2,9,4,5,10,3,8],6:[0,7,2,9,4,11,5,10,3,8,1]};   // rule MK: do's pitch class, by Stage
-const LADSTG=typeof EARSTAGE!=='undefined'?{mel:EARSTAGE.mel,rhy:EARSTAGE.rhy}:{mel:[4,4,4,4,5,5,5,5,6,6,6,6],rhy:[4,4,4,5,5,5,5,6,6,6]};
+// rule MK: do's pitch class, by Level (0.50 V8: notation keys follow the level; 5+ keeps the old Stage 6 set)
+const LADKEYS={1:[0,7,5],2:[0,7,2,5,10],3:[0,7,2,9,5,10,3],4:[0,7,2,9,4,5,10,3,8],5:[0,7,2,9,4,11,5,10,3,8,1],6:[0,7,2,9,4,11,5,10,3,8,1],7:[0,7,2,9,4,11,5,10,3,8,1]};
+const LADSTG=typeof EARSTAGE!=='undefined'?{mel:EARSTAGE.mel,rhy:EARSTAGE.rhy}:{mel:[2,2,2,2,4,4,4,4,5,5,5,5],rhy:[2,2,2,4,4,4,4,5,5,5]};
 const LADSHARE=2/3;   // D2: share of items that contain the rung's new thing
 const lmod=(a,n)=>((a%n)+n)%n;
 const lpick=(a,r)=>a[Math.floor(r()*a.length)];
