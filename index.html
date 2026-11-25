@@ -749,9 +749,10 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-cad{display:flex;gap:6px;padding:0 0 6px;border-bottom:1.5px solid var(--gold);position:relative;margin-bottom:14px}
 .el-cad:after{content:attr(data-l);position:absolute;left:0;right:0;bottom:-17px;text-align:center;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);white-space:nowrap}
 .el-key{align-self:center;margin-left:8px;font-size:12.5px;color:var(--muted);padding-bottom:14px}
-.fig{display:inline-flex;flex-direction:column;vertical-align:middle;font-size:max(11px,.7em);line-height:.88;margin-left:2px;font-style:normal;font-variant-numeric:lining-nums}
+.fig{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:max(11px,.7em);line-height:.88;margin-left:2px;font-style:normal;font-variant-numeric:lining-nums tabular-nums}
 .el-ch sup,.el-teach sup{font-size:.62em;line-height:0}
-.fig i{font-style:normal}
+.fig i{display:block;height:.88em;overflow:hidden;overflow:visible clip;font-style:normal;text-align:center}
+.fig b{all:unset;display:block}
 
 /* ---- answer options: fixed grid ---- */
 .el-lbl{margin:18px 0 8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
@@ -9388,7 +9389,7 @@ const ELTIPNOTE={metre:'The speed changes every time (60–120 beats a minute), 
  bass:'The key chord plays first, and chord 1 is always I. "Bass only" plays just the bottom notes.',
  mel:'The hand signs are the Curwen signs used in Kodály teaching (si uses the so sign, raised). Hand-sign drawings © 2003 Kodály Music Education Institute of Australia (KMEIA).',
  blind:'The phrases come from the scores in the Analysis room. Their cadence labels were re-read in music21 and checked by an independent review on 18 Nov 2026. A "perfect cadence in B minor" is still a perfect cadence: it closes, but in a new key for a moment.'};
-const ELCADL={perfect:'Perfect',plagal:'Plagal',imperfect:'Imperfect',interrupted:'Interrupted',phrygian:'Phrygian',cad64:'Cadential <span class="fig"><i>6</i><i>4</i></span>'};
+const ELCADL={perfect:'Perfect',plagal:'Plagal',imperfect:'Imperfect',interrupted:'Interrupted',phrygian:'Phrygian',cad64:'Cadential <span class="fig"><i><b>6</b></i><i><b>4</b></i></span>'};
 // the US words come from the shared term list (R6), without the word "cadence"
 const elUS=k=>{const u=termUS(k);return u?u.replace(/ cadence$/,''):''};
 // the cadence answer buttons show the short Australian name and declare the term (data-tk): the term pass gives them the full US hover
@@ -9414,7 +9415,7 @@ function earNumFn(rn,mode='maj'){const r=rn.replace(/:\d/,'');if(r.includes('/')
   const tl=tonicLetter(key),sc=scaleOf(key),ok=chordOf(p.root,p.q).tones.every(t=>{const d=mod(LET.indexOf(t.name[0])-tl,7),pc=mod(t.midi,12);
    return pc===mod(key.k+sc[d],12)||(mode==='min'&&d===6&&pc===mod(key.k+11,12))});return ok?a.f:'C'});
  const out=f==='C'?'X':f;EARNUMFN.set(mk,out);return out}
-function earRnHTML(rn){const m=rn.match(/^([^:]*)(?::(\d))?$/),b=m[1];return m[2]==='1'?`${b}<sup>6</sup>`:m[2]==='2'?`${b}<span class="fig"><i>6</i><i>4</i></span>`:b}
+function earRnHTML(rn){const m=rn.match(/^([^:]*)(?::(\d))?$/),b=m[1];return m[2]==='1'?`${b}<sup>6</sup>`:m[2]==='2'?`${b}<span class="fig"><i><b>6</b></i><i><b>4</b></i></span>`:b}
 function earRnTxt(rn){return rn.replace(':2','⁶₄').replace(':1','⁶')}
 function earSolOfMidi(m,key){return{0:'do',1:'di',2:'re',3:'ri',4:'mi',5:'fa',6:'fi',7:'so',8:'si',9:'la',10:'ta',11:'ti'}[mod(m-earDo(key).m,12)]}
 const elFmt=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
@@ -9582,8 +9583,8 @@ function earBlindTxt(q,g){const ch=String(q.chords||'').split(/\s*–\s*/).map(e
    (a wrong answer, an item whose sentence only lists the chords) ends with "This is an imperfect cadence." */
 function earCadNamed(a,t){const u=termUS(a);if(!u||new RegExp(`(?<![A-Za-z])${a} cadence`,'i').test(t))return t;
  return`${t} This is ${/^[aeiou]/.test(a)?'an':'a'} ${a} cadence.`}
-function earTeachCad(q,res){const a=q.a,g=res.given,min=q.key&&q.key.mode==='min',nm=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':CADL[a]||ELCADL[a]+' cadence';
- const head=a==='cad64'?'Cadential <span class="fig"><i>6</i><i>4</i></span>':a==='phrygian'?'Phrygian cadence':CADL[a];
+function earTeachCad(q,res){const a=q.a,g=res.given,min=q.key&&q.key.mode==='min',nm=a==='cad64'?'Cadential <span class="fig"><i><b>6</b></i><i><b>4</b></i></span>':CADL[a]||ELCADL[a]+' cadence';
+ const head=a==='cad64'?'Cadential <span class="fig"><i><b>6</b></i><i><b>4</b></i></span>':a==='phrygian'?'Phrygian cadence':CADL[a];
  let t=q.d==='blind'?earBlindTxt(q,g):g===null||g===a?earCadRight(a,q,min):earCadWrong(a,g,q,min,res);
  t=earCadNamed(a,t);
  const last=a==='cad64'?'Hear the last three chords, slowly':'Hear the last two chords, slowly',rp=[{v:'last',t:last},{v:'bassonly',t:'Bass only'},{v:'all',t:'The whole phrase'}];
