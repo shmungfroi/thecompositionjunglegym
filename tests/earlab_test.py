@@ -410,7 +410,7 @@ def l_ctp_check(it, where):
 async def ladder_section(pg):
     MK = "(seed)=>{let s=seed;return()=>{s=(s*16807)%2147483647;return s/2147483647}}"
     # ---------------- L0: stages, settings, names ----------------
-    st = await pg.evaluate("""()=>({mel:EARSTAGE.mel,rhy:EARSTAGE.rhy,rs:[1,2,3,4,5,6,7].map(g=>{S.level=g;EAR.all=false;return{mel:earRungsShown('mel'),rhy:earRungsShown('rhy')}}),
+    st = await pg.evaluate("""()=>({mel:EARSTAGE.mel,rhy:EARSTAGE.rhy,rs:[1,2,3,4,5,6,7].map(g=>{S.level=g;return{mel:earRungsShown('mel'),rhy:earRungsShown('rhy')}}),
         edr:EDR.find(x=>x[0]==='rhy')[2],tag:earStageTag('rhy'),names:EAR.names,mod:EAR.mod,saved:(()=>{EAR.names='kk';EAR.mod='move';earSave();const o=LS.get('cjg_ear');EAR.names='k';EAR.mod='home';earSave();return[o.names,o.mod,typeof o.rd]})(),
         N:LADNAMES,NK:LADNAMES_KK,R:RHYNAMES,tiles:Object.fromEntries([1,2,3,4,5,6,7,8,9,10].map(l=>[l,ladRhyTiles(l)])),ec:[1,2,3].map(l=>earCells(l).join(' '))})""")
     COUNT['self-check L0 Stage table and settings'] = 1
@@ -419,7 +419,8 @@ async def ladder_section(pg):
     lev = lambda a: [-(-n // 3) for n in a]
     if st['mel'] != lev(MEL_SLOT) or st['rhy'] != lev(RHY_SLOT):
         fail('L', f"EARSTAGE mel {st['mel']} rhy {st['rhy']}")
-    want_rs = [dict(mel=[i + 1 for i, x in enumerate(lev(MEL_SLOT)) if x <= g], rhy=[i + 1 for i, x in enumerate(lev(RHY_SLOT)) if x <= g]) for g in range(1, 8)]
+    # 0.50 V10: nothing is behind a chip any more; every written rung shows at every learner level
+    want_rs = [dict(mel=list(range(1, len(MEL_SLOT) + 1)), rhy=list(range(1, len(RHY_SLOT) + 1))) for g in range(1, 8)]
     if st['rs'] != want_rs:
         fail('L', f"rungs shown by Stage {st['rs']}")
     if st['edr'] != '1–6' or st['tag'] != 'Levels 1–6':

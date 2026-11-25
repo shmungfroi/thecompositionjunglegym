@@ -968,7 +968,8 @@ async def main():
             COUNT['T answer grid per rung'] += 1
             if mt['opts'][str(l)] != want:
                 fail('T', f"rung {l}: earMetreOpts {mt['opts'][str(l)]}, fixture {want}")
-        if mt['stage'] != MF['stage'] or mt['tag'] != 'Stage 4–5' or mt['edr'] != '4–5':
+        # 0.50: levels of the metre rungs from EARSLOT (places 2, 5, 8); the tag and EDR range are the levels (stale since V9)
+        if mt['stage'] != [-(-p // 3) for p in (2, 5, 8)] or mt['tag'] != 'Levels 1–3' or mt['edr'] != '1–3':
             fail('T', f"metre Stages: EARSTAGE {mt['stage']}, tag {mt['tag']}, EDR {mt['edr']}")
         for sig, r in rows.items():
             COUNT['T fixture rows'] += 1
@@ -1225,10 +1226,10 @@ async def main():
         # ---------------- U: EL-11 rungs, Stage switch, show all, rung change, page errors at Stages 4, 5, 6 ----------------
         # merge 0.48: one Stage table, EARSTAGE (Fable's design spec, section 3): a drill or rung shows when its Stage <= the selected Stage
         # 0.49 ladders (LADDER_REGISTER_049 section 1): melodic dictation 12 rungs (Stages 4,4,4,4,5,5,5,5,6,6,6,6), rhythm dictation 10 (4,4,4,5,5,5,5,6,6,6)
-        WANT = {4: {'metre': [1, 2], 'rhy': [1, 2, 3], 'qual': [1], 'mel': [1, 2, 3, 4]},
-                5: {'metre': [1, 2, 3], 'rhy': list(range(1, 8)), 'qual': [1, 2], 'cad': [1, 2], 'bass': [1, 2], 'mel': list(range(1, 9)), 'blind': [1, 2]},
-                6: {**{d: [1, 2, 3] for d in ('metre', 'qual', 'cad', 'bass', 'blind')}, 'rhy': list(range(1, 11)), 'mel': list(range(1, 13))}}
-        await pg.evaluate("()=>{EAR.all=false;EAR.q=null;EAR.done=false}")
+        # 0.50 V10: nothing is hidden by the learner's level; every drill and every written rung is offered at Levels 4, 5 and 6
+        NR = {'metre': 3, 'rhy': 10, 'qual': 3, 'cad': 3, 'bass': 3, 'mel': 12, 'blind': 3}
+        WANT = {g: {d: list(range(1, n + 1)) for d, n in NR.items()} for g in (4, 5, 6)}
+        await pg.evaluate("()=>{EAR.q=null;EAR.done=false}")
         for g in (4, 5, 6):
             await pg.click(f'#lvl button[data-l="{g}"]')
             await pg.evaluate("()=>{location.hash='ear';room('ear')}")
@@ -1251,24 +1252,14 @@ async def main():
                     fail('U', f'Stage {g} {d}: rungs offered {r["rungs"]}, expected {WANT[g][d]}')
                 if sorted(r['tabs']) != sorted(WANT[g]):
                     fail('U', f'Stage {g}: drills offered {r["tabs"]}, expected {sorted(WANT[g])}')
-                if 'Level ' in r['txt'] or any(not t.startswith('Stage ') for t in r['tagtxt']) or ' S4' in r['txt'] or ' S5' in r['txt']:
-                    fail('U', f'Stage {g} {d}: level wording or a short Stage tag in the UI ({r["tagtxt"]})')
-            # show all: every drill and every rung (at Stage 6 nothing is hidden, so the chip is not offered)
+                if any(not t.endswith(' rungs') for t in r['tagtxt']) or ' S4' in r['txt'] or ' S5' in r['txt']:
+                    fail('U', f'Level {g} {d}: a drill sub-label that is not "n rungs" ({r["tagtxt"]})')
             if g == 6:
-                n6 = await pg.evaluate("()=>document.querySelectorAll('#earMain [data-earall]').length")
+                n6 = await pg.evaluate("()=>document.querySelectorAll('#earMain [data-earall], #earMain .el-all').length")
                 if n6:
-                    fail('U', 'Stage 6: a Show all chip is offered with nothing hidden')
-                COUNT['EL-11 Stages checked'] += 1
-                if len(errs) > n0:
-                    fail('U', f'Stage {g}: page errors {errs[n0:][:3]}')
-                continue
-            al = await pg.evaluate("""()=>{document.querySelector('#earMain [data-earall]').click();const tabs=[...document.querySelectorAll('#earMain [data-eardr]')].map(b=>b.dataset.eardr);
-                const t=document.querySelector('#earMain [data-eardr="qual"]');t.click();const r=[...document.querySelectorAll('#earMain [data-earlv]')].map(b=>+b.dataset.earlv);
-                document.querySelector('#earMain [data-earall]').click();return{tabs,r,off:[...document.querySelectorAll('#earMain [data-eardr]')].length}}""")
-            if len(al['tabs']) != 7 or al['r'] != [1, 2, 3] or al['off'] != len(WANT[g]):
-                fail('U', f'Stage {g}: show all gives {al}')
+                    fail('U', 'a Show all control is offered')
             if len(errs) > n0:
-                fail('U', f'Stage {g}: page errors {errs[n0:][:3]}')
+                fail('U', f'Level {g}: page errors {errs[n0:][:3]}')
             COUNT['EL-11 Stages checked'] += 1
         # the hand-sign rows are never called rungs in the UI
         txt = await pg.evaluate("""()=>{EAR.drill='mel';EAR.lvl.mel=1;EAR.q=earGen('mel',1);EAR.done=false;EAR.ans=[];renderEar();const el=document.querySelector('#earMain');

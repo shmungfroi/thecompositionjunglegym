@@ -176,10 +176,10 @@ async def run(p):
         await pg.evaluate("EAR.st={};renderEar()"); check(await pg.evaluate("document.querySelector('[data-earreset]').disabled"), f'{w}px FR-21 Reset score disabled with no count')
         mw = await pg.evaluate("getComputedStyle(document.querySelector('#earTips li')).maxWidth")
         check(mw not in ('none', ''), f'{w}px FR-17 tips line length capped {mw}')
-        # FR-10 / FR-11: show all rungs beside the rung control at Stage 4, and its target size
-        await pg.evaluate("S.level=4;EAR.all=false;EAR.st={};renderEar()"); await pg.evaluate(VIEW, ['metre', 1])
-        h = await pg.evaluate("()=>[...document.querySelectorAll('#earMain .el-rungrow .el-all')].map(b=>[b.textContent,b.getBoundingClientRect().height])")
-        check(len(h) == 1 and h[0][0] == 'show all rungs' and (w >= 500 or h[0][1] >= 43.5), f'{w}px FR-10/11 show all rungs at Stage 4 {h}')
+        # FR-10 / FR-11 (0.50 V10): no "show all" control; the rung buttons and level tabs are 44 px high on a phone (the 21-rung picker)
+        await pg.evaluate("S.level=4;EAR.st={};renderEar()"); await pg.evaluate(VIEW, ['metre', 1])
+        h = await pg.evaluate("()=>({all:document.querySelectorAll('#earMain .el-all,#earMain [data-earall]').length,hs:[...document.querySelectorAll('#earMain .el-lg.open .el-lgr button, #earMain .el-ltab')].filter(b=>b.offsetParent).map(b=>b.getBoundingClientRect().height)})")
+        check(h['all'] == 0 and len(h['hs']) >= (1 if w >= 500 else 4) and (w >= 500 or min(h['hs']) >= 43.5), f'{w}px FR-10/11 no show-all control; rung and tab targets {h}')
         await pg.evaluate("S.level=6;EAR.all=false;renderEar()")
         # FR-5: phone header, every title on one line up to two-digit scores (balanced wrap allowed for the longest)
         if w < 500:
@@ -231,8 +231,8 @@ async def run(p):
         if not (o['s'] == 'solid' and o['w'] == '2px' and o['col'] == want): bad.append(o)
     check(seen > 15 and not bad, f'focus ring (2px solid goldhi) on every control reached by Tab ({seen} reached): {bad[:3]}')
     # keyboard order: drill tabs, rungs, toggle, variants/segments, Show me, Skip, answer area
-    order = await pg.evaluate("""()=>{const q='#earMain .el-drill, #earMain .el-all, #earMain .el-rungs button, #earMain #earStage .el-play, #earMain .el-seg button, #earMain .el-var, #earMain [data-earshow], #earMain #earStage [data-earnew], #earMain .el-tile';
-       const L=[...document.querySelectorAll(q)];const kind=e=>e.classList.contains('el-drill')?'drill':e.classList.contains('el-all')?'all':e.closest('.el-rungs')?'rung':e.classList.contains('el-play')?'toggle':e.closest('.el-seg')?'seg':e.dataset.earshow!==undefined?'show':e.dataset.earnew!==undefined?'skip':'tile';
+    order = await pg.evaluate("""()=>{const q='#earMain .el-drill, #earMain .el-lgr button, #earMain #earStage .el-play, #earMain .el-seg button, #earMain .el-var, #earMain [data-earshow], #earMain #earStage [data-earnew], #earMain .el-tile';
+       const L=[...document.querySelectorAll(q)];const kind=e=>e.classList.contains('el-drill')?'drill':e.closest('.el-lgr')?'rung':e.classList.contains('el-play')?'toggle':e.closest('.el-seg')?'seg':e.dataset.earshow!==undefined?'show':e.dataset.earnew!==undefined?'skip':'tile';
        return L.map(kind)}""")
     want = ['drill', 'rung', 'toggle', 'seg', 'show', 'skip', 'tile']
     firsts = [order.index(k) for k in want if k in order]
