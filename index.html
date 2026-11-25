@@ -7403,16 +7403,23 @@ const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},lett
 function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,rhy:EAR.rhy,names:EAR.names,mod:EAR.mod,rd:EAR.rd,reached:EAR.reached})}
 /* 0.50 V9 (re-tag 8, approved 22 Nov): every drill has 21 rungs, 3 per level (rung = 3 x (level - 1) + step). The generators keep their
    internal rung numbers (saved progress and the ladder rules key on them); EARSLOT gives each built internal rung its place 1-21.
-   Places with no built rung are 'not yet'. A built rung that holds content from two places sits at the later one. */
-const EARSLOT={metre:[2,5,8],rhy:[2,4,5,7,8,9,11,13,15,16],qual:[1,7,13],cad:[4,5,13],bass:[3,4,10],mel:[2,3,4,5,6,9,10,12,13,15,16,18],blind:[7,10,13]};
+   Places with no built rung are 'not yet'. A built rung that holds content from two places sits at the later one.
+   0.50 ICfix (IC V9-1, V9-2; Justin 25 Nov): two built rungs are split, reusing their own items. Melody internal rung 5 keeps the
+   la-pentatonic items at place 6 and the new internal rung 13 takes its natural-minor items at place 7; cadences internal rung 2 keeps the
+   major-key items at place 5 and the new internal rung 4 takes its minor-key items at place 7. The new rungs are appended at the end of
+   the internal lists, so every saved internal number (cjg_ear lvl, rd, reached) still means the same rung at the same place.
+   EARSLOT is therefore in internal order, not place order: use earByPlace / earNextRung for order. ELSPLIT gives each split-off
+   rung the internal rung whose generator it runs (the item keeps that content number in .l and carries its own rung in .rung). */
+const EARSLOT={metre:[2,5,8],rhy:[2,4,5,7,8,9,11,13,15,16],qual:[1,7,13],cad:[4,5,13,7],bass:[3,4,10],mel:[2,3,4,5,6,9,10,12,13,15,16,18,7],blind:[7,10,13]};
+const ELSPLIT={mel:{13:5},cad:{4:2}};
+function earBase(d,n){return(ELSPLIT[d]&&ELSPLIT[d][n])||n}
+function earByPlace(d){return EARSLOT[d].map((p,i)=>[p,i+1]).sort((a,b)=>a[0]-b[0]).map(x=>x[1])}
+function earNextRung(d,n){const o=earByPlace(d),i=o.indexOf(n);return i>=0&&i<o.length-1?o[i+1]:null}
 const EARSTAGE=Object.fromEntries(Object.entries(EARSLOT).map(([d,a])=>[d,a.map(n=>Math.ceil(n/3))]));
 function rn(d,n){const a=EARSLOT[d];return a&&a[n-1]?a[n-1]:n}
 const EDR=[['metre','Pulse and metre'],['rhy','Rhythm dictation'],['qual','Chord quality'],['cad','Cadences'],['bass','Bass and numerals'],['mel','Melodic dictation'],['blind','Blind analysis']].map(([k,n])=>{const v=EARSTAGE[k],a=Math.min(...v),b=Math.max(...v);return[k,n,a===b?`${a}`:`${a}–${b}`]});   // 0.50: level range from EARSLOT
-/* EL-11: each drill's levels are rungs (Rung 1, 2, 3). One Stage table, EARSTAGE (0.48 design spec, section 3): the Stage at which each
-   rung starts. A drill or rung is offered when its Stage is at or below the top-bar Stage switch (4/5/6); everything else sits behind
-   "Show all" (EAR.all, saved; changing the Stage clears it). The drill and rung in use always show, and a drill outside the Stage offers
-   all its rungs, so a student is never stranded. Stage per rung approved by Justin (19 Nov 2026): metre rung 3 (5/4, 7/8) is Stage 5, so
-   Pulse and metre reads "Stage 4–5" (EDR agrees). */
+/* EARSTAGE: the level (1-7) of each built internal rung, ceil(place / 3) from EARSLOT. 0.50 V10: every written rung shows in the 21-place
+   picker; the old Stage switch and its "Show all" control (EAR.all) are gone. */
 // 0.49 ladders (LADDER_REGISTER_049 section 1): melodic dictation has 12 rungs and rhythm dictation 10; the other drills keep three
 function earRungs(d){return EARSTAGE[d].map((_,i)=>i+1)}
 function earStage(){return typeof S!=='undefined'&&S.level>=1&&S.level<=7?S.level:5}
@@ -7420,9 +7427,9 @@ function earStageTxt(a,b){return a===b?`Level ${a}`:`Levels ${a}–${b}`}
 function earStageTag(d){const v=EARSTAGE[d];return earStageTxt(Math.min(...v),Math.max(...v))}
 /* 0.50 V10 labels (spec 3.6): written rungs, counted from EARSLOT */
 function earDrillSub(d){return`${EARSLOT[d].length} rungs`}
-function earDrillTag(d){const a=EARSLOT[d];return`Rungs ${a[0]} to ${a[a.length-1]} · ${a.length} written`}
+function earDrillTag(d){const a=EARSLOT[d];return`Rungs ${Math.min(...a)} to ${Math.max(...a)} · ${a.length} written`}
 /* first visit to a drill (spec 3.5 item 4): the first written rung at the learner's level, else the nearest written rung below, else the lowest */
-function earFirstRung(d){const lv=earStage(),E=EARSTAGE[d];let i=E.indexOf(lv);if(i>=0)return i+1;for(let k=E.length-1;k>=0;k--)if(E[k]<lv)return k+1;return 1}
+function earFirstRung(d){const lv=earStage(),E=EARSTAGE[d],o=earByPlace(d);let n=o.find(x=>E[x-1]===lv);if(n)return n;const b=o.filter(x=>E[x-1]<lv);return b.length?b[b.length-1]:o[0]}   // by place (ICfix: EARSLOT is in internal order)
 function earDrillOn(d,g=earStage()){return EARSTAGE[d][0]<=g}
 function earRungOn(d,r,g=earStage()){return EARSTAGE[d][r-1]<=g}
 function earRungStages(d,r){return earStageTxt(EARSTAGE[d][r-1],Math.max(...EARSTAGE[d]))}
@@ -7685,9 +7692,10 @@ function earCadOpen(l,key,reg={b:47,s:70}){const mk=l+'|'+key.k+key.mode+'|'+reg
  for(let i=0;i<40&&idx===undefined;i++)if(M.every(m=>{const rns=m.split(' ');return earSATB(cadList(m,key),key,reg,{strict:true,rns,startIdx:i})}))idx=i;
  EARC3O.set(mk,idx);return idx}
 function earCad3Open(key,reg){return earCadOpen(3,key,reg)}
-function earGenCad(l,r){if(l===1){const a=epick(Object.keys(CADT[1].maj),r),d=earR1Draw(a,r),key={k:d.k,mode:'maj'},rns=d.t.split(' ');
+function earGenCad(l,r){const rung=l,fm=l===4?'min':l===2?'maj':null;if(l===4)l=2;   // ICfix: rung 2 major-key items, rung 4 rung 2's minor-key items
+ if(l===1){const a=epick(Object.keys(CADT[1].maj),r),d=earR1Draw(a,r),key={k:d.k,mode:'maj'},rns=d.t.split(' ');
   const{reg,P}=earCadReg(rns,key,r,1);return{d:'cad',l,a,key,rns,sub:cadSub(rns),reg,ch:P.ch,opts:earCadOpts(l)}}
- const mode=l===1?'maj':l===3?epick(['maj','min'],r):epick(['maj','maj','min'],r),ts=CADT[l][mode];
+ const mode=fm||(l===1?'maj':l===3?epick(['maj','min'],r):epick(['maj','maj','min'],r)),ts=CADT[l][mode];
  // the mode is drawn first, then the answer from those the mode has (at rung 3 minor has all six, major all but the Phrygian)
  const a=epick(Object.keys(ts),r);
  // 0.49 C3: the model and key are drawn together from the balanced weights (EAR23W), then earCadReg draws the register in that model and key.
@@ -7696,7 +7704,7 @@ function earGenCad(l,r){if(l===1){const a=epick(Object.keys(CADT[1].maj),r),d=ea
  const d=earR23Weights(l)?earR23Draw(l,mode,a,r):null;let key,rns;
  if(d){key={k:d.k,mode};rns=d.t.split(' ')}
  else{key={k:epick(earCadKeys(l,mode),r),mode};const lens=[...new Set(Object.values(ts).flat().map(x=>x.split(' ').length))],n=epick(lens,r);rns=epick(ts[a].filter(x=>x.split(' ').length===n),r).split(' ')}
-  const{reg,P}=earCadReg(rns,key,r,l);return{d:'cad',l,a,key,rns,sub:l===3?'':cadSub(rns),reg,ch:P.ch,opts:earCadOpts(l)}}
+  const{reg,P}=earCadReg(rns,key,r,l);return{d:'cad',l,...(rung!==l?{rung}:{}),a,key,rns,sub:l===3?'':cadSub(rns),reg,ch:P.ch,opts:earCadOpts(l)}}
 /* R13+: outer-voice registers for cadence items, drawn independently of the category. earGenCad calls this and only this.
    Rung 1 (BHL 0.48): the voicing is drawn from the balanced weights of the strict open realisations of this model in this key (earR1Weights),
    so the lowest and highest notes together, the span and the outer voices of each chord come up as often for every answer. Rungs 2 and 3
@@ -8021,7 +8029,7 @@ function ladRhyLegal(q,ans){const bl=q.barLen,an=q.anac||0;let i=0;if(an){let w=
   if(p!==L)return false}
  return i===ans.length}
 /* ---------------- melody ladder (M1–M12) ---------------- */
-const LMNEW={2:'l, l and low s',3:'ti (t, and t)',4:'rhythm: crotchets, quavers, minims',5:'la-pentatonic and natural minor',6:'leaps beyond the tonic triad; 3/4, 6/8, anacrusis',
+const LMNEW={2:'l, l and low s',3:'ti (t, and t)',4:'rhythm: crotchets, quavers, minims',5:'la-pentatonic',13:'natural minor',6:'leaps beyond the tonic triad; 3/4, 6/8, anacrusis',
  7:'harmonic and melodic minor (si, fi)',8:'modes (Dorian on re, Mixolydian on so), te and fi',9:'modulation (Keep home do / Move do)',10:'chromatic passing and neighbour notes',
  11:'two parts: melody and bass',12:'real repertoire'};
 const LRNEWTXT={2:'semibreve, dotted minim; 2/4 and 3/4',3:'four semiquavers',4:'tam-ti, ti-tika, tika-ti, quaver rests',5:'6/8: the six compound cells',6:'syncopation and ties',
@@ -8200,9 +8208,9 @@ function ladGenM12(r,o={}){const P=LADM12.filter(x=>!o.score||x.score===o.score)
   barLen:x.barLen,cells:null,new:true,info:{var:'repertoire',home:x.mode==='min'?-2:0}};
  it.a=it.notes.map(n=>n.sol);it.midi=it.notes.map(n=>n.midi);it.n=it.notes.length;it.range=[Math.min(...it.notes.map(n=>n.i)),Math.max(...it.notes.map(n=>n.i))];return it}
 /* the melody generator. Returns the item (fields in ENGINE_API.md). Rungs 1–3 keep the 0.48 item fields (a, notes {s,o}, midi, idx, range, key) */
-function ladGenMel(l,r,o={}){l=Math.max(1,Math.min(12,l));if(l===12)return ladGenM12(r,o);
- const hasNew=l>=2&&l!==12,wantNew=o.wantNew!==undefined?o.wantNew:(hasNew?r()<LADSHARE:true),stage=LADSTG.mel[l-1];
- const fv=l===5&&wantNew?lpick(['lapent','natmin'],r):l===7&&wantNew?lpick(['harm','melo'],r):l===8?(wantNew?lpick(['dor','mix','te','fi'],r):lpick(['major','natmin'],r)):null,
+function ladGenMel(l,r,o={}){const rung=l===13?13:Math.max(1,Math.min(12,l));l=rung===13?5:rung;if(l===12)return ladGenM12(r,o);   // ICfix: rung 13 runs rung 5's generator, natural minor only
+ const hasNew=l>=2&&l!==12,wantNew=o.wantNew!==undefined?o.wantNew:(hasNew?r()<LADSHARE:true),stage=LADSTG.mel[rung-1];
+ const fv=l===5&&wantNew?(rung===13?'natmin':'lapent'):l===7&&wantNew?lpick(['harm','melo'],r):l===8?(wantNew?lpick(['dor','mix','te','fi'],r):lpick(['major','natmin'],r)):null,
   mkind=l===9&&wantNew?lpick(['M-V','M-vi','m-III','m-v'],r):null;   // drawn once: redraws keep the kinds a quarter each (IC M-2, S1)
  for(let tr=0;tr<2000;tr++){let rh=null,n,got,extra={};
   if(l<=3)n=lpick(ladMelSpec(l).n,r);
@@ -8247,7 +8255,7 @@ function ladGenMel(l,r,o={}){l=Math.max(1,Math.min(12,l));if(l===12)return ladGe
    it.pivotNames=[it.notes[info.pivot].sol,it.readings.move[info.pivot]]}
   if(l===11){const mm=info.mode==='min'?'min':'maj',bass=ladBass(r,it.notes,it.metre,it.cells.length,it.anac,key,mm,wantNew);if(!bass)continue;it.bass=bass;it.info={...info,bassChords:bass.map(b=>b.chord)}}
   if(l<=3)it.key={k:key,mode:'maj',do:key};
-  it.id=ladMelKey(it);return it}
+  if(rung!==l)it.rung=rung;it.id=ladMelKey(it);return it}
  throw new Error('lad: melody gen '+l)}
 // the syllable of a MIDI note against a do (MIDI), on the diatonic step w (do-relative index; its octave is taken from the pitch)
 function ladSylAt(midi,doMidi,w){const c=lmod(w,7),rel=midi-doMidi,o=Math.round((rel-LSEMI[c])/12),a=rel-LSEMI[c]-12*o;return ladSyl(c+7*o,a)}
@@ -8346,7 +8354,7 @@ function ladMelMark(q,ans,o={}){if(q.l===11){const A=ans&&!Array.isArray(ans)?an
  return{ok,nearly:!ok&&m.nearly,kind:ok?'right':m.nearly?'nearly':'wrong',detail:m.detail,extra:m.extra,nRight:m.nRight,n:m.n,pivot:pivotOK,mod:q.l===9?mode:undefined,note}}
 /* ---------------- readiness (D10): last 10 answered (right or wrong) per drill and rung; Shown, Skipped and Nearly left out ---------------- */
 function ladRdPush(rd,drill,rung,kind){if(kind!=='ok'&&kind!=='miss')return rd;rd[drill]=rd[drill]||{};const a=(rd[drill][rung]||[]).concat(kind==='ok'?1:0);rd[drill][rung]=a.slice(-10);return rd}
-function ladRdState(rd,drill,rung,shown){const a=(rd&&rd[drill]&&rd[drill][rung])||[],ok=a.reduce((s,x)=>s+x,0),nx=rung+1,has=(shown||[]).includes(nx);
+function ladRdState(rd,drill,rung,shown){const a=(rd&&rd[drill]&&rd[drill][rung])||[],ok=a.reduce((s,x)=>s+x,0),nx=typeof earNextRung==='function'&&EARSLOT[drill]?earNextRung(drill,rung):rung+1,has=nx!=null&&(shown||[]).includes(nx);   // next = the next written rung by place
  return{last:a.slice(),n:a.length,ok,ready:ok>=8&&has,next:has?nx:null,text:has?`Ready for the next rung? Rung ${rn(drill,nx)}: ${(drill==='mel'?LMNEW:LRNEWTXT)[nx]||''}`:''}}
 /* ---------------- recordings (D13): stored transcriptions, notes and rhythm only; no lyrics, no audio. Empty until the recordings check. ----------------
    entry: {id, drill:'mel'|'rhy', rung:12|10, artist, title, year, link, start:'m:ss', end:'m:ss', credit, checked:false,
@@ -8425,7 +8433,7 @@ const EARSC=[['chorale',1],['ohaupt',1],['jesu',2],['k331a',2],['k331d',3],['cho
 function cadCat(t){return/Interrupted/i.test(t)?'interrupted':/Plagal/i.test(t)?'plagal':/Imperfect|Half/i.test(t)?'imperfect':'perfect'}
 function earBlindPool(l){if(!EAR.blind)return[];return EAR.blind.filter(x=>x.lvl<=l)}
 function earGenBlind(l,r){const P=earBlindPool(l);if(!P.length)return null;const x=epick(P,r);return{d:'blind',...x,a:x.cat}}
-function earGen(d,l,r=Math.random){const q=earGen1(d,l,r);if(q){if(!q.l)q.l=l;q.lvl=l}return q}
+function earGen(d,l,r=Math.random){const q=earGen1(d,l,r);if(q){if(!q.l)q.l=l;q.lvl=l;q.rung=l}return q}   // .l = the content rung (generator), .rung = the rung asked for (they differ only on a split rung, ELSPLIT)
 function earGen1(d,l,r){return d==='metre'?earGenMetre(l,r):d==='rhy'?ladGenFresh('rhy',l,r):d==='qual'?earGenQual(l,r):d==='cad'?earGenCad(l,r):d==='bass'?earGenBass(l,r):d==='mel'?ladGenFresh('mel',l,r):earGenBlind(l,r)}
 window.earGen=earGen;
 /* ---- blind analysis: find each cadence's bar from the engraved score ---- */
@@ -8697,7 +8705,7 @@ function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===n
 // a question left before it was answered is recorded as skipped; returns true if one was
 function earSkip(){if(!EAR.q||EAR.done||EAR.q.plays===0)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${rn(EAR.drill,earLvl())}: skipped`);return true}
 // the rung in use: an open question's own rung, else the rung chosen for this drill (shown even when it is above the Stage), else the first rung shown
-function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;let l=EAR.lvl[EAR.drill];if(!l||!EARSLOT[EAR.drill][l-1]){l=EAR.lvl[EAR.drill]=earFirstRung(EAR.drill)}return l}   // 0.50 V10: the first visit fixes the rung; a later change of learner level does not move it
+function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.rung||q.l;let l=EAR.lvl[EAR.drill];if(!l||!EARSLOT[EAR.drill][l-1]){l=EAR.lvl[EAR.drill]=earFirstRung(EAR.drill)}return l}   // 0.50 V10: the first visit fixes the rung; a later change of learner level does not move it
 // R4 family answers (imperfect for a Phrygian cadence, perfect for a cadential 6/4) are Nearly (EAR_NEARLY) or wrong; the result panel's
 // text for both states comes from earCadNear / earCad64IntGiven (one source, reconcile 0.48)
 function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){const m=ladRhyMark(q,EAR.ans);earMark(m.ok?true:m.nearly?'nearly':false,Array.isArray(EAR.ans)?EAR.ans.slice():EAR.ans);EAR.res.mark=m}
@@ -8716,7 +8724,7 @@ const ELRUNGMET={mel:{4:'2/4 or 4/4',5:'2/4 or 4/4',6:'2/4, 3/4, 4/4 or 6/8',7:'
 const ELNUMW=['','one','two','three','four','five','six','seven','eight'];
 /* what a rung is, in one line (from the engine's own tables: bars, metres and the rung's new thing) */
 function earRungWhat(d,l){
- if(d==='mel'){const nw=LMNEW[l];
+ if(d==='mel'){const nw=LMNEW[l];l=earBase(d,l);
   if(l===1)return'five crotchets, do to so';if(l===2)return'six crotchets, low so to la';if(l===3)return'seven or eight crotchets, adds ti';
   if(l===12)return'phrases from real scores';
   const bars=l<=5?2:l<=8?4:l<=10?8:'4 or 8';return`${typeof bars==='number'?ELNUMW[bars]:bars} bars of ${ELRUNGMET.mel[l]}${l===11?', two parts':''} · ${l===11?'melody and bass':nw}`}
@@ -9337,11 +9345,11 @@ function earMelFollow(q,first,count,t0){const A=ac();earMelNowClear();for(let i=
  PLAY.timers.push(setTimeout(()=>earMelNow(q,k),ms));PLAY.timers.push(setTimeout(earMelNowClear,ms+600))}}
 /* ---- the room ---- */
 const EARHOW={metre:'Count along. Where does the strongest click fall, and how many beats come before it returns? Then listen inside each beat: does it split in two (simple) or in three (compound)? The speed changes each time (60–120 bpm), so do not use tempo as a clue.',
- rhy:'You hear a count-in of four woodblock beats, then the rhythm (clapped at rung 1, on one note from rung 2, so you can hear how long each note lasts). Tap it back on your knee before you answer, then build it beat by beat.',
+ rhy:`You hear a count-in of four woodblock beats, then the rhythm (clapped at rung ${rn('rhy',1)}, on one note from rung ${rn('rhy',2)}, so you can hear how long each note lasts). Tap it back on your knee before you answer, then build it beat by beat.`,
  qual:'Each chord is played together, then up as an arpeggio, then together again. Every chord is in root position, played high or low. Listen to the 3rd first (major or minor), then the 5th (perfect, diminished or augmented), then the 7th.',
- cad:'The tonic chord plays first, to set the key. At rung 1 you then hear just two chords, the cadence itself; at rungs 2 and 3, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Rung 3 (Level 5) adds two answers: the Phrygian cadence (an imperfect cadence in minor, iv⁶–V) and the cadential 6/4 (the decorated approach to V).',
+ cad:`The tonic chord plays first, to set the key. At rung ${rn('cad',1)} you then hear just two chords, the cadence itself; at rungs ${rn('cad',2)}, ${rn('cad',4)} (in minor keys) and ${rn('cad',3)}, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Rung ${rn('cad',3)} (Level ${EARSTAGE.cad[2]}) adds two answers: the Phrygian cadence (an imperfect cadence in minor, iv⁶–V) and the cadential 6/4 (the decorated approach to V).`,
  bass:'The tonic chord plays first. The first chord of the progression is always I. Sing the bass line back, then name chords 2–4. "Bass only" plays just the bottom notes.',
- mel:'The key chord plays first, and the first note is always given (at rung 1 it may be do, mi or so). Sing it back in solfa before you answer. Movable do: in a minor key (rung 3) the home note is la.',
+ mel:`The key chord plays first, and the first note is always given (at rung ${rn('mel',1)} it may be do, mi or so). Sing it back in solfa before you answer. Movable do: in a minor key (from rung ${rn('mel',5)}) the home note is la.`,
  blind:'A phrase from a real score in the Analysis room, with the score hidden. The tonic chord plays first. Name the cadence at the end of the phrase, then check it against the score in Analysis.'};
 function earBlindCats(l){const P=earBlindPool(l);return Object.keys(CADL).filter(k=>P.some(x=>x.cat===k))}
 /* ---- Ear Lab 0.48 card: the drill strip, tally, sound stage (one Play/Stop toggle), result panel, answer areas, foot (design spec) ---- */
@@ -9353,15 +9361,15 @@ const ELASK={metre:'How many beats in a bar? Does each beat split in two or in t
 const ELTIPS={
  metre:[['Find the heavy click.','It marks beat 1. Tap it on your knee.'],['Count to the next heavy click.','Two, three or four beats give you duple, triple or quadruple.'],['Listen inside one beat.','Two even sounds is simple. Three is compound, with a rolling, skipping feel.']],
  rhy:[['Keep the pulse.','Tap the four beats with one hand while you listen.'],['Say it back.','Use time names (ta, ti-ti, ta-a) or count 1 &amp; 2 &amp; before you write anything.'],['Write one beat at a time.','Each tile is as wide as it is long, so a full bar fills the line.']],
- qual:[['Listen to the 3rd first.','Major is the brighter chord, minor the darker.'],['Then the 5th.','A perfect 5th sounds settled. Diminished squeezes it down and sounds tense; augmented stretches it up and hangs unresolved.'],['Last, the 7th (rung 3).','The dominant 7th wants to move on, the major 7th glows, the minor 7th is soft, the half-diminished is dark and the diminished 7th is the most unstable.']],
+ qual:[['Listen to the 3rd first.','Major is the brighter chord, minor the darker.'],['Then the 5th.','A perfect 5th sounds settled. Diminished squeezes it down and sounds tense; augmented stretches it up and hangs unresolved.'],[`Last, the 7th (rung ${rn('qual',3)}).`,'The dominant 7th wants to move on, the major 7th glows, the minor 7th is soft, the half-diminished is dark and the diminished 7th is the most unstable.']],
  cad:[['Start with the last chord.','Home (I), the dominant (V), or somewhere else (vi)?'],['Then the chord before it.','V before I is perfect; IV before I is plagal.'],['Follow the bass.','Sing the last two bass notes. Fa falling a semitone to mi in a minor key is the Phrygian cadence.'],['Listen for a delay.','A cadential 6/4 holds the dominant bass under I, then V, before the close.']],
  bass:[['Sing the bass line first.','In root position the bass is the chord\'s root, so the bass line spells the numerals.'],['I, IV and V are the pillars.','ii and vi are the minor relatives of IV and I.'],['Listen for a note from outside the key.','A secondary dominant (V7/V, V7/vi) leans into the next chord.']],
  mel:[['Sing it back in solfa before you answer.','The key chord plays first and the first note is always given.'],['Movable do.','Do is home in a major key; in a minor key the home is la, and si is the raised 7th that leads up to la.'],['Mind the octave marks.','A comma marks the octave below (s, l, t,), an apostrophe the octave above (d\').']],
  blind:[['Hear the tonic chord first.','It sets the key, then the phrase plays with the score hidden.'],['Name the cadence at the end.','Listen to the last chord, then the one before it.'],['Check it against the score.','Open the same phrase in the Analysis room and compare.']]};
 const ELTIPNOTE={metre:'The speed changes every time (60–120 beats a minute), so fast or slow is never a clue. 6/8 is two beats of three quavers, not six beats. Irregular metres mix groups of 2 and 3: 5/4 here is felt 3+2, 7/8 as 2+2+3.',
- rhy:'The strip under the notes shows how long each sound lasts. A dashed gap is a rest. A dotted crotchet and a quaver is long-short across two beats; <span data-notm>quaver, crotchet, quaver</span> is short-long-short. Rung 1 is clapped; from rung 2 it is on one note, so you can hear how long each note lasts.',
+ rhy:`The strip under the notes shows how long each sound lasts. A dashed gap is a rest. A dotted crotchet and a quaver is long-short across two beats; <span data-notm>quaver, crotchet, quaver</span> is short-long-short. Rung ${rn('rhy',1)} is clapped; from rung ${rn('rhy',2)} it is on one note, so you can hear how long each note lasts.`,
  qual:'Every chord is in root position, played high or low.',
- cad:'Australian names are used here: perfect cadence (US: authentic cadence), imperfect cadence (US: half cadence), interrupted cadence (US: deceptive cadence). Rung 3 (Level 5) adds the Phrygian cadence, an imperfect cadence in a minor key (iv⁶–V), and the cadential 6/4, the decorated approach to V.',
+ cad:`Australian names are used here: perfect cadence (US: authentic cadence), imperfect cadence (US: half cadence), interrupted cadence (US: deceptive cadence). Rung ${rn('cad',3)} (Level ${EARSTAGE.cad[2]}) adds the Phrygian cadence, an imperfect cadence in a minor key (iv⁶–V), and the cadential 6/4, the decorated approach to V.`,
  bass:'The key chord plays first, and chord 1 is always I. "Bass only" plays just the bottom notes.',
  mel:'The hand signs are the Curwen signs used in Kodály teaching (si uses the so sign, raised). Hand-sign drawings © 2003 Kodály Music Education Institute of Australia (KMEIA).',
  blind:'The phrases come from the scores in the Analysis room. Their cadence labels were re-read in music21 and checked by an independent review on 18 Nov 2026. A "perfect cadence in B minor" is still a perfect cadence: it closes, but in a new key for a moment.'};
@@ -9639,7 +9647,7 @@ function earLiveSay(t){let n=document.getElementById('earLive');if(!n){n=documen
 function renderEar(){const el=$('earMain');if(!el)return;
  // a question belongs to its own drill: if the drill was changed from outside (a link, a test), drop the stale question
  if(EAR.q&&EAR.q.d!==EAR.drill){EAR.q=null;EAR.done=false;EAR.res=null;EAR.ans=[]}
- const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill),d=EAR.drill;
+ const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill),d=EAR.drill,lc=earBase(d,l);
  if(!rdy&&!EAR.preloading){EAR.preloading=elPreload(d).catch(()=>{}).then(()=>{EAR.preloading=null;if(ROOM==='ear'&&$('earMain'))renderEar()})}
  el.classList.add('el');if(q&&q.d==='mel'&&earLong4(q)&&!EAR.done)earLenFix(q,true);const fk=EAR.focus||earFocusKey();EAR.focus=null;
  const tabs=EDR.filter(([k])=>earDrillShown(k)),hidD=[];
@@ -9649,9 +9657,9 @@ function renderEar(){const el=$('earMain');if(!el)return;
  el.innerHTML=`<div class="el-drills" role="tablist" aria-label="Ear Lab drills">${tabs.map(([k,n])=>`<button class="el-drill${d===k?' on':''}" role="tab" aria-selected="${d===k}" data-eardr="${k}"><b>${n}</b><small>${earDrillSub(k)}</small></button>`).join('')}</div>
  <div class="el-cols"><section class="card" id="earCard"><div class="el-head long"><div><div class="el-tag">${earDrillTag(d)}</div><h2 class="el-title">${elDrillName(d)}</h2></div>${tally}
   <div class="el-rungrow">${earPickerHTML(d,l)}</div></div>
-  <p class="el-ask">${d==='rhy'?earRhyAsk(q,l):(d==='mel'&&earMelAsk(q,l))||ELASK[d]}</p>
-  ${T?earResultHTML(q,T):d==='mel'&&q&&EAR.done?'':earStageHTML(q,l)}
-  ${earAnswerAreaHTML(q,l)}${earFootHTML(s)}</section>${earTipsHTML(d)}</div>${earDockHTML(q)}`;
+  <p class="el-ask">${d==='rhy'?earRhyAsk(q,lc):(d==='mel'&&earMelAsk(q,lc))||ELASK[d]}</p>
+  ${T?earResultHTML(q,T):d==='mel'&&q&&EAR.done?'':earStageHTML(q,lc)}
+  ${earAnswerAreaHTML(q,lc)}${earFootHTML(s)}</section>${earTipsHTML(d)}</div>${earDockHTML(q)}`;
  if(q&&d==='mel'){earMelMount(q);if(q.l>=4)earMelSettle(q)}
  if(EAR.announce&&T){const tmp=document.createElement('div');tmp.innerHTML=`${T.head}. ${T.teach}`;earLiveSay(`${T.kind==='ok'?'Correct':T.kind==='shown'?'Shown':T.kind==='nearly'?'Nearly':'Not this time'}. ${tmp.textContent}`);EAR.announce=false}
  else if(EAR.announce&&q&&d==='mel'){earLiveSay(`${EAR.res.kind==='ok'?'Correct':EAR.res.kind==='shown'?'Shown':'Not this time'}. ${q.a.join(' ')}`);EAR.announce=false}
