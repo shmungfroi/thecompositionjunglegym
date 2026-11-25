@@ -1496,6 +1496,240 @@ label.ck{gap:8px;cursor:pointer}
  .el-gap .gbar i{width:26px}
 }
 
+
+/* =====================================================================
+   0.50 LEVELS (Fable, DESIGN_050). Append to the end of the main <style> in index.html, as written.
+   Order: 0 level mark · 1 level control and top bar · 2 ordered lists · 3 Ear Lab 21-rung picker
+   ===================================================================== */
+
+/* ---- 0. the level mark: one small numeral, used by the level control, the lists and the rung picker ----
+   plain   = a level you have already met (solid ring)
+   .now    = your level (filled disc)
+   .ahead  = above your level (dashed ring)                                                            */
+.lvm{flex:none;display:inline-grid;place-items:center;box-sizing:border-box;width:20px;height:20px;border:1px solid rgba(201,162,74,.6);border-radius:50%;background:var(--ink);font:400 11px/1 Outfit,sans-serif;font-variant-numeric:lining-nums;letter-spacing:0;color:var(--gold)}
+.lvm.now{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:700}
+.lvm.ahead{border-style:dashed;border-color:rgba(156,146,124,.75);color:var(--muted)}
+.lvm.lg{width:26px;height:26px;font-size:14px}
+
+/* ---- 1. level control ---- */
+.lvc{position:relative;flex:none}
+.lvbtn{display:flex;align-items:center;gap:9px;height:38px;padding:0 13px 0 5px;border:1px solid var(--line);border-radius:22px;background:var(--panel);text-align:left;white-space:nowrap;cursor:pointer;transition:border-color .15s}
+.lvbtn:hover,.lvbtn[aria-expanded=true]{border-color:var(--gold)}
+.lvbtn-t{display:grid;gap:2px}
+.lvbtn-t b{font-weight:400;font-size:14px;line-height:1.1;color:var(--ivory)}
+.lvbtn-t small{font-size:11px;line-height:1.1;letter-spacing:.3px;color:var(--muted)}
+.lvbtn .car,.lvbh .car{flex:none;width:10px;height:6px;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.lvbtn[aria-expanded=true] .car{transform:rotate(180deg);stroke:var(--goldhi)}
+
+.lvpop{position:absolute;top:calc(100% + 11px);right:0;z-index:9;width:340px;padding:16px 16px 14px;background:#14110b;border:1px solid var(--line);border-top-color:var(--gold);border-radius:14px;box-shadow:0 22px 44px -14px rgba(0,0,0,.95)}
+.lvpop[hidden]{display:none}
+.lvhd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 10px 8px 2px}
+.lvhd .lbl{margin:0}
+.lvhd small{font-size:11px;letter-spacing:.3px;color:var(--muted)}
+
+.lvlist{--lvh:40px;display:grid}
+.lvopt{position:relative;display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:12px;height:var(--lvh);padding:0 10px 0 6px;border:1px solid transparent;border-radius:10px;background:none;text-align:left;cursor:pointer;transition:border-color .15s,background-color .15s}
+.lvopt b{font-weight:400;font-size:15px;color:var(--ivory)}
+.lvopt small{font-size:11px;letter-spacing:.3px;color:var(--muted);white-space:nowrap}
+.lvopt:hover{border-color:rgba(201,162,74,.6)}
+.lvopt[aria-checked=true]{border-color:var(--gold);background:rgba(201,162,74,.14)}
+.lvopt[aria-checked=true] b{color:var(--goldhi)}
+/* the ladder: a hairline from each disc up to the one before it; gold as far as your level */
+.lvopt+.lvopt::before{content:"";position:absolute;left:18px;top:calc((26px - var(--lvh))/2 - 1px);width:1px;height:calc(var(--lvh) - 26px);background:var(--line)}
+.lvopt.upto::before{background:rgba(201,162,74,.6)}
+
+.lvnote{margin:10px 2px 0;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.lvcur{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.lvcur label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.lvcur select{min-width:150px;padding:7px 10px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+
+/* area names in the rail: names only, no numerals */
+.rail .lv{margin:10px 0 0;padding:9px 0 1px;border-top:1px solid var(--line);font-family:"Poiret One",Outfit,sans-serif;font-size:13px;line-height:1;letter-spacing:.6px;text-align:center;color:var(--gold)}
+
+/* top bar: the search field keeps a usable width at every size */
+.search{flex:1 1 260px;min-width:200px}
+.jbtn .ji{margin-right:5px}
+@media (min-width:761px) and (max-width:1100px){.top .tw{display:none}}
+@media (min-width:761px) and (max-width:900px){
+ .lvbtn{gap:6px;padding:0 10px 0 5px}.lvbtn-t{display:none}
+ .jbtn .jt{display:none}.jbtn .ji{margin:0}.top .jbtn{padding:7px 12px}
+ .lvpop{width:320px}
+}
+@media (max-width:760px){
+ .search{flex:1 1 100%;min-width:0}
+ /* top row: wordmark, then the level button (32 px tall, 44 px tap area) */
+ .lvbtn{position:relative;height:32px;gap:7px;padding:0 11px 0 4px}
+ .lvbtn::after{content:"";position:absolute;inset:-8px -4px -4px}
+ .lvbtn .lvm.lg{width:24px;height:24px;font-size:12.5px}
+ .lvbtn-t small{display:none}
+ .lvpop{display:none}                          /* on phones the list lives in the More sheet */
+ .msb{max-height:88vh}
+ .lvlist{--lvh:44px}
+ .lvcur select:not(#_){min-height:44px}
+ .mslv{margin-top:16px}
+ .mslv .lvnote{margin-top:8px}
+}
+
+/* ---- 2. ordered lists: new at your level, then everything else from Level 1 up ---- */
+/* 2a. single-column lists (pickers). One rail runs down the left: a gradient bar beside what is new, a hairline with level marks beside the rest. */
+.lvlst{--row:32px;display:grid;gap:0}
+.lvband{position:relative;padding-left:30px}
+.lvband::before{content:"";position:absolute;left:9px;top:0;bottom:0;width:1px;background:var(--line)}
+.lvband.new::before{left:8px;top:30px;bottom:6px;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--lush),var(--pink))}
+.lvband.ahead::before{background:none;border-left:1px dashed rgba(156,146,124,.45)}
+.lvband:last-child::before{bottom:8px}
+.lvband+.lvband{margin-top:8px;padding-top:4px}
+.lvband+.lvband::after{content:"";position:absolute;left:30px;right:0;top:0;height:1px;background:var(--line)}
+
+.lvbh{position:relative;display:flex;align-items:center;gap:8px;min-height:30px;margin:0;padding:0 10px 0 0;font:600 11px/1.2 Outfit,sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--muted);list-style:none}
+.lvbh::-webkit-details-marker{display:none}
+summary.lvbh{cursor:pointer;border-radius:6px}
+summary.lvbh:hover{color:var(--goldhi)}
+.lvband.new>.lvbh{color:var(--gold)}
+.lvbh>.lvm,.lvbh>.car{position:absolute;left:-30px;top:50%;margin-top:-10px}
+.lvbh>.car{left:-25px;margin-top:-3px;background:var(--panel2);box-shadow:0 0 0 5px var(--panel2);transform:rotate(-90deg)}
+details[open]>.lvbh>.car{transform:none}
+.lvbh .n{margin-left:auto;font-weight:400;letter-spacing:.5px;font-variant-numeric:tabular-nums}
+
+.lvgrp{position:relative}
+.lvgrp+.lvgrp{margin-top:6px}
+.lvgrp>.lvm{position:absolute;left:-30px;top:calc((var(--row) - 20px)/2)}
+
+.lvrow{display:grid;grid-template-columns:84px minmax(0,1fr);align-items:baseline;column-gap:8px;width:100%;min-height:var(--row);padding:5px 10px;border:1px solid transparent;border-radius:9px;background:none;text-align:left;cursor:pointer;transition:border-color .15s,background-color .15s}
+.lvrow b{font-size:15px;font-weight:600;line-height:1.3;color:var(--ivory)}
+.lvrow span{overflow:hidden;font-size:12.5px;line-height:1.3;color:var(--muted);white-space:nowrap;text-overflow:ellipsis}
+.lvrow:hover{border-color:rgba(201,162,74,.6)}
+.lvrow.on{border-color:var(--gold);background:rgba(201,162,74,.14)}
+.lvrow.on b{color:var(--goldhi)}
+.lvrow:focus-visible{outline-offset:-2px}
+.lvnone{margin:0;padding:5px 10px;font-size:12.5px;line-height:1.4;color:var(--muted)}
+@media (max-width:760px){.lvlst{--row:46px}.lvrow{align-items:center;padding:0 12px}.lvbh{min-height:44px}.lvband.new::before{top:38px}}
+
+/* 2b. card galleries (Forms, Climbs, Analysis scores): the same three bands, as headed groups of cards */
+.lvlst.cards{gap:26px}
+.lvlst.cards .lvband{padding:0;margin:0}
+.lvlst.cards .lvband::before,.lvlst.cards .lvband::after{display:none}
+.lvch{position:relative;font-weight:400;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);list-style:none}
+.lvch::-webkit-details-marker{display:none}
+.lvch .disp{font-size:30px;font-weight:400;line-height:1.1;color:var(--goldhi)}
+.lvch small{font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.lvband.new>.lvch{border-bottom-color:transparent}
+.lvband.new>.lvch::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,var(--lush),var(--gold) 34%,var(--pink) 62%,transparent 92%)}
+summary.lvch{cursor:pointer;border-radius:6px}
+summary.lvch .disp{font-size:24px;color:var(--ivory)}
+summary.lvch:hover .disp{color:var(--goldhi)}
+summary.lvch .car{align-self:center;width:12px;height:7px;margin-left:auto;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transform:rotate(-90deg);transition:transform .15s}
+details[open]>summary.lvch .car{transform:none}
+details:not([open])>summary.lvch{margin-bottom:0}
+
+/* compact card: every band except "new" */
+.climbs.cmp{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.climb.cmp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:0 12px;min-height:62px;padding:10px 14px;border-radius:12px;text-align:left;cursor:pointer;transition:border-color .15s}
+.climb.cmp:hover{border-color:rgba(201,162,74,.6)}
+.climb.cmp .tx{display:grid;gap:3px;min-width:0}
+.climb.cmp .tx b{font-family:"Poiret One",Outfit,sans-serif;font-weight:400;font-size:19px;line-height:1.15;color:var(--goldhi)}
+.climb.cmp .tx small{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.climb.cmp .arr{font-size:15px;color:var(--muted)}
+.climb.cmp:hover .arr{color:var(--goldhi)}
+.climb.cmp.dim{cursor:default}
+@media (max-width:760px){.lvlst.cards{gap:22px}.lvch .disp{font-size:26px}summary.lvch .disp{font-size:22px}.lvch small{flex:1 1 100%;font-size:11px}summary.lvch{padding-right:22px}summary.lvch .car{position:absolute;right:2px;top:10px}.climbs.cmp{grid-template-columns:1fr}}
+
+/* ---- 3. Ear Lab: 21 rungs, three to a level ---- */
+.el-rp7{display:flex;align-items:flex-end;gap:8px}
+.el-lg{position:relative;flex:1 1 0;min-width:0;display:grid;gap:6px}
+.el-lg+.el-lg::before{content:"";position:absolute;left:-8px;bottom:17px;width:8px;height:1px;background:var(--line)}       /* the rail between two levels */
+.el-lgcap{display:flex;align-items:center;gap:5px;height:20px;padding-left:3px;overflow:hidden;font-size:11px;line-height:1.2;letter-spacing:.2px;color:var(--muted);white-space:nowrap}
+.el-lgcap i{font-style:normal;color:var(--ivory);font-variant-numeric:lining-nums}
+.el-lg.you .el-lgcap{color:var(--goldhi)}
+.el-lgr{display:flex;height:34px;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden}
+.el-lg.you .el-lgr{border-color:rgba(201,162,74,.6)}
+.el-lgr button{position:relative;flex:1 1 0;min-width:0;height:100%;padding:0;background:none;border:0;font-size:14px;color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums lining-nums}
+.el-lgr>*+*{border-left:1px solid var(--line)}
+.el-lgr button:hover{color:var(--goldhi)}
+.el-lgr button.on{background:var(--gold);color:var(--ink);font-weight:600}
+.el-lgr button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+.el-lgr button.on:focus-visible{outline-color:var(--ink)}
+.el-lgr button.done::after{content:"";position:absolute;left:50%;bottom:4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--gold)}
+.el-lgr button.on.done::after{background:var(--ink)}
+.el-lgr button.sug,.el-ltab.sug{box-shadow:inset 0 0 0 1.5px var(--goldhi);color:var(--goldhi)}
+/* rungs that are not written yet: a run of them is one quiet cell that says so */
+.el-ny{flex:var(--n,1) 1 0;min-width:0;display:grid;place-items:center;padding:0 2px;font-size:11px;line-height:1.05;letter-spacing:.2px;text-align:center;color:var(--muted);background:repeating-linear-gradient(135deg,transparent 0 6px,rgba(156,146,124,.07) 6px 7px)}
+.el-lgr>.el-ny+*,.el-lgr>*+.el-ny{border-left-style:dashed;border-left-color:rgba(156,146,124,.4)}
+.el-lg.none .el-lgr{border-style:dashed;border-color:rgba(156,146,124,.4)}
+.el-lg.none .el-lgcap i{color:var(--muted)}
+.el-ltab,.el-lcap{display:none}
+
+@media (max-width:900px){
+ /* seven level tabs over one row of three rungs */
+ .el-rp7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0 3px;align-items:stretch}
+ .el-lg{display:contents}
+ .el-lg+.el-lg::before,.el-lgcap{display:none}
+ .el-ltab{grid-row:1;position:relative;display:grid;place-items:center;min-width:0;min-height:44px;padding:0;border:1px solid var(--line);border-radius:var(--r-m);background:none;font-size:15px;color:var(--ivory);cursor:pointer;font-variant-numeric:lining-nums}
+ .el-ltab b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;font-weight:400}
+ .el-ltab.has b{background:var(--gold);color:var(--ink);font-weight:600}                                /* the level that holds the rung in use */
+ .el-ltab.you::after{content:"";position:absolute;left:50%;bottom:4px;width:14px;height:2px;margin-left:-7px;border-radius:2px;background:linear-gradient(90deg,var(--lush),var(--pink))}   /* your level */
+ .el-ltab.none{border-style:dashed;border-color:rgba(156,146,124,.4);color:var(--muted)}
+ .el-lg.open .el-ltab{z-index:1;margin-bottom:-1px;min-height:51px;padding-bottom:6px;border-color:rgba(201,162,74,.6);border-style:solid;border-bottom-color:#1a160e;border-radius:var(--r-m) var(--r-m) 0 0;background:#1a160e}
+ .el-lg.open .el-ltab.you::after{bottom:10px}
+ .el-lg:not(.open) .el-ltab{margin-bottom:6px}
+ .el-lgr{display:none;grid-column:1 / -1;grid-row:2;height:50px;border-color:rgba(201,162,74,.6);border-style:solid;border-radius:var(--r-m);background:#1a160e}
+ .el-lg.none .el-lgr{border-style:solid;border-color:rgba(201,162,74,.6)}
+ .el-lg.open .el-lgr{display:flex}
+ .el-lg.open:first-child .el-lgr{border-top-left-radius:0}
+ .el-lg.open:last-child .el-lgr{border-top-right-radius:0}
+ .el-lgr button{font-size:16px}
+ .el-lgr button.done::after{bottom:8px}
+ .el-ny{font-size:12.5px}
+ .el-lcap{grid-column:1 / -1;grid-row:3;display:none;margin:8px 2px 0;font-size:12.5px;line-height:1.3;color:var(--muted)}
+ .el-lg.open .el-lcap{display:block}
+ .el-lcap b{font-weight:400;color:var(--ivory)}
+ .el-lcap em{font-style:normal;color:var(--goldhi)}
+}
+@media (prefers-reduced-motion:reduce){.lvbtn,.lvbtn .car,.lvbh .car,.lvopt,.lvrow,.climb.cmp,summary.lvch .car{transition:none}}
+
+/* ---- 0.50 UI build additions (not part of levels050.css) ---- */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.lvgrp>.cads,.lvgrp>.chips{margin:0}
+.lvgrp>.cads{padding-right:2px}
+.lvgrp>.chips{padding:4px 0}
+.lvlst.wide .lvrow{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+#ksType,#ivType{max-height:min(54vh,440px);overflow-y:auto;overscroll-behavior:contain;max-width:430px;padding-right:4px}
+.lvlst.one .lvrow{grid-template-columns:minmax(0,1fr)}
+.vlwrap{display:grid;grid-template-columns:minmax(230px,280px) minmax(0,1fr);gap:22px;align-items:start}
+.vlpick{max-height:min(60vh,480px);overflow-y:auto;overscroll-behavior:contain;padding-right:4px}
+@media(max-width:1100px){.vlwrap{grid-template-columns:minmax(0,1fr)}.vlpick{max-height:min(46vh,360px)}}
+.climb.cmp.on{border-color:var(--gold);background:rgba(201,162,74,.14)}
+.lvscroll{max-height:min(52vh,420px);overflow-y:auto;overscroll-behavior:contain;padding:2px 4px 2px 0}
+.qbtn{display:none;align-items:center;gap:12px;width:100%;min-height:48px;padding:0 12px 0 14px;border:1px solid var(--gold);border-radius:12px;background:rgba(201,162,74,.14);text-align:left;cursor:pointer}
+.qbtn b{font-size:16px;font-weight:600;color:var(--goldhi)}
+.qbtn .qn{flex:1;font-size:13px;color:var(--muted)}
+.qbtn .car{width:10px;height:6px;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+#qsheet{display:none}
+@media (min-width:1100px){
+ #room-seed:not([hidden]){display:grid;grid-template-columns:312px minmax(0,1fr);column-gap:20px;align-items:start}
+ #room-seed>.sylbar{grid-column:1/-1;grid-row:1}
+ #room-seed>.head{grid-column:1/-1;grid-row:2}
+ #room-seed>#picker{grid-column:1;grid-row:3 / span 2;position:sticky;top:calc(var(--top) + 14px);max-height:calc(100vh - var(--top) - 30px);overflow-y:auto;margin:0;padding:14px 14px 12px;box-shadow:none}
+ #room-seed>.seedtop{grid-column:2;grid-row:3}
+ #room-seed>.seedlow{grid-column:2;grid-row:4}
+ #picker .prow,#picker .prow2{display:block;margin:0 0 12px}
+ #picker .prow2 .prow{margin:0 0 12px}
+ #picker .plbl{display:block;margin-bottom:7px;padding:0}
+ #picker .rp,#picker .rk{width:40px;height:40px}
+ #picker .qgroups{display:block}
+ #picker .invs{display:flex;flex-wrap:wrap}
+}
+@media (min-width:1100px) and (max-width:1279px){#room-seed>.seedtop,#room-seed>.seedlow{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:1099px){
+ #picker .qbtn{display:flex}
+ #picker .lvlst{display:none}
+}
+@media (min-width:761px) and (max-width:1099px){
+ #qsheet:not([hidden]){display:block;position:fixed;inset:0;z-index:8;background:rgba(5,4,2,.6)}
+ #qsheet .msb{position:absolute;left:50%;bottom:0;width:min(560px,100%);transform:translateX(-50%);background:#14110b;border-top:1px solid var(--gold);border-radius:18px 18px 0 0;padding:16px 16px 20px;max-height:80vh;overflow:auto}
+ #qsheet .msh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}#qsheet .msh .disp{font-size:24px;color:var(--goldhi)}
+}
+@media (max-width:760px){#qsheet:not([hidden]){display:block;position:fixed;inset:0;z-index:8;background:rgba(5,4,2,.6)}}
 </style></head>
 <body>
 
@@ -1516,6 +1750,7 @@ label.ck{gap:8px;cursor:pointer}
 </nav>
 
 <nav class="tabbar" aria-label="Rooms"></nav>
+<div class="msheet" id="qsheet" hidden><div class="msb" role="dialog" aria-label="Chord type"><div class="msh"><span class="disp">Chord type</span><button class="mini" id="qsClose" aria-label="Close">✕</button></div><div id="qsBody"></div></div></div>
 <div class="msheet" id="msheet" hidden><div class="msb" role="dialog" aria-label="More rooms"><div class="msh"><span class="disp">More rooms</span><button class="mini" id="msClose" aria-label="Close">✕</button></div><div class="msg" id="msRooms"></div><div class="lbl" style="margin:16px 0 8px">Stage</div><div class="mslvl" id="msLvl"></div><button class="jbtn" id="msJ" style="margin-top:16px;width:100%">✎ Journal</button></div></div>
 <header class="top">
  <span class="t disp"><span class="tw">COMPOSITION </span>JUNGLE GYM</span>
@@ -1739,11 +1974,11 @@ label.ck{gap:8px;cursor:pointer}
 
  <section class="card">
   <h3>Voicing lab<span class="sp"></span><span class="h3note" id="vlChord"></span><button class="mini gold" id="vlPlay">▶ Hear it</button><button class="mini" id="vlArp">Arpeggiate</button><button class="mini" id="vlSeed">Change chord in the Seed Bank</button></h3>
-  <div class="tabs" id="vlTabs"></div>
+  <div class="vlwrap"><div class="vlpick" id="vlTabs"></div>
   <div class="vlgrid">
    <div><div class="piano" id="vlPiano"></div><div style="height:24px"></div><p class="desc" id="vlWhy"></p><div class="vlstats" id="vlStats"></div></div>
    <div class="staff" id="vlStaff"></div>
-  </div>
+  </div></div>
  </section>
 
  <section class="card">
@@ -1773,7 +2008,7 @@ label.ck{gap:8px;cursor:pointer}
  </div></div>
  <div class="ask" data-ask></div>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
- <div class="climbs" id="climbList"></div>
+ <div id="climbList"></div>
  <div id="climbDetail" hidden></div>
 </section>
 <section class="room" id="room-forms" hidden>
@@ -2087,6 +2322,30 @@ function keyInBand(k,mode,lv){const a=Math.abs(keyAcc(k,mode));if(lv<=1)return m
 function keysInBand(ks,mode,lv){const f=ks.filter(k=>keyInBand(k,mode,lv));return f.length?f:ks}
 function lvAt(A){return Math.max(S.level,Math.min(...A.map(x=>x.l||1)))}
 function lvlSet(l){S.level=l;try{localStorage.setItem('cjg_level',l)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}/* saved NSW Stage -> Level, once (Levels framework) */
+/* 0.50 V3: the ordering rule. Three bands: New at Level n, Earlier levels, Ahead of you. Sort key: l, stp, table order. */
+const LVCH=l=>l===S.level?'now':l<S.level?'':'ahead';
+function lvSort(A){return A.map((x,i)=>[x,i]).sort((a,b)=>((a[0].l||1)-(b[0].l||1))||((a[0].stp||0)-(b[0].stp||0))||(a[1]-b[1])).map(q=>q[0])}
+function lvSplit(A){const L=S.level,s=lvSort(A);return{nw:s.filter(x=>(x.l||1)===L),met:s.filter(x=>(x.l||1)<L),ahead:s.filter(x=>(x.l||1)>L)}}
+function lvFold(id){try{return JSON.parse(localStorage.getItem('cjg_fold_'+id))||{}}catch(e){return{}}}
+function lvRange(A){const ls=A.map(x=>x.l||1),a=Math.min(...ls),b=Math.max(...ls);return a===b?`Level ${a}`:`Levels ${a} to ${b}`}
+/* lvBands(id,A,o): single-column banded list. o.row(x) -> item html; o.on(x) -> selected; o.noun; o.label; o.wrap ''|'cads'|'chips'; o.fold (storage id, default id) */
+function lvBands(id,A,o){const L=S.level,B=lvSplit(A),fid=o.fold||id,F=lvFold(fid),sel=x=>o.on&&o.on(x),wrap=o.wrap||'';
+ const items=(arr,l)=>{const h=arr.filter(x=>(x.l||1)===l).map(o.row).join('');return wrap?`<div class="${wrap}">${h}</div>`:h};
+ const grp=(arr,cl)=>[...new Set(arr.map(x=>x.l||1))].map(l=>`<div class="lvgrp" role="group" aria-label="Level ${l}, ${LVN[l]}"><span class="lvm ${cl}" title="Level ${l} · ${LVN[l]}" aria-hidden="true">${l}</span>${items(arr,l)}</div>`).join('');
+ const det=(band,arr,title,cl)=>{if(!arr.length)return'';const def=band==='met'?1:0,saved=F[band]===undefined?def:+F[band],force=arr.some(sel)&&!saved;
+  return`<details class="lvband ${band}" data-fold="${fid}" data-band="${band}"${saved||force?' open':''}${force?' data-auto="1"':''}><summary class="lvbh"><svg class="car" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg>${title} · ${lvRange(arr).replace('Levels ','').replace('Level ','')}<span class="n">${arr.length}</span></summary>${grp(arr,cl)}</details>`};
+ const nw=B.nw.length?`<h3 class="lvbh"><span class="lvm now" aria-hidden="true">${L}</span>New at Level ${L}<span class="n">${B.nw.length}</span></h3>${items(B.nw,L)}`:`<h3 class="lvbh"><span class="lvm now" aria-hidden="true">${L}</span>New at Level ${L}<span class="n">0</span></h3><p class="lvnone">No new ${o.noun||'items'} at Level ${L}. Everything you have met is below.</p>`;
+ return`<div class="lvlst${o.cls?' '+o.cls:''}" id="${id}" role="listbox" aria-label="${o.label||''}"><section class="lvband new" aria-label="New at Level ${L}, ${LVN[L]}">${nw}</section>${det('met',B.met,'Earlier levels','')}${det('ahead',B.ahead,'Ahead of you','ahead')}</div>`}
+/* lvCards(id,A,o): card galleries. o.full(x) -> full card html, o.cmp(x) -> compact card html, o.noun [singular,plural] */
+function lvCards(id,A,o){const L=S.level,B=lvSplit(A),F=lvFold(id),sel=x=>o.on&&o.on(x),n=(k,w)=>`${k} ${k===1?w[0]:w[1]}`,W=o.noun||['item','items'];
+ const hd=(band,arr,title)=>{const def=band==='met'?1:0,saved=F[band]===undefined?def:+F[band],force=arr.some(sel)&&!saved;
+  return`<details class="lvband ${band}" data-fold="${id}" data-band="${band}"${saved||force?' open':''}${force?' data-auto="1"':''}><summary class="lvch"><span class="disp">${title}</span><small>${lvRange(arr)} · ${n(arr.length,W)}${band==='met'?' · in order':''}</small><svg class="car" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></summary><div class="climbs cmp">${arr.map(o.cmp).join('')}</div></details>`};
+ const nw=B.nw.length?`<div class="${o.wrap||'climbs'}">${B.nw.map(o.full).join('')}</div>`:`<p class="lvnone">No new ${W[1]} at Level ${L}. Everything you have met is below.</p>`;
+ return`<div class="lvlst cards" id="${id}"><section class="lvband new"><h3 class="lvch"><span class="disp">New at your level</span><small>Level ${L} · ${LVN[L]} · ${n(B.nw.length,W)}</small></h3>${nw}</section>${B.met.length?hd('met',B.met,'Earlier levels'):''}${B.ahead.length?hd('ahead',B.ahead,'Ahead of you'):''}</div>`}
+document.addEventListener('toggle',e=>{const d=e.target;if(!(d instanceof HTMLDetailsElement)||!d.dataset.fold||d.dataset.auto)return;const f=lvFold(d.dataset.fold);f[d.dataset.band]=d.open?1:0;try{localStorage.setItem('cjg_fold_'+d.dataset.fold,JSON.stringify(f))}catch(x){}},true);
+/* the selected row is scrolled into view inside its own scroll area; nothing else moves */
+function lvReveal(root,sel){const el=root&&root.querySelector(sel||'.lvrow.on,.on');if(!el)return;let sc=el.parentElement;while(sc&&sc!==document.body){const cs=getComputedStyle(sc);if(/(auto|scroll)/.test(cs.overflowY)&&sc.scrollHeight>sc.clientHeight+2)break;sc=sc.parentElement}
+ if(!sc||sc===document.body)return;const a=el.getBoundingClientRect(),b=sc.getBoundingClientRect();if(a.top<b.top)sc.scrollTop-=b.top-a.top+6;else if(a.bottom>b.bottom)sc.scrollTop+=a.bottom-b.bottom+6}
 let S={root:'B',q:'m7',inv:0,level:5,inst:'piano',vi:0,key:null};
 function chordOf(root,qk,inv=0){
  const q=Q.find(x=>x.k===qk),rl=LET.indexOf(root[0]),rpc=pcOf(root);
@@ -2357,7 +2616,7 @@ function boardSVG(c,inst){
 const $=id=>document.getElementById(id);
 function fillSelects(){
  $('selRoot').innerHTML=(ROOTS.includes(S.root)?ROOTS:ROOTS.concat(S.root)).map(r=>`<option value="${r}" ${r===S.root?'selected':''}>${pretty(r)}</option>`).join('');
- const qs=Q.filter(q=>q.l<=S.level);if(!qs.find(q=>q.k===S.q))S.q='';
+ const qs=Q;if(!qs.find(q=>q.k===S.q))S.q='';
  $('selQual').innerHTML=qs.map(q=>`<option value="${q.k}" ${q.k===S.q?'selected':''}>${(q.k||'maj')} · ${q.n}</option>`).join('');
 }
 function render(){
@@ -2633,7 +2892,7 @@ function drawStaff(el,notes,clef,single){
 function renderStaff(c){drawStaff($('staff'),voicing(c),null,false)}
 /* climb */
 function renderClimb(c){
- const same=['5','','m','7','maj7','m7','sus4','dim','aug','9','6'].filter(k=>k!==S.q&&Q.find(q=>q.k===k).l<=S.level);
+ const same=['5','','m','7','maj7','m7','sus4','dim','aug','9','6'].filter(k=>k!==S.q);
  $('sameRoot').innerHTML=same.map(k=>`<button class="chip" data-go="${S.root}|${k}">${pretty(S.root+k)}</button>`).join('');
  if(S.key){const k=S.key,sc=k.mode==='maj'?MAJ:MIN.slice(),seven=[];
   if(k.mode==='min')sc[6]=11;// harmonic minor for V and vii°7
@@ -2681,19 +2940,27 @@ $('searchForm').onsubmit=e=>{e.preventDefault();const v=$('q').value.trim().repl
 S.pmode=(()=>{try{return JSON.parse(localStorage.getItem('cjg_pmode'))}catch(e){return null}})()||'beg';
 const PADS=[['C'],['C#','Db'],['D'],['D#','Eb'],['E'],['F'],['F#','Gb'],['G'],['G#','Ab'],['A'],['A#','Bb'],['B']];
 const QGROUPS=[['Power & triads',['5','','m','dim','aug','sus2','sus4']],['Sixths & sevenths',['7','maj7','m7','m7b5','dim7','6','m6','7sus4']],['Added & extended',['add9','madd9','9','maj9','m9']]];
+const qualItems=()=>Q.filter(q=>q.l<=7&&QSHORT[q.k]!==undefined);
+function qualList(id,fold){return lvBands(id,qualItems(),{fold,noun:'chord types',label:'Chord type',cls:'pad',on:x=>x.k===S.q,row:x=>{const on=x.k===S.q;return`<button class="lvrow${on?' on':''}" role="option" aria-selected="${on}" data-pq="${x.k}"><b>${pretty(S.root+x.k)}</b><span>${QSHORT[x.k]}</span></button>`}})}
 const QSHORT={'5':'power chord','':'major','m':'minor','dim':'diminished','aug':'augmented','sus2':'sus 2nd','sus4':'sus 4th','7':'dominant 7th','maj7':'major 7th','m7':'minor 7th','m7b5':'half-dim 7th','dim7':'dim 7th','6':'major 6th','m6':'minor 6th','7sus4':'7th sus 4th','add9':'added 9th','madd9':'minor add 9','9':'dominant 9th','maj9':'major 9th','m9':'minor 9th'};
 function renderPads(c){
  const rpc=pcOf(S.root);
  $('rootPads').innerHTML=PADS.map(p=>p.length===1?`<button class="rp ${S.root===p[0]?'on':''}" data-pr="${p[0]}">${p[0]}</button>`:
   `<div class="rk">${p.map(n=>`<button class="${S.root===n?'on':''}" data-pr="${n}">${pretty(n)}</button>`).join('')}</div>`).join('')+
   (PADS.flat().includes(S.root)?'':`<button class="rp on" data-pr="${S.root}">${pretty(S.root)}</button>`);
- $('qualPads').innerHTML=QGROUPS.map(([g,ks])=>{const vis=ks.filter(k=>Q.find(q=>q.k===k).l<=S.level);if(!vis.length)return'';
-  return`<div class="qg"><span class="gl">${g}</span>${vis.map(k=>`<button class="qp ${k===S.q?'on':''}" data-pq="${k}"><b>${pretty(S.root+k)}</b><small>${QSHORT[k]}</small></button>`).join('')}</div>`}).join('');
+ const qi=qualItems(),cq=qi.find(x=>x.k===S.q)||{l:1};
+ $('qualPads').innerHTML=`<button class="qbtn" id="qualBtn" aria-haspopup="dialog" aria-label="Chord type: ${pretty(S.root+S.q)}, ${QSHORT[S.q]||''}, Level ${cq.l}. Change"><b>${pretty(S.root+S.q)}</b><span class="qn">${QSHORT[S.q]||''}</span><span class="lvm ${LVCH(cq.l)}" aria-hidden="true">${cq.l}</span><svg class="car" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button>`+qualList('qualList');
+ if(!$('qsheet').hidden)$('qsBody').innerHTML=qualList('qualListS','qualList');
+ lvReveal($('qualList'))
  $('invPads').innerHTML=c.tones.map((t,i)=>`<button class="ip ${i===S.inv?'on':''}" data-pinv="${i}">${i?ORD[i]+' inversion':'Root position'} <span style="opacity:.7">· ${pretty(t.name)} in the bass</span></button>`).join('');
  padStripFocus();
 }
 /* phones: the pinned chooser rows scroll sideways; keep the chosen pad in view */
 function padStripFocus(){['rootPads','qualPads','invPads'].forEach(id=>{const el=$(id);if(!el||el.scrollWidth<=el.clientWidth+1)return;const on=el.querySelector('.on');if(!on)return;const a=on.getBoundingClientRect(),b=el.getBoundingClientRect();el.scrollLeft+=a.left-b.left-(b.width-a.width)/2})}
+document.addEventListener('click',e=>{const b=e.target.closest('#qualBtn');if(b){const sh=$('qsheet');$('qsBody').innerHTML=qualList('qualListS','qualList');sh.hidden=false;lvReveal($('qsBody').closest('.msb'),'.lvrow.on');const on=sh.querySelector('.lvrow.on');if(on)on.focus({preventScroll:true});return}
+ if(e.target.closest('#qsClose')||e.target===$('qsheet')){$('qsheet').hidden=true;const q=$('qualBtn');if(q)q.focus();return}
+ if(e.target.closest('#qsheet [data-pq]'))$('qsheet').hidden=true});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('qsheet').hidden){$('qsheet').hidden=true;const q=$('qualBtn');if(q)q.focus()}});
 document.addEventListener('click',e=>{const pm=e.target.closest('[data-pm]');if(pm){S.pmode=pm.dataset.pm;LS.set('cjg_pmode',S.pmode);renderInst(chord());const x=instMidis(chord());play(x.m,x.gap,x.k);return}});
 document.addEventListener('click',e=>{const t=e.target.closest('[data-pr],[data-pq],[data-pinv]');if(!t)return;
  if(t.dataset.pr)S.root=t.dataset.pr;if(t.dataset.pq!==undefined){S.q=t.dataset.pq;S.inv=0}if(t.dataset.pinv!==undefined)S.inv=+t.dataset.pinv;
@@ -3054,19 +3321,19 @@ function renderOracle(){
 
 /* ===== the climbs map ===== */
 const CLIMBS=[
- {t:'Drones and modes',st:'Stages 4–6',full:true,p:'Melody over a drone. Hear the character of each mode, from the folk and chant roots in the Garden\'s commons.'},
- {t:'Modal polyphony',st:'Stages 5–6',full:true,p:'Independent lines over a cantus firmus: all five of Fux\'s species, three-voice counterpoint, a rule book, and your own cantus set in every species.'},
- {t:'Tonal architecture',st:'Stages 4–6',full:true,p:'Keys, home and away: tonic, predominant and dominant, phrases, and the four cadences.',go:[['Home, away and back','I ii V I','maj'],['Ending on V','I vi IV V','maj']]},
- {t:'I–IV–V',st:'Stages 4–5',full:true,p:'The three-chord foundation of folk, hymns, blues and rock and roll.',go:[['Three chords','I IV V I','maj'],['Twelve-bar blues','I7 I7 I7 I7 IV7 IV7 I7 I7 V7 IV7 I7 V7','maj']]},
- {t:'The four-chord loop',st:'Stages 4–6',full:true,p:'I–V–vi–IV and its rotations: the same four chords, a different home. Rotate the loop and hear the mood flip.',go:[['I–V–vi–IV','I V vi IV','maj'],['vi–IV–I–V','vi IV I V','maj'],['i–VI–III–VII','i VI III VII','min']]},
- {t:'The cycle of 5ths',st:'Stages 5–6',full:true,p:'Roots falling by 5ths: Baroque sequences, jazz turnarounds and disco anthems that walk themselves home.',go:[['Full circle','I IV vii° iii vi ii V I','maj'],['Minor circle','i iv VII III VI ii° V i','min']]},
- {t:'Secondary dominants',st:'Stages 5–6',full:true,p:'Borrowing a dominant to make another chord feel like home for a moment: V/V, V/vi, V/IV and their cousins.',go:[['V7/V in action','I vi V7/V V I','maj'],['Two detours','I V7/vi vi V7/ii ii V7/V V I','maj']]},
- {t:'Borrowed and chromatic chords',st:'Stages 5–6',full:true,p:'iv, ♭VI and ♭VII from the parallel minor, the Picardy third, the Neapolitan, augmented 6ths.',go:[['Borrowed iv','I IV iv I','maj'],['Rock ♭VII','I bVII IV I','maj']]},
- {t:'ii–V–I',st:'Stages 5–6',full:true,p:'The engine of jazz: extended chords, guide-tone lines and rootless voicings.',go:[['ii–V–I','ii7 V7 Imaj7 Imaj7','maj'],['Minor ii–V–i','iiø7 V7 i7 i7','min']]},
- {t:'Tritone substitution',st:'Stage 6',full:true,p:'Swap V7 for the dominant a tritone away and the bass slides down by semitones.',go:[['ii–♭II7–I','ii7 bII7 Imaj7 Imaj7','maj'],['Chromatic turnaround','Imaj7 bIII7 ii7 bII7 Imaj7','maj']]},
- {t:'Reharmonisation',st:'Stage 6',full:true,p:'Same melody, new chords: substitutes, passing diminished chords, the backdoor ii–V.',go:[['Classical colour','I V7/IV IV #i°7 ii I:2 V7 I','maj'],['Backdoor ii–V','iv7 bVII7 Imaj7','maj']]},
- {t:'Beyond function',st:'Stage 6',full:true,p:'Modal vamps, planing, quartal harmony, chromatic mediants in film music, static harmony in minimalism.',go:[['Dorian vamp','i7 IV7 i7 IV7','min']]},
- {t:'Imitation and fugue',st:'Stages 5–6',full:true,p:'From the round to the canon, the invention and the fugue: one idea answered by itself. Modal or tonal, with a subject checker, answer generator, countersubject and stretto finder.'}
+ {t:'Drones and modes',full:true,p:'Melody over a drone. Hear the character of each mode, from the folk and chant roots in the Garden\'s commons.'},
+ {t:'Modal polyphony',full:true,p:'Independent lines over a cantus firmus: all five of Fux\'s species, three-voice counterpoint, a rule book, and your own cantus set in every species.'},
+ {t:'Tonal architecture',full:true,p:'Keys, home and away: tonic, predominant and dominant, phrases, and the four cadences.',go:[['Home, away and back','I ii V I','maj'],['Ending on V','I vi IV V','maj']]},
+ {t:'I–IV–V',full:true,p:'The three-chord foundation of folk, hymns, blues and rock and roll.',go:[['Three chords','I IV V I','maj'],['Twelve-bar blues','I7 I7 I7 I7 IV7 IV7 I7 I7 V7 IV7 I7 V7','maj']]},
+ {t:'The four-chord loop',full:true,p:'I–V–vi–IV and its rotations: the same four chords, a different home. Rotate the loop and hear the mood flip.',go:[['I–V–vi–IV','I V vi IV','maj'],['vi–IV–I–V','vi IV I V','maj'],['i–VI–III–VII','i VI III VII','min']]},
+ {t:'The cycle of 5ths',full:true,p:'Roots falling by 5ths: Baroque sequences, jazz turnarounds and disco anthems that walk themselves home.',go:[['Full circle','I IV vii° iii vi ii V I','maj'],['Minor circle','i iv VII III VI ii° V i','min']]},
+ {t:'Secondary dominants',full:true,p:'Borrowing a dominant to make another chord feel like home for a moment: V/V, V/vi, V/IV and their cousins.',go:[['V7/V in action','I vi V7/V V I','maj'],['Two detours','I V7/vi vi V7/ii ii V7/V V I','maj']]},
+ {t:'Borrowed and chromatic chords',full:true,p:'iv, ♭VI and ♭VII from the parallel minor, the Picardy third, the Neapolitan, augmented 6ths.',go:[['Borrowed iv','I IV iv I','maj'],['Rock ♭VII','I bVII IV I','maj']]},
+ {t:'ii–V–I',full:true,p:'The engine of jazz: extended chords, guide-tone lines and rootless voicings.',go:[['ii–V–I','ii7 V7 Imaj7 Imaj7','maj'],['Minor ii–V–i','iiø7 V7 i7 i7','min']]},
+ {t:'Tritone substitution',full:true,p:'Swap V7 for the dominant a tritone away and the bass slides down by semitones.',go:[['ii–♭II7–I','ii7 bII7 Imaj7 Imaj7','maj'],['Chromatic turnaround','Imaj7 bIII7 ii7 bII7 Imaj7','maj']]},
+ {t:'Reharmonisation',full:true,p:'Same melody, new chords: substitutes, passing diminished chords, the backdoor ii–V.',go:[['Classical colour','I V7/IV IV #i°7 ii I:2 V7 I','maj'],['Backdoor ii–V','iv7 bVII7 Imaj7','maj']]},
+ {t:'Beyond function',full:true,p:'Modal vamps, planing, quartal harmony, chromatic mediants in film music, static harmony in minimalism.',go:[['Dorian vamp','i7 IV7 i7 IV7','min']]},
+ {t:'Imitation and fugue',full:true,p:'From the round to the canon, the invention and the fugue: one idea answered by itself. Modal or tonal, with a subject checker, answer generator, countersubject and stretto finder.'}
 ];
 
 /* =====================================================================
@@ -3237,7 +3504,7 @@ function pianoHTML(notes,lo=36,hi=84){const whites=[];for(let m=lo;m<=hi;m++)if(
  return s}
 function renderVoicingLab(){
  const c=chord();$('vlChord').textContent=pretty(c.sym)+(S.inv?'/'+pretty(c.bass.name):'');
- $('vlTabs').innerHTML=Object.entries(VTYPES).map(([k,v])=>`<button data-vt="${k}" class="${k===VL.type?'on':''}">${v.n}</button>`).join('');
+ $('vlTabs').innerHTML=lvBands('vlList',Object.entries(VTYPES).map(([k,v])=>({k,...v})),{noun:'voicings',label:'Voicing',cls:'one',on:x=>x.k===VL.type,row:x=>{const on=x.k===VL.type;return`<button class="lvrow${on?' on':''}" role="option" aria-selected="${on}" data-vt="${x.k}"><b>${x.n}</b></button>`}});lvReveal($('vlTabs'))
  const n=vlNotes();
  if(!n){$('vlPiano').innerHTML=pianoHTML([]);$('vlWhy').textContent=VTYPES[VL.type].why+(VL.type==='satb'?' Four voices can\'t spell this chord completely in this inversion: try another inversion.':' This voicing needs a chord with at least four notes: try Cmaj7, Dm7 or G7.');$('vlStats').innerHTML='';$('vlStaff').innerHTML='';return}
  $('vlPiano').innerHTML=pianoHTML(n);$('vlWhy').textContent=VTYPES[VL.type].why;
@@ -3512,9 +3779,9 @@ function sigNum(ks){const n=ks.replace(/m$/,'');const s=spell(LET.indexOf(n[0]),
 /* ---------- render: scales ---------- */
 function ksPads(attr,cur){return PADS.map(p=>p.length===1?`<button class="rp ${cur===p[0]?'on':''}" ${attr}="${p[0]}">${p[0]}</button>`:
   `<div class="rk">${p.map(n=>`<button class="${cur===n?'on':''}" ${attr}="${n}">${pretty(n)}</button>`).join('')}</div>`).join('')+(PADS.flat().includes(cur)?'':`<button class="rp on" ${attr}="${cur}">${pretty(cur)}</button>`)}
-function renderScales(){let sc=SCALES.find(s=>s.k===KS.sc);if(sc.l>S.level){KS.sc='maj';sc=SCALES[0]}
+function renderScales(){let sc=SCALES.find(s=>s.k===KS.sc)||SCALES[0];
  $('ksRoot').innerHTML=ksPads('data-kst',KS.tonic);
- $('ksType').innerHTML=SGROUPS.map(g=>{const v=SCALES.filter(s=>s.g===g&&s.l<=S.level);if(!v.length)return'';return`<div class="qg"><span class="gl">${g}</span>${v.map(s=>`<button class="qp ${s.k===KS.sc?'on':''}" data-ksc="${s.k}"><b>${s.n}</b>${s.a?`<small${s.us?` data-notm title="US: ${s.us}"`:''}>${s.a}</small>`:'<small>&nbsp;</small>'}</button>`).join('')}</div>`}).join('');
+ $('ksType').innerHTML=lvBands('ksList',SCALES,{noun:'scales',label:'Scale',cls:'wide',on:s=>s.k===KS.sc,row:s=>{const on=s.k===KS.sc;return`<button class="lvrow${on?' on':''}" role="option" aria-selected="${on}" data-ksc="${s.k}"><b>${s.n}</b><span${s.us?` data-notm title="US: ${s.us}"`:''}>${s.a||s.g}</span></button>`}});lvReveal($('ksType'))
  $('ksDir').innerHTML=`<button class="ip ${KS.desc?'':'on'}" data-kdir="up">Going up</button><button class="ip ${KS.desc?'on':''}" data-kdir="down">Coming down</button>${sc.desc?`<span class="note" style="margin-left:6px">${sc.k==='mmin'?'Melodic minor changes on the way down.':'Spelled with flats on the way down.'}</span>`:''}`;
  const T=scaleTones(KS.tonic,KS.sc,KS.desc),sig=sigFromKS(),name=scaleName(KS.tonic,KS.sc);
  $('ksName').textContent=name;$('ksAka').textContent=sc.a?sc.a[0]==='='?sc.a.slice(2):sc.a:'';if(sc.us)$('ksAka').innerHTML=`<span data-notm>${sc.a}</span> (US: ${sc.us})`;
@@ -3600,9 +3867,9 @@ const CONS={perf:'Perfect consonance: hollow, open, completely stable.',imp:'Imp
 const ivInv=iv=>{const n=9-iv.num,q=iv.k[0]==='m'?'M':iv.k[0]==='M'?'m':iv.k[0]==='A'?'d':iv.k[0]==='d'?'A':'P';return IVS.find(x=>x.k===q+n)||{k:q+n,n:({P:'perfect',M:'major',m:'minor',A:'augmented',d:'diminished'})[q]+' '+n+(n===1?'st (unison)':n===2?'nd':n===3?'rd':'th')}};
 function ivNotes(start,iv,dir){const li=LET.indexOf(start[0]),pc=pcOf(start),m0=dir==='down'||pc<7?60+pc:48+pc;
  const a=spell(li,m0),b=dir==='down'?spell(li-(iv.num-1),m0-iv.s):spell(li+iv.num-1,m0+iv.s);return[a,b]}
-function renderIntervals(){let iv=IVS.find(x=>x.k===KS.iv.k);if(iv.l>S.level){KS.iv.k='M3';iv=IVS.find(x=>x.k==='M3')}
+function renderIntervals(){let iv=IVS.find(x=>x.k===KS.iv.k)||IVS.find(x=>x.k==='M3');
  $('ivRoot').innerHTML=ksPads('data-kis',KS.iv.start);
- $('ivType').innerHTML=[1,2,3,4,5,6,7].filter(l=>l<=S.level&&IVS.some(x=>x.l===l)).map(l=>`<div class="qg"><span class="gl">Level ${l}</span>${IVS.filter(x=>x.l===l).map(x=>`<button class="qp ${x.k===iv.k?'on':''}" data-kiv="${x.k}"><b>${x.k}</b><small>${x.n}</small></button>`).join('')}</div>`).join('');
+ $('ivType').innerHTML=lvBands('ivList',IVS,{noun:'intervals',label:'Interval',on:x=>x.k===iv.k,row:x=>{const on=x.k===iv.k;return`<button class="lvrow${on?' on':''}" role="option" aria-selected="${on}" data-kiv="${x.k}"><b>${x.k}</b><span>${x.n}</span></button>`}});lvReveal($('ivType'))
  $('ivDir').innerHTML=['up','down'].map(d=>`<button class="ip ${KS.iv.dir===d?'on':''}" data-kivd="${d}">${d==='up'?'Going up ↑':'Going down ↓'}</button>`).join('');
  const [a,b]=ivNotes(KS.iv.start,iv,KS.iv.dir),inv=ivInv(iv);
  const bad=Math.abs(b.acc)>2;
@@ -3735,13 +4002,17 @@ function renderClimbs(){
  document.querySelectorAll('#room-climbs > .ask, #room-climbs > .path, #room-climbs > .head').forEach(e=>e.hidden=CL.open!==null);
  if(CL.open!==null){$('climbList').hidden=true;$('climbDetail').hidden=false;renderClimbDetail();return}
  $('climbList').hidden=false;$('climbDetail').hidden=true;
- const CARD=(c,i)=>`<div class="climb ${c.go||c.full?'':'dim'}"><div class="n">${i+1}</div><h4>${c.t}</h4><div class="st">${c.st}</div><p>${c.p}</p>
+ const CLG=i=>i<5?'Foundations':i<8?'Harmony':i<11?'Jazz':'Beyond',CLF=[1,4,1,1,1,3,4,3,4,6,2,5,4],CLT=[C1M,C2M.concat(C2SP),CADS,C4EX,C5FAM,C6EX,C7EX,C8EX,C9EX,C10EX,C11V,C12MODES.concat(C12SHAPES),null];
+ const CA=CLIMBS.map((c,i)=>{const ls=CLT[i]?CLT[i].map(x=>x.l||1):[4,6];return{...c,i,stp:i,l:Math.max(CLF[i],Math.min(...ls)),hi:Math.max(CLF[i],Math.max(...ls))}});
+ const rg=c=>c.l===c.hi?`Level ${c.l}`:`Levels ${c.l} to ${c.hi}`;
+ const CARD=c=>{const i=c.i;return`<div class="climb ${c.go||c.full?'':'dim'}"><div class="n">${i+1}</div><h4>${c.t}</h4><div class="st">${CLG(i)} · ${rg(c)}</div><p>${c.p}</p>
  ${c.full?'':`<div class="stat ${c.go?'live':''}">${c.go?'In the Gym now · full climb coming':'Full climb coming'}</div>`}
- ${c.full?`<div class="go"><button class="mini gold" data-clopen="${i}">Start this climb →</button></div>`:c.go?`<div class="go" style="margin-top:10px">${c.go.map(g=>`<button class="chip" data-load="${g[1]}|${g[2]}">⤒ ${g[0]}</button>`).join('')}</div>`:''}</div>`;
- const GROUPS=[['Foundations','drones and modes, two-voice counterpoint, keys and cadences, the three chords and the loop',0,5],['Harmony','falling 5ths, borrowed and secondary chords',5,8],['Jazz','the ii–V–I, substitution and reharmonisation',8,11],['Beyond','harmony without function, and imitation and fugue',11,CLIMBS.length]];
- $('climbList').innerHTML=GROUPS.map(([g,d,a,b])=>`<div class="clgrp"><h3 class="clgh"><span class="disp">${g}</span><small>Climbs ${a+1}–${b} · ${d}</small></h3></div>`+CLIMBS.slice(a,b).map((c,k)=>CARD(c,a+k)).join('')).join('')}
+ ${c.full?`<div class="go"><button class="mini gold" data-clopen="${i}">Start this climb →</button></div>`:c.go?`<div class="go" style="margin-top:10px">${c.go.map(g=>`<button class="chip" data-load="${g[1]}|${g[2]}">⤒ ${g[0]}</button>`).join('')}</div>`:''}</div>`};
+ const CMP=c=>{const m=`<span class="lvm ${LVCH(c.l)}" title="${rg(c)} · from ${LVN[c.l]}" aria-hidden="true">${c.l}</span><span class="tx"><b>${c.t}</b><small>Climb ${c.i+1} · ${CLG(c.i)}</small></span>`;
+  return c.full?`<button class="climb cmp" data-clopen="${c.i}" aria-label="Climb ${c.i+1}, ${c.t}, ${rg(c)}, open">${m}<span class="arr" aria-hidden="true">→</span></button>`:`<div class="climb cmp dim" aria-label="${c.t}, ${rg(c)}">${m}</div>`};
+ $('climbList').innerHTML=lvCards('climbsGal',CA,{full:CARD,cmp:CMP,noun:['climb','climbs']})}
 function renderClimbDetail(){if(CL.open===0)return renderClimb1();if(CL.open===12)return renderClimb13();if(CL.open===1)return renderClimb2();if(CL.open===11)return renderClimb12();if(CL.open===10)return renderClimb11();if(CL.open===9)return renderClimb10();if(CL.open===8)return renderClimb9();if(CL.open===7)return renderClimb8();if(CL.open===6)return renderClimb7();if(CL.open===5)return renderClimb6();if(CL.open===4)return renderClimb5();if(CL.open===3)return renderClimb4();return renderClimb3()}
-function renderClimb3(){const key=CL.key,mode=key.mode,L=cadsFor(mode);if(!L.find(c=>c.k===CL.ex))CL.ex=L[0].k;const ex=CADS.find(c=>c.k===CL.ex);
+function renderClimb3(){const key=CL.key,mode=key.mode,L=CADS.filter(c=>c[mode]);if(!L.find(c=>c.k===CL.ex))CL.ex=L[0].k;const ex=CADS.find(c=>c.k===CL.ex);
  const r=realise(ex[mode],key),kn=keyName(key);
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  const T=withKey(key,()=>({T:['I','vi','iii'],PD:['IV','ii'],D:['V','vii°']}));
@@ -3757,7 +4028,7 @@ function renderClimb3(){const key=CL.key,mode=key.mode,L=cadsFor(mode);if(!L.fin
  <section class="card ask"><span class="disp">Ask</span><span class="q">What story does it tell? A phrase is a small journey: leave home, travel, and either arrive or don't. Before you listen, think of a song you love: does its first line feel like a question or an answer?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <div class="grid clgrid">
   <section class="card"><h3>Hear · the cadences<span class="sp"></span><span class="note">${kn} · one chord per beat</span></h3>
-   <div class="cads">${L.map(c=>`<button class="cad ${c.k===CL.ex?'on':''}" data-clex="${c.k}"><b>${c.n}</b><span>${c.ch}</span><small>${c.feel}</small></button>`).join('')}</div>
+   ${lvBands('c3List',L,{wrap:'cads',noun:'cadences',label:'Examples',on:c=>c.k===CL.ex,row:c=>`<button class="cad ${c.k===CL.ex?'on':''}" data-clex="${c.k}"><b>${c.n}</b><span>${c.ch}</span><small>${c.feel}</small></button>`})}
    <p class="note" style="margin:10px 0 0">Tap a cadence to hear its phrase. Sing the top line back in solfa, then sing just the bass.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-clplay>▶ Play</button><button class="mini" data-clgym>⤴ Open in the Gym</button></h3>
    <div class="staff" id="clStaff"></div>
@@ -3819,7 +4090,7 @@ const C4EX=[
 const C4MEL=[[0,4],[5,9],[7,4],[2,-1],[4,7],[9,5],[11,14],[12]];
 function c4List(ex,key){return ex.bars.split(' ').map(r=>{const k2=ex.k==='mblues'?{k:key.k,mode:'min'}:key;const p=parseRoman(r,k2);return{...p,inv:0,beats:4,rn:r}})}
 function c4Play(list,onStep,pat){const op=G.pat;G.pat=pat||'pulse';playList(list,'climb',onStep,false);G.pat=op}
-function renderClimb4(){const key=C4.key,kn=keyName(key),EX=C4EX.filter(x=>x.l<=S.level);if(!EX.find(x=>x.k===C4.ex))C4.ex='trick';const ex=C4EX.find(x=>x.k===C4.ex),L=c4List(ex,key);
+function renderClimb4(){const key=C4.key,kn=keyName(key),EX=C4EX;if(!EX.find(x=>x.k===C4.ex))C4.ex='trick';const ex=C4EX.find(x=>x.k===C4.ex),L=c4List(ex,key);
  const nm=rn=>{const p=parseRoman(rn,key);return pretty(p.root+(p.q==='m'?'m':p.q==='7'?'7':''))};
  const keySel=C4KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
  const T=scaleTones(KEYN.maj[key.k],'maj',false).slice(0,7),cov={0:['I','IV'],1:['V'],2:['I'],3:['IV'],4:['I','V'],5:['IV'],6:['V']};
@@ -3832,7 +4103,7 @@ function renderClimb4(){const key=C4.key,kn=keyName(key),EX=C4EX.filter(x=>x.l<=
  <section class="card ask"><span class="disp">Ask</span><span class="q">What do you want to say? With only three chords there is nowhere to hide: the story has to come from the words, the melody and the groove. What could you say with almost nothing?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <div class="grid clgrid">
   <section class="card"><h3>Hear · three chords, many styles<span class="sp"></span><span class="note">${kn}</span></h3>
-   <div class="cads">${EX.map(x=>`<button class="cad ${x.k===C4.ex?'on':''}" data-c4ex="${x.k}"><b>${x.n}</b><span>${x.st}</span><small>${x.p}</small></button>`).join('')}</div>
+   ${lvBands('c4List',EX,{wrap:'cads',noun:'examples',label:'Examples',on:x=>x.k===C4.ex,row:x=>`<button class="cad ${x.k===C4.ex?'on':''}" data-c4ex="${x.k}"><b>${x.n}</b><span>${x.st}</span><small>${x.p}</small></button>`})}
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Clap on beats 2 and 4, then sing the root of each chord (do, fa, so) as the bass changes.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c4play>▶ Play</button><button class="mini" data-load="${ex.bars}|${ex.k==='mblues'?'min':'maj'}">⤴ Open in the Gym</button></h3>
    <div class="bargrid ${L.length===12?'b12':''}">${L.map((c,i)=>{const f=withKey(ex.k==='mblues'?{k:key.k,mode:'min'}:key,()=>analyse(c,ex.k==='mblues'?{k:key.k,mode:'min'}:key).f);return`<div class="bar" id="c4b${i}" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><small>${i+1}</small><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${c.rn.replace(/b/g,'♭')}</span></div>`}).join('')}</div>${FNKEY}
@@ -3918,7 +4189,7 @@ function c5Wheel(){const R=86,cx=120,cy=120;let s=`<svg viewBox="0 0 240 240" cl
  C5LOOP.forEach((r,i)=>{const a=-Math.PI/2+i*Math.PI/2,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a),on=C5.rot===i,f=analyse(parseRoman(r,C5.key),C5.key).f;
   s+=`<g class="wn ${on?'on':''}" data-c5rot="${i}"><circle cx="${x}" cy="${y}" r="30" style="stroke:${FN[f]}"/><text class="f" x="${x+(FNL(f).length>1?32:27)}" y="${y-24}" text-anchor="middle" style="fill:${FN[f]}">${FNL(f)}</text><text x="${x}" y="${y-2}" text-anchor="middle" class="r">${r}</text><text x="${x}" y="${y+15}" text-anchor="middle" class="c">${pretty(parseRoman(r,C5.key).root)}${r==='vi'?'m':''}</text></g>`});
  s+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" class="ctr">start on</text><text x="${cx}" y="${cy+18}" text-anchor="middle" class="ctr big">${C5LOOP[C5.rot]}</text></svg>`;return s}
-function renderClimb5(){const key=C5.key,kn=keyName(key),F=C5FAM.filter(x=>x.l<=S.level);if(!F.find(x=>x.k===C5.fam))C5.fam='pop';const{list,key:lk}=c5List(),rot=C5ROT[C5.rot];
+function renderClimb5(){const key=C5.key,kn=keyName(key),F=C5FAM;if(!F.find(x=>x.k===C5.fam))C5.fam='pop';const{list,key:lk}=c5List(),rot=C5ROT[C5.rot];
  const keySel=C5KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
  const vt=(k,lab,tip)=>`<button class="chip ${C5.v[k]?'on':''}" data-c5v="${k}" title="${tip}">${lab}</button>`;
  $('climbDetail').innerHTML=`
@@ -3931,7 +4202,7 @@ function renderClimb5(){const key=C5.key,kn=keyName(key),F=C5FAM.filter(x=>x.l<=
   <section class="card"><h3>Hear · rotate the wheel<span class="sp"></span><span class="note">${kn}</span></h3>
    <div class="wheelbox">${c5Wheel()}<div><div class="lbl">Starting on ${C5LOOP[C5.rot]}</div><div class="sym disp" style="font-size:30px">${rot.n}</div><p class="desc" style="margin:6px 0 4px">${rot.feel}</p><div class="note">Feels like home: <b style="color:var(--goldhi)">${rot.home}</b></div></div></div>
    <div class="lbl" style="margin-top:14px">Relatives of the loop</div>
-   <div class="cads">${F.map(x=>`<button class="cad ${x.k===C5.fam?'on':''}" data-c5fam="${x.k}"><b>${x.n}</b><span>${x.r.replace(/ /g,'–')}</span><small>${x.p}</small></button>`).join('')}</div></section>
+   ${lvBands('c5List',F,{wrap:'cads',noun:'families',label:'Examples',on:x=>x.k===C5.fam,row:x=>`<button class="cad ${x.k===C5.fam?'on':''}" data-c5fam="${x.k}"><b>${x.n}</b><span>${x.r.replace(/ /g,'–')}</span><small>${x.p}</small></button>`})}</section>
   <section class="card"><h3>See · the loop<span class="sp"></span><button class="mini gold" data-c5play>▶ Play twice</button><button class="mini" data-c5gym>⤴ Open in the Gym</button></h3>
    <div class="bargrid">${list.map((c,i)=>{const f=withKey(lk,()=>analyse(c,lk).f);const ch=chordOf(c.root,c.q,c.inv);return`<div class="bar" id="c5b${i}" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><small>${c.beats} beat${c.beats>1?'s':''}</small><b>${pretty(ch.sym)}${C5.v.pedal?(mod(pcOf(c.root),12)===lk.k?'':'/'+pretty(KEYN[lk.mode][lk.k])):c.inv?'/'+pretty(ch.bass.name):''}</b><span>${c.rn.replace(/b/g,'♭')}</span></div>`}).join('')}</div>${FNKEY}
    <div class="lbl" style="margin-top:14px">Same loop, new metre <span class="note">(opens in the Gym, one chord per bar)</span></div>
@@ -4017,7 +4288,7 @@ function c6Real(str,key){const r=realise(str,key);return r}
 const c6Step=L=>i=>{document.querySelectorAll('#climbDetail .bargrid .bar').forEach((b,j)=>b.classList.toggle('now',j===i));
  document.querySelectorAll('#climbDetail .c6n').forEach(n=>n.classList.remove('now'));const ch=L[i];if(ch){const n=document.getElementById('c6n'+c6Deg(ch,C6.key));if(n)n.classList.add('now')}};
 function c6PlayEx(){const ex=C6EX.find(x=>x.k===C6.ex),r=c6Real(c6Str(ex,C6.key),C6.key);playCols(r.sat,'climb',c6Step(r.L))}
-function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.filter(x=>x.l<=lvAt(C6EX)&&x[mode]);
+function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.filter(x=>x[mode]);
  if(!EX.find(x=>x.k===C6.ex))C6.ex=EX.find(x=>x.k==='full')?'full':EX[0].k;const ex=C6EX.find(x=>x.k===C6.ex),r=c6Real(c6Str(ex,key),key),L=r.L;
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  const lab=C6LAB[mode],nm=rn=>{const p=parseRoman(rn,key);return pretty(chordOf(p.root,p.q,0).sym)};
@@ -4034,7 +4305,7 @@ function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.f
  <section class="card ask"><span class="disp">Ask</span><span class="q">What happened in today's composition? A circle progression is a pattern that keeps happening, a step lower each time, until it arrives. Think of something in your life that repeats and changes a little each time: a journey, a countdown, a staircase. Could your music do that?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <div class="grid clgrid">
   <section class="card"><h3>Hear · round the circle<span class="sp"></span><span class="note">${kn} · four voices</span></h3>
-   <div class="cads">${EX.map(x=>`<button class="cad ${x.k===C6.ex?'on':''}" data-c6ex="${x.k}"><b>${x.n}</b><span>${x[mode].replace(/b(?=[IVX])/g,'♭').split(' ').join('–')}</span><small>${x.p}</small></button>`).join('')}</div>
+   ${lvBands('c6List',EX,{wrap:'cads',noun:'examples',label:'Examples',on:x=>x.k===C6.ex,row:x=>`<button class="cad ${x.k===C6.ex?'on':''}" data-c6ex="${x.k}"><b>${x.n}</b><span>${x[mode].replace(/b(?=[IVX])/g,'♭').split(' ').join('–')}</span><small>${x.p}</small></button>`})}
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Sing the bass in solfa as it plays: it falls a 5th or climbs a 4th each time, and both land on the same note name.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c6play>▶ Play</button><button class="mini" data-load="${c6Str(ex,key)}|${mode}">⤴ Open in the Gym</button></h3>
    <div class="wheelbox c6box">${c6Wheel(L,key,lab)}<div>
@@ -4134,7 +4405,7 @@ function c7Targets(key){return key.mode==='maj'?['ii','iii','IV','V','vi']:['III
 function c7Base(mode){return mode==='maj'?['I','vi','IV','ii','V','I']:['i','VI','iv','V','i']}
 function c7Built(mode){const out=[];c7Base(mode).forEach((rn,i)=>{if(C7.ins[mode+i])out.push('V7/'+rn);out.push(rn)});return out.join(' ')}
 function c7PlayEx(){const ex=C7EX.find(x=>x.k===C7.ex),r=realise(ex[C7.key.mode],C7.key);playCols(r.sat,'climb',i=>document.querySelectorAll('#c7Bars .bar').forEach((b,j)=>b.classList.toggle('now',j===i)))}
-function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.filter(x=>x.l<=lvAt(C7EX)&&x[mode]);
+function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.filter(x=>x[mode]);
  if(!EX.find(x=>x.k===C7.ex))C7.ex=EX[0].k;const ex=C7EX.find(x=>x.k===C7.ex),r=realise(ex[mode],key),L=r.L;
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  const tgt=c7Targets(key).map(t=>{const sd=parseRoman('V7/'+t,key),tc=parseRoman(t,key),ch={...sd,inv:0},nw=c7New(ch,key);return{t,sd,tc,nw}});
@@ -4149,7 +4420,7 @@ function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.f
  <section class="card ask"><span class="disp">Ask</span><span class="q">What story does it tell? A secondary dominant is a short visit: for a moment the music behaves as though somewhere else is home, then carries on. In a story that might be a memory, a side trip, a glance at someone across the room. Where would your piece take a detour?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <div class="grid clgrid">
   <section class="card"><h3>Hear · pointing at a chord<span class="sp"></span><span class="note">${kn} · four voices</span></h3>
-   <div class="cads">${EX.map(x=>`<button class="cad ${x.k===C7.ex?'on':''}" data-c7ex="${x.k}"><b>${c7Name(x,mode)}</b><span>${x[mode].split(' ').join('–')}</span><small>${x.p}</small></button>`).join('')}</div>
+   ${lvBands('c7List',EX,{wrap:'cads',noun:'examples',label:'Examples',on:x=>x.k===C7.ex,row:x=>`<button class="cad ${x.k===C7.ex?'on':''}" data-c7ex="${x.k}"><b>${c7Name(x,mode)}</b><span>${x[mode].split(' ').join('–')}</span><small>${x.p}</small></button>`})}
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Listen for the one note that doesn't belong to the key, and sing where it goes.</p></section>
   <section class="card"><h3>See · ${c7Name(ex,mode)}<span class="sp"></span><button class="mini gold" data-c7play>▶ Play</button><button class="mini" data-load="${ex[mode]}|${mode}">⤴ Open in the Gym</button></h3>
    <div class="bargrid c7grid" id="c7Bars">${c7Bars(L,key)}</div>${FNKEY}
@@ -4238,7 +4509,7 @@ function c8NewNotes(ch,key){const set=c7Scale(key);return chordOf(ch.root,ch.q,0
 function c8Bars(L,key,id){return`<div class="bargrid c7grid" ${id?`id="${id}"`:''}>${L.map(c=>{const nw=c8NewNotes(c,key),f0=fnOf(c,key),f=nw.length&&!(MD_MAJOR&&f0==='MD')?'C':f0;const ch=chordOf(c.root,c.q,c.inv||0),aug=/\+6/.test(c.q);
   return`<div class="bar ${nw.length?'sec':''} ${f==='MD'?'md':''}" style="--c:${FN[f]||'var(--violet)'}" data-fn="${FNL(f)}"><b>${aug?pretty(c.root)+'<small class="a6"> '+c.q.replace('+6','⁺⁶')+'</small>':pretty(ch.sym)+(c.inv?'/'+pretty(ch.bass.name):'')}</b><span>${c8Rn(c.rn)}</span>${nw.length?`<em class="nn">${nw.map(t=>`${pretty(t.name)} <i>${c7Sol(t.name,key)}</i>`).join(' · ')}</em>`:''}</div>`}).join('')}</div>${FNKEY}`}
 function c8PlayEx(){const ex=C8EX.find(x=>x.k===C8.ex),r=realise(ex[C8.key.mode],C8.key);playCols(r.sat,'climb',i=>document.querySelectorAll('#c8Bars .bar').forEach((b,j)=>b.classList.toggle('now',j===i)))}
-function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.filter(x=>x.l<=lvAt(C8EX)&&x[mode]);
+function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.filter(x=>x[mode]);
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  if(!EX.length){$('climbDetail').innerHTML=`<div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 8 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c8Key">${keySel}</select></label></div><h1 class="disp">Borrowed and chromatic chords</h1><p class="sub">At Stage 4 this climb starts in a major key. Choose a major key above, or move up to Stage 5 for minor-key colour.</p>`;$('c8Key').onchange=e=>{C8.key={...CKEYS[+e.target.value]};renderClimb8()};setCrumb();return}
  if(!EX.find(x=>x.k===C8.ex))C8.ex=EX[0].k;const ex=C8EX.find(x=>x.k===C8.ex),r=realise(ex[mode],key),L=r.L;
@@ -4256,7 +4527,7 @@ function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.f
  <section class="card ask"><span class="disp">Ask</span><span class="q">What do you want to say? A borrowed chord is a change of light in the middle of a sentence: a cloud across the sun, or sun through a storm. Which moment in your piece needs the light to change, and which way?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <div class="grid clgrid">
   <section class="card"><h3>Hear · changing the light<span class="sp"></span><span class="note">${kn} · four voices</span></h3>
-   <div class="cads">${EX.map(x=>`<button class="cad ${x.k===C8.ex?'on':''}" data-c8ex="${x.k}"><b>${x.n}</b><span>${x[mode].split(' ').map(c8Rn).join('–')}</span><small>${x.p}</small></button>`).join('')}</div>
+   ${lvBands('c8List',EX,{wrap:'cads',noun:'examples',label:'Examples',on:x=>x.k===C8.ex,row:x=>`<button class="cad ${x.k===C8.ex?'on':''}" data-c8ex="${x.k}"><b>${x.n}</b><span>${x[mode].split(' ').map(c8Rn).join('–')}</span><small>${x.p}</small></button>`})}
    ${mode==='min'&&S.level<6?'<p class="note" style="margin:10px 0 0">Most borrowed chords go from minor into major songs. Choose a major key to hear iv, ♭VII and ♭VI.</p>':''}
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Sing the borrowed note (le, ta, ma, ra…) and where it goes next.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c8play>▶ Play</button><button class="mini" data-load="${ex[mode]}|${mode}">⤴ Open in the Gym</button></h3>
@@ -4382,7 +4653,7 @@ function c9Cur(){const ex=C9EX.find(x=>x.k===C9.ex),L=c9List(ex[C9.key.mode],C9.
 // guide-tone melody over the standard eight bars
 function c9GtList(){return c9List(C9EX.find(x=>x.k==='std').maj,{k:C9.key.mode==='maj'?C9.key.k:mod(C9.key.k+3,12),mode:'maj'})}
 function c9GtLine(){const L=c9GtList();let prev=null;return L.map((ch,i)=>{const c=C9.gt[i];if(c==null)return null;const g=c9Guide(ch)[c==='3'?0:1];const m=prev?near(mod(g.midi,12),prev.midi):near(mod(g.midi,12),67);const n=at9(g,m);prev=n;return n})}
-function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.filter(x=>x.l<=Math.max(S.level,4)&&x[mode]);
+function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.filter(x=>x[mode]);
  if(!EX.find(x=>x.k===C9.ex))C9.ex=EX[0].k;const{ex,L,V}=c9Cur();
  const keySel=C9KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  const VT=[['guide','Guide tones (3rd + 7th)'],['shell','Shells (root, 3rd, 7th)'],['rootless','Rootless (A and B)']];
@@ -4399,7 +4670,7 @@ function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.f
  <section class="card ask"><span class="disp">Ask</span><span class="q">What inspires this piece? Jazz musicians learn hundreds of tunes made from the same few ii–V–Is, then make each one their own in the moment. Whose playing makes you want to play? What would you borrow from them, and what would you change?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <div class="grid clgrid">
   <section class="card"><h3>Hear · the engine<span class="sp"></span><span class="note">${kn}</span></h3>
-   <div class="cads">${EX.map(x=>`<button class="cad ${x.k===C9.ex?'on':''}" data-c9ex="${x.k}"><b>${x.n}</b><span>${x[mode].split(' ').map(r=>r.replace(/b(?=[IVX])/g,'♭')).join('–')}</span><small>${x.p}</small></button>`).join('')}</div>
+   ${lvBands('c9List',EX,{wrap:'cads',noun:'examples',label:'Examples',on:x=>x.k===C9.ex,row:x=>`<button class="cad ${x.k===C9.ex?'on':''}" data-c9ex="${x.k}"><b>${x.n}</b><span>${x[mode].split(' ').map(r=>r.replace(/b(?=[IVX])/g,'♭')).join('–')}</span><small>${x.p}</small></button>`})}
    ${mode==='min'?'':S.level<6?'<p class="note" style="margin:10px 0 0">Stage 6 adds the standard eight bars and ii–Vs moving through keys.</p>':''}
    <p class="note" style="margin:10px 0 0">Tap one to hear it with a bass and a comping piano. Then listen again and sing only the guide tones.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c9play>▶ Play</button><button class="mini" data-load="${ex[mode]}|${mode}">⤴ Open in the Gym</button></h3>
@@ -4432,7 +4703,7 @@ function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.f
    <div class="checker">${gtMsg||'<div class="note">Choose a guide tone in every bar.</div>'}</div></section>
  </div>
  <section class="card"><h3>Try · in the Gym and the Oracle</h3>
-  <div class="chips">${C9EX.filter(x=>x.l<=Math.max(S.level,4)).map(x=>x.maj?`<button class="chip" data-load="${x.maj}|maj">⤒ ${x.n}</button>`:`<button class="chip" data-load="${x.min}|min">⤒ ${x.n}</button>`).join('')}</div>
+  <div class="chips">${C9EX.map(x=>x.maj?`<button class="chip" data-load="${x.maj}|maj">⤒ ${x.n}</button>`:`<button class="chip" data-load="${x.min}|min">⤒ ${x.n}</button>`).join('')}</div>
   <p class="note" style="margin:12px 0 0">Challenge 1: in the Gym, take the major ii–V–I and change the last chord to vi7. Then to a minor ii–V a tone lower. Each change is one decision a composer makes at the end of a phrase.</p>
   <p class="note" style="margin:8px 0 0">Challenge 2: in Level 2 (Voices), load your Gym progression, choose <b>Rootless</b>, and find the voicing that moves least.</p></section>
  <section class="card"><h3>Make · a tune from ii–Vs</h3>
@@ -4493,7 +4764,7 @@ function c10Wheel(key){const R=84,cx=110,cy=110,ord=[0,7,2,9,4,11,6,1,8,3,10,5],
 function c10Cur(){const ex=C10EX.find(x=>x.k===C10.ex),L=c9List(c10Str(ex,C10.key.mode,C10.sub),C10.key);return{ex,L,V:c9Voice(L,C10.vt,'A')}}
 const c10Step=i=>document.querySelectorAll('#c10Bars .bar').forEach((b,j)=>b.classList.toggle('now',j===i));
 function c10Built(){return C10CH.split(' ').map((r,i)=>C10.sw[i]?C10SUB[i]:r).join(' ')}
-function renderClimb10(){const key=C10.key,mode=key.mode,kn=keyName(key),EX=C10EX.filter(x=>x.l<=Math.max(S.level,6)&&x[mode]);
+function renderClimb10(){const key=C10.key,mode=key.mode,kn=keyName(key),EX=C10EX.filter(x=>x[mode]);
  if(!EX.find(x=>x.k===C10.ex))C10.ex=EX[0].k;const{ex,L,V}=c10Cur(),O=c9List(c10Str(ex,mode,false),key);
  const keySel=C9KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
  const Vd=parseRoman('V7',key),Sd=parseRoman('bII7',key),tv=chordOf(Vd.root,'7',0).tones,ts=chordOf(Sd.root,'7',0).tones;
@@ -4509,7 +4780,7 @@ function renderClimb10(){const key=C10.key,mode=key.mode,kn=keyName(key),EX=C10E
  <section class="card ask"><span class="disp">Ask</span><span class="q">What happened in today's composition? A substitution keeps what a chord <i>does</i> and changes how it <i>sounds</i>. Think about your last piece: which chord does exactly its job, and would sound better doing it in disguise?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <div class="grid clgrid">
   <section class="card"><h3>Hear · original and substitute<span class="sp"></span><span class="note">${kn}</span></h3>
-   <div class="cads">${EX.map(x=>`<button class="cad ${x.k===C10.ex?'on':''}" data-c10ex="${x.k}"><b>${x.n}</b><span>${x[mode][1].split(' ').map(r=>r.replace(/b(?=[IVXivx])/g,'♭')).join('–')}</span><small>${x.p}</small></button>`).join('')}</div>
+   ${lvBands('c10List',EX,{wrap:'cads',noun:'examples',label:'Examples',on:x=>x.k===C10.ex,row:x=>`<button class="cad ${x.k===C10.ex?'on':''}" data-c10ex="${x.k}"><b>${x.n}</b><span>${x[mode][1].split(' ').map(r=>r.replace(/b(?=[IVXivx])/g,'♭')).join('–')}</span><small>${x.p}</small></button>`})}
    <div class="chips" style="margin-top:12px"><button class="chip ${!C10.sub?'on':''}" data-c10sub="0">▶ Original</button><button class="chip ${C10.sub?'on':''}" data-c10sub="1">▶ With the substitution</button></div>
    <p class="note" style="margin:10px 0 0">Play the original, then the substitute. Sing the bass line of each: the substitute moves by semitones.</p></section>
   <section class="card"><h3>See · ${ex.n}${C10.sub?'':' (original)'}<span class="sp"></span><button class="mini gold" data-c10play>▶ Play</button><button class="mini" data-load="${c10Str(ex,mode,C10.sub)}|${mode}">⤴ Open in the Gym</button></h3>
@@ -4633,10 +4904,10 @@ function c11Review(rns,key){const L=rns.map(r=>c11Ch(r,key)),notes=[];let strong
  const pen=L[L.length-2];if(home&&!(['7','9',''].includes(pen.q)&&(mod(pcOf(pen.root)-key.k,12)===7||mod(pcOf(pen.root)-key.k,12)===1||mod(pcOf(pen.root)-key.k,12)===10)))notes.push('The cadence isn\'t a V–I (or a tritone sub ♭II7–I, or the backdoor ♭VII7–I of jazz): the ending will feel softer. A plagal IV–I is another gentle option.');
  return{strong,notes}}
 const c11Step=i=>document.querySelectorAll('#c11Slots .bar').forEach((b,j)=>b.classList.toggle('now',j===i));
-function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V.filter(v=>v.l<=Math.max(S.level,2));if(!VS.find(v=>v.k===C11.ver))C11.ver='plain';const ver=C11V.find(v=>v.k===C11.ver),rns=ver.r.split(' '),mel=c11Mel(key),L=rns.map(r=>c11Ch(r,key));
+function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V,QVS=C11V.filter(v=>v.l<=Math.max(S.level,2));if(!VS.find(v=>v.k===C11.ver))C11.ver='plain';const ver=C11V.find(v=>v.k===C11.ver),rns=ver.r.split(' '),mel=c11Mel(key),L=rns.map(r=>c11Ch(r,key));
  if(!C11.mine)C11.mine=C11V[0].r.split(' ');const mine=C11.mine,rev=c11Review(mine,key),ML=mine.map(r=>c11Ch(r,key));
  const keySel=C11KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
- const T=C11TOOLS.filter(t=>t.l<=Math.max(S.level,2));
+ const T=C11TOOLS;
  $('climbDetail').innerHTML=`
  <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 11 · Stage 6</span><span class="sp"></span><label class="note">Key <select id="c11Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Reharmonisation</h1>
@@ -4646,7 +4917,7 @@ function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V.filter(v=>v.l
  <div class="grid clgrid">
   <section class="card"><h3>Hear · one tune, four tellings<span class="sp"></span><span class="note">${kn}</span></h3>
    <p class="note" style="margin:0 0 10px">The first phrase of "Twinkle, Twinkle, Little Star" (a traditional French melody), one chord every half bar.</p>
-   <div class="cads">${VS.map(v=>`<button class="cad ${v.k===C11.ver?'on':''}" data-c11v="${v.k}"><b>${v.n}</b><span>${v.r.split(' ').map(c11Rn).join(' · ')}</span><small>${v.p}</small></button>`).join('')}</div>
+   ${lvBands('c11List',VS,{wrap:'cads',noun:'versions',label:'Examples',on:v=>v.k===C11.ver,row:v=>`<button class="cad ${v.k===C11.ver?'on':''}" data-c11v="${v.k}"><b>${v.n}</b><span>${v.r.split(' ').map(c11Rn).join(' · ')}</span><small>${v.p}</small></button>`})}
    <p class="note" style="margin:10px 0 0">Tap one to hear it. Sing the melody each time: it never changes. What does each version make it mean?</p></section>
   <section class="card"><h3>See · ${ver.n}<span class="sp"></span><button class="mini gold" data-c11play>▶ Play</button><button class="mini" data-load="${ver.r}|maj">⤴ Open in the Gym</button></h3>
    <div class="bargrid c7grid" id="c11Slots">${L.map((c,i)=>{const d=c11Fit(c,mel[i]),ch=chordOf(c.root,c.q,c.inv);return`<div class="bar" style="--c:${FN[fnOf(c,key)]||'var(--violet)'}" data-fn="${FNL(fnOf(c,key))}"><small>${i+1}</small><b>${pretty(ch.sym)}${c.inv?'/'+pretty(ch.bass.name):''}</b><span>${c11Rn(c.rn)}</span><em class="nn">${pretty(mel[i].name)} = ${C11DN[d]||d}</em></div>`}).join('')}</div>${FNKEY}
@@ -4665,7 +4936,7 @@ function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V.filter(v=>v.l
   <section class="card"><h3>Try · which telling?<span class="sp"></span><span class="note">${C11.quiz.n?`Score ${C11.quiz.right} / ${C11.quiz.n}`:''}</span></h3>
    <p class="note" style="margin:0 0 10px">The same melody plays with one of the harmonisations above. Which one?</p>
    <div class="gq"><button class="mini gold" data-c11q="new">${C11.quiz.q?'Next →':'▶ Start'}</button>${C11.quiz.q?'<button class="mini" data-c11q="again">↻ Again</button>':''}</div>
-   ${C11.quiz.q?`<div class="gans">${VS.map(v=>`<button class="chip ${C11.quiz.ans!=null?(v.k===C11.quiz.q.k?'right':v.k===C11.quiz.ans?'wrong':''):''}" data-c11a="${v.k}">${v.n}</button>`).join('')}</div>${C11.quiz.ans!=null?`<div class="${C11.quiz.ans===C11.quiz.q.k?'ok':'iss warn'}" style="margin-top:10px">${C11.quiz.ans===C11.quiz.q.k?'✓ Yes: ':'Not quite. It was '}<b>${C11V.find(v=>v.k===C11.quiz.q.k).n}</b> in ${keyName(C11.quiz.q.key)}.</div>`:''}`:''}
+   ${C11.quiz.q?`<div class="gans">${QVS.map(v=>`<button class="chip ${C11.quiz.ans!=null?(v.k===C11.quiz.q.k?'right':v.k===C11.quiz.ans?'wrong':''):''}" data-c11a="${v.k}">${v.n}</button>`).join('')}</div>${C11.quiz.ans!=null?`<div class="${C11.quiz.ans===C11.quiz.q.k?'ok':'iss warn'}" style="margin-top:10px">${C11.quiz.ans===C11.quiz.q.k?'✓ Yes: ':'Not quite. It was '}<b>${C11V.find(v=>v.k===C11.quiz.q.k).n}</b> in ${keyName(C11.quiz.q.key)}.</div>`:''}`:''}
   </section>
   <section class="card"><h3>Try · your reharmonisation<span class="sp"></span><button class="mini gold" data-c11m="play">▶ Play</button><button class="mini" data-c11m="reset">Start again</button><button class="mini" data-load="${mine.join(' ')}|maj">⤴ Gym</button></h3>
    <p class="note" style="margin:0 0 10px">For each half bar, only the chords that fit the melody note are offered (Level ${S.level} vocabulary). Choose one in every slot, then listen.</p>
@@ -4750,20 +5021,20 @@ function c12Draw(el,cols,sig){if(!window.Vex||!cols.length){el.innerHTML='';retu
  const S=ENG.score(el,{task:'exercise',n:nb,staves:one?[{clef:'treble'}]:[{clef:'treble'},{clef:'bass'}],gap:6,conn:one?null:'brace',time:'4/4',top:40,bottom:40,build});
  ENG.finish(S)}
 function renderClimb12(){const L=Math.max(S.level,5),tabs=[['vamp','Modal vamps'],['plane','Planing and quartal'],['med','Chromatic mediants'],['static','Static harmony']];
- const MODES=C12MODES.filter(m=>m.l<=L),SH=C12SHAPES.filter(s=>s.l<=L);if(!MODES.find(m=>m.k===C12.mode))C12.mode='dor';if(!SH.find(s=>s.k===C12.shape))C12.shape=SH[SH.length-1].k;
+ const MODES=C12MODES,SH=C12SHAPES;if(!MODES.find(m=>m.k===C12.mode))C12.mode='dor';if(!SH.find(s=>s.k===C12.shape))C12.shape=SH[SH.length-1].k;
  const vp=c12Vamp(),pl=c12Plane(),cue=c12Cue(),tin=c12Tin();
  const tonSel=[0,2,4,5,7,9].map(k=>`<option value="${k}" ${k===C12.tonic?'selected':''}>${C12NAMES[k]}</option>`).join('');
  let body='';
  if(C12.tab==='vamp')body=`<div class="grid clgrid">
   <section class="card"><h3>Hear · a vamp in every mode<span class="sp"></span><label class="note">Tonic <select id="c12Ton">${tonSel}</select></label></h3>
-   <div class="cads">${MODES.map(m=>`<button class="cad ${m.k===C12.mode?'on':''}" data-c12m="${m.k}"><b>${m.n}</b><span>${m.r.replace(/b(?=[IVX])/g,'♭').replace(' ','–')}</span><small>${m.feel}</small></button>`).join('')}</div></section>
+   ${lvBands('c12mList',MODES,{wrap:'cads',noun:'modes',label:'Examples',on:m=>m.k===C12.mode,row:m=>`<button class="cad ${m.k===C12.mode?'on':''}" data-c12m="${m.k}"><b>${m.n}</b><span>${m.r.replace(/b(?=[IVX])/g,'♭').replace(' ','–')}</span><small>${m.feel}</small></button>`})}</section>
   <section class="card"><h3>See · ${vp.m.n} on ${pretty(vp.tn)}<span class="sp"></span><button class="mini gold" data-c12play="vamp">▶ Play the vamp</button><button class="mini" data-load="${vp.m.r}|${vp.m.mode}">⤴ Gym</button></h3>
    <div class="bargrid">${vp.L.map(c=>`<div class="bar" style="--c:var(--violet)" data-fn="C"><b>${pretty(chordOf(c.root,c.q,0).sym)}</b><span>${vp.m.r.split(' ')[vp.L.indexOf(c)].replace(/b(?=[IVX])/g,'♭')}</span></div>`).join('')}</div>${FNKEY}
    <p class="desc">The <b>character note</b> of ${vp.m.n} is <b style="color:var(--violet)">${pretty(vp.cn.name)}</b>, the ${vp.m.chn}. The vamp is built so that one of its two chords contains it: that is how the mode announces itself without a cadence. Improvise over it on the ${vp.m.n} scale and lean on ${pretty(vp.cn.name)}.</p>
    <p class="note">In a vamp nothing pulls home: there is no V–I. The tonic is home because it is where the groove starts, where the bass sits and where the melody keeps returning (climb 5's loop, with the function taken out). Explore the modes themselves in Level 1, Keys, Scales & Intervals.</p></section></div>`;
  if(C12.tab==='plane')body=`<div class="grid clgrid">
   <section class="card"><h3>Hear · one shape, moved in parallel</h3>
-   <div class="cads">${SH.map(s=>`<button class="cad ${s.k===C12.shape?'on':''}" data-c12s="${s.k}"><b>${s.n}</b><span>${s.who}</span></button>`).join('')}</div>
+   ${lvBands('c12sList',SH,{wrap:'cads',noun:'shapes',label:'Examples',on:s=>s.k===C12.shape,row:s=>`<button class="cad ${s.k===C12.shape?'on':''}" data-c12s="${s.k}"><b>${s.n}</b><span>${s.who}</span></button>`})}
    <div class="chips" style="margin-top:10px"><span class="note" style="margin-right:6px">Planing:</span><button class="chip ${C12.plane==='real'?'on':''}" data-c12p="real" title="Every chord exactly the same shape: chromatic notes appear">Real (exact shape)</button><button class="chip ${C12.plane==='dia'?'on':''}" data-c12p="dia" title="Notes kept inside C major: the shape changes quality">Diatonic (inside the key)</button></div>
    <div class="chips" style="margin-top:8px"><span class="note" style="margin-right:6px">Melody:</span>${C12MEL.map((m,i)=>`<button class="chip ${C12.mel===i?'on':''}" data-c12mel="${i}">${m.n}</button>`).join('')}</div></section>
   <section class="card"><h3>See · ${SH.find(s=>s.k===C12.shape).n}, ${C12.plane==='real'?'real':'diatonic'} planing<span class="sp"></span><button class="mini gold" data-c12play="plane">▶ Play</button></h3>
@@ -4879,7 +5150,7 @@ function c1DroneStop(){const a=AC;C1DR.forEach(({o,g})=>{try{g.gain.cancelSchedu
 function c1Play(seq,tonic,onStep,gap){stopAll();c1DroneStart(tonic);PLAY.on=true;PLAY.src='climb';const a=ac(),spb=gap||.42;let t=a.currentTime+1;
  seq.forEach((n,i)=>{tone(n.midi,t,'piano');PLAY.timers.push(setTimeout(()=>onStep&&onStep(i),(t-a.currentTime)*1000));t+=spb});PLAY.timers.push(setTimeout(()=>{c1DroneStop();stopAll()},(t-a.currentTime)*1000+1400))}
 function c1Melody(mk,tonic){const N=c1Notes(mk,tonic),c=C1M.find(x=>x.k===mk).c;return[0,2,4,c,4,2,1,0].map(i=>N[i])}
-function renderClimb1(){const L=Math.max(S.level,1),MS=C1M.filter(m=>m.l<=L);if(!MS.find(m=>m.k===C1.mode))C1.mode='dor';const m=C1M.find(x=>x.k===C1.mode),tonic=c1Tonic(),N=c1Notes(m.k,tonic);
+function renderClimb1(){const L=Math.max(S.level,1),MS=C1M,QMS=C1M.filter(m=>m.l<=L);if(!MS.find(m=>m.k===C1.mode))C1.mode='dor';const m=C1M.find(x=>x.k===C1.mode),tonic=c1Tonic(),N=c1Notes(m.k,tonic);
  $('climbDetail').innerHTML=`
  <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 1 · Stages 4–6</span><span class="sp"></span>
   <span class="note">Drone:</span><span class="chips">${[['same','one drone, every mode'],['white','white-note modes']].map(([k,l])=>`<button class="chip ${C1.view===k?'on':''}" data-c1v="${k}">${l}</button>`).join('')}</span>${C1.view==='same'?`<label class="note">on <select id="c1Dr">${C1DRONES.map((d,i)=>`<option value="${i}" ${i===C1.drone?'selected':''}>${d}</option>`).join('')}</select></label>`:''}</div>
@@ -4889,7 +5160,7 @@ function renderClimb1(){const L=Math.max(S.level,1),MS=C1M.filter(m=>m.l<=L);if(
  <section class="card ask"><span class="disp">Ask</span><span class="q">What inspires this piece? Drones are among the oldest sounds in music: bagpipes, chant, the tanpura, a didgeridoo, the open string of a fiddle. Which sound from your own world is always there underneath, and what would you sing over it?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <div class="grid clgrid">
   <section class="card"><h3>Hear · the modes, brightest to darkest<span class="sp"></span><button class="mini ${C1.droneOn?'gold':''}" data-c1d>${C1.droneOn?'■ Stop the drone':'▶ Drone on'}</button></h3>
-   <div class="cads">${MS.map(x=>`<button class="cad ${x.k===m.k?'on':''}" data-c1m="${x.k}"><b>${x.n}</b><span>${C1.view==='white'?'on '+C1FIN[x.k]:'on '+tonic} · ${x.cn}</span><small>${x.feel}</small></button>`).join('')}</div>
+   ${lvBands('c1List',MS,{wrap:'cads',noun:'modes',label:'Examples',on:x=>x.k===m.k,row:x=>`<button class="cad ${x.k===m.k?'on':''}" data-c1m="${x.k}"><b>${x.n}</b><span>${C1.view==='white'?'on '+C1FIN[x.k]:'on '+tonic} · ${x.cn}</span><small>${x.feel}</small></button>`})}
    <p class="note" style="margin:10px 0 0">Tap a mode to hear its scale over the drone, then a short tune. Hum the drone note, then sing the scale against it.</p></section>
   <section class="card"><h3>See · ${pretty(N[0].name)} ${m.n}<span class="sp"></span><button class="mini gold" data-c1p="scale">▶ Scale</button><button class="mini" data-c1p="tune">▶ Tune</button></h3>
    <div class="c1row" id="c1Row">${N.map(n=>`<div class="c1n ${n.char?'char':''} ${n.deg%7===0?'home':''}"><b>${pretty(n.name)}</b><span class="so">${solTxt(n.sol)}</span><small>${n.deg===7?'8':n.deg+1}</small></div>`).join('')}</div>
@@ -4899,7 +5170,7 @@ function renderClimb1(){const L=Math.max(S.level,1),MS=C1M.filter(m=>m.l<=L);if(
  </div>
  <section class="card"><h3>Understand · one scale, seven homes</h3>
   <p class="desc" style="margin-top:0">Play the white notes from C to C and you have the major scale. Start on D instead and keep D as home, and the same seven notes make a different scale: <b>Dorian</b>. Each starting note gives a <b>mode</b>, and over a drone you can hear exactly how each one differs. Put them all on the same drone and an order appears: from the brightest to the darkest, each mode lowers one more note.</p>
-  <table class="cadtab"><tr><th>Mode</th><th>White notes</th><th>Compared with the one above</th><th>Character note</th></tr>${C1M.filter(x=>x.l<=L).map((x,i,A)=>`<tr ${x.k===m.k?'class="hl"':''}><td><b>${x.n}</b></td><td>${C1FIN[x.k]} to ${C1FIN[x.k]}</td><td class="note">${i===0?'the brightest: major with a raised 4th':({ion:'lower the 4th',mix:'lower the 7th',dor:'lower the 3rd',aeo:'lower the 6th',phr:'lower the 2nd',loc:'lower the 5th'})[x.k]}</td><td>${x.cn}</td></tr>`).join('')}</table>
+  <table class="cadtab"><tr><th>Mode</th><th>White notes</th><th>Compared with the one above</th><th>Character note</th></tr>${C1M.map((x,i,A)=>`<tr ${x.k===m.k?'class="hl"':''}><td><b>${x.n}</b></td><td>${C1FIN[x.k]} to ${C1FIN[x.k]}</td><td class="note">${i===0?'the brightest: major with a raised 4th':({ion:'lower the 4th',mix:'lower the 7th',dor:'lower the 3rd',aeo:'lower the 6th',phr:'lower the 2nd',loc:'lower the 5th'})[x.k]}</td><td>${x.cn}</td></tr>`).join('')}</table>
   <p class="desc">Why a drone? It holds home still, so the ear hears every melody note as a relationship to it: the restful 5th, the bright or dark 3rd, the leaning 2nd and 7th, and in each mode its one special note. That is how chant, folk music, the raga tradition and the bagpipe work, long before chords and cadences (climb 3) take over the job of saying where home is. In climb 12 the modes come back as vamps over chords.</p></section>
  <section class="card"><h3>Hear · where you meet it<span class="sp"></span><span class="note">listen for the home note and the character note</span></h3>
   <div class="c6hear">${C1HEAR.map(x=>{const qy=encodeURIComponent(x.q);return`<div class="c6h"><div class="gt">${x.g}</div><b>${x.w}</b> <span class="note">${x.a}${x.y?' · '+x.y:''}</span><div class="lf">${x.f}</div><div class="sb"><a href="https://www.youtube.com/results?search_query=${qy}" target="_blank" rel="noopener">▶ YouTube</a><a href="https://open.spotify.com/search/${qy}" target="_blank" rel="noopener">Spotify</a></div></div>`}).join('')}</div>
@@ -4914,7 +5185,7 @@ function renderClimb1(){const L=Math.max(S.level,1),MS=C1M.filter(m=>m.l<=L);if(
   <section class="card"><h3>Try · which mode?<span class="sp"></span><span class="note">${C1.quiz.n?`Score ${C1.quiz.right} / ${C1.quiz.n}`:''}</span></h3>
    <p class="note" style="margin:0 0 10px">A tune plays over a drone on D. Major-ish or minor-ish first (listen to the 3rd), then find the character note.</p>
    <div class="gq"><button class="mini gold" data-c1q="new">${C1.quiz.q?'Next →':'▶ Start'}</button>${C1.quiz.q?'<button class="mini" data-c1q="again">↻ Again</button>':''}</div>
-   ${C1.quiz.q?`<div class="gans">${MS.map(x=>`<button class="chip ${C1.quiz.ans!=null?(x.k===C1.quiz.q.k?'right':x.k===C1.quiz.ans?'wrong':''):''}" data-c1a="${x.k}">${x.n}</button>`).join('')}</div>${C1.quiz.ans!=null?`<div class="${C1.quiz.ans===C1.quiz.q.k?'ok':'iss warn'}" style="margin-top:10px">${C1.quiz.ans===C1.quiz.q.k?'✓ Yes: ':'Not quite. It was '}<b>D ${C1M.find(x=>x.k===C1.quiz.q.k).n}</b>: listen for the ${C1M.find(x=>x.k===C1.quiz.q.k).cn}.</div>`:''}`:''}
+   ${C1.quiz.q?`<div class="gans">${QMS.map(x=>`<button class="chip ${C1.quiz.ans!=null?(x.k===C1.quiz.q.k?'right':x.k===C1.quiz.ans?'wrong':''):''}" data-c1a="${x.k}">${x.n}</button>`).join('')}</div>${C1.quiz.ans!=null?`<div class="${C1.quiz.ans===C1.quiz.q.k?'ok':'iss warn'}" style="margin-top:10px">${C1.quiz.ans===C1.quiz.q.k?'✓ Yes: ':'Not quite. It was '}<b>D ${C1M.find(x=>x.k===C1.quiz.q.k).n}</b>: listen for the ${C1M.find(x=>x.k===C1.quiz.q.k).cn}.</div>`:''}`:''}
   </section>
  </div>
  <section class="card"><h3>Make · a melody over a drone</h3>
@@ -5479,7 +5750,7 @@ function c2Settable(){const M=C2OWN,L=Math.max(S.level,4),jobs=[];C2SP.filter(s=
   let ok=sp===5?[3,5,8].some(k=>c2Solve(M,5,pos,11,null,4000,c2Plan(M.cf.length,k))):!!c2Solve(M,sp,pos,11,null,6000);if(!ok&&sp===2)ok=!!c2Solve(M,25,pos,11,null,6000)&&'w';if(!ok&&sp===4)for(let b=1;b<=M.cf.length-3&&!ok;b++)if(c2Solve(M,4,pos,11,null,3000,[b]))ok='b';
   C2.set.res[sp+pos]=ok;const el=$('c2Set');if(el)el.innerHTML=c2SetHTML();setTimeout(()=>step(i+1),15)};setTimeout(()=>step(0),30)}
 function c2SetHTML(){if(!C2.set||!C2OWN)return'';const s=C2.set;return`<table class="cadtab"><tr><th>Species</th>${['above','below'].filter(p=>s.jobs.some(j=>j[1]===p)).map(p=>`<th>${p} the cantus</th>`).join('')}</tr>${[...new Set(s.jobs.map(j=>j[0]))].map(sp=>`<tr><td>${C2SP.find(x=>x.k===sp).n}</td>${['above','below'].filter(p=>s.jobs.some(j=>j[1]===p)).map(p=>{const r=s.res[sp+p];return`<td>${r===undefined?'<span class="note">checking…</span>':r===true?'<span style="color:var(--green)">✓ can be set</span>':r==='w'?'<span style="color:var(--goldhi)">✓ with a semibreve before the end</span>':r==='b'?'<span style="color:var(--goldhi)">✓ with one broken ligature</span>':'<span style="color:#e0604f">✗ no correct answer found</span>'}</td>`}).join('')}</tr>`).join('')}</table>`}
-function renderClimb2(){const L=Math.max(S.level,4),MS=C2M.filter(m=>m.l<=L).concat(C2OWN?[C2OWN]:[]),SPS=C2SP.filter(s=>s.l<=L);
+function renderClimb2(){const L=Math.max(S.level,4),MS=C2M.concat(C2OWN?[C2OWN]:[]),SPS=C2SP;
  if(C2EX===null)C2EX=typeof C2EXAMPLES!=='undefined'?C2EXAMPLES:{};
  if(!MS.find(m=>m.k===C2.mode))C2.mode='dor';if(!SPS.find(s=>s.k===C2.sp))C2.sp=1;if(L<5)C2.pos='above';const CB=C2.cant;if(C2M.filter(m=>m.l<=L).every(m=>m.fin!==CB.fin))CB.fin='D';
  if(C2.sp===6)return(C2.c3.sp>1?renderC3m:renderC3)(L,MS,SPS);
@@ -5492,8 +5763,8 @@ function renderClimb2(){const L=Math.max(S.level,4),MS=C2M.filter(m=>m.l<=L).con
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
  <section class="card ask"><span class="disp">Ask</span><span class="q">What story does it tell? Two voices are two characters. One holds steady; the other moves around it, pulls away, clashes, gives way, and the two arrive home together at the cadence. Who are your two characters, and what happens between them?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <section class="card"><h3>Set up the climb</h3>
-  <div class="c2set"><div><span class="gl">Cantus</span><span class="chips">${MS.map(m=>`<button class="chip ${m.k===C2.mode?'on':''}" data-c2m="${m.k}">${m.k==='own'?'★ ':''}${m.n} <small>on ${m.fin}</small></button>`).join('')}</span></div>
-  <div><span class="gl">Species</span><span class="chips">${SPS.map(s=>`<button class="chip ${s.k===C2.sp?'on':''}" data-c2s="${s.k}">${s.n} <small>${s.r}</small></button>`).join('')}</span></div>
+  <div class="c2set"><div><span class="gl">Cantus</span>${lvBands('c2mList',MS,{wrap:'chips',noun:'cantus modes',label:'cantus modes',on:m=>m.k===C2.mode,row:m=>`<button class="chip ${m.k===C2.mode?'on':''}" data-c2m="${m.k}">${m.k==='own'?'★ ':''}${m.n} <small>on ${m.fin}</small></button>`})}</div>
+  <div><span class="gl">Species</span>${lvBands('c2sList',SPS,{wrap:'chips',noun:'species',label:'species',on:s=>s.k===C2.sp,row:s=>`<button class="chip ${s.k===C2.sp?'on':''}" data-c2s="${s.k}">${s.n} <small>${s.r}</small></button>`})}</div>
   ${L>=5?`<div><span class="gl">Counterpoint</span><span class="chips">${['above','below'].map(p=>`<button class="chip ${p===C2.pos?'on':''}" data-c2p="${p}">${p} the cantus</button>`).join('')}</span></div>`:''}
   ${C2.sp===2?`<div><span class="gl">Bar before the end</span><span class="chips"><button class="chip ${C2.pw?'':'on'}" data-c2w="0">two minims (Fux)</button><button class="chip ${C2.pw?'on':''}" data-c2w="1">one semibreve (app option)</button></span></div>`:''}</div>
   <p class="note" style="margin:8px 0 0">${M.feel}${M.fux?' This cantus is Fux\'s own.':own?'':' This cantus was written for the Jungle Gym in Fux\'s style.'} ${sp.d}</p></section>
@@ -5531,7 +5802,7 @@ function renderClimb2(){const L=Math.max(S.level,4),MS=C2M.filter(m=>m.l<=L).con
   <div class="grid c2g2"><div class="staff" id="c2MyStaff"></div><div id="c2Iss"></div></div></section>
  <section class="card"><h3>Try · write your own cantus firmus<span class="sp"></span><span class="note">rules C1–C15</span></h3>
   <p class="note" style="margin:0 0 10px">Choose a mode and a length, then one note per column. The gold row is the final. When the checker shows no errors, set your cantus: it joins the cantus list above, and the app checks which species can be written against it.</p>
-  <div class="c2set"><div><span class="gl">Mode</span><span class="chips">${C2M.filter(m=>m.l<=L).map(m=>`<button class="chip ${CB.fin===m.fin?'on':''}" data-c2kf="${m.fin}">${m.n} <small>on ${m.fin}</small></button>`).join('')}</span></div>
+  <div class="c2set"><div><span class="gl">Mode</span><span class="chips">${C2M.map(m=>`<button class="chip ${CB.fin===m.fin?'on':''}" data-c2kf="${m.fin}">${m.n} <small>on ${m.fin}</small></button>`).join('')}</span></div>
   <div><span class="gl">Length</span><span class="chips"><button class="chip" data-c2kn="-1">−</button><span class="note" style="padding:0 6px">${CB.n} notes</span><button class="chip" data-c2kn="1">+</button></span></div></div>
   <div class="c2ladw" id="c2CantW" style="margin-top:10px"></div>
   <div class="gq"><button class="mini" data-c2kp>▶ Play my cantus</button><button class="mini" data-c2kc>Clear</button><button class="mini" data-hist="c2:u" title="Undo (Ctrl/⌘ Z)">↶ Undo</button><button class="mini" data-hist="c2:r" title="Redo">↷ Redo</button><button class="mini gold" id="c2CantUse" data-c2ku>Set my cantus and write against it →</button></div>
@@ -5643,8 +5914,8 @@ function renderC3(L,MS,SPS){const M=c2Mode(C2.mode),arr=C2.c3.arr,ci=C3ARR[arr].
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
  <section class="card ask"><span class="disp">Ask</span><span class="q">Two voices can only make intervals. What changes when a third voice joins? Sing the cantus while two friends sing the other lines: who is holding the harmony together?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <section class="card"><h3>Set up the climb</h3>
-  <div class="c2set"><div><span class="gl">Cantus</span><span class="chips">${MS.map(m=>`<button class="chip ${m.k===C2.mode?'on':''}" data-c2m="${m.k}">${m.k==='own'?'★ ':''}${m.n} <small>on ${m.fin}</small></button>`).join('')}</span></div>
-  <div><span class="gl">Species</span><span class="chips">${SPS.map(s=>`<button class="chip ${s.k===C2.sp?'on':''}" data-c2s="${s.k}">${s.n} <small>${s.r}</small></button>`).join('')}</span></div>
+  <div class="c2set"><div><span class="gl">Cantus</span>${lvBands('c2mList',MS,{wrap:'chips',noun:'cantus modes',label:'cantus modes',on:m=>m.k===C2.mode,row:m=>`<button class="chip ${m.k===C2.mode?'on':''}" data-c2m="${m.k}">${m.k==='own'?'★ ':''}${m.n} <small>on ${m.fin}</small></button>`})}</div>
+  <div><span class="gl">Species</span>${lvBands('c2sList',SPS,{wrap:'chips',noun:'species',label:'species',on:s=>s.k===C2.sp,row:s=>`<button class="chip ${s.k===C2.sp?'on':''}" data-c2s="${s.k}">${s.n} <small>${s.r}</small></button>`})}</div>
   <div><span class="gl">Cantus in</span><span class="chips">${Object.keys(C3ARR).map(a=>`<button class="chip ${a===arr?'on':''}" data-c3a="${a}">${C3ARR[a].n.replace('Cantus ','')}</button>`).join('')}</span></div>
   <div><span class="gl">Three-voice species</span><span class="chips">${[1,2,3,4].map(s=>`<button class="chip ${s===1?'on':''}" data-c3sp="${s}">${s===1?'all semibreves':['','','second','third','fourth'][s]+' species in one voice'}</button>`).join('')}</span></div></div>
   <p class="note" style="margin:8px 0 0">${M.feel} First species in three parts: semibreves in all voices.</p></section>
@@ -5719,8 +5990,8 @@ function renderC3m(L,MS,SPS){const M=c2Mode(C2.mode),arr=C2.c3.arr,sp=C2.c3.sp,c
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
  <section class="card ask"><span class="disp">Ask</span><span class="q">When one voice moves faster than the others, where does your ear go? Listen to the model and follow only the slow voices, then only the quick one.</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <section class="card"><h3>Set up the climb</h3>
-  <div class="c2set"><div><span class="gl">Cantus</span><span class="chips">${MS.map(m=>`<button class="chip ${m.k===C2.mode?'on':''}" data-c2m="${m.k}">${m.k==='own'?'★ ':''}${m.n} <small>on ${m.fin}</small></button>`).join('')}</span></div>
-  <div><span class="gl">Species</span><span class="chips">${SPS.map(s=>`<button class="chip ${s.k===C2.sp?'on':''}" data-c2s="${s.k}">${s.n} <small>${s.r}</small></button>`).join('')}</span></div>
+  <div class="c2set"><div><span class="gl">Cantus</span>${lvBands('c2mList',MS,{wrap:'chips',noun:'cantus modes',label:'cantus modes',on:m=>m.k===C2.mode,row:m=>`<button class="chip ${m.k===C2.mode?'on':''}" data-c2m="${m.k}">${m.k==='own'?'★ ':''}${m.n} <small>on ${m.fin}</small></button>`})}</div>
+  <div><span class="gl">Species</span>${lvBands('c2sList',SPS,{wrap:'chips',noun:'species',label:'species',on:s=>s.k===C2.sp,row:s=>`<button class="chip ${s.k===C2.sp?'on':''}" data-c2s="${s.k}">${s.n} <small>${s.r}</small></button>`})}</div>
   <div><span class="gl">Cantus in</span><span class="chips">${Object.keys(C3ARR).map(a=>`<button class="chip ${a===arr?'on':''}" data-c3a="${a}">${C3ARR[a].n.replace('Cantus ','')}</button>`).join('')}</span></div>
   <div><span class="gl">Three-voice species</span><span class="chips">${[1,2,3,4].map(s=>`<button class="chip ${s===sp?'on':''}" data-c3sp="${s}">${s===1?'all semibreves':['','','second','third','fourth'][s]+' species in one voice'}</button>`).join('')}</span></div>
   <div><span class="gl">Moving voice</span><span class="chips">${[0,1,2].filter(v=>v!==ci).map(v=>`<button class="chip ${v===spv?'on':''}" data-c3spv="${v}">${vn[v]}</button>`).join('')}</span></div></div></section>
@@ -5763,17 +6034,17 @@ setTimeout(hBtns,0);
    FORMS ROOM (Level 3) · shell + the blues family
    ===================================================================== */
 const FORMS=[
- {k:'phrase',t:'Phrase, period and sentence',st:'Stages 4–5',fam:'Foundations',live:true,p:'The building blocks under every form: the phrase, the question-and-answer period, and the sentence (idea, repeat, drive to the cadence).'},
- {k:'blues12',t:'12-bar blues',st:'Stages 4–6',fam:'Blues and jazz',live:true,p:'Three four-bar lines: say it, say it again over IV, then answer it. The form under blues, rock and roll, and much of jazz.'},
- {k:'jazzblues',t:'Jazz blues',st:'Stages 5–6',fam:'Blues and jazz',live:true,p:'The same twelve bars with jazz moves inside: a ii–V into IV, a passing diminished chord, and a ii–V turnaround.'},
- {k:'minblues',t:'Minor blues',st:'Stages 5–6',fam:'Blues and jazz',live:true,p:'Twelve bars in a minor key. The ♭VI7 that slides down to V7 in bars 9–10 is its signature.'},
- {k:'rhythm',t:'Rhythm changes',st:'Stage 6',fam:'Blues and jazz',live:true,p:'32 bars, AABA, built on the chords of Gershwin\'s "I Got Rhythm": the second great jazz form after the blues.'},
- {k:'rag',t:'Rag',st:'Stages 5–6',fam:'Rag',live:true,p:'A march form with several strains, usually AABBACCDD, with a trio in the subdominant.'},
- {k:'rondo',t:'Rondo',st:'Stage 5',fam:'Classical',live:true,p:'A refrain that keeps coming home between contrasting episodes: ABACA or ABACABA.'},
- {k:'tv',t:'Theme and variations',st:'Stage 5',fam:'Classical',live:true,p:'One theme, transformed again and again: decorated, re-harmonised, changed in mode, metre or texture.'},
- {k:'sonata',t:'Sonata form',st:'Stage 6',fam:'Classical',live:true,p:'Exposition, development, recapitulation: two key areas in conflict, then resolved.'},
- {k:'sonrondo',t:'Sonata-rondo',st:'Stage 6',fam:'Classical',live:true,p:'ABACABA, where C works like a development and the second B returns in the home key.'},
- {k:'fugue',t:'Fugue',st:'Stages 5–6',fam:'Counterpoint',p:'Built in climb 13: canon and invention at Stage 5, the modal or tonal fugue at Stage 6.'}
+ {k:'phrase',t:'Phrase, period and sentence',l:2,stp:1,fam:'Foundations',live:true,p:'The building blocks under every form: the phrase, the question-and-answer period, and the sentence (idea, repeat, drive to the cadence).'},
+ {k:'blues12',t:'12-bar blues',l:2,stp:2,fam:'Blues and jazz',live:true,p:'Three four-bar lines: say it, say it again over IV, then answer it. The form under blues, rock and roll, and much of jazz.'},
+ {k:'jazzblues',t:'Jazz blues',l:4,stp:1,fam:'Blues and jazz',live:true,p:'The same twelve bars with jazz moves inside: a ii–V into IV, a passing diminished chord, and a ii–V turnaround.'},
+ {k:'minblues',t:'Minor blues',l:4,stp:2,fam:'Blues and jazz',live:true,p:'Twelve bars in a minor key. The ♭VI7 that slides down to V7 in bars 9–10 is its signature.'},
+ {k:'rhythm',t:'Rhythm changes',l:6,stp:1,fam:'Blues and jazz',live:true,p:'32 bars, AABA, built on the chords of Gershwin\'s "I Got Rhythm": the second great jazz form after the blues.'},
+ {k:'rag',t:'Rag',l:5,stp:1,fam:'Rag',live:true,p:'A march form with several strains, usually AABBACCDD, with a trio in the subdominant.'},
+ {k:'rondo',t:'Rondo',l:3,stp:1,fam:'Classical',live:true,p:'A refrain that keeps coming home between contrasting episodes: ABACA or ABACABA.'},
+ {k:'tv',t:'Theme and variations',l:3,stp:2,fam:'Classical',live:true,p:'One theme, transformed again and again: decorated, re-harmonised, changed in mode, metre or texture.'},
+ {k:'sonata',t:'Sonata form',l:5,stp:2,fam:'Classical',live:true,p:'Exposition, development, recapitulation: two key areas in conflict, then resolved.'},
+ {k:'sonrondo',t:'Sonata-rondo',l:6,stp:2,fam:'Classical',live:true,p:'ABACABA, where C works like a development and the second B returns in the home key.'},
+ {k:'fugue',t:'Fugue',l:6,stp:3,fam:'Counterpoint',p:'Built in climb 13: canon and invention at Level 4 and 5, the modal or tonal fugue at Level 6.'}
 ];
 const FBKEYS={maj:[{k:5,mode:'maj'},{k:10,mode:'maj'},{k:0,mode:'maj'},{k:7,mode:'maj'},{k:4,mode:'maj'},{k:9,mode:'maj'}],min:[{k:0,mode:'min'},{k:9,mode:'min'},{k:2,mode:'min'},{k:7,mode:'min'},{k:5,mode:'min'}]};
 const FB={
@@ -5847,12 +6118,15 @@ function fPlanText(fk){const s=FORMS.find(f=>f.k===fk),pl=fPlan(fk),key=fKey(fk)
 function fMine(fk){const n=FB[fk].len||12;if(!F.grid[fk]||F.grid[fk].length!==n)F.grid[fk]=Array.from({length:n},()=>[null]);return F.grid[fk]}
 
 function renderForms(){const el=$('formsMain');if(!el)return;
- if(F.open===null){el.innerHTML=`<div class="climbs">${FORMS.map(f=>`<div class="climb ${f.live?'':'dim'}"><h4 style="padding-right:0">${f.t}</h4><div class="st">${f.fam} · ${f.st}</div><p>${f.p}</p><div class="stat ${f.live?'live':''}">${f.live?'Open':f.k==='fugue'?'Coming in climb 13':'Coming'}</div>${f.live?`<div class="go" style="margin-top:10px"><button class="mini gold" data-fopen="${f.k}">Open this form →</button></div>`:''}</div>`).join('')}</div>`;return}
+ if(F.open===null){const full=f=>`<div class="climb ${f.live?'':'dim'}"><h4 style="padding-right:0">${f.t}</h4><div class="st">${f.fam}</div><p>${f.p}</p><div class="stat ${f.live?'live':''}">${f.live?'Open':f.k==='fugue'?'Coming in climb 13':'Coming'}</div>${f.live?`<div class="go" style="margin-top:10px"><button class="mini gold" data-fopen="${f.k}">Open this form →</button></div>`:''}</div>`,
+   cmp=f=>{const cl=LVCH(f.l),m=`<span class="lvm ${cl}" title="Level ${f.l} · ${LVN[f.l]}" aria-hidden="true">${f.l}</span><span class="tx"><b>${f.t}</b><small>${f.fam}${f.live?'':f.k==='fugue'?' · coming in climb 13':' · coming'}</small></span>`;
+    return f.live?`<button class="climb cmp" data-fopen="${f.k}" aria-label="${f.t}, Level ${f.l}, open">${m}<span class="arr" aria-hidden="true">→</span></button>`:`<div class="climb cmp dim" aria-label="${f.t}, Level ${f.l}">${m}</div>`};
+  el.innerHTML=lvCards('formsList',FORMS,{full,cmp,noun:['form','forms']});return}
  if(F.open==='phrase')return renderPhrase(el);if(F.open==='tv')return renderTV(el);if(FB[F.open].render)return FB[F.open].render(el);
  const fk=F.open,s=FB[fk],f=FORMS.find(x=>x.k===fk),key=fKey(fk),mode=s.mode,v=fVar(fk),mine=fMine(fk),res=fCheck(fk,mine);
  const keySel=fKeys(fk).map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
  el.innerHTML=`
- <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · ${f.fam} · ${f.st}</span><span class="sp"></span><label class="note">Key <select id="fKeySel">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · ${f.fam} · Level ${f.l}</span><span class="sp"></span><label class="note">Key <select id="fKeySel">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">${f.t}</h1>
  <p class="sub" style="max-width:860px">${f.p}</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -5933,7 +6207,7 @@ FB.rhythm={mode:'maj',l:6,len:32,keys:[{k:10,mode:'maj'},{k:5,mode:'maj'},{k:3,m
  render:el=>{const fk='rhythm',s=FB.rhythm,f=FORMS.find(x=>x.k===fk),key=fKey(fk),mode='maj',v=fVar(fk),mine=fMine(fk),res=s.check(mine);
   const keySel=fKeys(fk).map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
   el.innerHTML=`
- <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · ${f.fam} · ${f.st}</span><span class="sp"></span><label class="note">Key <select id="fKeySel">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · ${f.fam} · Level ${f.l}</span><span class="sp"></span><label class="note">Key <select id="fKeySel">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">${f.t}</h1>
  <p class="sub" style="max-width:860px">${f.p}</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -6018,7 +6292,7 @@ FB.rag={mode:'maj',l:5,len:16,keys:[{k:0,mode:'maj'},{k:5,mode:'maj'},{k:7,mode:
   const strip=(list,id,edit)=>`<div class="fstrip rgstrip" id="${id}">${list.map(([t,rel],i)=>`<span style="flex:${RGS[t].len};--c:${t==='C'||t==='D'?'var(--violet)':t==='I'?'#7fb3c8':'var(--gold)'}" ${edit?`data-rgk="${i}" title="Tap to change the key"`:''}>${t==='I'?'Intro':t}<small>${keyName(rgKey(home,rel)).replace(' major','')}${rel!=='I'?' ('+rel+')':''}</small>${edit?`<i data-rgx="${i}" title="Remove">✕</i>`:''}</span>`).join('')||'<span style="flex:1;--c:var(--line)">empty</span>'}</div>`;
   const skey=rgKey(home,sel==='C'||sel==='D'?'IV':'I');
   el.innerHTML=`
- <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · ${f.fam} · ${f.st}</span><span class="sp"></span><label class="note">Home key <select id="fKeySel">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · ${f.fam} · Level ${f.l}</span><span class="sp"></span><label class="note">Home key <select id="fKeySel">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">${f.t}</h1>
  <p class="sub" style="max-width:860px">${f.p}</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -6114,7 +6388,7 @@ FB.rondo={mode:'maj',l:3,len:8,keys:[{k:0,mode:'maj'},{k:7,mode:'maj'},{k:5,mode
   const strip=(list,id,edit)=>`<div class="fstrip rgstrip" id="${id}">${list.map(([t,rel],i)=>`<span style="flex:${RDS[t].len};--c:${col(t)}" ${edit?`data-rdk="${i}" title="Tap to change the key"`:''}>${t==='R'?'R':t==='X'?'Coda':t}<small>${t==='R'||t==='X'?'':keyName(rdKey(home,rel,t)).replace(' major','').replace(' minor','m')}</small>${edit?`<i data-rdx="${i}" title="Remove">✕</i>`:''}</span>`).join('')||'<span style="flex:1;--c:var(--line)">empty</span>'}</div>`;
   const skey=rdKey(home,RDDEF[sel],sel);
   el.innerHTML=`
- <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · ${f.fam} · ${f.st}</span><span class="sp"></span><label class="note">Home key <select id="fKeySel">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · ${f.fam} · Level ${f.l}</span><span class="sp"></span><label class="note">Home key <select id="fKeySel">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">${f.t}</h1>
  <p class="sub" style="max-width:860px">${f.p}</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -6225,7 +6499,7 @@ function tvPlanCheck(plan){const out=[],add=(sev,code,msg)=>out.push({sev,code,m
 function renderTV(el){const key=tvKey(),sel=F.v.tv||'deco',V=tvBuild([sel]),plan=F.plan.tv||(F.plan.tv=[['theme']]),q=F.grid.tvq||{},cur=F.v.tvCur!=null&&plan[F.v.tvCur]?F.v.tvCur:null,pres=tvPlanCheck(plan);
  const keySel=TVKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
  el.innerHTML=`
- <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · Classical · Stage 5</span><span class="sp"></span><label class="note">Key <select id="tvKeySel">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · Classical · Level ${FORMS.find(x=>x.k==='tv').l}</span><span class="sp"></span><label class="note">Key <select id="tvKeySel">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Theme and variations</h1>
  <p class="sub" style="max-width:860px">One tune, transformed again and again. The theme keeps its phrase plan and its cadences in every variation; what changes is melody, rhythm, harmony, mode, metre or texture.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -6339,7 +6613,7 @@ function renderSonata(el,fk){const SR=fk==='sonrondo',home=sfHome(fk),hk=fKey(fk
  const keySel=fKeys(fk).map((k,i)=>`<option value="${i}" ${k.k===hk.k?'selected':''}>${pretty(KEYN[home.mode][k.k])}</option>`).join('');
  const sb=sfBars(sel,sel==='S'||sel==='K'?SFREL[home.mode][1]:sel==='T'?SFREL[home.mode][1]:SFREL[home.mode][0],home);
  el.innerHTML=`
- <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · Classical · ${f.st}</span><span class="sp"></span><label class="note">Home key <select id="sfKeySel">${keySel}</select></label><button class="chip ${home.mode==='maj'?'on':''}" data-sfmode="maj">major</button><button class="chip ${home.mode==='min'?'on':''}" data-sfmode="min">minor</button></div>
+ <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · Classical · Level ${f.l}</span><span class="sp"></span><label class="note">Home key <select id="sfKeySel">${keySel}</select></label><button class="chip ${home.mode==='maj'?'on':''}" data-sfmode="maj">major</button><button class="chip ${home.mode==='min'?'on':''}" data-sfmode="min">minor</button></div>
  <h1 class="disp" style="margin:6px 0 4px">${f.t}</h1>
  <p class="sub" style="max-width:860px">${SR?'A rondo that has learned from sonata form: the refrain keeps returning like a rondo, but the first episode comes back in the home key like a recapitulation, and the middle episode is a development.':'The great dramatic form of the Classical era: two keys in conflict (the exposition), turbulence (the development), and resolution, with everything brought home (the recapitulation).'}</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -6808,7 +7082,9 @@ function renderAnalysis(){const el=$('anMain');if(!el)return;const t=AN.tab;
  if(t==='prog'){b.innerHTML=`<section class="card"><h3>My progression · from the Gym</h3>${anProgHTML()}</section>`;return}
  if(t==='map'){b.innerHTML=`<section class="card"><h3>Listening map · any recording</h3><p class="note" style="margin:0 0 10px">For music whose score can't be shown here (pop, jazz, film, contemporary Australian music, your own band): listen, and note the time each section starts and what you hear. The map draws itself to scale. Nothing is copied from the recording.</p><div id="anMapW">${anMapHTML()}</div></section>`;return}
  const S=[['chorale','Bach: Aus meines Herzens Grunde','chorale · cadences'],['ohaupt','Bach: Befiehl du deine Wege (tune: O Haupt voll Blut und Wunden)','chorale · cadences'],['jesu','Bach: Jesu, meine Freude','minor-key chorale'],['k331a','Mozart K. 331: the theme','period, rounded binary'],['k331d','Mozart K. 331: Variation III','minore'],['k545','Mozart K. 545','sonata form'],['maple','Joplin: Maple Leaf Rag','rag strains'],['entertainer','Joplin: The Entertainer','rag strains'],['chopin7','Chopin: Prelude No. 7','Romantic miniature'],['chopin20','Chopin: Prelude No. 20','Romantic: chromatic bass']];
- b.innerHTML=`<div class="anpick">${S.map(s=>`<button class="cad ${AN.score===s[0]?'on':''}" data-ansc="${s[0]}"><b>${s[1]}</b><small>${s[2]}</small></button>`).join('')}</div>
+ const ANLV={chorale:[3,1],ohaupt:[3,2],jesu:[4,1],k331a:[4,2],maple:[4,3],entertainer:[4,4],k331d:[5,1],k545:[5,2],chopin7:[5,3],chopin20:[6,1]};/* PROVISIONAL levels: the repo carries no level tag for the ten scores (Retag 07 not in the build clone). Replace these pairs [level, step] with the Retag 07 values. */
+ const SA=S.map((s,i)=>({k:s[0],t:s[1],d:s[2],l:(ANLV[s[0]]||[3,i])[0],stp:(ANLV[s[0]]||[3,i])[1]}));
+ b.innerHTML=lvCards('anList',SA,{wrap:'anpick',noun:['score','scores'],on:x=>x.k===AN.score,full:x=>`<button class="cad ${AN.score===x.k?'on':''}" data-ansc="${x.k}"><b>${x.t}</b><small>${x.d}</small></button>`,cmp:x=>`<button class="climb cmp${AN.score===x.k?' on':''}" data-ansc="${x.k}" aria-label="${x.t}, Level ${x.l}, open"><span class="lvm ${LVCH(x.l)}" title="Level ${x.l} · ${LVN[x.l]}" aria-hidden="true">${x.l}</span><span class="tx"><b>${x.t}</b><small>${x.d}</small></span><span class="arr" aria-hidden="true">→</span></button>`})+`
  <section class="card"><h3 id="anTitle">Loading…<span class="sp"></span></h3>
   <div class="go" style="margin-bottom:8px" id="anCtl"></div>
   <div class="anwrap" id="anWrap"><nav class="anidx" id="anIdx" aria-label="Sections"></nav><div class="vrv" id="anScore" tabindex="0" role="region" aria-label="Score"><div class="empty">Loading the score…</div></div></div>
