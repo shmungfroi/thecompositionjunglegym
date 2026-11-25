@@ -82,7 +82,7 @@ async def logic(b):
                         check(c['al'].startswith(f'Rung {p}, Level {g["i"]}'), f'{t}: aria {c["al"]}')
                     else:
                         pos += c['ny']
-                        check(c['al'] in (f'Rung {p}, not yet written', f'Rungs {p} to {p + c["ny"] - 1}, not yet written') and c['txt'] == 'not yet', f'{t}: not-yet cell {c["al"]} / {c["txt"]}')
+                        check(c['al'] == {1: f'Rung {p}', 2: f'Rungs {p} and {p + 1}', 3: f'Rungs {p} to {p + 2}'}[c['ny']] + ', not yet written' and c['txt'] == 'not yet', f'{t}: not-yet cell {c["al"]} / {c["txt"]}')
                 check(g['none'] == (not any(k == 'b' for k, _ in sl)), f'{t}: .none on level {g["i"]}')
                 check(g['you'] == (g['i'] == lv) and g['tab']['you'] == (g['i'] == lv), f'{t}: .you mark on level {g["i"]}')
                 runs = [c for c in g['cells'] if 'ny' in c]

@@ -1675,6 +1675,18 @@ details:not([open])>summary.lvch{margin-bottom:0}
  #picker .invs{display:flex;flex-wrap:wrap}
 }
 @media (min-width:1100px) and (max-width:1279px){#room-seed>.seedtop,#room-seed>.seedlow{grid-template-columns:minmax(0,1fr)}}
+/* 0.50 Fable M2: in the side panel only the chord-type list scrolls; Root stays pinned above it, Inversion below it */
+@media (min-width:1100px){
+ #room-seed>#picker{display:flex;flex-direction:column;overflow:hidden;max-height:calc(100vh - 212px)}
+ #room-seed #picker>.prow{flex:none}
+ #room-seed #picker>.prow2{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0;flex:1 1 auto;min-height:0;margin:0}
+ #room-seed #picker .prow2>.prow:first-child{display:flex;flex-direction:column;align-items:stretch;gap:0;flex:1 1 auto;min-height:0;margin:0}
+ #room-seed #picker .prow2>.prow:first-child>.plbl{flex:none}
+ #room-seed #picker #qualPads{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+ #room-seed #picker #qualList{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-right:4px}
+ #room-seed #picker .prow2>.prow:last-child{flex:none;margin:10px 0 0;padding-top:10px;border-top:1px solid var(--line)}
+ #room-seed #picker .ip span{display:none}
+}
 @media (max-width:1099px){
  #picker .qbtn{display:flex}
  #picker .lvlst{display:none}
@@ -1685,6 +1697,7 @@ details:not([open])>summary.lvch{margin-bottom:0}
  #qsheet .msh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}#qsheet .msh .disp{font-size:24px;color:var(--goldhi)}
 }
 @media (max-width:760px){#qsheet:not([hidden]){display:block;position:fixed;inset:0;z-index:8;background:rgba(5,4,2,.6)}}
+@media (max-width:1099px){#qsheet .lvrow{min-height:46px}#qsheet .lvbh{min-height:44px}}   /* 0.50 Fable S4: tablet sheet rows are touch targets too */
 </style></head>
 <body>
 
@@ -2311,7 +2324,7 @@ function lvBands(id,A,o){const L=S.level,B=lvSplit(A),fid=o.fold||id,F=lvFold(fi
  const grp=(arr,cl)=>[...new Set(arr.map(x=>x.l||1))].map(l=>`<div class="lvgrp" role="group" aria-label="Level ${l}, ${LVN[l]}"><span class="lvm ${cl}" title="Level ${l} · ${LVN[l]}" aria-hidden="true">${l}</span>${items(arr,l)}</div>`).join('');
  const det=(band,arr,title,cl)=>{if(!arr.length)return'';const def=band==='met'?1:0,saved=F[band]===undefined?def:+F[band],force=arr.some(sel)&&!saved;
   return`<details class="lvband ${band}" data-fold="${fid}" data-band="${band}"${saved||force?' open':''}${force?' data-auto="1"':''}><summary class="lvbh"><svg class="car" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg>${title} · ${lvRange(arr).replace('Levels ','').replace('Level ','')}<span class="n">${arr.length}</span></summary>${grp(arr,cl)}</details>`};
- const nw=B.nw.length?`<h3 class="lvbh"><span class="lvm now" aria-hidden="true">${L}</span>New at Level ${L}<span class="n">${B.nw.length}</span></h3>${items(B.nw,L)}`:`<h3 class="lvbh"><span class="lvm now" aria-hidden="true">${L}</span>New at Level ${L}<span class="n">0</span></h3><p class="lvnone">No new ${o.noun||'items'} at Level ${L}. Everything you have met is below.</p>`;
+ const nw=B.nw.length?`<h3 class="lvbh"><span class="lvm now" aria-hidden="true">${L}</span>New at Level ${L}<span class="n">${B.nw.length}</span></h3>${items(B.nw,L)}`:`<h3 class="lvbh"><span class="lvm now" aria-hidden="true">${L}</span>New at Level ${L}<span class="n">0</span></h3><p class="lvnone">${o.later&&!B.ahead.length?`No new ${o.noun||'items'} at Level ${L} yet: they arrive in a later update.`:`No new ${o.noun||'items'} at Level ${L}.`} Everything you have met is below.</p>`;   /* 0.50 Fable S8 */
  return`<div class="lvlst${o.cls?' '+o.cls:''}" id="${id}" role="listbox" aria-label="${o.label||''}"><section class="lvband new" aria-label="New at Level ${L}, ${LVN[L]}">${nw}</section>${det('met',B.met,'Earlier levels','')}${det('ahead',B.ahead,'Ahead of you','ahead')}</div>`}
 /* lvCards(id,A,o): card galleries. o.full(x) -> full card html, o.cmp(x) -> compact card html, o.noun [singular,plural] */
 function lvCards(id,A,o){const L=S.level,B=lvSplit(A),F=lvFold(id),sel=x=>o.on&&o.on(x),n=(k,w)=>`${k} ${k===1?w[0]:w[1]}`,W=o.noun||['item','items'];
@@ -2917,7 +2930,7 @@ S.pmode=(()=>{try{return JSON.parse(localStorage.getItem('cjg_pmode'))}catch(e){
 const PADS=[['C'],['C#','Db'],['D'],['D#','Eb'],['E'],['F'],['F#','Gb'],['G'],['G#','Ab'],['A'],['A#','Bb'],['B']];
 const QGROUPS=[['Power & triads',['5','','m','dim','aug','sus2','sus4']],['Sixths & sevenths',['7','maj7','m7','m7b5','dim7','6','m6','7sus4']],['Added & extended',['add9','madd9','9','maj9','m9']]];
 const qualItems=()=>Q.filter(q=>q.l<=7&&QSHORT[q.k]!==undefined);
-function qualList(id,fold){return lvBands(id,qualItems(),{fold,noun:'chord types',label:'Chord type',cls:'pad',on:x=>x.k===S.q,row:x=>{const on=x.k===S.q;return`<button class="lvrow${on?' on':''}" role="option" aria-selected="${on}" data-pq="${x.k}"><b>${pretty(S.root+x.k)}</b><span>${QSHORT[x.k]}</span></button>`}})}
+function qualList(id,fold){return lvBands(id,qualItems(),{fold,later:true,noun:'chord types',label:'Chord type',cls:'pad',on:x=>x.k===S.q,row:x=>{const on=x.k===S.q;return`<button class="lvrow${on?' on':''}" role="option" aria-selected="${on}" data-pq="${x.k}"><b>${pretty(S.root+x.k)}</b><span>${QSHORT[x.k]}</span></button>`}})}
 const QSHORT={'5':'power chord','':'major','m':'minor','dim':'diminished','aug':'augmented','sus2':'sus 2nd','sus4':'sus 4th','7':'dominant 7th','maj7':'major 7th','m7':'minor 7th','m7b5':'half-dim 7th','dim7':'dim 7th','6':'major 6th','m6':'minor 6th','7sus4':'7th sus 4th','add9':'added 9th','madd9':'minor add 9','9':'dominant 9th','maj9':'major 9th','m9':'minor 9th'};
 function renderPads(c){
  const rpc=pcOf(S.root);
@@ -2929,7 +2942,7 @@ function renderPads(c){
  if(!$('qsheet').hidden)$('qsBody').innerHTML=qualList('qualListS','qualList');
  lvReveal($('qualList'))
  $('invPads').innerHTML=c.tones.map((t,i)=>`<button class="ip ${i===S.inv?'on':''}" data-pinv="${i}">${i?ORD[i]+' inversion':'Root position'} <span style="opacity:.7">· ${pretty(t.name)} in the bass</span></button>`).join('');
- padStripFocus();
+ lvReveal($('qualList'));padStripFocus();
 }
 /* phones: the pinned chooser rows scroll sideways; keep the chosen pad in view */
 function padStripFocus(){['rootPads','qualPads','invPads'].forEach(id=>{const el=$(id);if(!el||el.scrollWidth<=el.clientWidth+1)return;const on=el.querySelector('.on');if(!on)return;const a=on.getBoundingClientRect(),b=el.getBoundingClientRect();el.scrollLeft+=a.left-b.left-(b.width-a.width)/2})}
@@ -2940,7 +2953,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('qsheet').hidden){$('qshe
 document.addEventListener('click',e=>{const pm=e.target.closest('[data-pm]');if(pm){S.pmode=pm.dataset.pm;LS.set('cjg_pmode',S.pmode);renderInst(chord());const x=instMidis(chord());play(x.m,x.gap,x.k);return}});
 document.addEventListener('click',e=>{const t=e.target.closest('[data-pr],[data-pq],[data-pinv]');if(!t)return;
  if(t.dataset.pr)S.root=t.dataset.pr;if(t.dataset.pq!==undefined){S.q=t.dataset.pq;S.inv=0}if(t.dataset.pinv!==undefined)S.inv=+t.dataset.pinv;
- S.vi=0;render();play(voicing(chord()).map(x=>x.midi));logIt('looked at '+pretty(chord().sym))});
+ S.vi=0;const fq=t.dataset.pq!==undefined&&!!t.closest('#qsheet');render();if(fq){const q=$('qualBtn');if(q)q.focus()}play(voicing(chord()).map(x=>x.midi));logIt('looked at '+pretty(chord().sym))});
 /* journal + process log */
 const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 let LOG=LS.get('cjg_log')||[];
@@ -3060,7 +3073,7 @@ function stopAll(){PLAY.on=false;if(ELT.st!=='idle'||ELT.pend)elIdle('stop');PLA
  if(AC&&MAST){const t=AC.currentTime,old=MAST,g=old.gain.value;try{old.gain.cancelScheduledValues(t);old.gain.setValueAtTime(g,t);old.gain.linearRampToValueAtTime(0,t+.04)}catch(e){}
   ACT.forEach(o=>{try{o.stop(t+.05)}catch(e){}});ACT.clear();MAST=AC.createGain();MAST.gain.value=g;MAST.connect(COMP);setTimeout(()=>{try{old.disconnect()}catch(e){}},300)}
  if(typeof C1!=='undefined'&&C1.droneOn){C1.droneOn=false;if(typeof C1DR!=='undefined')C1DR=[]}
- document.querySelectorAll('.now').forEach(e=>e.classList.remove('now'));setPlayBtns()}
+ document.querySelectorAll('.now:not(.lvm)').forEach(e=>e.classList.remove('now'));setPlayBtns()}   /* .lvm.now is "your level", not "playing now" (0.50 Fable M1) */
 function setPlayBtns(){const g=$('gPlay');if(g)g.textContent=PLAY.on&&PLAY.src==='gym'?'■ Stop':'▶ Play';const o=$('oHear');if(o)o.textContent=PLAY.on&&PLAY.src==='oracle'?'■ Stop':'▶ Hear the hand'}
 function playList(list,src,onStep,loop){
  stopAll();if(!list.length)return;const a=ac(),V=voiceProg(list);MAST.gain.value=.42;
@@ -3986,8 +3999,8 @@ function renderClimbs(){
  const CARD=c=>{const i=c.i;return`<div class="climb ${c.go||c.full?'':'dim'}"><div class="n">${i+1}</div><h4>${c.t}</h4><div class="st">${CLG(i)} · ${rg(c)}</div><p>${c.p}</p>
  ${c.full?'':`<div class="stat ${c.go?'live':''}">${c.go?'In the Gym now · full climb coming':'Full climb coming'}</div>`}
  ${c.full?`<div class="go"><button class="mini gold" data-clopen="${i}">Start this climb →</button></div>`:c.go?`<div class="go" style="margin-top:10px">${c.go.map(g=>`<button class="chip" data-load="${g[1]}|${g[2]}">⤒ ${g[0]}</button>`).join('')}</div>`:''}</div>`};
- const CMP=c=>{const m=`<span class="lvm ${LVCH(c.l)}" title="${rg(c)} · from ${LVN[c.l]}" aria-hidden="true">${c.l}</span><span class="tx"><b>${c.t}</b><small>Climb ${c.i+1} · ${CLG(c.i)}</small></span>`;
-  return c.full?`<button class="climb cmp" data-clopen="${c.i}" aria-label="Climb ${c.i+1}, ${c.t}, ${rg(c)}, open">${m}<span class="arr" aria-hidden="true">→</span></button>`:`<div class="climb cmp dim" aria-label="${c.t}, ${rg(c)}">${m}</div>`};
+ const CMP=c=>{const m=`<span class="lvm ${LVCH(c.l)}" title="${rg(c)} · from ${LVN[c.l]}" aria-hidden="true">${c.l}</span><span class="tx"><b>${c.t}</b><small>${CLG(c.i)}</small></span>`;   /* 0.50 Fable S7: no climb number on the compact card (sorted by level, the numbers jump) */
+  return c.full?`<button class="climb cmp" data-clopen="${c.i}" aria-label="${c.t}, ${rg(c)}, open">${m}<span class="arr" aria-hidden="true">→</span></button>`:`<div class="climb cmp dim" aria-label="${c.t}, ${rg(c)}">${m}</div>`};
  $('climbList').innerHTML=lvCards('climbsGal',CA,{full:CARD,cmp:CMP,noun:['climb','climbs']})}
 function renderClimbDetail(){if(CL.open===0)return renderClimb1();if(CL.open===12)return renderClimb13();if(CL.open===1)return renderClimb2();if(CL.open===11)return renderClimb12();if(CL.open===10)return renderClimb11();if(CL.open===9)return renderClimb10();if(CL.open===8)return renderClimb9();if(CL.open===7)return renderClimb8();if(CL.open===6)return renderClimb7();if(CL.open===5)return renderClimb6();if(CL.open===4)return renderClimb5();if(CL.open===3)return renderClimb4();return renderClimb3()}
 function renderClimb3(){const key=CL.key,mode=key.mode,L=CADS.filter(c=>c[mode]);if(!L.find(c=>c.k===CL.ex))CL.ex=L[0].k;const ex=CADS.find(c=>c.k===CL.ex);
@@ -8708,7 +8721,7 @@ function earRungWhatShort(d,l){if(d==='metre')return'metres: '+earMetreOpts(l).j
 function earPickerHTML(d,l){const slot=EARSLOT[d],st=earReady(d,l),sug=earLong(d)&&st.ready?st.next:null,rd=EAR.reached[d]||[],mine=EARSTAGE[d][l-1],you=earStage(),
  open=EAR.band>=1&&EAR.band<=7?EAR.band:mine,hint=lv=>{const h=curHint(lv);return h?` (${h})`:''};let h='';
  for(let lv=1;lv<=7;lv++){const p0=3*(lv-1)+1,cells=[];let run=0,runA=0,has=false,sg=false,wr=0;
-  const flush=()=>{if(run){cells.push(`<span class="el-ny" style="--n:${run}" role="img" aria-label="${run>1?`Rungs ${runA} to ${runA+run-1}`:`Rung ${runA}`}, not yet written">not yet</span>`);run=0}};
+  const flush=()=>{if(run){cells.push(`<span class="el-ny" style="--n:${run}" role="img" aria-label="${run>2?`Rungs ${runA} to ${runA+run-1}`:run===2?`Rungs ${runA} and ${runA+1}`:`Rung ${runA}`}, not yet written">not yet</span>`);run=0}};
   for(let k=0;k<3;k++){const p=p0+k,n=slot.indexOf(p)+1;
    if(!n){if(!run)runA=p;run++;continue}
    flush();wr++;const dn=rd.includes(n),isOn=n===l,isSg=n===sug;if(isOn)has=true;if(isSg)sg=true;
@@ -9132,7 +9145,7 @@ const earMutHTML=o=>o&&o.set?`<button class="el-mut" data-earmut aria-pressed="t
  :`<button class="el-mut" data-earmut aria-pressed="false" ${o&&o.off?'disabled':''}>${ELMUTICO}<span>Mutation here: so = do</span></button>`;
 const earMoveOn=q=>!!q&&q.l===9&&EAR.mod==='move';
 function earMelAsk(q,l){if(l<4||(q&&q.l!==l))return null;const M=q?LMET[q.metre]:null,n=q?ladBeatTicks(q.metre,q.grp).length:null,up=q&&q.anac;
- let t=`The key chord plays first, then ${up?'one bar of clicks counts you in. The melody starts on the upbeat':(ELNUMW[n]||n)+' clicks count you in'}. The first note is given. Choose a length, then tap each note.`;
+ let t=`The key chord plays first, then ${up?'one bar of clicks counts you in. The melody starts on the upbeat':(n?(ELNUMW[n]||n)+' clicks count':'clicks count')+' you in'}. The first note is given. Choose a length, then tap each note.`;
  if(l===11)t=t.replace('Choose a length, then tap each note.','Switch between the melody and the bass; choose a length, then tap each note.');
  if(l===12)t=t.replace('The first note is given.','The first note is given, then the excerpt plays.');
  if(earMoveOn(q||{l})||(!q&&l===9&&EAR.mod==='move')){t+=' Where the key changes, mark the mutation.';if(!q||EAR.glossQ===undefined||EAR.glossQ===q.id){if(q)EAR.glossQ=q.id;t+='<span class="el-gloss" data-notm><b>Mutation:</b> renaming the notes so the new key’s home becomes do.</span>'}}
@@ -9669,7 +9682,7 @@ function earPress(v,main,o){const q=EAR.q;
  if(main){if(!q){earNew();return}if(earSounding()){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,'all');return}
  if(!q)return;if(earSounding()&&ELT.variant===v){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,v,o)}
 document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earplay],[data-eardock],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earpulse],[data-earspd],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore],[data-band],[data-earstay],[data-eardrum],[data-earnames],[data-len],[data-rest],[data-earmut],[data-eardo],[data-earpart],[data-sys]');if(!t)return;const d=t.dataset;
- if(d.band){EAR.band=+d.band;renderEar();return}
+ if(d.band){EAR.band=+d.band;EAR.focus='.el-ltab[data-band="'+(+d.band)+'"]';renderEar();return}
  if(d.earnames){EAR.names=d.earnames==='kk'?'kk':'k';earSave();renderEar();return}
  if(d.earstay!==undefined){EAR.sugNow=false;renderEar();return}
  // EL-11: leaving a question unanswered (a change of drill or rung) records it as skipped, and says so
@@ -9724,6 +9737,9 @@ setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
   if(k==='ArrowUp'||k==='ArrowLeft')n=n===1?7:n-1;else if(k==='ArrowDown'||k==='ArrowRight')n=n===7?1:n+1;else if(k==='Home')n=1;else if(k==='End')n=7;
   else{if(k==='Escape'&&o.closest('#lvPop')){e.preventDefault();closePop(true)}return}
   e.preventDefault();lvlChange(n);const box=o.closest('#lvPop,#msLvl'),r=box.querySelector('.lvopt[data-l="'+n+'"]');if(r)r.focus()});
+ /* 0.50 Fable S1: Esc anywhere in the level control (the Curriculum select too) closes the list; so does focus leaving it */
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!pop.hidden&&e.target.closest&&e.target.closest('.lvc')&&!e.target.closest('.lvopt')){e.preventDefault();closePop(true)}});
+ document.querySelector('.lvc').addEventListener('focusout',e=>{if(!pop.hidden&&e.relatedTarget&&!e.relatedTarget.closest('.lvc'))closePop(false)});
  document.getElementById('msClose').onclick=()=>ms.hidden=true;ms.addEventListener('click',e=>{if(e.target===ms)ms.hidden=true});
  document.getElementById('msJ').onclick=()=>{ms.hidden=true;document.getElementById('openJ').click()};
  addEventListener('keydown',e=>{if(e.key==='Escape')ms.hidden=true})})();
