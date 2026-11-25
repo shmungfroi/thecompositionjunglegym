@@ -53,7 +53,7 @@ async def main():
         await pg.goto('http://app/index.html')
         await pg.wait_for_timeout(1500)
         for stage in (1, 2, 3, 4, 5, 6, 7):   # 0.50: seven Levels (was Stages 4-6)
-            await pg.evaluate(f"document.querySelector('#lvl button[data-l=\"{stage}\"]').click()")
+            await pg.evaluate(f"document.getElementById('lvBtn').click();document.querySelector('#lvPop .lvopt[data-l=\"{stage}\"]').click()")
             await pg.wait_for_timeout(200)
             for name, js in views():
                 await pg.evaluate(js)
@@ -75,7 +75,7 @@ async def main():
                         await pg.evaluate(js)
                         await pg.wait_for_timeout(250)
         # ---- P2-5 ----
-        await pg.evaluate("document.querySelector('#lvl button[data-l=\"7\"]').click()")
+        await pg.evaluate("document.getElementById('lvBtn').click();document.querySelector('#lvPop .lvopt[data-l=\"7\"]').click()")
         await pg.evaluate("location.hash='climbs/2'")
         await pg.wait_for_timeout(700)
         before = len(errs)
