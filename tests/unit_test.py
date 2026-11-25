@@ -26,6 +26,10 @@ C9    (0.49) the Ear Lab function map (earNumFn) agrees with analyse(): minor v 
       (vi, vi°, vi°7, VI°, VI°7, iv°, IV°, ivø7, IVø7, iv°7, IV°7, ii°7, II°7, V+, v+, vii+, ♯VII+), with no exception.
 C8    (0.49) the Chord Library's augmented and diminished 7th texts say "symmetrical" only for equal temperament and name the
       wrap-round interval (diminished 4th / augmented 2nd); the dim7 is vii°7 of four minor keys.
+ICfix (0.50, IC_050_B0) levels stay 1-7 (lvClamp, lvLoad never re-migrates over a stored number, a data-l click elsewhere does
+      nothing); aug 6ths Level 6 step 20; colour chords, Oracle switches, climbs 1, 2, 9, 11 by level; 12 dictation keys from Level 5;
+      SATB doubling split and the short "comes at Level n" note; Analysis and form tags; the split Ear Lab rungs (content, places,
+      >= 100 distinct items, saved numbers, next by place); help text in places; a level and a rising step on every tagged item.
 """
 import re, sys, asyncio, json, pathlib, collections
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
@@ -294,6 +298,111 @@ async def main():
         n += 1
         if ks['bad'] or not ks['notes']:
             FAIL.append(f'SRCFIX: scale song card: {ks}')
+        # ---------------- 0.50 ICfix (IC_050_B0): self-checks for each fix ----------------
+        ic = await pg.evaluate("""async()=>{const o={},keep=S.level,ls=k=>localStorage.getItem(k);
+          // V1-1, V1-6, V1-9: levels never leave 1-7
+          o.clamp=[9,0,-3,3.5,'6','x','',null,undefined,NaN,7,1].map(v=>lvClamp(v));
+          lvlSet(4);lvlSet(9);o.set9=[S.level,ls('cjg_level')];lvlSet('the cadence');o.setNaN=[S.level,ls('cjg_level')];lvlSet(2.6);o.set26=S.level;
+          const d=document.createElement('div');d.className='el-cad';d.dataset.l='the cadence';document.body.appendChild(d);lvlSet(3);d.click();o.dlclick=[S.level,ls('cjg_level')];d.remove();
+          const load=(lv,st)=>{localStorage.removeItem('cjg_level');localStorage.removeItem('cjg_stage');if(lv!==null)localStorage.setItem('cjg_level',lv);if(st!==null)localStorage.setItem('cjg_stage',st);S.level=5;lvLoad();return[S.level,ls('cjg_level')]};
+          o.load={chosen6_stage4:load('6','4'),stored9_stage4:load('9','4'),nan_stage5:load('NaN','5'),none_stage6:load(null,'6'),half:load('3.5',null),empty_stage4:load('','4'),none_none:load(null,null),zero:load('0','5')};
+          // V1-1 / V2-2: augmented sixths
+          o.aug6=Q.filter(q=>/\\+6$/.test(q.k)).map(q=>[q.k,q.l,q.stp]);o.qOut=Q.filter(q=>!(q.l>=1&&q.l<=7)).map(q=>q.k);o.libHasAug6=qualItems().some(q=>/\\+6$/.test(q.k));
+          // V1-4: colour chords, Oracle sevenths and colour switch
+          o.col={};for(const lv of [1,2,3,4,5,6,7])o.col[lv]={maj:colourRomans({k:0,mode:'maj'},false,lv),min:colourRomans({k:9,mode:'min'},false,lv)};
+          K={k:0,mode:'maj'};O.sev=true;o.deck7={};for(const lv of [2,3,4,5]){S.level=lv;o.deck7[lv]=deck().some(c=>/7/.test(c.q))}
+          location.hash='oracle';room('oracle');await new Promise(r=>setTimeout(r,300));o.ocol={};for(const lv of [2,3,5]){S.level=lv;renderOracle();o.ocol[lv]=[getComputedStyle($('oCol').parentElement).display!=='none',getComputedStyle($('oSev').parentElement).display!=='none']}
+          // V1-3: climb 1
+          o.c1={};location.hash='climbs/1';room('climbs');await new Promise(r=>setTimeout(r,300));
+          for(const lv of [1,2,3,4,5]){S.level=lv;C1.pick=false;renderClimb1();o.c1[lv]={mode:C1.mode,quiz:C1M.filter(m=>m.l<=Math.max(S.level,1)).map(m=>m.k).sort().join(' ')}}
+          o.c1tags=Object.fromEntries(C1M.map(m=>[m.k,[m.l,m.stp]]));
+          // V1-2: climb 2
+          o.c2={};for(const lv of [1,2,3,4,5,6,7]){S.level=lv;C2.pos='below';const L=Math.max(S.level,3);o.c2[lv]={tier:c2Tier(L),posBelow:L>=4,modes:C2M.filter(m=>m.l<=L).map(m=>m.k).join(' '),sp:C2SP.filter(s=>s.l<=L).map(s=>s.k).join(' ')}}
+          o.c2tags=Object.fromEntries(C2M.map(m=>[m.k,m.l]));o.c2sp=C2SP.map(s=>s.l);
+          // V1-5: climb 11
+          const key=C11.key,mel=c11Mel(key);o.c11={};for(const lv of [1,2,4,5,6]){S.level=lv;o.c11[lv]=mel.map((_,i)=>c11Opts(i,key,mel).length)}
+          S.level=1;const a1=JSON.stringify(mel.map((_,i)=>c11Opts(i,key,mel)));S.level=2;o.c11same=a1===JSON.stringify(mel.map((_,i)=>c11Opts(i,key,mel)));
+          // climb 9 opens on shells below Level 5
+          o.c9={};for(const lv of [4,5,6]){S.level=lv;C9.vtPick=false;renderClimb9();o.c9[lv]=C9.vt}
+          // V8-1: 12 keys from Level 5
+          o.keys=[1,2,3,4,5,6,7].map(l=>LADKEYS[l].length);
+          // V11-1, V11-2: SATB doubling split; findings above the level count, short note only
+          K={k:0,mode:'maj'};const V=parseRoman('V',K),I=parseRoman('I',K),vo=[[43,59,62,71],[48,55,64,72]];
+          o.satb={};for(const lv of [3,5]){S.level=lv;const iss=checkSATB(vo,[{...V,inv:0},{...I,inv:0}]).filter(e=>e.rule==='dbllt');o.satb[lv]=iss.map(e=>({sev:e.sev,lvl:e.lvl,later:e.later,short:/comes at Level 5/.test(e.text),full:/It has to rise/.test(e.text)}))}
+          o.satblv=['double','dblinv','dbl7','dbllt','dblchrom'].map(k=>SATBLV[k]);
+          // V2-1 Analysis, forms
+          o.anlv=ANLV;o.anchrom=ANCHROM;o.anlay=ANLAY;S.level=2;o.anmark2=[anLyMark('form'),anLyMark('cad'),anLyMark('harm')].map(x=>x?x.replace(/<[^>]+>/g,'').trim():'');S.level=3;o.anmark3=anLyMark('harm');
+          o.forms=Object.fromEntries(FORMS.map(f=>[f.k,[f.l,f.stp]]));
+          // V9-1, V9-2: split rungs
+          o.slot={mel:EARSLOT.mel,cad:EARSLOT.cad};o.rn=[rn('mel',5),rn('mel',13),rn('cad',2),rn('cad',4),rn('mel',6)];o.stage=[EARSTAGE.mel[4],EARSTAGE.mel[12],EARSTAGE.cad[1],EARSTAGE.cad[3]];
+          let s=11;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};o.split={};
+          for(const [dd,l,N] of [['mel',5,400],['mel',13,400],['cad',2,300],['cad',4,300]]){const c={},ids=new Set();let lr=new Set();for(let i=0;i<N;i++){const q=earGen(dd,l,R);const k=dd==='mel'?q.info.var:q.key.mode;c[k]=(c[k]||0)+1;ids.add(dd==='mel'?q.id:JSON.stringify([q.rns,q.key,q.ch]));lr.add(q.l+'/'+q.rung)}o.split[dd+l]={c,distinct:ids.size,lr:[...lr]}}
+          // saved progress: an old internal number keeps its rung and place
+          EAR.drill='mel';EAR.q=null;EAR.lvl.mel=5;o.saved=[earLvl(),rn('mel',earLvl())];EAR.lvl.mel=12;o.saved.push(earLvl(),rn('mel',12));
+          o.next=[earNextRung('mel',5),earNextRung('mel',13),earNextRung('cad',2),earNextRung('cad',4)];
+          // #14: Ear Lab help text in places and levels
+          o.help=[EARHOW.rhy,EARHOW.cad,EARHOW.mel,ELTIPNOTE.rhy,ELTIPNOTE.cad,ELTIPS.qual[2][0]].join(' | ');
+          // V2-4 (#13): a level and a step on every item, steps rising with levels
+          const sets={Q,SCALES,IVS,CADS,C1M,C2M,C2SP,C4EX,C5FAM,C6EX,C6Q,C7EX,C8EX,C8Q,C9EX,C10EX,C11V,C11TOOLS,C11VOCSET,C12MODES,C12SHAPES,FORMS,VTYPES:Object.values(VTYPES),ANALYSIS:Object.values(ANLV).map(([l,stp])=>({l,stp}))};
+          o.steps={};for(const[n,A]of Object.entries(sets)){const bad=A.filter(x=>!(x.l>=1&&x.l<=7&&Number.isInteger(x.stp)));const srt=A.filter(x=>Number.isInteger(x.stp)).slice().sort((a,b)=>a.stp-b.stp);
+            o.steps[n]={n:A.length,missing:bad.length,rising:srt.every((x,i)=>!i||srt[i-1].l<=x.l),sk:A.some(x=>Object.prototype.hasOwnProperty.call(x,'s'))&&n!=='IVS'}}
+          o.ivs=IVS.map(x=>x.s).join(',');
+          localStorage.removeItem('cjg_stage');lvlSet(keep);return o}""")
+        def ck(c, m):
+            nonlocal n
+            n += 1
+            if not c:
+                FAIL.append('ICfix ' + m)
+        ck(ic['clamp'] == [7, 1, 1, 4, 6, None, None, None, None, None, 7, 1], f"lvClamp {ic['clamp']}")
+        ck(ic['set9'] == [7, '7'] and ic['setNaN'] == [7, '7'] and ic['set26'] == 3, f"lvlSet out of range / NaN / 2.6: {ic['set9']} {ic['setNaN']} {ic['set26']}")
+        ck(ic['dlclick'] == [3, '3'], f"V1-6 a click on an element with data-l=\"the cadence\" changed the level: {ic['dlclick']}")
+        L = ic['load']
+        ck(L['chosen6_stage4'] == [6, '6'], f"load: chosen Level 6 with old stage 4 still stored -> {L['chosen6_stage4']}")
+        ck(L['stored9_stage4'] == [7, '7'], f"load: stored 9 must clamp to 7, not re-migrate: {L['stored9_stage4']}")
+        ck(L['nan_stage5'] == [4, '4'] and L['none_stage6'] == [5, '5'] and L['empty_stage4'] == [2, '2'], f"load: migration only when cjg_level is absent or not a number: {L}")
+        ck(L['half'] == [4, '4'] and L['zero'] == [1, '1'] and L['none_none'] == [5, None], f"load: 3.5 / 0 / nothing: {L}")
+        ck(ic['aug6'] == [['It+6', 6, 20], ['Fr+6', 6, 20], ['Ger+6', 6, 20]] and not ic['qOut'] and not ic['libHasAug6'], f"aug 6ths {ic['aug6']}, outside 1-7 {ic['qOut']}, in the library list {ic['libHasAug6']}")
+        C = ic['col']
+        ck(C['1']['maj'] == [] and C['2']['maj'] == [] and C['3']['maj'] == ['iv', 'bVII'] and C['3']['min'] == ['IV'], f"colour chords L1-3 {C['1']} {C['2']} {C['3']}")
+        ck({'bVI', 'bIII', 'V7/V', 'V7/vi'} <= set(C['4']['maj']) and 'V7/ii' not in C['4']['maj'] and 'I' in C['4']['min'], f"colour chords L4 {C['4']}")
+        ck({'V7/ii', 'V7/iii', 'V7/IV', 'vii°7'} <= set(C['5']['maj']) and 'bII' not in C['5']['maj'] and 'bII' in C['6']['maj'] and 'bII' in C['6']['min'], f"colour chords L5/L6 {C['5']} {C['6']}")
+        # migrated learners keep what they had: old Stage 5 (now 4) had iv bIII bVI bVII; old Stage 6 (now 5) had every secondary dominant
+        ck({'iv', 'bIII', 'bVI', 'bVII'} <= set(C['4']['maj']) and {'IV', 'I'} <= set(C['4']['min']), 'migrated Stage 5 (Level 4) lost a borrowed chord')
+        ck({'V7/ii', 'V7/iii', 'V7/IV', 'V7/V', 'V7/vi'} <= set(C['5']['maj']) and {'V7/iv', 'V7/V'} <= set(C['5']['min']), 'migrated Stage 6 (Level 5) lost a secondary dominant')
+        ck(ic['deck7'] == {'2': False, '3': True, '4': True, '5': True}, f"Oracle sevenths by level {ic['deck7']}")
+        ck(ic['ocol'] == {'2': [False, False], '3': [True, True], '5': [True, True]}, f"Oracle colour / sevenths switches shown {ic['ocol']}")
+        ck([ic['c1'][str(l)]['mode'] for l in (1, 2, 3, 4, 5)] == ['ion', 'ion', 'dor', 'dor', 'dor'], f"climb 1 opening mode {ic['c1']}")
+        ck([ic['c1'][str(l)]['quiz'] for l in (1, 2, 3, 4, 5)] == ['aeo ion', 'aeo ion', 'aeo dor ion mix', 'aeo dor ion lyd mix phr', 'aeo dor ion loc lyd mix phr'], f"climb 1 quiz modes {ic['c1']}")
+        ck(ic['c1tags'] == {'ion': [1, 1], 'aeo': [1, 2], 'dor': [3, 3], 'mix': [3, 4], 'lyd': [4, 5], 'phr': [4, 6], 'loc': [5, 7]}, f"climb 1 tags {ic['c1tags']}")
+        c2 = ic['c2']
+        ck([c2[str(l)]['tier'][:7] for l in range(1, 8)] == ['Level 3'] * 3 + ['Level 4', 'Level 5', 'Level 6', 'Level 6'], f"climb 2 tier line {[c2[str(l)]['tier'] for l in range(1, 8)]}")
+        ck([c2[str(l)]['sp'] for l in (3, 4, 5, 6)] == ['1', '1 2 3', '1 2 3 4 5', '1 2 3 4 5 6'] and [c2[str(l)]['posBelow'] for l in (1, 3, 4)] == [False, False, True], f"climb 2 species / below by level {c2}")
+        ck(ic['c2tags'] == {'dor': 3, 'aeo': 3, 'ion': 3, 'mix': 3, 'phr': 4, 'lyd': 4} and ic['c2sp'] == [3, 4, 4, 5, 5, 6], f"climb 2 tags {ic['c2tags']} {ic['c2sp']}")
+        ck(all(x > 0 for x in ic['c11']['1']) and ic['c11same'], f"climb 11 at Level 1 offers the Level 2 set {ic['c11']}")
+        ck(all(a <= b for a, b in zip(ic['c11']['2'], ic['c11']['5'])) and sum(ic['c11']['5']) > sum(ic['c11']['2']) and sum(ic['c11']['6']) >= sum(ic['c11']['5']), f"climb 11 grows with the level {ic['c11']}")
+        ck(ic['c9'] == {'4': 'shell', '5': 'rootless', '6': 'rootless'}, f"climb 9 opening voicing {ic['c9']}")
+        ck(ic['keys'] == [3, 5, 7, 9, 12, 12, 12], f"dictation keys per level {ic['keys']}")
+        ck(ic['satb']['3'] and all(e['sev'] == 'error' and e['lvl'] == 5 and e['later'] and e['short'] and not e['full'] for e in ic['satb']['3']), f"SATB doubled leading note at Level 3 {ic['satb']['3']}")
+        ck(ic['satb']['5'] and all(e['sev'] == 'error' and not e['later'] and e['full'] and not e['short'] for e in ic['satb']['5']), f"SATB doubled leading note at Level 5 {ic['satb']['5']}")
+        ck(ic['satblv'] == [3, 4, 5, 5, 6], f"SATB doubling levels {ic['satblv']}")
+        ck(ic['anlv'] == {'chopin7': [3, 1], 'k331a': [3, 2], 'k331d': [3, 3], 'chorale': [4, 4], 'jesu': [5, 5], 'ohaupt': [5, 6], 'k545': [5, 7], 'entertainer': [5, 8], 'maple': [5, 9], 'chopin20': [5, 10]}
+           and ic['anchrom'] == {'chopin20': 6}, f"Analysis tags {ic['anlv']} {ic['anchrom']}")
+        ck(ic['anmark2'] == ['', '', '3'] and ic['anmark3'] == '', f"Analysis layer marks {ic['anmark2']} {ic['anmark3']!r}")
+        ck(ic['forms'] == {'phrase': [1, 1], 'blues12': [2, 2], 'rondo': [3, 3], 'tv': [3, 4], 'jazzblues': [4, 5], 'minblues': [4, 6], 'rag': [5, 7], 'sonata': [5, 8], 'rhythm': [6, 9], 'sonrondo': [6, 10], 'fugue': [6, 11]}, f"forms {ic['forms']}")
+        ck(ic['slot']['mel'][:12] == [2, 3, 4, 5, 6, 9, 10, 12, 13, 15, 16, 18] and ic['slot']['mel'][12] == 7 and ic['slot']['cad'] == [4, 5, 13, 7], f"EARSLOT {ic['slot']}")
+        ck(ic['rn'] == [6, 7, 5, 7, 9] and ic['stage'] == [2, 3, 2, 3], f"split rung places / levels {ic['rn']} {ic['stage']}")
+        sp = ic['split']
+        ck(set(sp['mel5']['c']) == {'lapent', 'major'} and set(sp['mel13']['c']) == {'natmin', 'major'}, f"melody split contents {sp['mel5']['c']} {sp['mel13']['c']}")
+        ck(set(sp['cad2']['c']) == {'maj'} and set(sp['cad4']['c']) == {'min'}, f"cadence split contents {sp['cad2']['c']} {sp['cad4']['c']}")
+        ck(all(sp[k]['distinct'] >= 100 for k in sp), f"split rungs: distinct items {[(k, sp[k]['distinct']) for k in sp]}")
+        ck(sp['mel13']['lr'] == ['5/13'] and sp['cad4']['lr'] == ['2/4'] and sp['mel5']['lr'] == ['5/5'], f"split rung items carry content rung / rung {[(k, sp[k]['lr']) for k in sp]}")
+        ck(ic['saved'] == [5, 6, 12, 18], f"saved internal numbers keep their rung and place {ic['saved']}")
+        ck(ic['next'] == [13, 6, 4, 3], f"next written rung by place {ic['next']}")
+        h = ic['help']
+        ck('Stage' not in h and 'rung 1,' not in h and 'clapped at rung 2' in h and 'Rung 13 (Level 5)' in h and 'from rung 6' in h and 'the 7th (rung 13)' in h, f"Ear Lab help text: {h[:400]}")
+        for k, v in ic['steps'].items():
+            ck(v['missing'] == 0 and v['rising'] and not v['sk'], f"steps {k}: {v}")
+        ck(ic['ivs'] == '1,2,3,4,5,6,6,7,8,9,10,11,12,3,8,9,10', f"interval semitones {ic['ivs']}")
         if errs:
             FAIL.append(f'page errors: {errs[:3]}')
         await b.close()

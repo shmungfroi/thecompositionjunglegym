@@ -128,7 +128,8 @@ JS = r"""(roots)=>{const out=[];const tx=e=>e?e.textContent:'';
  const lit=()=>[...document.querySelectorAll('#pno .lit')].map(e=>({m:+e.dataset.m,lab:tx(e.querySelector('.lab')),fg:tx(e.querySelector('.fg'))}));
  const nt=n=>({d:n.d,name:n.name,midi:n.midi,oct:n.oct});
  const dots=b=>[...b.querySelectorAll('svg text')].filter(t=>t.getAttribute('font-weight')==='700').map(t=>t.textContent);
- for(const root of roots)for(const q of Q.filter(q=>q.l<=6))for(let inv=0;inv<q.d.length;inv++){
+ for(const root of roots)for(const q of qualItems())   // 0.50 ICfix: the library's own list (the augmented sixths are now tagged Level 6 but are not library types)
+ for(let inv=0;inv<q.d.length;inv++){
   Object.assign(S,{root,q:q.k,inv,level:6,vi:0,dots:'deg',more:false,inst:'piano',pmode:'beg'});
   let rerr=null;try{render()}catch(e){rerr=String(e.message||e).slice(0,160)}const c=chord();
   const R={root,q:q.k,inv,rerr,formula:q.d,sym:$('sym').textContent,bassTxt:$('bassTxt').textContent,tones:c.tones.map(nt),bassName:c.bass.name};

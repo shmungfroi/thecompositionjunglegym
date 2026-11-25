@@ -1227,11 +1227,16 @@ async def main():
         # merge 0.48: one Stage table, EARSTAGE (Fable's design spec, section 3): a drill or rung shows when its Stage <= the selected Stage
         # 0.49 ladders (LADDER_REGISTER_049 section 1): melodic dictation 12 rungs (Stages 4,4,4,4,5,5,5,5,6,6,6,6), rhythm dictation 10 (4,4,4,5,5,5,5,6,6,6)
         # 0.50 V10: nothing is hidden by the learner's level; every drill and every written rung is offered at Levels 4, 5 and 6
-        NR = {'metre': 3, 'rhy': 10, 'qual': 3, 'cad': 3, 'bass': 3, 'mel': 12, 'blind': 3}
+        # 0.50 ICfix: cadences 4 (internal rung 4, minor, place 7) and melody 13 (internal rung 13, natural minor, place 7)
+        NR = {'metre': 3, 'rhy': 10, 'qual': 3, 'cad': 4, 'bass': 3, 'mel': 13, 'blind': 3}
         WANT = {g: {d: list(range(1, n + 1)) for d, n in NR.items()} for g in (4, 5, 6)}
+        # the picker lists written rungs in place order, so the appended rungs sit at their places (cad 4 at 7, before 3 at 13; mel 13 at 7, after 5 at 6)
+        for g in WANT:
+            WANT[g]['cad'] = [1, 2, 4, 3]
+            WANT[g]['mel'] = [1, 2, 3, 4, 5, 13, 6, 7, 8, 9, 10, 11, 12]
         await pg.evaluate("()=>{EAR.q=null;EAR.done=false}")
         for g in (4, 5, 6):
-            await pg.click(f'#lvl button[data-l="{g}"]')
+            await pg.evaluate(f"document.getElementById('lvBtn').click();document.querySelector('#lvPop .lvopt[data-l=\"{g}\"]').click()")   # 0.50 V4: the real level control
             await pg.evaluate("()=>{location.hash='ear';room('ear')}")
             await pg.wait_for_timeout(200)
             n0 = len(errs)
