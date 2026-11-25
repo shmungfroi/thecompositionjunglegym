@@ -16,8 +16,6 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;ba
 
 /* frame */
 .rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail);background:#0f0d09;border-right:1px solid var(--line);z-index:6;padding-top:52px}
-.rail .lv{font-family:'Poiret One',Outfit;color:var(--gold);text-align:center;font-size:18px;margin:10px 0 0;line-height:1;border-top:1px solid var(--line);padding-top:8px}
-.rail .lv small{display:block;font-family:Outfit;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:#6f6650;margin-top:2px}
 .rail{overflow-y:auto}
 .rail button{padding:7px 0}
 .rail .logo{position:absolute;top:12px;left:0;width:100%;text-align:center;font-size:28px;color:var(--gold)}
@@ -36,9 +34,6 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;ba
 .search input{flex:1;background:none;border:0;padding:8px 16px;outline:none;min-width:0}
 .search input::placeholder{color:var(--muted)}
 .search button{background:var(--gold);color:var(--ink);border:0;padding:0 16px;cursor:pointer;font-weight:600}
-.lvl{display:flex;border:1px solid var(--line);border-radius:22px;overflow:hidden}
-.lvl button{background:none;border:0;padding:7px 12px;cursor:pointer;color:var(--muted);font-size:14px}
-.lvl button.on{background:var(--gold);color:var(--ink);font-weight:600}
 .jbtn{background:none;border:1px solid var(--gold);color:var(--goldhi);border-radius:22px;padding:7px 14px;cursor:pointer;white-space:nowrap}
 .jbtn:hover{background:rgba(201,162,74,.12)}
 
@@ -54,7 +49,7 @@ h1{margin:4px 0 2px;font-size:46px;letter-spacing:2px;color:var(--ivory)}
 
 .grid{display:grid;grid-template-columns:minmax(330px,420px) 1fr;gap:18px}
 @media(max-width:1020px){.grid{grid-template-columns:1fr}.top .crumb{display:none}}
-@media(max-width:700px){.top .t{font-size:15px;letter-spacing:2px}.lvl{display:none}h1{font-size:34px}}
+@media(max-width:700px){.top .t{font-size:15px;letter-spacing:2px}h1{font-size:34px}}
 
 /* panels with nouveau corners */
 .card{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:18px}
@@ -1069,7 +1064,6 @@ svg.vfx{display:block;max-width:none}
  .top{left:0;height:var(--top);flex-wrap:wrap;align-content:center;row-gap:8px;column-gap:10px;padding:8px 12px}
  .top .t{flex:1;font-size:15px;letter-spacing:2.5px}.top .tw{display:none}.top .crumb{display:none}
  .search{order:3;flex:1 1 100%;max-width:none;margin:0}.search input{padding:9px 14px;font-size:16px}
- .lvl{display:flex}.lvl button{padding:6px 9px;font-size:12.5px}
  .top .jbtn{display:none}
  main{margin-left:0;padding:calc(var(--top) + 14px) 14px calc(84px + env(safe-area-inset-bottom))}
  .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:7;background:rgba(15,13,9,.97);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom))}
@@ -1083,7 +1077,6 @@ svg.vfx{display:block;max-width:none}
  .msg button{display:flex;align-items:center;gap:10px;background:#0e0c08;border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--ivory);font:inherit;font-size:14px;cursor:pointer;text-align:left}
  .msg button.on{border-color:var(--gold);color:var(--goldhi)}
  .msg svg{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
- .mslvl{display:flex;border:1px solid var(--line);border-radius:22px;overflow:hidden}.mslvl button{flex:1;background:none;border:0;padding:10px;color:var(--muted);font:inherit;font-size:14px;cursor:pointer}.mslvl button.on{background:var(--gold);color:var(--ink);font-weight:600}
 }
 
 /* climbs grouped; cards the same height with the button at the foot */
@@ -1122,9 +1115,9 @@ small{font-size:max(11px,.85em)}
 /* finish: one visible focus ring, hover and press states, reduced motion */
 button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
 .search input:focus-visible{outline:none}.search:focus-within{border-color:var(--gold);box-shadow:0 0 0 2px rgba(240,212,138,.25)}
-.chip,.mini,.kchip,.jbtn,.lvl button,.rail button,.tabbar button{transition:border-color .15s,background-color .15s,color .15s,transform .08s}
+.chip,.mini,.kchip,.jbtn,.rail button,.tabbar button{transition:border-color .15s,background-color .15s,color .15s,transform .08s}
 .chip:hover,.mini:hover,.kchip:hover{border-color:rgba(201,162,74,.6)}
-.rail button:hover,.lvl button:hover{color:var(--ivory)}
+.rail button:hover{color:var(--ivory)}
 button:active:not(:disabled){transform:translateY(1px)}
 button:disabled{cursor:default;opacity:.45}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
@@ -1212,12 +1205,10 @@ label.ck{gap:8px;cursor:pointer}
 
 /* C5-6a (Fable, verification of C5). Amends C5-6: between 761 and 1000 px the Stage switch was left to shrink,
    so it wrapped to two rows and the chosen stage was cut off. Append after the C5-6 block. */
-@media (min-width:761px) and (max-width:1180px){.top .lvl{flex:none}.top .lvl button{white-space:nowrap}}
 @media (min-width:761px) and (max-width:1023px){.top .tw{display:none}}
 @media (min-width:761px) and (max-width:860px){
  .top{gap:12px}
  .top .t{letter-spacing:2px}
- .top .lvl button{padding:7px 8px;font-size:13px}
  .top .jbtn{padding:7px 12px}
 }
 .search input{text-overflow:ellipsis}
@@ -1699,6 +1690,14 @@ details:not([open])>summary.lvch{margin-bottom:0}
 .vlpick{max-height:min(60vh,480px);overflow-y:auto;overscroll-behavior:contain;padding-right:4px}
 @media(max-width:1100px){.vlwrap{grid-template-columns:minmax(0,1fr)}.vlpick{max-height:min(46vh,360px)}}
 .climb.cmp.on{border-color:var(--gold);background:rgba(201,162,74,.14)}
+.lvlist{--lvh:52px}
+.lvopt{grid-template-rows:auto auto;align-content:center;row-gap:2px}
+.lvopt>.lvm{grid-row:1 / 3}
+.lvopt>b{grid-column:2;grid-row:1}
+.lvopt>small{grid-column:3;grid-row:1}
+.lvopt>.lvd{grid-column:2 / 4;grid-row:2;font-size:11px;line-height:1.2;letter-spacing:.2px;color:var(--muted)}
+.lvpop{width:376px}
+@media (max-width:760px){.lvlist{--lvh:52px}}
 .lvscroll{max-height:min(52vh,420px);overflow-y:auto;overscroll-behavior:contain;padding:2px 4px 2px 0}
 .qbtn{display:none;align-items:center;gap:12px;width:100%;min-height:48px;padding:0 12px 0 14px;border:1px solid var(--gold);border-radius:12px;background:rgba(201,162,74,.14);text-align:left;cursor:pointer}
 .qbtn b{font-size:16px;font-weight:600;color:var(--goldhi)}
@@ -1751,14 +1750,17 @@ details:not([open])>summary.lvch{margin-bottom:0}
 
 <nav class="tabbar" aria-label="Rooms"></nav>
 <div class="msheet" id="qsheet" hidden><div class="msb" role="dialog" aria-label="Chord type"><div class="msh"><span class="disp">Chord type</span><button class="mini" id="qsClose" aria-label="Close">✕</button></div><div id="qsBody"></div></div></div>
-<div class="msheet" id="msheet" hidden><div class="msb" role="dialog" aria-label="More rooms"><div class="msh"><span class="disp">More rooms</span><button class="mini" id="msClose" aria-label="Close">✕</button></div><div class="msg" id="msRooms"></div><div class="lbl" style="margin:16px 0 8px">Stage</div><div class="mslvl" id="msLvl"></div><button class="jbtn" id="msJ" style="margin-top:16px;width:100%">✎ Journal</button></div></div>
+<div class="msheet" id="msheet" hidden><div class="msb" role="dialog" aria-label="More"><div class="msh"><span class="disp">More rooms</span><button class="mini" id="msClose" aria-label="Close">✕</button></div><div class="msg" id="msRooms"></div><div class="mslv" id="msLvl"></div><button class="jbtn" id="msJ" style="margin-top:16px;width:100%"><span class="ji" aria-hidden="true">✎</span><span class="jt">Journal</span></button></div></div>
 <header class="top">
  <span class="t disp"><span class="tw">COMPOSITION </span>JUNGLE GYM</span>
  <span class="crumb">Seed Bank · <b id="crumbSym">Bm7</b></span>
  <form class="search" id="searchForm"><input id="q" placeholder="Type a chord: Bm7, E♭9…" autocomplete="off"><button>Find</button></form>
- <div class="lvl" id="lvl" role="group" aria-label="Level"><button data-l="1" title="Level 1 · First steps">1</button><button data-l="2" title="Level 2 · Foundation">2</button><button data-l="3" title="Level 3 · Developing">3</button><button data-l="4" title="Level 4 · Intermediate">4</button><button data-l="5" title="Level 5 · Senior" class="on">5</button><button data-l="6" title="Level 6 · Advanced">6</button><button data-l="7" title="Level 7 · Extension">7</button></div>
+ <div class="lvc" id="lvl">
+  <button class="lvbtn" id="lvBtn" aria-haspopup="true" aria-expanded="false" aria-controls="lvPop" aria-label="Your level: 5, Senior, about NSW Stage 6. Change level" title="Your level"><span class="lvm lg now" aria-hidden="true">5</span><span class="lvbtn-t"><b>Senior</b><small>≈ NSW Stage 6</small></span><svg class="car" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button>
+  <div class="lvpop" id="lvPop" role="dialog" aria-label="Your level" hidden></div>
+ </div>
  <button class="tstop" id="tStop" hidden title="Stop all sound (Esc)">■ Stop</button>
- <button class="jbtn" id="openJ">✎ Journal</button>
+ <button class="jbtn" id="openJ" aria-label="Journal"><span class="ji" aria-hidden="true">✎</span><span class="jt">Journal</span></button>
 </header>
 
 <main>
@@ -2321,7 +2323,25 @@ function keyAcc(k,mode){const M={0:0,7:1,2:2,9:3,4:4,11:5,6:6,1:-5,8:-4,3:-3,10:
 function keyInBand(k,mode,lv){const a=Math.abs(keyAcc(k,mode));if(lv<=1)return mode==='maj'?a<=1:k===9;return lv>=5||a<=lv}
 function keysInBand(ks,mode,lv){const f=ks.filter(k=>keyInBand(k,mode,lv));return f.length?f:ks}
 function lvAt(A){return Math.max(S.level,Math.min(...A.map(x=>x.l||1)))}
-function lvlSet(l){S.level=l;try{localStorage.setItem('cjg_level',l)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}/* saved NSW Stage -> Level, once (Levels framework) */
+/* 0.50 V4: the level control. One button #lvBtn + popover #lvPop; the same list in the More sheet (#msLvl). */
+const LVDESC=['','beat, do–re–mi, major and minor chords','sus and 7th chords, the major scale, first cadences','all four triads, colour 7ths, minor keys','added notes, half-diminished, modes and modulation','9ths, diminished 7ths, senior harmony and forms','11ths, 13ths, augmented 6ths, melodic-minor colours','altered dominants, quartal and slash chords'];
+/* 0.50 V7: curriculum hints come from this one table (Justin-approved mapping: 1-2 = Stage 4, 3-4 = Stage 5, 5-6 = Stage 6, 7 = Stage 6 Extension) */
+const CURR={nsw:{name:'NSW',opt:'NSW (Stages 4–6)',lv:['','Stage 4','Stage 4','Stage 5','Stage 5','Stage 6','Stage 6','Stage 6 Extension']}};
+function curKey(){try{const v=localStorage.getItem('cjg_curric');return v===null?'nsw':(CURR[v]?v:'')}catch(e){return'nsw'}}
+function curHint(l,short){const c=CURR[curKey()];if(!c||!c.lv[l])return'';return'≈ '+(short?'':c.name+' ')+c.lv[l]}
+function curName(){const c=CURR[curKey()];return c?c.name:''}
+function lvListHTML(ms){const a=ms?'mslvLbl':'lvLbl',c=ms?'mslvCur':'lvCur';
+ return`<div class="lvhd"><span class="lbl" id="${a}">Your level</span><small class="lvsyl"></small></div><div class="lvlist" role="radiogroup" aria-labelledby="${a}">${[1,2,3,4,5,6,7].map(l=>`<button class="lvopt" role="radio" aria-checked="false" tabindex="-1" data-l="${l}"><span class="lvm lg" aria-hidden="true">${l}</span><b><span class="sr">Level ${l}, </span>${LVN[l]}</b><small></small><span class="lvd">${LVDESC[l]}</span></button>`).join('')}</div><p class="lvnote">What is new at your level comes first in every list. Nothing is hidden.</p><div class="lvcur"><label for="${c}">Curriculum</label><select id="${c}">${Object.entries(CURR).map(([k,v])=>`<option value="${k}">${v.opt}</option>`).join('')}<option value="">None</option></select></div>`}
+function lvSync(){const L=S.level,h=curHint(L),ck=curKey();
+ const b=document.getElementById('lvBtn');if(b){const d=b.querySelector('.lvm');d.textContent=L;d.className='lvm lg now';b.querySelector('.lvbtn-t').innerHTML=`<b>${LVN[L]}</b>${h?`<small>${h}</small>`:''}`;
+  b.setAttribute('aria-label',`Your level: ${L}, ${LVN[L]}${h?', about '+h.slice(2):''}. Change level`)}
+ document.querySelectorAll('#lvPop,#msLvl').forEach(box=>{const sy=box.querySelector('.lvsyl');if(sy)sy.textContent=ck?`≈ ${curName()} syllabus`:'';
+  box.querySelectorAll('.lvopt').forEach(o=>{const l=+o.dataset.l,on=l===L;o.classList.toggle('upto',l<=L);o.setAttribute('aria-checked',on?'true':'false');o.tabIndex=on?0:-1;
+   const m=o.querySelector('.lvm');m.className='lvm lg'+(on?' now':l>L?' ahead':'');o.querySelector('small').textContent=curHint(l,true)});
+  const s=box.querySelector('select');if(s&&s.value!==ck)s.value=ck})}
+function lvlSet(l){S.level=l;try{localStorage.setItem('cjg_level',l)}catch(e){}lvSync()}
+function lvlChange(l){if(l===S.level)return;lvlSet(l);render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM)}
+function curSet(k){try{localStorage.setItem('cjg_curric',k)}catch(e){}lvSync();document.dispatchEvent(new CustomEvent('cjg-curric',{detail:{key:k}}));if(typeof ROOM!=='undefined'&&ROOM==='ear')room('ear')}/* every hint refreshes: the button and both lists here, the Ear Lab rung line by the re-render (and by the cjg-curric event) */
 /* 0.50 V3: the ordering rule. Three bands: New at Level n, Earlier levels, Ahead of you. Sort key: l, stp, table order. */
 const LVCH=l=>l===S.level?'now':l<S.level?'':'ahead';
 function lvSort(A){return A.map((x,i)=>[x,i]).sort((a,b)=>((a[0].l||1)-(b[0].l||1))||((a[0].stp||0)-(b[0].stp||0))||(a[1]-b[1])).map(q=>q[0])}
@@ -2907,7 +2927,7 @@ function renderClimb(c){
 }
 
 /* ---------- events ---------- */
-document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-k],[data-v],[data-m],[data-i],[data-l],[data-room],[data-more],[data-dots],[data-gtone],[data-bpat]');if(!t)return;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-k],[data-v],[data-m],[data-i],[data-room],[data-more],[data-dots],[data-gtone],[data-bpat]');if(!t)return;
  if(t.dataset.bpat!==undefined){const p=($('inst')._bp||[])[+t.dataset.bpat];if(p)play(p.notes.map(n=>n.m),.38,'pluck');return}
  if(t.dataset.more!==undefined){S.more=t.dataset.more==='1';S.vi=0;renderInst(chord());return}
  if(t.dataset.dots!==undefined){S.dots=t.dataset.dots;renderInst(chord());return}
@@ -2916,7 +2936,6 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-
  if(t.dataset.v!==undefined){S.vi=+t.dataset.v;document.querySelectorAll('.vbox').forEach((b,i)=>b.classList.toggle('on',i===S.vi));const x=instMidis(chord());play(x.m,x.gap,x.k);return}
  if(t.dataset.i){S.inst=t.dataset.i;S.vi=0;const k=smpKind(S.inst==='piano'?'piano':S.inst==='bass'?'bass':S.inst);if(k)loadSamples(k);renderInst(chord());return}
  if(t.dataset.gtone){S.gtone=t.dataset.gtone;loadSamples(smpKind('guitar'));renderInst(chord());return}
- if(t.dataset.l){S.level=+t.dataset.l;if(typeof EAR!=='undefined'&&EAR.all){EAR.all=false;earSave()}try{localStorage.setItem('cjg_level',S.level)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
  if(t.dataset.room)return;
  if(t.dataset.m!==undefined){play([+t.dataset.m],0,S.inst==='piano'?'piano':'pluck')}
 });
@@ -2931,7 +2950,7 @@ $('toOracle').onclick=()=>toast('The Oracle opens in the next build: this chord 
 $('searchForm').onsubmit=e=>{e.preventDefault();const v=$('q').value.trim().replace('♯','#').replace('♭','b');const m=v.match(/^([A-Ga-g])([#b]?)(.*?)(?:\/([A-Ga-g][#b]?))?$/);
  if(!m){toast('Try a chord symbol like Bm7, F#dim7 or Ebmaj9');return}
  const r=m[1].toUpperCase()+m[2],qa=ALIAS[m[3]];if(qa===undefined||!ROOTS.includes(r)){toast(`I don't know "${v}" yet. Try Bm7, F#dim7, Ebmaj9…`);return}
- S.root=r;S.q=qa;S.inv=0;S.vi=0;const qq=Q.find(x=>x.k===qa);if(qq.l>S.level){lvlSet(qq.l)}
+ S.root=r;S.q=qa;S.inv=0;S.vi=0;
  if(m[4]){const c=chord(),i=c.tones.findIndex(t=>mod(t.midi,12)===pcOf(m[4][0].toUpperCase()+m[4].slice(1)));if(i>0)S.inv=i}
  render();play(voicing(chord()).map(x=>x.midi));logIt('searched '+v);$('q').blur()};
 
@@ -3371,7 +3390,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-load],[dat
   if(a==='inv'){const n=chordOf(ch.root,ch.q).tones.length;ch.inv=((ch.inv||0)+1)%n;play(voiceProg([ch]).flatMap(v=>[v.bass.midi,...v.rh.map(x=>x.midi)]))}
   if(a==='dup')P.splice(i+1,0,{...ch});
   if(a==='del'){P.splice(i,1);G.sel=-1}
-  if(a==='seed'){S.root=ch.root;S.q=ch.q;S.inv=ch.inv||0;S.vi=0;if(Q.find(x=>x.k===ch.q).l>S.level){lvlSet(Q.find(x=>x.k===ch.q).l)}location.hash='seed';room('seed');return}
+  if(a==='seed'){S.root=ch.root;S.q=ch.q;S.inv=ch.inv||0;S.vi=0;location.hash='seed';room('seed');return}
   saveP();renderGym();return}
  if(t.dataset.pi!==undefined){const i=+t.dataset.pi;G.sel=i;renderGym();const v=voiceProg(P)[i];play([v.bass.midi,...v.rh.map(x=>x.midi)]);return}
  if(t.dataset.add){const p=parseRoman(t.dataset.add,K);P.push({...p,inv:0,beats:gBar()});saveP();renderGym();const v=voiceProg(P)[P.length-1];play([v.bass.midi,...v.rh.map(x=>x.midi)]);logIt('added '+t.dataset.add);return}
@@ -3945,10 +3964,10 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-ktab],[dat
  if(d.kinst){KS.inst=d.kinst;renderScales();return}
  if(d.kplay){const T=scaleTones(KS.tonic,KS.sc,false);if(d.kplay==='up')play(T.map(x=>x.midi),.3,'piano');else play(scaleTones(KS.tonic,KS.sc,true).map(x=>x.midi),.3,'piano');return}
  if(d.kss){if(d.kss==='stop'){KS.sing=null;micStop();$('ksSingBox').innerHTML='';document.querySelectorAll('#ksTiles .stile').forEach(e=>e.classList.remove('now'));return}singScale();return}
- if(d.kgo){const[r,q]=d.kgo.split('|');S.root=r;S.q=q;S.inv=0;S.vi=0;if(Q.find(x=>x.k===q).l>S.level){lvlSet(Q.find(x=>x.k===q).l)}location.hash='seed';room('seed');play(voicing(chord()).map(x=>x.midi));return}
+ if(d.kgo){const[r,q]=d.kgo.split('|');S.root=r;S.q=q;S.inv=0;S.vi=0;location.hash='seed';room('seed');play(voicing(chord()).map(x=>x.midi));return}
  if(d.kgym){const mode=KS.sc==='maj'||KS.sc==='ion'?'maj':'min';setKey(pcOf(KS.tonic),mode);location.hash='gym';room('gym');toast('The Gym is now in '+keyName(K));return}
  if(d.ci!==undefined){CSEL={i:+d.ci,minor:!!d.cmin};renderCircle();const tn=CSEL.minor?CMIN[CSEL.i]:CMAJ[CSEL.i];play(scaleTones(tn,CSEL.minor?'nmin':'maj',false).map(x=>x.midi),.16,'piano');return}
- if(d.kmode){const[tn,sk]=d.kmode.split('|');KS.tonic=tn;KS.sc=sk;KS.desc=false;if(SCALES.find(s=>s.k===sk).l>S.level){lvlSet(SCALES.find(s=>s.k===sk).l)}KS.tab='scales';renderKeysRoom();window.scrollTo(0,0);play(scaleTones(KS.tonic,KS.sc,false).map(x=>x.midi),.22,'piano');return}
+ if(d.kmode){const[tn,sk]=d.kmode.split('|');KS.tonic=tn;KS.sc=sk;KS.desc=false;KS.tab='scales';renderKeysRoom();window.scrollTo(0,0);play(scaleTones(KS.tonic,KS.sc,false).map(x=>x.midi),.22,'piano');return}
  if(d.kis){KS.iv.start=d.kis;renderIntervals();const[a,b]=ivNotes(KS.iv.start,IVS.find(x=>x.k===KS.iv.k),KS.iv.dir);play([a.midi,b.midi],.6,'piano');return}
  if(d.kiv){KS.iv.k=d.kiv;renderIntervals();const[a,b]=ivNotes(KS.iv.start,IVS.find(x=>x.k===KS.iv.k),KS.iv.dir);play([a.midi,b.midi],.6,'piano');logIt('looked at the interval '+d.kiv);return}
  if(d.kivd){KS.iv.dir=d.kivd;renderIntervals();const[a,b]=ivNotes(KS.iv.start,IVS.find(x=>x.k===KS.iv.k),KS.iv.dir);play([a.midi,b.midi],.6,'piano');return}
@@ -9721,9 +9740,21 @@ setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
   `<button id="tbMore" aria-haspopup="dialog"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>More</span></button>`;
  const ms=document.getElementById('msheet');
  document.getElementById('msRooms').innerHTML=MORE.map(r=>{const b=btn(r);return`<button data-room="${r}">${b.querySelector('svg').outerHTML}${b.querySelector('small').textContent}</button>`}).join('');
- const syncLvl=()=>{document.getElementById('msLvl').innerHTML=[...document.querySelectorAll('#lvl button')].map(b=>`<button data-msl="${b.dataset.l}" class="${b.classList.contains('on')?'on':''}">${b.textContent}</button>`).join('')};
- document.getElementById('tbMore').onclick=()=>{syncLvl();ms.hidden=false};
- document.getElementById('msClose').onclick=()=>ms.hidden=true;ms.addEventListener('click',e=>{if(e.target===ms)ms.hidden=true;const l=e.target.closest('[data-msl]');if(l){document.querySelector(`#lvl button[data-l="${l.dataset.msl}"]`).click();syncLvl()}});
+ const mq=matchMedia('(max-width:760px)'),pop=document.getElementById('lvPop'),lb=document.getElementById('lvBtn');
+ document.getElementById('lvPop').innerHTML=lvListHTML(false);document.getElementById('msLvl').innerHTML=lvListHTML(true);lvSync();
+ const rowOn=box=>box.querySelector('.lvopt[aria-checked="true"]');
+ const closePop=ret=>{pop.hidden=true;lb.setAttribute('aria-expanded','false');if(ret)lb.focus()};
+ document.getElementById('tbMore').onclick=()=>{ms.hidden=false};
+ lb.onclick=()=>{if(mq.matches){ms.hidden=false;const m=document.getElementById('msLvl');m.scrollIntoView({block:'start'});const r=rowOn(m);if(r)r.focus({preventScroll:true});return}
+  if(pop.hidden){pop.hidden=false;lb.setAttribute('aria-expanded','true');const r=rowOn(pop);if(r)r.focus()}else closePop(false)};
+ document.addEventListener('click',e=>{if(!pop.hidden&&!e.target.closest('.lvc'))closePop(false);
+  const o=e.target.closest('.lvopt');if(!o)return;lvlChange(+o.dataset.l);if(o.closest('#lvPop'))closePop(true)});
+ document.addEventListener('change',e=>{if(e.target.matches&&e.target.matches('#lvCur,#mslvCur'))curSet(e.target.value)});
+ document.addEventListener('keydown',e=>{const o=e.target.closest&&e.target.closest('.lvopt');if(!o)return;let n=+o.dataset.l;const k=e.key;
+  if(k==='ArrowUp'||k==='ArrowLeft')n=n===1?7:n-1;else if(k==='ArrowDown'||k==='ArrowRight')n=n===7?1:n+1;else if(k==='Home')n=1;else if(k==='End')n=7;
+  else{if(k==='Escape'&&o.closest('#lvPop')){e.preventDefault();closePop(true)}return}
+  e.preventDefault();lvlChange(n);const box=o.closest('#lvPop,#msLvl'),r=box.querySelector('.lvopt[data-l="'+n+'"]');if(r)r.focus()});
+ document.getElementById('msClose').onclick=()=>ms.hidden=true;ms.addEventListener('click',e=>{if(e.target===ms)ms.hidden=true});
  document.getElementById('msJ').onclick=()=>{ms.hidden=true;document.getElementById('openJ').click()};
  addEventListener('keydown',e=>{if(e.key==='Escape')ms.hidden=true})})();
 /* the Ask → Make path on climb and form pages: each step jumps to its first panel, the current step lights as you scroll */
@@ -9764,7 +9795,7 @@ setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
   if(busy()&&performance.now()>=PLAY.guard)stopAll();unmark();const key=sig(b);
   setTimeout(()=>{if(!busy())return;PK=key;const m=b.isConnected&&/^\s*▶/.test(b.textContent)?b:find();if(m)mark(m)},40)},true)})();
 /* remember the stage between visits */
-(()=>{try{let l=+localStorage.getItem('cjg_level');if(!(l>=1&&l<=7)){const o=+localStorage.getItem('cjg_stage');l=LVMIG[o]||0;if(l)localStorage.setItem('cjg_level',l)}if(l>=1&&l<=7){S.level=l;document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',+b.dataset.l===l))}}catch(e){}})();
+(()=>{try{let l=+localStorage.getItem('cjg_level');if(!(l>=1&&l<=7)){const o=+localStorage.getItem('cjg_stage');l=LVMIG[o]||0;if(l)localStorage.setItem('cjg_level',l)}if(l>=1&&l<=7){S.level=l;if(typeof lvSync==='function')lvSync()}}catch(e){}})();
 /* journal drafts are kept as you type */
 (()=>{try{const D=JSON.parse(localStorage.getItem('cjg_jdraft')||'[]');[1,2,3,4].forEach(i=>{const t=$('j'+i);if(!t)return;if(D[i-1]&&!t.value)t.value=D[i-1];t.addEventListener('input',()=>{try{localStorage.setItem('cjg_jdraft',JSON.stringify([1,2,3,4].map(k=>$('j'+k)?$('j'+k).value:'')))}catch(e){}})})}catch(e){}})();
 render();renderLog();applyRoute(location.hash.slice(1));termInit();
