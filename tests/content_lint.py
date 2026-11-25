@@ -392,6 +392,28 @@ try:
 except Exception as e:
     report['syllabus_tags']['failures'].append(f'tag check failed: {e}')
 
-report['passed'] = not any(report[k]['failures'] for k in ('us_terms', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words', 'syllabus_tags', 'song_rules'))
+# ---------- 0.50 V6: no "Stage" in visible text, and no "Level n" as an area label ----------
+# "Stage" may stay only in: the curriculum table (CURR), the three curriculum hints built from it, the static copy of the level button
+# (replaced at load), and the NESA syllabus sentence SYLS6 (NESA's own wording). Ear Lab chips for the old "Show all" control are a known
+# exception until the 21-rung picker (section 3) removes EAR.all; they are counted, not failed.
+report['stage_wording'] = {'failures': [], 'known_ear_all': 0}
+_code = re.sub(r'/\*.*?\*/', '', INDEX, flags=re.S)
+_code = re.sub(r'(?m)^\s*//.*$', '', _code)
+_code = re.sub(r'(?m)(?<=[;{}),])\s+//.*$', '', _code)
+for _m in re.finditer(r'\bStages?\b', _code):
+    _ln = _code[_code.rfind('\n', 0, _m.start()) + 1:_code.find('\n', _m.end())]
+    if 'const CURR=' in _ln or 'const SYLS6=' in _ln or 'id="lvBtn"' in _ln:
+        continue
+    if 'Show Stage' in _ln or 'outside Stage' in _ln:
+        report['stage_wording']['known_ear_all'] += 1
+        continue
+    report['stage_wording']['failures'].append('line %d: ...%s...' % (line_of(_code, _m.start()), _code[max(0, _m.start() - 30):_m.end() + 30].replace('\n', ' ')))
+report['area_labels'] = {'failures': []}
+for _m in re.finditer(r'(?:class="kicker"[^>]*>|class="crumb">|crumb[^\n]{0,60}innerHTML=[`\'])\s*Levels? \d', INDEX):
+    report['area_labels']['failures'].append('line %d: Level n used as an area label: %s' % (line_of(INDEX, _m.start()), INDEX[_m.start():_m.end() + 20]))
+for _m in re.finditer(r'class="lv">\s*\d', INDEX):
+    report['area_labels']['failures'].append('line %d: numeral in a rail area name' % line_of(INDEX, _m.start()))
+
+report['passed'] = not any(report[k]['failures'] for k in ('us_terms', 'censor_terms', 'sources', 'source_links', 'credits', 'lyric_words', 'syllabus_tags', 'song_rules', 'stage_wording', 'area_labels'))
 print(json.dumps(report, ensure_ascii=False, indent=1))
 sys.exit(0 if report['passed'] else 1)
