@@ -180,7 +180,8 @@ async def run(p):
     check(o['reached'] == [4], f"U1 dot earned {o['reached']}")
     check(o['now2'] is False, 'U1 the row shows once per climb')
     check(o['reachedKept'] is True, 'U1 the dot stays once earned')
-    check('Rung 9 starts Level 3' in o['cross'] and 'Ready for rung 9?' in o['cross'], f"U1 a suggestion that crosses a level says so {o['cross'][-300:]}")
+    # 0.50 ICfix: after internal rung 5 (place 6) the next written rung by place is internal 13 (place 7, natural minor, Level 3)
+    check('Rung 7 starts Level 3' in o['cross'] and 'Ready for rung 7?' in o['cross'] and 'data-earlv="13"' in o['cross'], f"U1 a suggestion that crosses a level says so {o['cross'][-300:]}")
     # ---- U2
     o = await pg.evaluate(LENLIVE)
     check(o['nbad'] == 0, f"U2 earLenLive over {o['n']} checks: {o['bad']}")

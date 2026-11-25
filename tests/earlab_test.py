@@ -415,7 +415,8 @@ async def ladder_section(pg):
         N:LADNAMES,NK:LADNAMES_KK,R:RHYNAMES,tiles:Object.fromEntries([1,2,3,4,5,6,7,8,9,10].map(l=>[l,ladRhyTiles(l)])),ec:[1,2,3].map(l=>earCells(l).join(' '))})""")
     COUNT['self-check L0 Stage table and settings'] = 1
     # 0.50: levels of the built rungs, from their places 1-21 in the approved re-tag table 8 (level = ceil(place / 3))
-    MEL_SLOT, RHY_SLOT = [2, 3, 4, 5, 6, 9, 10, 12, 13, 15, 16, 18], [2, 4, 5, 7, 8, 9, 11, 13, 15, 16]
+    # 0.50 ICfix: melody internal rung 13 (natural minor, split from rung 5) is appended at place 7; EARSLOT stays in internal order
+    MEL_SLOT, RHY_SLOT = [2, 3, 4, 5, 6, 9, 10, 12, 13, 15, 16, 18, 7], [2, 4, 5, 7, 8, 9, 11, 13, 15, 16]
     lev = lambda a: [-(-n // 3) for n in a]
     if st['mel'] != lev(MEL_SLOT) or st['rhy'] != lev(RHY_SLOT):
         fail('L', f"EARSTAGE mel {st['mel']} rhy {st['rhy']}")
@@ -448,7 +449,7 @@ async def ladder_section(pg):
     # ---------------- L1-L4, L11: melody items (5,000 seeded per rung) ----------------
     N = 5000
     mel = {}
-    for l in range(1, 12):   # one rung per call (the page keeps one rung's items at a time)
+    for l in list(range(1, 12)) + [13]:   # one rung per call (the page keeps one rung's items at a time); 0.50 ICfix: 13 = rung 5's natural-minor items
         mel[l] = await pg.evaluate("""(a)=>{const[MK,N,l]=a,R=eval(MK)(491+l),rows=[];for(let i=0;i<N;i++){const q=ladGenMel(l,R);
         rows.push({l,id:q.id,key:q.key.do,octv:q.doMidi-60-q.key.do,n:q.n,tempo:q.tempo||0,metre:q.metre||'',anac:q.anac||0,sol:q.a,new:q.new,
           var:String((q.info&&(q.info.kind||q.info.var||q.info.tune))||''),rb1:q.cells?q.cells[0].join(' '):null,lo:Math.min(...q.midi),hi:Math.max(...q.midi),
@@ -618,7 +619,7 @@ async def ladder_section(pg):
 
     # ---------------- L9, L10: marking, palette, readiness ----------------
     mk = await pg.evaluate("""(MK)=>{const R=eval(MK)(499),o={right:{},wrong:{},pal:{},beams:0,err:[]};
-        for(let l=1;l<=12;l++){let r=0,w=0,p=0;for(let i=0;i<150;i++){const q=ladGenMel(l,R),parts=l===11?['mel','bass']:['mel'],A={};
+        for(const l of [1,2,3,4,5,6,7,8,9,10,11,12,13]){let r=0,w=0,p=0;for(let i=0;i<150;i++){const q=ladGenMel(l,R),parts=l===11?['mel','bass']:['mel'],A={};
           for(const part of parts){const E=ladTruthEntries(q,part);A[part]=E;let ok=true;for(let j=0;j<E.length;j++){if(!ladPalette(q,E.slice(0,j),part).lengths.some(x=>x.t===E[j].t&&x.rest===!E[j].s)){ok=false;break}}
             if(ok&&ladPalette(q,E,part).done)p++}
           const ans=l===11?A:A.mel;if(ladMelMark(q,ans,{mod:'home'}).ok)r++;
@@ -655,7 +656,7 @@ async def ladder_section(pg):
         // beaming: quaver pairs beamed, crotchets not
         const q4=ladGenMel(4,R),E4=ladTruthEntries(q4),bm=ladBeams(q4,E4);let full=[{t:q4.notes[0].dur,s:'x'},...E4];o.beams=bm.every(g=>g.every(j=>full[j].t<420)&&g.length>=2);
         return o}""", MK)
-    for l in range(1, 13):
+    for l in list(range(1, 13)) + [13]:
         COUNT['self-check L9 melody answers marked'] += 150
         if mk['right'][str(l)] != 150:
             fail('L', f"M{l}: the right answer is marked right {mk['right'][str(l)]} of 150")
@@ -732,7 +733,7 @@ async def ladder_section(pg):
     kv = list(ic['m9key'].values())
     mu, sd = sum(kv) / len(kv), (sum(kv) / len(kv) * (1 - 1 / len(kv))) ** 0.5
     COUNT['self-check L15 M9 key counts (2,000 items)'] = json.dumps(ic['m9key'])
-    if len(kv) != 11 or any(abs(v - mu) > 4 * sd for v in kv):   # even within sampling noise (4 sd), all eleven Stage 6 keys
+    if len(kv) != 12 or any(abs(v - mu) > 4 * sd for v in kv):   # even within sampling noise (4 sd), all twelve keys (0.50 ICfix: table 2, all keys from Level 5)
         fail('L', f"M9 keys uneven: {ic['m9key']} (IC S1)")
     if ic['m10r']:
         fail('L', f"M10: {ic['m10r']} items outside s,..d' (IC S2)")
@@ -870,7 +871,7 @@ async def main():
             if q['bass'] != [c[0] for c in q['ch']]:
                 fail('B', 'bass-only notes are not the bass of the chords')
         gen = await pg.evaluate("""()=>{let s=13;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o=[];
-            for(const l of [1,2,3])for(let i=0;i<2000;i++){const q=earGen('cad',l,R);o.push({l,a:q.a,rns:q.rns})}return o}""")
+            for(const l of [1,2,3,4])for(let i=0;i<2000;i++){const q=earGen('cad',l,R);o.push({l,a:q.a,rns:q.rns})}return o}""")
         for q in gen:
             COUNT['cadence questions (allow-list)'] += 1
             if pop_moves(q['rns']):
@@ -890,14 +891,15 @@ async def main():
 
         # ---------------- C: tells ----------------
         tells = await pg.evaluate("""()=>{let s=17;const R=()=>{s=(s*16807)%2147483647;return s/2147483647};const o={cad:[],metre:[],qual:[]};
-            for(const l of [1,2,3])for(let i=0;i<5000;i++){const c=earGen('cad',l,R);o.cad.push({l,a:c.a,sub:c.sub||'',md:c.key.mode,n:c.ch.length,lo:Math.min(...c.ch.flat()),hi:Math.max(...c.ch.flat()),
+            for(const l of [1,2,3,4])for(let i=0;i<5000;i++){const c=earGen('cad',l,R);o.cad.push({l,a:c.a,sub:c.sub||'',md:c.key.mode,n:c.ch.length,lo:Math.min(...c.ch.flat()),hi:Math.max(...c.ch.flat()),
                 s2:c.rns[1],open:c.ch[0].join(','),fin:c.ch[c.ch.length-1][3],fb:c.ch[0][0],lb:c.ch[c.ch.length-1][0],fs:c.ch[0][3],
                 sp:c.ch.map(v=>earClose(v)?'c':'o').join(''),comp:c.ch.every(v=>new Set(v.map(m=>mod(m,12))).size>=3),fcomp:new Set(c.ch[c.ch.length-1].map(m=>mod(m,12))).size>=3,rns:c.rns,k:c.key.k,ch:c.ch});
-              const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
+              if(l>3)continue;const m=earGen('metre',l,R);o.metre.push({l,a:m.a,bpm:m.bpm,comp:/8$/.test(m.a)&&m.a!=='7/8'});
               const q=earGen('qual',l,R);o.qual.push({l,a:q.a,lo:q.notes[0],hi:q.notes[q.notes.length-1]})}return o}""")
         MARGIN = 0.05
         def tell(sec, rows, name, feat, ans, levels=(1, 2, 3)):
-            for l in levels:
+            # 0.50 ICfix: cadences internal rung 4 (rung 2's minor-key items, place 7) gets every check rung 2 gets
+            for l in tuple(levels) + ((4,) if sec == 'cadences' and 2 in levels else ()):
                 rr = [r for r in rows if r['l'] == l]
                 acc, ch = predict_acc(rr, feat, ans)
                 COUNT['tell checks'] += 1
@@ -988,7 +990,7 @@ async def main():
             if min(bp) < 60 or max(bp) > 120 or max(bp) - min(bp) < 50:
                 fail('C', f'metre L{l}: tempo range {min(bp)}-{max(bp)} is not 60-120')
         # the second chord must not give the category away (the old level-1 plagal tell)
-        for l in (2, 3):
+        for l in (2, 3, 4):
             rr = [r for r in tells['cad'] if r['l'] == l]
             by = collections.defaultdict(set)
             for r in rr:

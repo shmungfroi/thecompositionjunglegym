@@ -16,8 +16,10 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent / 'harness'))
 import cjg
 from playwright.async_api import async_playwright
 
-SLOT = {'metre': [2, 5, 8], 'rhy': [2, 4, 5, 7, 8, 9, 11, 13, 15, 16], 'qual': [1, 7, 13], 'cad': [4, 5, 13], 'bass': [3, 4, 10],
-        'mel': [2, 3, 4, 5, 6, 9, 10, 12, 13, 15, 16, 18], 'blind': [7, 10, 13]}
+SLOT = {'metre': [2, 5, 8], 'rhy': [2, 4, 5, 7, 8, 9, 11, 13, 15, 16], 'qual': [1, 7, 13], 'cad': [4, 5, 13, 7], 'bass': [3, 4, 10],
+        'mel': [2, 3, 4, 5, 6, 9, 10, 12, 13, 15, 16, 18, 7], 'blind': [7, 10, 13]}
+# 0.50 ICfix: SLOT is in internal order (as EARSLOT): the split-off rungs cad 4 (place 7) and mel 13 (place 7) are appended.
+BYPLACE = {d: sorted(range(1, len(a) + 1), key=lambda n: a[n - 1]) for d, a in SLOT.items()}
 LVN = ['', 'First steps', 'Foundation', 'Developing', 'Intermediate', 'Senior', 'Advanced', 'Extension']
 N = [0]; FAILS = []
 def check(c, m):
@@ -25,7 +27,7 @@ def check(c, m):
     if not c: FAILS.append(m)
 lvl = lambda p: -(-p // 3)
 def first_visit(d, lv):
-    a = SLOT[d]
+    a = sorted(SLOT[d])
     at = [p for p in a if lvl(p) == lv]
     if at: return at[0]
     below = [p for p in a if lvl(p) < lv]
@@ -88,7 +90,7 @@ async def logic(b):
                 runs = [c for c in g['cells'] if 'ny' in c]
                 check(sum(1 for c in g['cells'] if 'ny' in c) <= 2, f'{t}: runs')
                 if g['none']: check(len(g['cells']) == 1 and g['cells'][0]['ny'] == 3, f'{t}: empty level is one cell of 3')
-            check(places == SLOT[d], f'{t}: written places {places} != EARSLOT {SLOT[d]}')
+            check(places == sorted(SLOT[d]), f'{t}: written places {places} != EARSLOT {sorted(SLOT[d])}')
             # P2 + P3
             want = first_visit(d, lv)
             ons = [c['b'] for g in o['groups'] for k, c in slots_of(g) if k == 'b' and c['on']]
@@ -117,11 +119,12 @@ async def logic(b):
         check([g['i'] for g in o['groups'] if g['open']] == on and len(on) == 1, f'{d} -> qual: open tab follows the rung in use')
     # P4: the suggestion skips 'not yet'
     for d in ('mel', 'rhy'):
-        for n in range(1, len(SLOT[d])):
+        for j in range(len(BYPLACE[d]) - 1):
+            n, m = BYPLACE[d][j], BYPLACE[d][j + 1]   # the next written rung by place
             await pg.evaluate(SETUP, [d, 4]); await pg.evaluate("([d,n])=>{EAR.lvl[d]=n;EAR.rd={[d]:{[n]:[1,1,1,1,1,1,1,1,0,1]}};renderEar()}", [d, n])
             o = await pg.evaluate(READ)
             sg = [c['b'] for g in o['groups'] for k, c in slots_of(g) if k == 'b' and c['sug']]
-            nxt = SLOT[d][n]
+            nxt = SLOT[d][m - 1]
             check(sg == [nxt], f'{d} rung {SLOT[d][n-1]}: suggestion {sg}, expected next written {nxt}')
             check([g['i'] for g in o['groups'] if g['tab']['sug']] == [lvl(nxt)], f'{d} rung {SLOT[d][n-1]}: .sug on tab of level {lvl(nxt)}')
             check(all('suggested next' in c['al'] for g in o['groups'] for k, c in slots_of(g) if k == 'b' and c['sug']), f'{d}: aria suggested next')
@@ -142,8 +145,8 @@ async def logic(b):
     # P6: labels
     await pg.evaluate(SETUP, ['mel', 4]); o = await pg.evaluate(READ)
     o = await pg.evaluate(READ)
-    check(o['drillSub'] == ['3 rungs', '10 rungs', '3 rungs', '3 rungs', '3 rungs', '12 rungs', '3 rungs'], f'drill sub-labels {o["drillSub"]}')
-    check(o['tag'] == 'Rungs 2 to 18 · 12 written', f'card tag {o["tag"]}')
+    check(o['drillSub'] == ['3 rungs', '10 rungs', '3 rungs', '4 rungs', '3 rungs', '13 rungs', '3 rungs'], f'drill sub-labels {o["drillSub"]}')
+    check(o['tag'] == 'Rungs 2 to 18 · 13 written', f'card tag {o["tag"]}')
     check(re.match(r'^Rung 10 of 21 · Level 4, Intermediate \(≈ NSW Stage 5\) · ', o['rungline']) and 'white-space:nowrap">(≈ NSW Stage 5)</span>' in o['rungHTML'], f'rung line {o["rungline"][:90]}')
     for d, tag in (('rhy', 'Rungs 2 to 16 · 10 written'), ('metre', 'Rungs 2 to 8 · 3 written')):
         await pg.evaluate(SETUP, [d, 4]); check((await pg.evaluate(READ))['tag'] == tag, f'{d} tag')

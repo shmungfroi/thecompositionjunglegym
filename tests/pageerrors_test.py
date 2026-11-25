@@ -89,7 +89,9 @@ async def main():
         modes = await pg.evaluate("[...document.querySelectorAll('[data-c2m]')].map(b=>b.dataset.c2m)")
         while clicks < 881:
             if clicks % 60 == 0:
-                for sel in ['[data-c2m]', '[data-c2s]', '[data-c2p]']:
+                # 0.50 ICfix: the run clicks the two-voice ladder, so it never picks Three voices (data-c2s="6", whose page has no
+                # .c2c cells and used to end the run early by chance once the chip order changed with the level re-tag)
+                for sel in ['[data-c2m]', '[data-c2s]:not([data-c2s="6"])', '[data-c2p]']:
                     opts = await pg.evaluate(f"[...document.querySelectorAll('{sel}')].filter(b=>b.offsetParent&&!b.disabled).length")
                     if opts:
                         await pg.evaluate(f"(i)=>[...document.querySelectorAll('{sel}')].filter(b=>b.offsetParent&&!b.disabled)[i].click()", rnd.randrange(opts))
