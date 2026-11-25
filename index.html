@@ -3575,16 +3575,23 @@ function chordIssues(V,I){const out=[];
  const have=V.map(x=>mod(x,12));
  if(I.third&&!have.includes(mod(I.third.midi,12)))out.push({sev:'error',rule:'missing',v:[],text:'The 3rd is missing, so the chord loses its major or minor colour.'});
  if(I.seventh&&!have.includes(mod(I.seventh.midi,12)))out.push({sev:'error',rule:'missing',v:[],text:'The 7th is missing from this seventh chord.'});
- if(I.dom&&have.filter(p=>p===I.LT).length>1)out.push({sev:'error',rule:'double',v:[],text:'The leading note is doubled. It has to rise, so doubling it causes parallel octaves.'});
- if(I.seventh&&have.filter(p=>p===mod(I.seventh.midi,12)).length>1)out.push({sev:'error',rule:'double',v:[],text:'The 7th is doubled. Both copies must fall by step, which makes parallel octaves.'});
- if(I.a.sec&&have.filter(p=>p===mod(I.rootPc+4,12)).length>1)out.push({sev:'error',rule:'double',v:[],text:'The leading note of this secondary dominant is doubled.'});
+ if(I.dom&&have.filter(p=>p===I.LT).length>1)out.push({sev:'error',rule:'dbllt',v:[],text:'The leading note is doubled. It has to rise, so doubling it causes parallel octaves.'});
+ if(I.seventh&&have.filter(p=>p===mod(I.seventh.midi,12)).length>1)out.push({sev:'error',rule:'dbl7',v:[],text:'The 7th is doubled. Both copies must fall by step, which makes parallel octaves.'});
+ if(I.a.sec&&have.filter(p=>p===mod(I.rootPc+4,12)).length>1)out.push({sev:'error',rule:'dbllt',v:[],text:'The leading note of this secondary dominant is doubled.'});
  if(mod(V[0],12)!==I.bassPc)out.push({sev:'error',rule:'bass',v:[0],text:'The bass doesn\'t match the chord\'s bass note (check the inversion).'});
  if(!I.pcs.every(p=>have.includes(p)||(I.fifth&&p===mod(I.fifth.midi,12))||(I.pcs.length>4&&I.bassPc===mod(I.fifth.midi,12)&&I.c.tones.some(t=>/9/.test(t.d)&&mod(t.midi,12)===p))))out.push({sev:'error',rule:'missing',v:[],text:'A chord note is missing.'});
  if(have.some(p=>!I.pcs.includes(p)))out.push({sev:'error',rule:'wrong',v:[],text:'A note doesn\'t belong to this chord.'});
  return out}
-/* 0.50 V11 (re-tag 9): every rule is always checked; each finding carries the level where the rule is taught. Above the learner's level the finding is still shown, marked "comes at Level n". */
-const SATBLV={range:3,cross:3,overlap:3,space:3,parallel:3,contrary:3,wrong:3,bass:3,missing:3,leap:3,double:3,hidden:4,unequal:4,aug2:4,aug4:4,leap7:4,seventh:5,lt:5,cad64:5,aug6:6};
-function checkSATB(S4,list){const I=list.map(ch=>chordInfo(ch,K)),iss=[],tagged=x=>x.map(e=>{const lv=SATBLV[e.rule]||3,later=lv>S.level;return{...e,lvl:lv,later,text:'<span class="c2src">strict SATB</span> '+(later?`<span class="c2src">comes at Level ${lv}</span> `:'')+e.text}});
+/* 0.50 V11 (re-tag 9): every rule is always checked; each finding carries the level where the rule is taught.
+   0.50 ICfix (IC V11-1, V11-2; Justin 25 Nov): doubling is split by table 9: basic doubling 3 (double), doubling in inversions 4 (dblinv),
+   a doubled 7th or leading note 5 (dbl7, dbllt; also the leading note of a secondary dominant), doubling in augmented 6ths and the
+   Neapolitan 6 (dblchrom). The checker today finds the three level-5 doublings; double, dblinv and dblchrom have their level ready for
+   their rules. A finding above the learner's level still counts as an error or warning, but shows only its short name and
+   "comes at Level n" instead of the full explanation (kept in .full). */
+const SATBLV={range:3,cross:3,overlap:3,space:3,parallel:3,contrary:3,wrong:3,bass:3,missing:3,leap:3,double:3,dblinv:4,dbl7:5,dbllt:5,dblchrom:6,hidden:4,unequal:4,aug2:4,aug4:4,leap7:4,seventh:5,lt:5,cad64:5,aug6:6};
+const SATBNAME={range:'A voice out of its range',cross:'Voices crossing',overlap:'Voices overlapping',space:'Spacing of the upper voices',parallel:'Parallel 5ths or octaves',contrary:'5ths or octaves by contrary motion',wrong:'A note outside the chord',bass:'The bass note of the inversion',missing:'A missing chord note',leap:'An awkward leap',double:'Doubling',dblinv:'Doubling in an inversion',dbl7:'A doubled 7th',dbllt:'A doubled leading note',dblchrom:'Doubling in a chromatic chord',hidden:'Hidden 5ths or octaves',unequal:'Unequal 5ths',aug2:'An augmented 2nd',aug4:'An augmented 4th leap',leap7:'A 7th leap',seventh:'Resolving the 7th',lt:'The leading note rising',cad64:'The cadential 6/4',aug6:'Augmented 6th voice leading'};
+function satbShort(e,lv){const vs=(e.v||[]).map(v=>VN[v]).filter(Boolean);return`<b>${SATBNAME[e.rule]||'A rule'}</b>${vs.length?` (${vs.join(' and ')})`:''}: comes at Level ${lv}.`}
+function checkSATB(S4,list){const I=list.map(ch=>chordInfo(ch,K)),iss=[],tagged=x=>x.map(e=>{const lv=SATBLV[e.rule]||3,later=lv>S.level;return{...e,lvl:lv,later,full:e.text,text:'<span class="c2src">strict SATB</span> '+(later?`<span class="c2src">comes at Level ${lv}</span> `+satbShort(e,lv):e.text)}});
  S4.forEach((V,i)=>chordIssues(V,I[i]).forEach(e=>iss.push({...e,at:[i]})));
  for(let i=0;i<S4.length-1;i++)pairIssues(S4[i],S4[i+1],I[i],I[i+1]).forEach(e=>iss.push({...e,at:[i,i+1]}));
  return tagged(iss)}
