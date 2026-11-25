@@ -4017,13 +4017,15 @@ function withKey(key,fn){const old={...K};K.k=key.k;K.mode=key.mode;try{return f
 function realise(str,key){return withKey(key,()=>{const L=cadList(str,key);const sat=satbRealise(L,key);return{L,sat}})}
 function playSat(sat){playCols(sat,'climb')}
 function fnOf(ch,key){return withKey(key,()=>analyse(ch,key).f)}
+/* a climb's level range comes from its own examples (.l), with the approved climb floors */
+const clGroup=i=>i<5?'Foundations':i<8?'Harmony':i<11?'Jazz':'Beyond';
+function clInfo(i){const F=[1,4,1,1,1,3,4,3,4,6,2,5,4],T=[C1M,C2M.concat(C2SP),CADS,C4EX,C5FAM,C6EX,C7EX,C8EX,C9EX,C10EX,C11V,C12MODES.concat(C12SHAPES),null][i],ls=T?T.map(x=>x.l||1):[4,6];return{l:Math.max(F[i],Math.min(...ls)),hi:Math.max(F[i],Math.max(...ls))}}
+function clLv(i){const c=clInfo(i);return c.l===c.hi?`Level ${c.l}`:`Levels ${c.l} to ${c.hi}`}
 function renderClimbs(){
  document.querySelectorAll('#room-climbs > .ask, #room-climbs > .path, #room-climbs > .head').forEach(e=>e.hidden=CL.open!==null);
  if(CL.open!==null){$('climbList').hidden=true;$('climbDetail').hidden=false;renderClimbDetail();return}
  $('climbList').hidden=false;$('climbDetail').hidden=true;
- const CLG=i=>i<5?'Foundations':i<8?'Harmony':i<11?'Jazz':'Beyond',CLF=[1,4,1,1,1,3,4,3,4,6,2,5,4],CLT=[C1M,C2M.concat(C2SP),CADS,C4EX,C5FAM,C6EX,C7EX,C8EX,C9EX,C10EX,C11V,C12MODES.concat(C12SHAPES),null];
- const CA=CLIMBS.map((c,i)=>{const ls=CLT[i]?CLT[i].map(x=>x.l||1):[4,6];return{...c,i,stp:i,l:Math.max(CLF[i],Math.min(...ls)),hi:Math.max(CLF[i],Math.max(...ls))}});
- const rg=c=>c.l===c.hi?`Level ${c.l}`:`Levels ${c.l} to ${c.hi}`;
+ const CLG=clGroup,CA=CLIMBS.map((c,i)=>({...c,i,stp:i,...clInfo(i)})),rg=c=>c.l===c.hi?`Level ${c.l}`:`Levels ${c.l} to ${c.hi}`;
  const CARD=c=>{const i=c.i;return`<div class="climb ${c.go||c.full?'':'dim'}"><div class="n">${i+1}</div><h4>${c.t}</h4><div class="st">${CLG(i)} · ${rg(c)}</div><p>${c.p}</p>
  ${c.full?'':`<div class="stat ${c.go?'live':''}">${c.go?'In the Gym now · full climb coming':'Full climb coming'}</div>`}
  ${c.full?`<div class="go"><button class="mini gold" data-clopen="${i}">Start this climb →</button></div>`:c.go?`<div class="go" style="margin-top:10px">${c.go.map(g=>`<button class="chip" data-load="${g[1]}|${g[2]}">⤒ ${g[0]}</button>`).join('')}</div>`:''}</div>`};
@@ -4040,7 +4042,7 @@ function renderClimb3(){const key=CL.key,mode=key.mode,L=CADS.filter(c=>c[mode])
  const fnBox=(f,lab,sub)=>`<div class="fnb" style="--c:${FN[f]}"><b>${lab}</b><span>${sub}</span><div>${T[f].map(x=>`<em>${roman(x)}</em> ${chordName(roman(x))}`).join(' · ')}</div></div>`;
  const P=realise(CPERIOD[mode].join(' '),key);
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 3 · Stages 4–6</span><span class="sp"></span><label class="note">Key <select id="clKey">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 3 · ${clLv(2)}</span><span class="sp"></span><label class="note">Key <select id="clKey">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Tonal architecture</h1>
  <p class="sub" style="max-width:860px">Every key is a small world with one home. Chords do three jobs in it, phrases travel away and back, and cadences are the punctuation that tells the listener where we are.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -4115,7 +4117,7 @@ function renderClimb4(){const key=C4.key,kn=keyName(key),EX=C4EX;if(!EX.find(x=>
  const T=scaleTones(KEYN.maj[key.k],'maj',false).slice(0,7),cov={0:['I','IV'],1:['V'],2:['I'],3:['IV'],4:['I','V'],5:['IV'],6:['V']};
  if(!C4.melody)C4.melody=Array(8).fill('');
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 4 · Stages 4–5</span><span class="sp"></span><label class="note">Key <select id="c4Key">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 4 · ${clLv(3)}</span><span class="sp"></span><label class="note">Key <select id="c4Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">I–IV–V</h1>
  <p class="sub" style="max-width:860px">Three chords, a thousand songs. The primary chords hold every note of the major scale between them, so they can carry almost any melody, and they are the backbone of folk, hymns, blues and rock and roll.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -4212,7 +4214,7 @@ function renderClimb5(){const key=C5.key,kn=keyName(key),F=C5FAM;if(!F.find(x=>x
  const keySel=C5KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
  const vt=(k,lab,tip)=>`<button class="chip ${C5.v[k]?'on':''}" data-c5v="${k}" title="${tip}">${lab}</button>`;
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 5 · Stages 4–6</span><span class="sp"></span><label class="note">Key <select id="c5Key">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 5 · ${clLv(4)}</span><span class="sp"></span><label class="note">Key <select id="c5Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">The four-chord loop</h1>
  <p class="sub" style="max-width:880px">Four chords that power a huge share of pop, rock and film music. The big idea: a loop is a circle, so it has no fixed beginning. <b>Rotate it, and you move where home feels.</b></p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -4317,7 +4319,7 @@ function renderClimb6(){const key=C6.key,mode=key.mode,kn=keyName(key),EX=C6EX.f
  const QL=C6Q.filter(q=>q.l<=lvAt(C6Q));
  const W=C6.walk,wDone=W.length===8;
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 6 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c6Key">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 6 · ${clLv(5)}</span><span class="sp"></span><label class="note">Key <select id="c6Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">The cycle of 5ths</h1>
  <p class="sub" style="max-width:880px">Let every root fall a 5th and the harmony walks itself home. Each chord behaves like the dominant of the next, so the music feels inevitable: you can hear where it is going before it gets there.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -4432,7 +4434,7 @@ function renderClimb7(){const key=C7.key,mode=key.mode,kn=keyName(key),EX=C7EX.f
  const base=c7Base(mode),nIns=Object.keys(C7.ins).filter(k=>k.startsWith(mode)&&C7.ins[k]).length;
  const quizL=C7EX.filter(x=>x.l<=lvAt(C7EX)&&x.maj&&x.k!=='dec'&&x.k!=='lt');
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 7 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c7Key">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 7 · ${clLv(6)}</span><span class="sp"></span><label class="note">Key <select id="c7Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Secondary dominants</h1>
  <p class="sub" style="max-width:880px">Any major or minor chord in a key can be home for a moment. Put its own dominant in front of it and the ear hears a tiny perfect cadence: that chord is <b>tonicised</b>. One borrowed note does all the work.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -4530,7 +4532,7 @@ function c8Bars(L,key,id){return`<div class="bargrid c7grid" ${id?`id="${id}"`:'
 function c8PlayEx(){const ex=C8EX.find(x=>x.k===C8.ex),r=realise(ex[C8.key.mode],C8.key);playCols(r.sat,'climb',i=>document.querySelectorAll('#c8Bars .bar').forEach((b,j)=>b.classList.toggle('now',j===i)))}
 function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.filter(x=>x[mode]);
  const keySel=CKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
- if(!EX.length){$('climbDetail').innerHTML=`<div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 8 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c8Key">${keySel}</select></label></div><h1 class="disp">Borrowed and chromatic chords</h1><p class="sub">At Stage 4 this climb starts in a major key. Choose a major key above, or move up to Stage 5 for minor-key colour.</p>`;$('c8Key').onchange=e=>{C8.key={...CKEYS[+e.target.value]};renderClimb8()};setCrumb();return}
+ if(!EX.length){$('climbDetail').innerHTML=`<div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 8 · ${clLv(7)}</span><span class="sp"></span><label class="note">Key <select id="c8Key">${keySel}</select></label></div><h1 class="disp">Borrowed and chromatic chords</h1><p class="sub">At your level this climb starts in a major key. Choose a major key above, or move up a level or two for minor-key colour.</p>`;$('c8Key').onchange=e=>{C8.key={...CKEYS[+e.target.value]};renderClimb8()};setCrumb();return}
  if(!EX.find(x=>x.k===C8.ex))C8.ex=EX[0].k;const ex=C8EX.find(x=>x.k===C8.ex),r=realise(ex[mode],key),L=r.L;
  const par={k:key.k,mode:mode==='maj'?'min':'maj'},parL=mode==='maj'?['i','ii°','bIII','iv','v','bVI','bVII']:['I','ii','iii','IV','V','vi'];
  const mix=parL.map(rn=>{const p=parseRoman(rn,mode==='maj'?key:par)||null;return p?{rn,p,nw:c8NewNotes(p,key)}:null}).filter(x=>x&&x.nw.length);
@@ -4539,7 +4541,7 @@ function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.f
  const a6=['It6','Fr6','Ger6'].map(rn=>{const p=parseRoman(rn,key);return{rn,p,t:chordOf(p.root,p.q,0).tones}});
  const N=parseRoman('bII',key),QL=C8Q.filter(q=>q.l<=lvAt(C8Q));
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 8 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c8Key">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 8 · ${clLv(7)}</span><span class="sp"></span><label class="note">Key <select id="c8Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Borrowed and chromatic chords</h1>
  <p class="sub" style="max-width:880px">Major and minor keys on the same tonic share a home, so they can lend each other chords. One borrowed note can cloud a bright song or light up a dark one. Further in, chromatic chords like the Neapolitan and the augmented 6ths squeeze towards the dominant from a semitone away.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -4565,7 +4567,7 @@ function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.f
   <p class="desc">Play the German 6th and a dominant 7th on ${pretty(a6[2].t[0].name)}: the same keys on the piano. The German sixth spells its top note as fi and resolves outward; the dominant 7th spells it as a 7th and falls. That double life is the secret behind tritone substitution (climb 10).</p>`:''}</section>
  <section class="card"><h3>Hear · where you meet it<span class="sp"></span><span class="note">listen for the moment the light changes</span></h3>
   <div class="c6hear">${C8HEAR.filter((x,i)=>S.level>=6||i<4).map(x=>{const qy=encodeURIComponent(x.q);return`<div class="c6h"><div class="gt">${x.g}${x.lang?' <span class="lw">⚠ Language</span>':''}</div><b>${x.w}</b> <span class="note">${x.a} · ${x.y}</span><div class="lf">${x.f}</div>${x.cn?`<div class="note">${x.cn}</div>`:''}<div class="sb"><a href="https://www.youtube.com/results?search_query=${qy}" target="_blank" rel="noopener">▶ YouTube</a><a href="https://open.spotify.com/search/${qy}" target="_blank" rel="noopener">Spotify</a></div></div>`}).join('')}</div>
-  <details class="tnote"><summary>Teacher notes</summary><p class="note">Every example is a worked example in Hutchinson, <i>Music Theory for the 21st-Century Classroom</i>: mode mixture §19.1 (Creep, iv after IV; Also sprach Zarathustra, minor i after major I; Inchworm, ♭VII7 alternating with I), the Picardy 3rd §19.5 (Bach BWV 812 Sarabande), the Neapolitan §20.2 (Moonlight Sonata; Raiders March), augmented 6ths §21.5 (Beethoven 5, Italian; Pink Panther and Friend Like Me, German). Where the text doesn't pin the chord to a bar, the listening note stays general. Creep is listed as the original recording with a ⚠ Language tag. The Neapolitan and augmented-6th examples appear at Stage 6.</p></details></section>
+  <details class="tnote"><summary>Teacher notes</summary><p class="note">Every example is a worked example in Hutchinson, <i>Music Theory for the 21st-Century Classroom</i>: mode mixture §19.1 (Creep, iv after IV; Also sprach Zarathustra, minor i after major I; Inchworm, ♭VII7 alternating with I), the Picardy 3rd §19.5 (Bach BWV 812 Sarabande), the Neapolitan §20.2 (Moonlight Sonata; Raiders March), augmented 6ths §21.5 (Beethoven 5, Italian; Pink Panther and Friend Like Me, German). Where the text doesn't pin the chord to a bar, the listening note stays general. Creep is listed as the original recording with a ⚠ Language tag. The Neapolitan and augmented-6th examples appear at Level 6.</p></details></section>
  <div class="grid clgrid">
   <section class="card"><h3>Try · spot the borrowed chord<span class="sp"></span><span class="note">${C8.quiz.n?`Score ${C8.quiz.right} / ${C8.quiz.n}`:''}</span></h3>
    <p class="note" style="margin:0 0 10px">Home, one chord, home again, in a major key. Was the middle chord borrowed? If so, which one? Sing along: does la, ta or ma appear?</p>
@@ -4583,7 +4585,7 @@ function renderClimb8(){const key=C8.key,mode=key.mode,kn=keyName(key),EX=C8EX.f
   </section>
  </div>
  <section class="card"><h3>Make · change the light</h3>
-  <p class="desc" style="margin-top:0">Compose an 8-bar phrase or period. In a major key, use at least two borrowed chords (iv, ♭VI, ♭VII, ♭III…) at the moments where the meaning darkens or opens out. Or write in a minor key and end with a Picardy 3rd.${S.level>=6?' Stage 6: approach your final cadence with a Neapolitan 6th or an augmented 6th, resolved correctly.':''} Put the borrowed note in the melody at least once and sing it in solfa.</p>
+  <p class="desc" style="margin-top:0">Compose an 8-bar phrase or period. In a major key, use at least two borrowed chords (iv, ♭VI, ♭VII, ♭III…) at the moments where the meaning darkens or opens out. Or write in a minor key and end with a Picardy 3rd.${S.level>=6?' Level 6: approach your final cadence with a Neapolitan 6th or an augmented 6th, resolved correctly.':''} Put the borrowed note in the melody at least once and sing it in solfa.</p>
   <table class="cadtab crit"><tr><th>Limited</th><th>Sound</th><th>Excellent</th></tr><tr>
    <td>A chromatic chord appears, but it is not from the parallel key or doesn't connect smoothly. The effect is accidental rather than chosen.</td>
    <td>Two borrowed chords used correctly and placed on purpose (or a minor piece ending with a Picardy 3rd). The borrowed note moves by step. The phrase ends with a clear cadence.</td>
@@ -4682,7 +4684,7 @@ function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.f
  if(gtDone){const mvs=GLine.slice(1).map((n,i)=>Math.abs(n.midi-GLine[i].midi));const lp=mvs.filter(x=>x>2).length,ct=mvs.filter(x=>x===0).length;gtMsg=lp?`<div class="iss warn"><span class="ic">!</span>${lp} leap${lp>1?'s':''} (bigger than a tone). Try the other guide tone in the bar after each leap: one of them is always a step or a common tone away.</div>`:`<div class="ok">✓ A smooth guide-tone line: every move is a step or a held note (${ct} common tone${ct===1?'':'s'}). Sing it, then decorate it into a melody.</div>`}
  const minTab=mode==='min';
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 9 · Stages 5–6</span><span class="sp"></span><label class="note">Key <select id="c9Key">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 9 · ${clLv(8)}</span><span class="sp"></span><label class="note">Key <select id="c9Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">ii–V–I</h1>
  <p class="sub" style="max-width:880px">The progression jazz is built on. Two falling 5ths into home, a 7th on every chord, and two quiet voices inside the harmony, the <b>guide tones</b>, that step from chord to chord and carry the whole tune.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -4690,7 +4692,7 @@ function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.f
  <div class="grid clgrid">
   <section class="card"><h3>Hear · the engine<span class="sp"></span><span class="note">${kn}</span></h3>
    ${lvBands('c9List',EX,{wrap:'cads',noun:'examples',label:'Examples',on:x=>x.k===C9.ex,row:x=>`<button class="cad ${x.k===C9.ex?'on':''}" data-c9ex="${x.k}"><b>${x.n}</b><span>${x[mode].split(' ').map(r=>r.replace(/b(?=[IVX])/g,'♭')).join('–')}</span><small>${x.p}</small></button>`})}
-   ${mode==='min'?'':S.level<6?'<p class="note" style="margin:10px 0 0">Stage 6 adds the standard eight bars and ii–Vs moving through keys.</p>':''}
+   ${mode==='min'?'':S.level<6?'<p class="note" style="margin:10px 0 0">Level 6 adds the standard eight bars and ii–Vs moving through keys.</p>':''}
    <p class="note" style="margin:10px 0 0">Tap one to hear it with a bass and a comping piano. Then listen again and sing only the guide tones.</p></section>
   <section class="card"><h3>See · ${ex.n}<span class="sp"></span><button class="mini gold" data-c9play>▶ Play</button><button class="mini" data-load="${ex[mode]}|${mode}">⤴ Open in the Gym</button></h3>
    <div class="chips">${VT.map(([k,l])=>`<button class="chip ${C9.vt===k?'on':''}" data-c9vt="${k}">${l}</button>`).join('')}<span class="note" style="margin-left:8px">First chord:</span>${['A','B'].map(f=>`<button class="chip ${C9.start===f?'on':''}" data-c9st="${f}" title="${C9.vt==='rootless'?(f==='A'?'Start with the 3rd at the bottom':'Start with the 7th at the bottom'):(f==='A'?'7th on top':'3rd on top')}">${C9.vt==='rootless'?(f==='A'?'A form':'B form'):(f==='A'?'7th on top':'3rd on top')}</button>`).join('')}</div>
@@ -4792,7 +4794,7 @@ function renderClimb10(){const key=C10.key,mode=key.mode,kn=keyName(key),EX=C10E
  const same=BL.every((c,i)=>{const g=c9Guide(c).map(t=>mod(t.midi,12)).sort(),h=c9Guide(OL[i]).map(t=>mod(t.midi,12)).sort();return g[0]===h[0]&&g[1]===h[1]});
  const nSub=Object.values(C10.sw).filter(Boolean).length,subI=Object.keys(C10.sw).filter(k=>C10.sw[k]).map(Number),tri=subI.every(i=>mod(pcOf(BL[i].root)-pcOf(OL[i].root),12)===6&&/^7/.test(BL[i].q)),slide=subI.filter(i=>BL[i+1]&&mod(pcOf(BL[i].root)-pcOf(BL[i+1].root),12)===1).length;
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 10 · Stage 6</span><span class="sp"></span><label class="note">Key <select id="c10Key">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 10 · ${clLv(9)}</span><span class="sp"></span><label class="note">Key <select id="c10Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Tritone substitution</h1>
  <p class="sub" style="max-width:880px">Two dominant 7ths a tritone apart share the same tritone, so either one can do the job. Swap V7 for its twin and the bass, instead of falling a 5th, <b>slides down a semitone</b> into home.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -4928,7 +4930,7 @@ function renderClimb11(){const key=C11.key,kn=keyName(key),VS=C11V,QVS=C11V.filt
  const keySel=C11KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
  const T=C11TOOLS;
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 11 · Stage 6</span><span class="sp"></span><label class="note">Key <select id="c11Key">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 11 · ${clLv(10)}</span><span class="sp"></span><label class="note">Key <select id="c11Key">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Reharmonisation</h1>
  <p class="sub" style="max-width:880px">Keep the melody, change the chords. Every note of a tune belongs to several chords, so every tune can be told in many ways. Reharmonising is choosing which story the harmony tells underneath the same words.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -5081,7 +5083,7 @@ function renderClimb12(){const L=Math.max(S.level,5),tabs=[['vamp','Modal vamps'
    <div class="staff" id="c12Staff"></div>
    <p class="note" style="margin:8px 0 0">Every T-voice note is A, C or E. The clashes (2nds, 7ths) come and go on their own, then dissolve into the triad: the bell-like sound Pärt named after the Latin for little bells.</p></section></div>`;
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 12 · Stage 6</span></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 12 · ${clLv(11)}</span></div>
  <h1 class="disp" style="margin:6px 0 4px">Beyond function</h1>
  <p class="sub" style="max-width:880px">Climbs 3 to 11 were about chords with jobs: home, away, pull. Here the jobs stop. Chords become colours, landscapes and atmospheres: modal vamps that never resolve, shapes that slide in parallel, film chords a 3rd apart, harmony that stands still for minutes.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -5171,7 +5173,7 @@ function c1Play(seq,tonic,onStep,gap){stopAll();c1DroneStart(tonic);PLAY.on=true
 function c1Melody(mk,tonic){const N=c1Notes(mk,tonic),c=C1M.find(x=>x.k===mk).c;return[0,2,4,c,4,2,1,0].map(i=>N[i])}
 function renderClimb1(){const L=Math.max(S.level,1),MS=C1M,QMS=C1M.filter(m=>m.l<=L);if(!MS.find(m=>m.k===C1.mode))C1.mode='dor';const m=C1M.find(x=>x.k===C1.mode),tonic=c1Tonic(),N=c1Notes(m.k,tonic);
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 1 · Stages 4–6</span><span class="sp"></span>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 1 · ${clLv(0)}</span><span class="sp"></span>
   <span class="note">Drone:</span><span class="chips">${[['same','one drone, every mode'],['white','white-note modes']].map(([k,l])=>`<button class="chip ${C1.view===k?'on':''}" data-c1v="${k}">${l}</button>`).join('')}</span>${C1.view==='same'?`<label class="note">on <select id="c1Dr">${C1DRONES.map((d,i)=>`<option value="${i}" ${i===C1.drone?'selected':''}>${d}</option>`).join('')}</select></label>`:''}</div>
  <h1 class="disp" style="margin:6px 0 4px">Drones and modes</h1>
  <p class="sub" style="max-width:880px">Before harmony there was the drone: one note held underneath, and a melody that leans towards it and away from it. Over a drone every note has its own colour, and each <b>mode</b>, each way of arranging the seven notes around home, has its own character.</p>
@@ -5776,7 +5778,7 @@ function renderClimb2(){const L=Math.max(S.level,4),MS=C2M.concat(C2OWN?[C2OWN]:
  const M=c2Mode(C2.mode),spc=c2Spc(),sp=C2SP.find(s=>s.k===C2.sp),own=C2.mode==='own',ck=M.k+spc+C2.pos+(own?M.cf.join(''):'');
  const pending=own&&C2CACHE[ck]===undefined,model=pending?null:c2Model(M,spc,C2.pos),mres=model?c2Check(M,spc,C2.pos,model.cp,model.br):null,above=C2.pos==='above';
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 2 · Stages 5–6</span><span class="sp"></span><button class="chip ${C2.cclef?'on':''}" data-c2cclef title="Fux wrote counterpoint in C clefs: soprano, alto and tenor">${C2.cclef?'C clefs on':'C clefs (alto / tenor)'}</button><span class="note">${L<5?'Stage 4: first species above the cantus, in three modes':L<6?'Stage 5: three species, four modes, above or below':'Stage 6: all six modes'}</span></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 2 · ${clLv(1)}</span><span class="sp"></span><button class="chip ${C2.cclef?'on':''}" data-c2cclef title="Fux wrote counterpoint in C clefs: soprano, alto and tenor">${C2.cclef?'C clefs on':'C clefs (alto / tenor)'}</button><span class="note">${L<5?'Level 4: first species above the cantus, in three modes':L<6?'Level 5: three species, four modes, above or below':'Level 6: all six modes'}</span></div>
  <h1 class="disp" style="margin:6px 0 4px">Modal polyphony</h1>
  <p class="sub" style="max-width:880px">Polyphony means many sounds: two or more lines, each a real melody, heard at once. Here you write a second voice against a given tune, the <b>cantus firmus</b> ("fixed song"), one step at a time, the way composers have learned since Johann Joseph Fux's <i>Gradus ad Parnassum</i> (1725). Each <b>species</b> adds one new way for the voices to move. Then you write your own cantus and set it.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -5927,7 +5929,7 @@ function c3LadderHTML(M,arr,cps,v,res){const n=M.cf.length,rows=c3Rows(M,arr,v),
 function renderC3(L,MS,SPS){const M=c2Mode(C2.mode),arr=C2.c3.arr,ci=C3ARR[arr].cf,vs=[0,1,2].filter(v=>v!==ci),own=C2.mode==='own',model=c3Model(M,arr),mres=model?c3Check(M,arr,model):null,mine=c3Mine(),res=c3Check(M,arr,mine),ev=vs.includes(C2.c3.v)?C2.c3.v:vs[0],vn=['Top','Middle','Bottom'];C2.c3.v=ev;
  const cnt=vs.reduce((s,v)=>s+mine[v].filter(x=>x!=null).length,0),tot=vs.length*M.cf.length,e=res.iss.filter(x=>x.sev==='err'),w=res.iss.filter(x=>x.sev==='warn');
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 2 · Stage 6 · three voices</span></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 2 · Level 6 · three voices</span></div>
  <h1 class="disp" style="margin:6px 0 4px">Modal polyphony: three voices</h1>
  <p class="sub" style="max-width:880px">Fux's second book: three-part composition. Two counterpoints against the cantus, note against note. Now every chord is a small harmony, and the lowest voice, whichever it is, decides what counts as consonant.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -6003,7 +6005,7 @@ function c3mLadderHTML(M,arr,spv,sp,cps,res){const r=res,rows=c3Rows(M,arr,spv),
 function renderC3m(L,MS,SPS){const M=c2Mode(C2.mode),arr=C2.c3.arr,sp=C2.c3.sp,ci=C3ARR[arr].cf,spv=c3mSpv(),wv=[0,1,2].find(v=>v!==ci&&v!==spv),own=C2.mode==='own',model=c3mModel(M,arr,spv,sp),mres=model?c3mCheck(M,arr,spv,sp,model):null,mine=c3mMine(M),res=c3mCheck(M,arr,spv,sp,mine),vn=['Top','Middle','Bottom'],ed=C2.c3.v===wv?wv:spv;
  const tot=mine[wv].length+mine[spv].length,cnt=mine[wv].filter(x=>x!=null).length+mine[spv].filter(x=>x!=null).length,e=res.iss.filter(x=>x.sev==='err'),w=res.iss.filter(x=>x.sev==='warn'),spn={2:'second',3:'third',4:'fourth'}[sp];
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 2 · Stage 6 · three voices, mixed species</span></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 2 · Level 6 · three voices, mixed species</span></div>
  <h1 class="disp" style="margin:6px 0 4px">Modal polyphony: three voices</h1>
  <p class="sub" style="max-width:880px">Fux's next step in three parts: one counterpoint moves in ${spn} species while the other keeps semibreves with the cantus. Every downbeat is a full chord; between the downbeats, the moving voice must fit against both others.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -6806,14 +6808,14 @@ function renderClimb13(){const L=Math.max(S.level,4),SYS=C13.sys,subs=C13SUB[SYS
  C13.cur=tab==='canon'||C13.ownOn?(SYS==='modal'?{mk:C13.modeK}:{key:C13.key}):sd;const ctx=c13Ctx();
  const ctxName=ctx.modal?`${ctx.M.n} (on ${ctx.M.fin})`:keyName(ctx.key);
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 13 · Stages 5–6</span><span class="sp"></span><span class="note">Practice</span><button class="chip ${SYS==='tonal'?'on':''}" data-c13sys="tonal">Tonal (Baroque)</button><button class="chip ${SYS==='modal'?'on':''}" data-c13sys="modal">Modal (Renaissance)</button></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 13 · ${clLv(12)}</span><span class="sp"></span><span class="note">Practice</span><button class="chip ${SYS==='tonal'?'on':''}" data-c13sys="tonal">Tonal (Baroque)</button><button class="chip ${SYS==='modal'?'on':''}" data-c13sys="modal">Modal (Renaissance)</button></div>
  <h1 class="disp" style="margin:6px 0 4px">Imitation and fugue</h1>
  <p class="sub" style="max-width:880px">One voice sings a tune; another follows with the same tune. From the round to the canon, the invention and the fugue, imitation is how a single idea becomes a whole texture.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
  <section class="card ask"><span class="disp">Ask</span><span class="q">Sing a round with friends ("Frère Jacques", "Row, Row, Row Your Boat"). Why does the same tune fit against itself? What would have to be true of a melody for that to work?</span><button class="mini" data-openj>Answer it in your journal</button></section>
  <section class="card"><h3>Modal or tonal: choose the practice</h3>
   <p class="desc">${SYS==='tonal'?'<b>Tonal (Baroque, Bach and Handel).</b> Major and minor keys. The answer is in the dominant key, a 5th higher, with its own leading note (a real answer), or adjusted at the start so the music stays anchored in the home key (a tonal answer: so is answered by do). Fugues travel through related keys and return home.':'<b>Modal (Renaissance, Palestrina, Fux).</b> The church modes, without key changes. The answer moves between the final and the co-final (the 5th of the mode): the final is answered by the co-final, and the co-final by the final. Notes stay within the mode (no new leading notes except at cadences). In the Phrygian mode the co-final is traditionally C, not B (which would form a tritone with F), so the subjects here use other modes.'} The switch changes the subjects, the answers and how the checker reads them.</p></section>
- <div class="go" style="margin-bottom:12px"><button class="chip ${tab==='canon'?'on':''}" data-c13tab="canon">Stage 5 · Canon and invention</button><button class="chip ${tab==='fugue'?'on':''}" data-c13tab="fugue" ${L<6?'disabled title="Stage 6"':''}>Stage 6 · Fugue</button></div>
+ <div class="go" style="margin-bottom:12px"><button class="chip ${tab==='canon'?'on':''}" data-c13tab="canon">Level 4 · Canon and invention</button><button class="chip ${tab==='fugue'?'on':''}" data-c13tab="fugue" ${L<6?'disabled title="Level 6"':''}>Level 6 · Fugue</button></div>
  <div id="c13Body"></div>`;
  tab==='canon'?c13RenderCanon(ctx,ctxName):c13RenderFugue(ctx,ctxName,sd)}
 function c13RenderCanon(ctx,ctxName){const cn=C13.canon,r=c13CanonCheck(cn.dux,ctx,cn.delay,cn.iv),full=cn.dux.every(x=>x!=null),e=r.iss.filter(x=>x.sev==='err');
@@ -7258,7 +7260,7 @@ function phLadderHTML(st){const slots=st.target==='phrase'?st.slots.slice(0,2):s
 function renderPhrase(el){const st=phState(),key=phKey(),ex=PHEX.find(x=>x.k===(F.v.phrase||'parallel'))||PHEX[1],tslots=st.target==='phrase'?st.slots.slice(0,2):st.slots,res=phCheck(st),mres=phMelCheck(st);
  const keySel=PHKEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k?'selected':''}>${keyName(k)}</option>`).join('');
  el.innerHTML=`
- <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · Foundations · Stages 4–5</span><span class="sp"></span><label class="note">Key <select id="phKeySel">${keySel}</select></label></div>
+ <div class="cltop"><button class="mini" data-fback>← All forms</button><span class="kicker" style="margin:0">Forms · Foundations · Level ${FORMS.find(x=>x.k==='phrase').l}</span><span class="sp"></span><label class="note">Key <select id="phKeySel">${keySel}</select></label></div>
  <h1 class="disp" style="margin:6px 0 4px">Phrase, period and sentence</h1>
  <p class="sub" style="max-width:860px">The small shapes inside every bigger form. Learn to hear where a phrase ends, how a question is answered, and how an idea is stated, repeated and driven home.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -9340,7 +9342,7 @@ function earMelFollow(q,first,count,t0){const A=ac();earMelNowClear();for(let i=
 const EARHOW={metre:'Count along. Where does the strongest click fall, and how many beats come before it returns? Then listen inside each beat: does it split in two (simple) or in three (compound)? The speed changes each time (60–120 bpm), so do not use tempo as a clue.',
  rhy:'You hear a count-in of four woodblock beats, then the rhythm (clapped at rung 1, on one note from rung 2, so you can hear how long each note lasts). Tap it back on your knee before you answer, then build it beat by beat.',
  qual:'Each chord is played together, then up as an arpeggio, then together again. Every chord is in root position, played high or low. Listen to the 3rd first (major or minor), then the 5th (perfect, diminished or augmented), then the 7th.',
- cad:'The tonic chord plays first, to set the key. At rung 1 you then hear just two chords, the cadence itself; at rungs 2 and 3, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Rung 3 (Stage 6) adds two answers: the Phrygian cadence (an imperfect cadence in minor, iv⁶–V) and the cadential 6/4 (the decorated approach to V).',
+ cad:'The tonic chord plays first, to set the key. At rung 1 you then hear just two chords, the cadence itself; at rungs 2 and 3, a short phrase. Focus on the last two or three chords: does it feel finished (perfect, plagal), unfinished (imperfect), or does it swerve (interrupted)? Rung 3 (Level 5) adds two answers: the Phrygian cadence (an imperfect cadence in minor, iv⁶–V) and the cadential 6/4 (the decorated approach to V).',
  bass:'The tonic chord plays first. The first chord of the progression is always I. Sing the bass line back, then name chords 2–4. "Bass only" plays just the bottom notes.',
  mel:'The key chord plays first, and the first note is always given (at rung 1 it may be do, mi or so). Sing it back in solfa before you answer. Movable do: in a minor key (rung 3) the home note is la.',
  blind:'A phrase from a real score in the Analysis room, with the score hidden. The tonic chord plays first. Name the cadence at the end of the phrase, then check it against the score in Analysis.'};
@@ -9362,7 +9364,7 @@ const ELTIPS={
 const ELTIPNOTE={metre:'The speed changes every time (60–120 beats a minute), so fast or slow is never a clue. 6/8 is two beats of three quavers, not six beats. Irregular metres mix groups of 2 and 3: 5/4 here is felt 3+2, 7/8 as 2+2+3.',
  rhy:'The strip under the notes shows how long each sound lasts. A dashed gap is a rest. A dotted crotchet and a quaver is long-short across two beats; <span data-notm>quaver, crotchet, quaver</span> is short-long-short. Rung 1 is clapped; from rung 2 it is on one note, so you can hear how long each note lasts.',
  qual:'Every chord is in root position, played high or low.',
- cad:'Australian names are used here: perfect cadence (US: authentic cadence), imperfect cadence (US: half cadence), interrupted cadence (US: deceptive cadence). Rung 3 (Stage 6) adds the Phrygian cadence, an imperfect cadence in a minor key (iv⁶–V), and the cadential 6/4, the decorated approach to V.',
+ cad:'Australian names are used here: perfect cadence (US: authentic cadence), imperfect cadence (US: half cadence), interrupted cadence (US: deceptive cadence). Rung 3 (Level 5) adds the Phrygian cadence, an imperfect cadence in a minor key (iv⁶–V), and the cadential 6/4, the decorated approach to V.',
  bass:'The key chord plays first, and chord 1 is always I. "Bass only" plays just the bottom notes.',
  mel:'The hand signs are the Curwen signs used in Kodály teaching (si uses the so sign, raised). Hand-sign drawings © 2003 Kodály Music Education Institute of Australia (KMEIA).',
  blind:'The phrases come from the scores in the Analysis room. Their cadence labels were re-read in music21 and checked by an independent review on 18 Nov 2026. A "perfect cadence in B minor" is still a perfect cadence: it closes, but in a new key for a moment.'};
