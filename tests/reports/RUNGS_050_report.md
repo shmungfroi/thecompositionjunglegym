@@ -13,9 +13,8 @@ Branch `050-rungs` (from `050-levels` 339c696), single file `index.html`. Not pu
 - `levels050.css` appended unchanged to the end of the main `<style>` (verified byte-for-byte contained).
 
 ## Commits
-- 0.50 V10: Ear Lab 21-rung picker (index.html)
-- 0.50 V10: tests (updated old-picker assertions, new picker test, screenshots)
-- 0.50 V10: report
+- 3cab7c1 0.50 V10: Ear Lab 21-rung picker (index.html)
+- 0.50 V10: tests, screenshots and this report (amended; see git log)
 
 ## Tests (all self-checks, run one at a time)
 | Test | Result |
