@@ -1,0 +1,2349 @@
+[
+{
+"w": 1440,
+"lv": 1,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": true,
+"rect": [
+105,
+350,
+282,
+742
+],
+"scroller": [
+"picker",
+1083,
+810,
+false
+],
+"heads": [
+"1 NEW AT LEVEL 1 3 [30]",
+"AHEAD OF YOU · 2 TO 5 17 [30]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"1:now",
+"2:ahead",
+"3:ahead",
+"4:ahead",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+312,
+812
+],
+"pos": "sticky",
+"scroll": [
+1083,
+810
+],
+"radius": "14px"
+}
+},
+{
+"w": 1440,
+"lv": 4,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": true,
+"rect": [
+105,
+350,
+282,
+650
+],
+"scroller": [
+"picker",
+991,
+810,
+false
+],
+"heads": [
+"4 NEW AT LEVEL 4 6 [30]",
+"EARLIER LEVELS · 1 TO 3 10 [30]",
+"AHEAD OF YOU · 5 4 [30]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"4:now",
+"1:",
+"2:",
+"3:",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": false,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+312,
+812
+],
+"pos": "sticky",
+"scroll": [
+991,
+810
+],
+"radius": "14px"
+}
+},
+{
+"w": 1440,
+"lv": 7,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": true,
+"rect": [
+105,
+350,
+282,
+793
+],
+"scroller": [
+"picker",
+1134,
+810,
+false
+],
+"heads": [
+"7 NEW AT LEVEL 7 0 [30]",
+"EARLIER LEVELS · 1 TO 5 20 [30]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"7:now",
+"1:",
+"2:",
+"3:",
+"4:",
+"5:"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+312,
+812
+],
+"pos": "sticky",
+"scroll": [
+1134,
+810
+],
+"radius": "14px"
+}
+},
+{
+"w": 1440,
+"errs": []
+},
+{
+"w": 1366,
+"lv": 1,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": true,
+"rect": [
+105,
+325,
+282,
+742
+],
+"scroller": [
+"picker",
+1083,
+678,
+false
+],
+"heads": [
+"1 NEW AT LEVEL 1 3 [30]",
+"AHEAD OF YOU · 2 TO 5 17 [30]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"1:now",
+"2:ahead",
+"3:ahead",
+"4:ahead",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+312,
+680
+],
+"pos": "sticky",
+"scroll": [
+1083,
+678
+],
+"radius": "14px"
+}
+},
+{
+"w": 1366,
+"lv": 4,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": true,
+"rect": [
+105,
+261,
+282,
+650
+],
+"scroller": [
+"picker",
+991,
+678,
+false
+],
+"heads": [
+"4 NEW AT LEVEL 4 6 [30]",
+"EARLIER LEVELS · 1 TO 3 10 [30]",
+"AHEAD OF YOU · 5 4 [30]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"4:now",
+"1:",
+"2:",
+"3:",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": false,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+312,
+680
+],
+"pos": "sticky",
+"scroll": [
+991,
+678
+],
+"radius": "14px"
+}
+},
+{
+"w": 1366,
+"lv": 7,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": true,
+"rect": [
+105,
+261,
+282,
+793
+],
+"scroller": [
+"picker",
+1134,
+678,
+false
+],
+"heads": [
+"7 NEW AT LEVEL 7 0 [30]",
+"EARLIER LEVELS · 1 TO 5 20 [30]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"7:now",
+"1:",
+"2:",
+"3:",
+"4:",
+"5:"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+312,
+680
+],
+"pos": "sticky",
+"scroll": [
+1134,
+678
+],
+"radius": "14px"
+}
+},
+{
+"w": 1366,
+"errs": []
+},
+{
+"w": 1280,
+"lv": 1,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": true,
+"rect": [
+105,
+350,
+282,
+742
+],
+"scroller": [
+"picker",
+1083,
+710,
+false
+],
+"heads": [
+"1 NEW AT LEVEL 1 3 [30]",
+"AHEAD OF YOU · 2 TO 5 17 [30]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"1:now",
+"2:ahead",
+"3:ahead",
+"4:ahead",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+312,
+712
+],
+"pos": "sticky",
+"scroll": [
+1083,
+710
+],
+"radius": "14px"
+}
+},
+{
+"w": 1280,
+"lv": 4,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": true,
+"rect": [
+105,
+293,
+282,
+650
+],
+"scroller": [
+"picker",
+991,
+710,
+false
+],
+"heads": [
+"4 NEW AT LEVEL 4 6 [30]",
+"EARLIER LEVELS · 1 TO 3 10 [30]",
+"AHEAD OF YOU · 5 4 [30]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"4:now",
+"1:",
+"2:",
+"3:",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": false,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+312,
+712
+],
+"pos": "sticky",
+"scroll": [
+991,
+710
+],
+"radius": "14px"
+}
+},
+{
+"w": 1280,
+"lv": 7,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": true,
+"rect": [
+105,
+293,
+282,
+793
+],
+"scroller": [
+"picker",
+1134,
+710,
+false
+],
+"heads": [
+"7 NEW AT LEVEL 7 0 [30]",
+"EARLIER LEVELS · 1 TO 5 20 [30]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"7:now",
+"1:",
+"2:",
+"3:",
+"4:",
+"5:"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+312,
+712
+],
+"pos": "sticky",
+"scroll": [
+1134,
+710
+],
+"radius": "14px"
+}
+},
+{
+"w": 1280,
+"errs": []
+},
+{
+"w": 1024,
+"lv": 1,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"1New at Level 13 [0]",
+"Ahead of you · 2 to 517 [0]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bm7minor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+908,
+155
+],
+"pos": "sticky",
+"scroll": [
+154,
+153
+],
+"radius": "14px"
+},
+"qbtn": [
+181,
+48,
+"Bm7 | minor 7th | 3"
+],
+"sheet": {
+"vis": true,
+"rect": [
+248,
+211,
+528,
+730
+],
+"scroller": [
+"msb",
+806,
+613,
+false
+],
+"heads": [
+"1 NEW AT LEVEL 1 3 [30]",
+"AHEAD OF YOU · 2 TO 5 17 [30]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"1:now",
+"2:ahead",
+"3:ahead",
+"4:ahead",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+232,
+154,
+560,
+614
+],
+"scroll": [
+806,
+613
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "614.4px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 1024,
+"lv": 4,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"4New at Level 46 [0]",
+"Earlier levels · 1 to 310 [0]",
+"Ahead of you · 54 [0]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bmminor",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+908,
+155
+],
+"pos": "sticky",
+"scroll": [
+154,
+153
+],
+"radius": "14px"
+},
+"qbtn": [
+152,
+48,
+"Bm | minor | 1"
+],
+"sheet": {
+"vis": true,
+"rect": [
+248,
+211,
+528,
+638
+],
+"scroller": [
+"msb",
+714,
+613,
+false
+],
+"heads": [
+"4 NEW AT LEVEL 4 6 [30]",
+"EARLIER LEVELS · 1 TO 3 10 [30]",
+"AHEAD OF YOU · 5 4 [30]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"4:now",
+"1:",
+"2:",
+"3:",
+"5:ahead"
+],
+"on": "Bm\nminor",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+232,
+154,
+560,
+614
+],
+"scroll": [
+714,
+613
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "614.4px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 1024,
+"lv": 7,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"7New at Level 70 [0]",
+"Earlier levels · 1 to 520 [0]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bm6minor 6th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+195,
+908,
+155
+],
+"pos": "sticky",
+"scroll": [
+154,
+153
+],
+"radius": "14px"
+},
+"qbtn": [
+183,
+48,
+"Bm6 | minor 6th | 4"
+],
+"sheet": {
+"vis": true,
+"rect": [
+248,
+211,
+528,
+764
+],
+"scroller": [
+"msb",
+840,
+613,
+false
+],
+"heads": [
+"7 NEW AT LEVEL 7 0 [30]",
+"EARLIER LEVELS · 1 TO 5 20 [30]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"7:now",
+"1:",
+"2:",
+"3:",
+"4:",
+"5:"
+],
+"on": "Bm6\nminor 6th",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+232,
+154,
+560,
+614
+],
+"scroll": [
+840,
+613
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "614.4px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 1024,
+"errs": []
+},
+{
+"w": 820,
+"lv": 1,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"1New at Level 13 [0]",
+"Ahead of you · 2 to 517 [0]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bm7minor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+227,
+704,
+237
+],
+"pos": "sticky",
+"scroll": [
+236,
+235
+],
+"radius": "14px"
+},
+"qbtn": [
+181,
+48,
+"Bm7 | minor 7th | 3"
+],
+"sheet": {
+"vis": true,
+"rect": [
+146,
+430,
+528,
+730
+],
+"scroller": null,
+"heads": [
+"1 NEW AT LEVEL 1 3 [30]",
+"AHEAD OF YOU · 2 TO 5 17 [30]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"1:now",
+"2:ahead",
+"3:ahead",
+"4:ahead",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+130,
+373,
+560,
+807
+],
+"scroll": [
+806,
+806
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "944px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 820,
+"lv": 4,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"4New at Level 46 [0]",
+"Earlier levels · 1 to 310 [0]",
+"Ahead of you · 54 [0]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bmminor",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+227,
+704,
+237
+],
+"pos": "sticky",
+"scroll": [
+236,
+235
+],
+"radius": "14px"
+},
+"qbtn": [
+152,
+48,
+"Bm | minor | 1"
+],
+"sheet": {
+"vis": true,
+"rect": [
+146,
+522,
+528,
+638
+],
+"scroller": null,
+"heads": [
+"4 NEW AT LEVEL 4 6 [30]",
+"EARLIER LEVELS · 1 TO 3 10 [30]",
+"AHEAD OF YOU · 5 4 [30]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"4:now",
+"1:",
+"2:",
+"3:",
+"5:ahead"
+],
+"on": "Bm\nminor",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+130,
+465,
+560,
+715
+],
+"scroll": [
+714,
+714
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "944px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 820,
+"lv": 7,
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"7New at Level 70 [0]",
+"Earlier levels · 1 to 520 [0]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bm6minor 6th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+90,
+227,
+704,
+237
+],
+"pos": "sticky",
+"scroll": [
+236,
+235
+],
+"radius": "14px"
+},
+"qbtn": [
+183,
+48,
+"Bm6 | minor 6th | 4"
+],
+"sheet": {
+"vis": true,
+"rect": [
+146,
+397,
+528,
+764
+],
+"scroller": null,
+"heads": [
+"7 NEW AT LEVEL 7 0 [30]",
+"EARLIER LEVELS · 1 TO 5 20 [30]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [
+32
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"7:now",
+"1:",
+"2:",
+"3:",
+"4:",
+"5:"
+],
+"on": "Bm6\nminor 6th",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+130,
+340,
+560,
+841
+],
+"scroll": [
+840,
+840
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "944px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 820,
+"errs": []
+},
+{
+"w": 390,
+"lv": 1,
+"chk": {
+"small": [
+".plbl:10:Root",
+".plbl:10:Chord type",
+".plbl:10:Inversion"
+],
+"tap": [
+"SUMMARY:340x38:SyllabusPitch ",
+".mini:156x24:♫ Ear Lab: cho",
+".rp:40x40:C",
+"BUTTON:40x22:C♯",
+"BUTTON:40x22:D♭",
+".rp:40x40:D",
+"BUTTON:40x22:D♯",
+"BUTTON:40x22:E♭",
+".rp:40x40:E",
+".rp:40x40:F",
+"BUTTON:40x22:F♯",
+"BUTTON:40x22:G♭",
+".rp:40x40:G",
+"BUTTON:40x22:G♯",
+"BUTTON:40x22:A♭",
+".rp:40x40:A",
+"BUTTON:40x22:A♯",
+"BUTTON:40x22:B♭",
+".rp.on:40x40:B",
+".ip.on:185x28:Root position ",
+".ip:176x28:1st inversion ",
+".ip:188x28:2nd inversion ",
+".ip:180x28:3rd inversion ",
+"#playBlock.mini.gold:79x29:▶ Hear it",
+"#playArp.mini:89x28:Arpeggiate",
+"#playInst.mini:128x29:▶ Play this vo",
+".on:63x36:Piano",
+"BUTTON:68x36:Guitar",
+"BUTTON:72x36:Ukulele",
+"BUTTON:57x36:Bass",
+".mini.gold:171x28:Beginner · one",
+".mini:109x28:Full · two han",
+"#tToggle.mini:125x28:Teacher notes:",
+"#mySongINPUT:252x38:",
+"BUTTON:62x38:Add",
+"A:130x16:shmungfroi@gma",
+".kchip.on:111x30:D major vi7",
+".kchip:105x30:E minor v7",
+".kchip:115x30:F♯ minor iv7",
+".kchip:112x30:G major iii7",
+".kchip:106x30:A major ii7",
+".kchip:102x30:B minor i7",
+".chip:42x30:B5",
+".chip:35x30:B",
+".chip:47x30:Bm",
+".chip:42x30:B7",
+".chip:65x30:Bmaj7",
+".chip:62x30:Bsus4",
+".chip:58x30:Bdim",
+".chip:58x30:Baug",
+".chip:43x30:B9",
+".chip:43x30:B6",
+".chip:36x30:D",
+".chip:46x30:Em",
+".chip:53x30:F♯m",
+".chip:37x30:G",
+".chip:36x30:A",
+".chip:66x30:C♯dim",
+"#plant.chip:295x30:⤒ Plant in the",
+"#toOracle.chip:156x30:⚄ Send to the "
+],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"1New at Level 13 [0]",
+"Ahead of you · 2 to 517 [0]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bm7minor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+10,
+313,
+370,
+163
+],
+"pos": "sticky",
+"scroll": [
+162,
+161
+],
+"radius": "14px"
+},
+"qbtn": [
+288,
+48,
+"Bm7 | minor 7th | 3"
+],
+"sheet": {
+"vis": true,
+"rect": [
+16,
+158,
+358,
+1038
+],
+"scroller": [
+"msb",
+1114,
+742,
+false
+],
+"heads": [
+"1 NEW AT LEVEL 1 3 [44]",
+"AHEAD OF YOU · 2 TO 5 17 [44]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [
+46
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"1:now",
+"2:ahead",
+"3:ahead",
+"4:ahead",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [
+"#qsClose.mini:36x28:✕"
+],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+0,
+101,
+390,
+743
+],
+"scroll": [
+1114,
+742
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "742.72px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 390,
+"lv": 4,
+"chk": {
+"small": [
+".plbl:10:Root",
+".plbl:10:Chord type",
+".plbl:10:Inversion"
+],
+"tap": [
+"SUMMARY:340x38:SyllabusPitch ",
+".mini:156x24:♫ Ear Lab: cho",
+".rp:40x40:C",
+"BUTTON:40x22:C♯",
+"BUTTON:40x22:D♭",
+".rp:40x40:D",
+"BUTTON:40x22:D♯",
+"BUTTON:40x22:E♭",
+".rp:40x40:E",
+".rp:40x40:F",
+"BUTTON:40x22:F♯",
+"BUTTON:40x22:G♭",
+".rp:40x40:G",
+"BUTTON:40x22:G♯",
+"BUTTON:40x22:A♭",
+".rp:40x40:A",
+"BUTTON:40x22:A♯",
+"BUTTON:40x22:B♭",
+".rp.on:40x40:B",
+".ip.on:185x28:Root position ",
+".ip:176x28:1st inversion ",
+".ip:188x28:2nd inversion ",
+"#playBlock.mini.gold:79x29:▶ Hear it",
+"#playArp.mini:89x28:Arpeggiate",
+"#playInst.mini:128x29:▶ Play this vo",
+".on:63x36:Piano",
+"BUTTON:68x36:Guitar",
+"BUTTON:72x36:Ukulele",
+"BUTTON:57x36:Bass",
+".mini.gold:171x28:Beginner · one",
+".mini:109x28:Full · two han",
+"#tToggle.mini:125x28:Teacher notes:",
+"#mySongINPUT:252x38:",
+"BUTTON:62x38:Add",
+"A:130x16:shmungfroi@gma",
+".kchip.on:104x30:D major vi",
+".kchip:98x30:E minor v",
+".kchip:108x30:F♯ minor iv",
+".kchip:104x30:G major iii",
+".kchip:99x30:A major ii",
+".kchip:94x30:B minor i",
+".chip:42x30:B5",
+".chip:35x30:B",
+".chip:42x30:B7",
+".chip:65x30:Bmaj7",
+".chip:54x30:Bm7",
+".chip:62x30:Bsus4",
+".chip:58x30:Bdim",
+".chip:58x30:Baug",
+".chip:43x30:B9",
+".chip:43x30:B6",
+".chip:67x30:Dmaj7",
+".chip:54x30:Em7",
+".chip:60x30:F♯m7",
+".chip:67x30:Gmaj7",
+".chip:43x30:A7",
+".chip:76x30:C♯m7♭5",
+"#plant.chip:295x30:⤒ Plant in the",
+"#toOracle.chip:156x30:⚄ Send to the "
+],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"4New at Level 46 [0]",
+"Earlier levels · 1 to 310 [0]",
+"Ahead of you · 54 [0]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bmminor",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+10,
+313,
+370,
+163
+],
+"pos": "sticky",
+"scroll": [
+162,
+161
+],
+"radius": "14px"
+},
+"qbtn": [
+288,
+48,
+"Bm | minor | 1"
+],
+"sheet": {
+"vis": true,
+"rect": [
+16,
+158,
+358,
+904
+],
+"scroller": [
+"msb",
+980,
+742,
+false
+],
+"heads": [
+"4 NEW AT LEVEL 4 6 [44]",
+"EARLIER LEVELS · 1 TO 3 10 [44]",
+"AHEAD OF YOU · 5 4 [44]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [
+46
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"4:now",
+"1:",
+"2:",
+"3:",
+"5:ahead"
+],
+"on": "Bm\nminor",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [
+"#qsClose.mini:36x28:✕"
+],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+0,
+101,
+390,
+743
+],
+"scroll": [
+980,
+742
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "742.72px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 390,
+"lv": 7,
+"chk": {
+"small": [
+".plbl:10:Root",
+".plbl:10:Chord type",
+".plbl:10:Inversion"
+],
+"tap": [
+"SUMMARY:340x38:SyllabusPitch ",
+".mini:156x24:♫ Ear Lab: cho",
+".rp:40x40:C",
+"BUTTON:40x22:C♯",
+"BUTTON:40x22:D♭",
+".rp:40x40:D",
+"BUTTON:40x22:D♯",
+"BUTTON:40x22:E♭",
+".rp:40x40:E",
+".rp:40x40:F",
+"BUTTON:40x22:F♯",
+"BUTTON:40x22:G♭",
+".rp:40x40:G",
+"BUTTON:40x22:G♯",
+"BUTTON:40x22:A♭",
+".rp:40x40:A",
+"BUTTON:40x22:A♯",
+"BUTTON:40x22:B♭",
+".rp.on:40x40:B",
+".ip.on:185x28:Root position ",
+".ip:176x28:1st inversion ",
+".ip:188x28:2nd inversion ",
+".ip:188x28:3rd inversion ",
+"#playBlock.mini.gold:79x29:▶ Hear it",
+"#playArp.mini:89x28:Arpeggiate",
+"#playInst.mini:128x29:▶ Play this vo",
+".on:63x36:Piano",
+"BUTTON:68x36:Guitar",
+"BUTTON:72x36:Ukulele",
+"BUTTON:57x36:Bass",
+".mini.gold:171x28:Beginner · one",
+".mini:109x28:Full · two han",
+"#tToggle.mini:125x28:Teacher notes:",
+"#mySongINPUT:252x38:",
+"BUTTON:62x38:Add",
+"A:130x16:shmungfroi@gma",
+".kchip.on:116x30:F♯ minor iv6",
+".kchip:107x30:A major ii6",
+".chip:42x30:B5",
+".chip:35x30:B",
+".chip:47x30:Bm",
+".chip:42x30:B7",
+".chip:65x30:Bmaj7",
+".chip:54x30:Bm7",
+".chip:62x30:Bsus4",
+".chip:58x30:Bdim",
+".chip:58x30:Baug",
+".chip:43x30:B9",
+".chip:43x30:B6",
+".chip:53x30:F♯m",
+".chip:77x30:G♯m7♭5",
+".chip:59x30:Aaug",
+".chip:50x30:C♯7",
+".chip:67x30:Dmaj7",
+".chip:72x30:E♯dim7",
+"#plant.chip:295x30:⤒ Plant in the",
+"#toOracle.chip:156x30:⚄ Send to the "
+],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"7New at Level 70 [0]",
+"Earlier levels · 1 to 520 [0]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bm6minor 6th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+10,
+313,
+370,
+163
+],
+"pos": "sticky",
+"scroll": [
+162,
+161
+],
+"radius": "14px"
+},
+"qbtn": [
+288,
+48,
+"Bm6 | minor 6th | 4"
+],
+"sheet": {
+"vis": true,
+"rect": [
+16,
+123,
+358,
+1089
+],
+"scroller": [
+"msb",
+1165,
+742,
+false
+],
+"heads": [
+"7 NEW AT LEVEL 7 0 [44]",
+"EARLIER LEVELS · 1 TO 5 20 [44]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [
+46
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"7:now",
+"1:",
+"2:",
+"3:",
+"4:",
+"5:"
+],
+"on": "Bm6\nminor 6th",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [
+"#qsClose.mini:36x28:✕"
+],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+0,
+101,
+390,
+743
+],
+"scroll": [
+1165,
+742
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "742.72px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 390,
+"errs": []
+},
+{
+"w": 360,
+"lv": 1,
+"chk": {
+"small": [
+".plbl:10:Root",
+".plbl:10:Chord type",
+".plbl:10:Inversion"
+],
+"tap": [
+".mini:156x24:♫ Ear Lab: cho",
+".rp:40x40:C",
+"BUTTON:40x22:C♯",
+"BUTTON:40x22:D♭",
+".rp:40x40:D",
+"BUTTON:40x22:D♯",
+"BUTTON:40x22:E♭",
+".rp:40x40:E",
+".rp:40x40:F",
+"BUTTON:40x22:F♯",
+"BUTTON:40x22:G♭",
+".rp:40x40:G",
+"BUTTON:40x22:G♯",
+"BUTTON:40x22:A♭",
+".rp:40x40:A",
+"BUTTON:40x22:A♯",
+"BUTTON:40x22:B♭",
+".rp.on:40x40:B",
+".ip.on:185x28:Root position ",
+".ip:176x28:1st inversion ",
+".ip:188x28:2nd inversion ",
+".ip:180x28:3rd inversion ",
+"#playBlock.mini.gold:79x29:▶ Hear it",
+"#playArp.mini:89x28:Arpeggiate",
+"#playInst.mini:128x29:▶ Play this vo",
+".on:63x36:Piano",
+"BUTTON:68x36:Guitar",
+"BUTTON:72x36:Ukulele",
+"BUTTON:57x36:Bass",
+".mini.gold:171x28:Beginner · one",
+".mini:109x28:Full · two han",
+"#tToggle.mini:125x28:Teacher notes:",
+"BUTTON:103x26:Show me Cm7",
+"BUTTON:109x26:Show me C♯m7",
+"BUTTON:107x26:Show me F♯m7",
+"BUTTON:110x26:Show me G♯m7",
+"#mySongINPUT:222x38:",
+"BUTTON:62x38:Add",
+"A:130x16:shmungfroi@gma",
+".kchip.on:111x30:D major vi7",
+".kchip:105x30:E minor v7",
+".kchip:115x30:F♯ minor iv7",
+".kchip:112x30:G major iii7",
+".kchip:106x30:A major ii7",
+".kchip:102x30:B minor i7",
+".chip:42x30:B5",
+".chip:35x30:B",
+".chip:47x30:Bm",
+".chip:42x30:B7",
+".chip:65x30:Bmaj7",
+".chip:62x30:Bsus4",
+".chip:58x30:Bdim",
+".chip:58x30:Baug",
+".chip:43x30:B9",
+".chip:43x30:B6",
+".chip:36x30:D",
+".chip:46x30:Em",
+".chip:53x30:F♯m",
+".chip:37x30:G",
+".chip:36x30:A",
+".chip:66x30:C♯dim",
+"#toOracle.chip:156x30:⚄ Send to the "
+],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"1New at Level 13 [0]",
+"Ahead of you · 2 to 517 [0]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bm7minor 7th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+10,
+351,
+340,
+163
+],
+"pos": "sticky",
+"scroll": [
+162,
+161
+],
+"radius": "14px"
+},
+"qbtn": [
+258,
+48,
+"Bm7 | minor 7th | 3"
+],
+"sheet": {
+"vis": true,
+"rect": [
+16,
+146,
+328,
+1038
+],
+"scroller": [
+"msb",
+1114,
+650,
+false
+],
+"heads": [
+"1 NEW AT LEVEL 1 3 [44]",
+"AHEAD OF YOU · 2 TO 5 17 [44]"
+],
+"open": [
+"lvband ahead:true"
+],
+"rowH": [
+46
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"1:now",
+"2:ahead",
+"3:ahead",
+"4:ahead",
+"5:ahead"
+],
+"on": "Bm7\nminor 7th",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [
+"#qsClose.mini:36x28:✕"
+],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+0,
+89,
+360,
+651
+],
+"scroll": [
+1114,
+650
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "651.2px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 360,
+"lv": 4,
+"chk": {
+"small": [
+".plbl:10:Root",
+".plbl:10:Chord type",
+".plbl:10:Inversion"
+],
+"tap": [
+".mini:156x24:♫ Ear Lab: cho",
+".rp:40x40:C",
+"BUTTON:40x22:C♯",
+"BUTTON:40x22:D♭",
+".rp:40x40:D",
+"BUTTON:40x22:D♯",
+"BUTTON:40x22:E♭",
+".rp:40x40:E",
+".rp:40x40:F",
+"BUTTON:40x22:F♯",
+"BUTTON:40x22:G♭",
+".rp:40x40:G",
+"BUTTON:40x22:G♯",
+"BUTTON:40x22:A♭",
+".rp:40x40:A",
+"BUTTON:40x22:A♯",
+"BUTTON:40x22:B♭",
+".rp.on:40x40:B",
+".ip.on:185x28:Root position ",
+".ip:176x28:1st inversion ",
+".ip:188x28:2nd inversion ",
+"#playBlock.mini.gold:79x29:▶ Hear it",
+"#playArp.mini:89x28:Arpeggiate",
+"#playInst.mini:128x29:▶ Play this vo",
+".on:63x36:Piano",
+"BUTTON:68x36:Guitar",
+"BUTTON:72x36:Ukulele",
+"BUTTON:57x36:Bass",
+".mini.gold:171x28:Beginner · one",
+".mini:109x28:Full · two han",
+"#tToggle.mini:125x28:Teacher notes:",
+"BUTTON:97x26:Show me Gm",
+"BUTTON:94x26:Show me Fm",
+"BUTTON:96x26:Show me Cm",
+"BUTTON:95x26:Show me Em",
+"BUTTON:97x26:Show me Dm",
+"#mySongINPUT:222x38:",
+"BUTTON:62x38:Add",
+"A:130x16:shmungfroi@gma",
+".kchip.on:104x30:D major vi",
+".kchip:98x30:E minor v",
+".kchip:108x30:F♯ minor iv",
+".kchip:104x30:G major iii",
+".kchip:99x30:A major ii",
+".kchip:94x30:B minor i",
+".chip:42x30:B5",
+".chip:35x30:B",
+".chip:42x30:B7",
+".chip:65x30:Bmaj7",
+".chip:54x30:Bm7",
+".chip:62x30:Bsus4",
+".chip:58x30:Bdim",
+".chip:58x30:Baug",
+".chip:43x30:B9",
+".chip:43x30:B6",
+".chip:67x30:Dmaj7",
+".chip:54x30:Em7",
+".chip:60x30:F♯m7",
+".chip:67x30:Gmaj7",
+".chip:43x30:A7",
+".chip:76x30:C♯m7♭5",
+"#toOracle.chip:156x30:⚄ Send to the "
+],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"4New at Level 46 [0]",
+"Earlier levels · 1 to 310 [0]",
+"Ahead of you · 54 [0]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bmminor",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+10,
+351,
+340,
+163
+],
+"pos": "sticky",
+"scroll": [
+162,
+161
+],
+"radius": "14px"
+},
+"qbtn": [
+258,
+48,
+"Bm | minor | 1"
+],
+"sheet": {
+"vis": true,
+"rect": [
+16,
+146,
+328,
+904
+],
+"scroller": [
+"msb",
+980,
+650,
+false
+],
+"heads": [
+"4 NEW AT LEVEL 4 6 [44]",
+"EARLIER LEVELS · 1 TO 3 10 [44]",
+"AHEAD OF YOU · 5 4 [44]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"rowH": [
+46
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"4:now",
+"1:",
+"2:",
+"3:",
+"5:ahead"
+],
+"on": "Bm\nminor",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [
+"#qsClose.mini:36x28:✕"
+],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+0,
+89,
+360,
+651
+],
+"scroll": [
+980,
+650
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "651.2px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 360,
+"lv": 7,
+"chk": {
+"small": [
+".plbl:10:Root",
+".plbl:10:Chord type",
+".plbl:10:Inversion"
+],
+"tap": [
+".mini:156x24:♫ Ear Lab: cho",
+".rp:40x40:C",
+"BUTTON:40x22:C♯",
+"BUTTON:40x22:D♭",
+".rp:40x40:D",
+"BUTTON:40x22:D♯",
+"BUTTON:40x22:E♭",
+".rp:40x40:E",
+".rp:40x40:F",
+"BUTTON:40x22:F♯",
+"BUTTON:40x22:G♭",
+".rp:40x40:G",
+"BUTTON:40x22:G♯",
+"BUTTON:40x22:A♭",
+".rp:40x40:A",
+"BUTTON:40x22:A♯",
+"BUTTON:40x22:B♭",
+".rp.on:40x40:B",
+".ip.on:185x28:Root position ",
+".ip:176x28:1st inversion ",
+".ip:188x28:2nd inversion ",
+".ip:188x28:3rd inversion ",
+"#playBlock.mini.gold:79x29:▶ Hear it",
+"#playArp.mini:89x28:Arpeggiate",
+"#playInst.mini:128x29:▶ Play this vo",
+".on:63x36:Piano",
+"BUTTON:68x36:Guitar",
+"BUTTON:72x36:Ukulele",
+"BUTTON:57x36:Bass",
+".mini.gold:171x28:Beginner · one",
+".mini:109x28:Full · two han",
+"#tToggle.mini:125x28:Teacher notes:",
+"BUTTON:103x26:Show me Am6",
+"BUTTON:102x26:Show me Em6",
+"BUTTON:103x26:Show me Cm6",
+"#mySongINPUT:222x38:",
+"BUTTON:62x38:Add",
+"A:130x16:shmungfroi@gma",
+".kchip.on:116x30:F♯ minor iv6",
+".kchip:107x30:A major ii6",
+".chip:42x30:B5",
+".chip:35x30:B",
+".chip:47x30:Bm",
+".chip:42x30:B7",
+".chip:65x30:Bmaj7",
+".chip:54x30:Bm7",
+".chip:62x30:Bsus4",
+".chip:58x30:Bdim",
+".chip:58x30:Baug",
+".chip:43x30:B9",
+".chip:43x30:B6",
+".chip:53x30:F♯m",
+".chip:77x30:G♯m7♭5",
+".chip:59x30:Aaug",
+".chip:50x30:C♯7",
+".chip:67x30:Dmaj7",
+".chip:72x30:E♯dim7",
+"#toOracle.chip:156x30:⚄ Send to the "
+],
+"over": 0
+},
+"geo": {
+"vis": false,
+"rect": [
+0,
+0,
+0,
+0
+],
+"scroller": null,
+"heads": [
+"7New at Level 70 [0]",
+"Earlier levels · 1 to 520 [0]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [],
+"nrows": 0,
+"clipped": [],
+"wrapped": [],
+"marks": [],
+"on": "Bm6minor 6th",
+"onVisible": true,
+"fams": 0
+},
+"picker": {
+"rect": [
+10,
+351,
+340,
+163
+],
+"pos": "sticky",
+"scroll": [
+162,
+161
+],
+"radius": "14px"
+},
+"qbtn": [
+258,
+48,
+"Bm6 | minor 6th | 4"
+],
+"sheet": {
+"vis": true,
+"rect": [
+16,
+19,
+328,
+1089
+],
+"scroller": [
+"msb",
+1165,
+650,
+false
+],
+"heads": [
+"7 NEW AT LEVEL 7 0 [44]",
+"EARLIER LEVELS · 1 TO 5 20 [44]"
+],
+"open": [
+"lvband met:true"
+],
+"rowH": [
+46
+],
+"nrows": 20,
+"clipped": [],
+"wrapped": [],
+"marks": [
+"7:now",
+"1:",
+"2:",
+"3:",
+"4:",
+"5:"
+],
+"on": "Bm6\nminor 6th",
+"onVisible": true,
+"fams": 0
+},
+"sheetchk": {
+"small": [],
+"tap": [
+"#qsClose.mini:36x28:✕"
+],
+"over": 0
+},
+"sheetbox": {
+"rect": [
+0,
+89,
+360,
+651
+],
+"scroll": [
+1165,
+650
+],
+"radius": "18px 18px 0px 0px",
+"maxh": "651.2px",
+"focus": "lvrow on"
+},
+"sheetClosedOnPick": true,
+"focusAfter": ""
+},
+{
+"w": 360,
+"errs": []
+}
+]

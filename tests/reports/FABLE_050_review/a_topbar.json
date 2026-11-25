@@ -1,0 +1,1383 @@
+[
+ {
+  "w": 1440,
+  "top": {
+   "top": [
+    1376,
+    58
+   ],
+   "search": [
+    709,
+    10,
+    420,
+    38
+   ],
+   "lvbtn": [
+    1147,
+    10,
+    151,
+    38
+   ],
+   "lvt": [
+    1188,
+    14,
+    77,
+    29
+   ],
+   "jbtn": [
+    1316,
+    11,
+    102,
+    36
+   ],
+   "jt": null,
+   "tw": [
+    86,
+    17,
+    195,
+    24
+   ],
+   "crumb": [
+    459,
+    20,
+    121,
+    18
+   ],
+   "btnText": "5 | Senior | ≈ NSW Stage 6",
+   "aria": "Your level: 5, Senior, about NSW Stage 6. Change level"
+  },
+  "closed": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "list": {
+   "where": "lvPop",
+   "rect": [
+    922,
+    59,
+    376,
+    525
+   ],
+   "gapBelowBtn": 11,
+   "rightAlign": 0,
+   "radius": "14px",
+   "bg": "rgb(20, 17, 11)",
+   "rows": [
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 1,\nFirst steps",
+     "hint": "≈ Stage 4",
+     "desc": "beat, do–re–mi, major and minor chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 2,\nFoundation",
+     "hint": "≈ Stage 4",
+     "desc": "sus and 7th chords, the major scale, first cadences",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 3,\nDeveloping",
+     "hint": "≈ Stage 5",
+     "desc": "all four triads, colour 7ths, minor keys",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 4,\nIntermediate",
+     "hint": "≈ Stage 5",
+     "desc": "added notes, half-diminished, modes and modulation",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 5,\nSenior",
+     "hint": "≈ Stage 6",
+     "desc": "9ths, diminished 7ths, senior harmony and forms",
+     "descLines": 1,
+     "descClip": false,
+     "tab": 0,
+     "chk": "true",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 6,\nAdvanced",
+     "hint": "≈ Stage 6",
+     "desc": "11ths, 13ths, augmented 6ths, melodic-minor colours",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 7,\nExtension",
+     "hint": "≈ Stage 6 Extension",
+     "desc": "altered dominants, quartal and slash chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    }
+   ],
+   "note": "What is new at your level comes first in every list. Nothing is hidden.",
+   "focus": "lvopt upto|5",
+   "sheetScroll": [
+    0,
+    0
+   ]
+  },
+  "openchk": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "nocur_rows": {
+   "hd": "YOUR LEVEL",
+   "hints": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "btn": "5 | Senior",
+   "aria": "Your level: 5, Senior. Change level"
+  },
+  "nocur_btn": {
+   "btn": [
+    10,
+    38
+   ],
+   "name": [
+    21,
+    15
+   ],
+   "smallShown": false
+  },
+  "errs": []
+ },
+ {
+  "w": 1366,
+  "top": {
+   "top": [
+    1302,
+    58
+   ],
+   "search": [
+    635,
+    10,
+    420,
+    38
+   ],
+   "lvbtn": [
+    1073,
+    10,
+    151,
+    38
+   ],
+   "lvt": [
+    1114,
+    14,
+    77,
+    29
+   ],
+   "jbtn": [
+    1242,
+    11,
+    102,
+    36
+   ],
+   "jt": null,
+   "tw": [
+    86,
+    17,
+    195,
+    24
+   ],
+   "crumb": [
+    459,
+    20,
+    121,
+    18
+   ],
+   "btnText": "5 | Senior | ≈ NSW Stage 6",
+   "aria": "Your level: 5, Senior, about NSW Stage 6. Change level"
+  },
+  "closed": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "list": {
+   "where": "lvPop",
+   "rect": [
+    848,
+    59,
+    376,
+    525
+   ],
+   "gapBelowBtn": 11,
+   "rightAlign": 0,
+   "radius": "14px",
+   "bg": "rgb(20, 17, 11)",
+   "rows": [
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 1,\nFirst steps",
+     "hint": "≈ Stage 4",
+     "desc": "beat, do–re–mi, major and minor chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 2,\nFoundation",
+     "hint": "≈ Stage 4",
+     "desc": "sus and 7th chords, the major scale, first cadences",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 3,\nDeveloping",
+     "hint": "≈ Stage 5",
+     "desc": "all four triads, colour 7ths, minor keys",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 4,\nIntermediate",
+     "hint": "≈ Stage 5",
+     "desc": "added notes, half-diminished, modes and modulation",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 5,\nSenior",
+     "hint": "≈ Stage 6",
+     "desc": "9ths, diminished 7ths, senior harmony and forms",
+     "descLines": 1,
+     "descClip": false,
+     "tab": 0,
+     "chk": "true",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 6,\nAdvanced",
+     "hint": "≈ Stage 6",
+     "desc": "11ths, 13ths, augmented 6ths, melodic-minor colours",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 7,\nExtension",
+     "hint": "≈ Stage 6 Extension",
+     "desc": "altered dominants, quartal and slash chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    }
+   ],
+   "note": "What is new at your level comes first in every list. Nothing is hidden.",
+   "focus": "lvopt upto|5",
+   "sheetScroll": [
+    0,
+    0
+   ]
+  },
+  "openchk": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "nocur_rows": {
+   "hd": "YOUR LEVEL",
+   "hints": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "btn": "5 | Senior",
+   "aria": "Your level: 5, Senior. Change level"
+  },
+  "nocur_btn": {
+   "btn": [
+    10,
+    38
+   ],
+   "name": [
+    21,
+    15
+   ],
+   "smallShown": false
+  },
+  "errs": []
+ },
+ {
+  "w": 1280,
+  "top": {
+   "top": [
+    1216,
+    58
+   ],
+   "search": [
+    549,
+    10,
+    420,
+    38
+   ],
+   "lvbtn": [
+    987,
+    10,
+    151,
+    38
+   ],
+   "lvt": [
+    1028,
+    14,
+    77,
+    29
+   ],
+   "jbtn": [
+    1156,
+    11,
+    102,
+    36
+   ],
+   "jt": null,
+   "tw": [
+    86,
+    17,
+    195,
+    24
+   ],
+   "crumb": null,
+   "btnText": "5 | Senior | ≈ NSW Stage 6",
+   "aria": "Your level: 5, Senior, about NSW Stage 6. Change level"
+  },
+  "closed": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "list": {
+   "where": "lvPop",
+   "rect": [
+    762,
+    59,
+    376,
+    525
+   ],
+   "gapBelowBtn": 11,
+   "rightAlign": 0,
+   "radius": "14px",
+   "bg": "rgb(20, 17, 11)",
+   "rows": [
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 1,\nFirst steps",
+     "hint": "≈ Stage 4",
+     "desc": "beat, do–re–mi, major and minor chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 2,\nFoundation",
+     "hint": "≈ Stage 4",
+     "desc": "sus and 7th chords, the major scale, first cadences",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 3,\nDeveloping",
+     "hint": "≈ Stage 5",
+     "desc": "all four triads, colour 7ths, minor keys",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 4,\nIntermediate",
+     "hint": "≈ Stage 5",
+     "desc": "added notes, half-diminished, modes and modulation",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 5,\nSenior",
+     "hint": "≈ Stage 6",
+     "desc": "9ths, diminished 7ths, senior harmony and forms",
+     "descLines": 1,
+     "descClip": false,
+     "tab": 0,
+     "chk": "true",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 6,\nAdvanced",
+     "hint": "≈ Stage 6",
+     "desc": "11ths, 13ths, augmented 6ths, melodic-minor colours",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 7,\nExtension",
+     "hint": "≈ Stage 6 Extension",
+     "desc": "altered dominants, quartal and slash chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    }
+   ],
+   "note": "What is new at your level comes first in every list. Nothing is hidden.",
+   "focus": "lvopt upto|5",
+   "sheetScroll": [
+    0,
+    0
+   ]
+  },
+  "openchk": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "nocur_rows": {
+   "hd": "YOUR LEVEL",
+   "hints": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "btn": "5 | Senior",
+   "aria": "Your level: 5, Senior. Change level"
+  },
+  "nocur_btn": {
+   "btn": [
+    10,
+    38
+   ],
+   "name": [
+    21,
+    15
+   ],
+   "smallShown": false
+  },
+  "errs": []
+ },
+ {
+  "w": 1024,
+  "top": {
+   "top": [
+    960,
+    58
+   ],
+   "search": [
+    305,
+    10,
+    420,
+    38
+   ],
+   "lvbtn": [
+    739,
+    10,
+    151,
+    38
+   ],
+   "lvt": [
+    780,
+    14,
+    77,
+    29
+   ],
+   "jbtn": [
+    904,
+    11,
+    102,
+    36
+   ],
+   "jt": null,
+   "tw": null,
+   "crumb": null,
+   "btnText": "5 | Senior | ≈ NSW Stage 6",
+   "aria": "Your level: 5, Senior, about NSW Stage 6. Change level"
+  },
+  "closed": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "list": {
+   "where": "lvPop",
+   "rect": [
+    514,
+    59,
+    376,
+    525
+   ],
+   "gapBelowBtn": 11,
+   "rightAlign": 0,
+   "radius": "14px",
+   "bg": "rgb(20, 17, 11)",
+   "rows": [
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 1,\nFirst steps",
+     "hint": "≈ Stage 4",
+     "desc": "beat, do–re–mi, major and minor chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 2,\nFoundation",
+     "hint": "≈ Stage 4",
+     "desc": "sus and 7th chords, the major scale, first cadences",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 3,\nDeveloping",
+     "hint": "≈ Stage 5",
+     "desc": "all four triads, colour 7ths, minor keys",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 4,\nIntermediate",
+     "hint": "≈ Stage 5",
+     "desc": "added notes, half-diminished, modes and modulation",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 5,\nSenior",
+     "hint": "≈ Stage 6",
+     "desc": "9ths, diminished 7ths, senior harmony and forms",
+     "descLines": 1,
+     "descClip": false,
+     "tab": 0,
+     "chk": "true",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 6,\nAdvanced",
+     "hint": "≈ Stage 6",
+     "desc": "11ths, 13ths, augmented 6ths, melodic-minor colours",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 7,\nExtension",
+     "hint": "≈ Stage 6 Extension",
+     "desc": "altered dominants, quartal and slash chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    }
+   ],
+   "note": "What is new at your level comes first in every list. Nothing is hidden.",
+   "focus": "lvopt upto|5",
+   "sheetScroll": [
+    0,
+    0
+   ]
+  },
+  "openchk": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "nocur_rows": {
+   "hd": "YOUR LEVEL",
+   "hints": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "btn": "5 | Senior",
+   "aria": "Your level: 5, Senior. Change level"
+  },
+  "nocur_btn": {
+   "btn": [
+    10,
+    38
+   ],
+   "name": [
+    21,
+    15
+   ],
+   "smallShown": false
+  },
+  "errs": []
+ },
+ {
+  "w": 820,
+  "top": {
+   "top": [
+    756,
+    58
+   ],
+   "search": [
+    260,
+    10,
+    420,
+    38
+   ],
+   "lvbtn": [
+    692,
+    10,
+    59,
+    38
+   ],
+   "lvt": null,
+   "jbtn": [
+    763,
+    11,
+    39,
+    36
+   ],
+   "jt": null,
+   "tw": null,
+   "crumb": null,
+   "btnText": "5",
+   "aria": "Your level: 5, Senior, about NSW Stage 6. Change level"
+  },
+  "closed": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "list": {
+   "where": "lvPop",
+   "rect": [
+    375,
+    59,
+    376,
+    525
+   ],
+   "gapBelowBtn": 11,
+   "rightAlign": 0,
+   "radius": "14px",
+   "bg": "rgb(20, 17, 11)",
+   "rows": [
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 1,\nFirst steps",
+     "hint": "≈ Stage 4",
+     "desc": "beat, do–re–mi, major and minor chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 2,\nFoundation",
+     "hint": "≈ Stage 4",
+     "desc": "sus and 7th chords, the major scale, first cadences",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 3,\nDeveloping",
+     "hint": "≈ Stage 5",
+     "desc": "all four triads, colour 7ths, minor keys",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 4,\nIntermediate",
+     "hint": "≈ Stage 5",
+     "desc": "added notes, half-diminished, modes and modulation",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 5,\nSenior",
+     "hint": "≈ Stage 6",
+     "desc": "9ths, diminished 7ths, senior harmony and forms",
+     "descLines": 1,
+     "descClip": false,
+     "tab": 0,
+     "chk": "true",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 6,\nAdvanced",
+     "hint": "≈ Stage 6",
+     "desc": "11ths, 13ths, augmented 6ths, melodic-minor colours",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    },
+    {
+     "h": 52,
+     "w": 342,
+     "name": "Level 7,\nExtension",
+     "hint": "≈ Stage 6 Extension",
+     "desc": "altered dominants, quartal and slash chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    }
+   ],
+   "note": "What is new at your level comes first in every list. Nothing is hidden.",
+   "focus": "lvopt upto|5",
+   "sheetScroll": [
+    0,
+    0
+   ]
+  },
+  "openchk": {
+   "small": [],
+   "tap": [],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "nocur_rows": {
+   "hd": "YOUR LEVEL",
+   "hints": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "btn": "5",
+   "aria": "Your level: 5, Senior. Change level"
+  },
+  "nocur_btn": {
+   "btn": [
+    10,
+    38
+   ],
+   "name": null,
+   "smallShown": false
+  },
+  "errs": []
+ },
+ {
+  "w": 390,
+  "top": {
+   "top": [
+    390,
+    96
+   ],
+   "search": [
+    12,
+    48,
+    366,
+    40
+   ],
+   "lvbtn": [
+    273,
+    8,
+    105,
+    32
+   ],
+   "lvt": [
+    309,
+    16,
+    40,
+    15
+   ],
+   "jbtn": null,
+   "jt": null,
+   "tw": null,
+   "crumb": null,
+   "btnText": "5 | Senior",
+   "aria": "Your level: 5, Senior, about NSW Stage 6. Change level"
+  },
+  "closed": {
+   "small": [],
+   "tap": [
+    "#qINPUT:300x38:",
+    "BUTTON:64x38:Find"
+   ],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "list": {
+   "where": "msLvl",
+   "rect": [
+    16,
+    273,
+    358,
+    499
+   ],
+   "gapBelowBtn": 234,
+   "rightAlign": -4,
+   "radius": "0px",
+   "bg": "rgba(0, 0, 0, 0)",
+   "rows": [
+    {
+     "h": 52,
+     "w": 358,
+     "name": "Level 1,\nFirst steps",
+     "hint": "≈ Stage 4",
+     "desc": "beat, do–re–mi, major and minor chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 358,
+     "name": "Level 2,\nFoundation",
+     "hint": "≈ Stage 4",
+     "desc": "sus and 7th chords, the major scale, first cadences",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 358,
+     "name": "Level 3,\nDeveloping",
+     "hint": "≈ Stage 5",
+     "desc": "all four triads, colour 7ths, minor keys",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 358,
+     "name": "Level 4,\nIntermediate",
+     "hint": "≈ Stage 5",
+     "desc": "added notes, half-diminished, modes and modulation",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 358,
+     "name": "Level 5,\nSenior",
+     "hint": "≈ Stage 6",
+     "desc": "9ths, diminished 7ths, senior harmony and forms",
+     "descLines": 1,
+     "descClip": false,
+     "tab": 0,
+     "chk": "true",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 358,
+     "name": "Level 6,\nAdvanced",
+     "hint": "≈ Stage 6",
+     "desc": "11ths, 13ths, augmented 6ths, melodic-minor colours",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    },
+    {
+     "h": 52,
+     "w": 358,
+     "name": "Level 7,\nExtension",
+     "hint": "≈ Stage 6 Extension",
+     "desc": "altered dominants, quartal and slash chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    }
+   ],
+   "note": "What is new at your level comes first in every list. Nothing is hidden.",
+   "focus": "lvopt upto|5",
+   "sheetScroll": [
+    803,
+    742
+   ]
+  },
+  "openchk": {
+   "small": [],
+   "tap": [
+    "#msClose.mini:36x28:✕",
+    "#msJ.jbtn:358x36:✎Journal"
+   ],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "nocur_rows": {
+   "hd": "YOUR LEVEL",
+   "hints": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "btn": "5 | Senior",
+   "aria": "Your level: 5, Senior. Change level"
+  },
+  "nocur_btn": {
+   "btn": [
+    8,
+    32
+   ],
+   "name": [
+    16,
+    15
+   ],
+   "smallShown": false
+  },
+  "more": {
+   "small": [],
+   "tap": [
+    "#msClose.mini:36x28:✕",
+    "#msJ.jbtn:358x36:✎Journal"
+   ],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "more_geo": {
+   "rect": [
+    0,
+    101,
+    390,
+    743
+   ],
+   "scroll": [
+    803,
+    742
+   ],
+   "aria": "More",
+   "maxh": "742.72px"
+  },
+  "errs": []
+ },
+ {
+  "w": 360,
+  "top": {
+   "top": [
+    360,
+    96
+   ],
+   "search": [
+    12,
+    48,
+    336,
+    40
+   ],
+   "lvbtn": [
+    243,
+    8,
+    105,
+    32
+   ],
+   "lvt": [
+    279,
+    16,
+    40,
+    15
+   ],
+   "jbtn": null,
+   "jt": null,
+   "tw": null,
+   "crumb": null,
+   "btnText": "5 | Senior",
+   "aria": "Your level: 5, Senior, about NSW Stage 6. Change level"
+  },
+  "closed": {
+   "small": [],
+   "tap": [
+    "#qINPUT:270x38:",
+    "BUTTON:64x38:Find"
+   ],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "list": {
+   "where": "msLvl",
+   "rect": [
+    16,
+    169,
+    328,
+    499
+   ],
+   "gapBelowBtn": 129,
+   "rightAlign": -4,
+   "radius": "0px",
+   "bg": "rgba(0, 0, 0, 0)",
+   "rows": [
+    {
+     "h": 52,
+     "w": 328,
+     "name": "Level 1,\nFirst steps",
+     "hint": "≈ Stage 4",
+     "desc": "beat, do–re–mi, major and minor chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 328,
+     "name": "Level 2,\nFoundation",
+     "hint": "≈ Stage 4",
+     "desc": "sus and 7th chords, the major scale, first cadences",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 328,
+     "name": "Level 3,\nDeveloping",
+     "hint": "≈ Stage 5",
+     "desc": "all four triads, colour 7ths, minor keys",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 328,
+     "name": "Level 4,\nIntermediate",
+     "hint": "≈ Stage 5",
+     "desc": "added notes, half-diminished, modes and modulation",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 328,
+     "name": "Level 5,\nSenior",
+     "hint": "≈ Stage 6",
+     "desc": "9ths, diminished 7ths, senior harmony and forms",
+     "descLines": 1,
+     "descClip": false,
+     "tab": 0,
+     "chk": "true",
+     "cls": "lvopt upto",
+     "mark": "lvm lg"
+    },
+    {
+     "h": 52,
+     "w": 328,
+     "name": "Level 6,\nAdvanced",
+     "hint": "≈ Stage 6",
+     "desc": "11ths, 13ths, augmented 6ths, melodic-minor colours",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    },
+    {
+     "h": 52,
+     "w": 328,
+     "name": "Level 7,\nExtension",
+     "hint": "≈ Stage 6 Extension",
+     "desc": "altered dominants, quartal and slash chords",
+     "descLines": 1,
+     "descClip": false,
+     "tab": -1,
+     "chk": "false",
+     "cls": "lvopt",
+     "mark": "lvm lg ahead"
+    }
+   ],
+   "note": "What is new at your level comes first in every list. Nothing is hidden.",
+   "focus": "lvopt upto|5",
+   "sheetScroll": [
+    803,
+    650
+   ]
+  },
+  "openchk": {
+   "small": [],
+   "tap": [
+    "#msClose.mini:36x28:✕",
+    "#msJ.jbtn:328x36:✎Journal"
+   ],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "nocur_rows": {
+   "hd": "YOUR LEVEL",
+   "hints": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "btn": "5 | Senior",
+   "aria": "Your level: 5, Senior. Change level"
+  },
+  "nocur_btn": {
+   "btn": [
+    8,
+    32
+   ],
+   "name": [
+    16,
+    15
+   ],
+   "smallShown": false
+  },
+  "more": {
+   "small": [],
+   "tap": [
+    "#msClose.mini:36x28:✕",
+    "#msJ.jbtn:328x36:✎Journal"
+   ],
+   "over": 0,
+   "fonts": "Outfit300,Outfit400,Outfit600,Outfit700,Poiret One400"
+  },
+  "more_geo": {
+   "rect": [
+    0,
+    89,
+    360,
+    651
+   ],
+   "scroll": [
+    803,
+    650
+   ],
+   "aria": "More",
+   "maxh": "651.2px"
+  },
+  "errs": []
+ }
+]

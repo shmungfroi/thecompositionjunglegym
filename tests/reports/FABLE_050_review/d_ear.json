@@ -1,0 +1,3636 @@
+[
+{
+"w": 1440,
+"d": "mel",
+"lv": 1,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"34x32",
+"35x32",
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:38x32:Rung 1, not yet written:ok",
+"2:71x32:Rungs 7 to 8, not yet written:ok",
+"1:38x32:Rung 11, not yet written:ok",
+"1:38x32:Rung 14, not yet written:ok",
+"1:38x32:Rung 17, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"you open",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"you has",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"lcap": [],
+"line": "Rung 2 of 21 · Level 1, First steps (≈ NSW Stage 4) · five crotchets, do to so / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"· Level 1, First steps (≈ NSW Stage 4) · five crotchets, do"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1440,
+"d": "mel",
+"lv": 4,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"34x32",
+"35x32",
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:38x32:Rung 1, not yet written:ok",
+"2:71x32:Rungs 7 to 8, not yet written:ok",
+"1:38x32:Rung 11, not yet written:ok",
+"1:38x32:Rung 14, not yet written:ok",
+"1:38x32:Rung 17, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"-",
+"-",
+"-",
+"you open",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 39,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1440,
+"d": "mel",
+"lv": 7,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"34x32",
+"35x32",
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:38x32:Rung 1, not yet written:ok",
+"2:71x32:Rungs 7 to 8, not yet written:ok",
+"1:38x32:Rung 11, not yet written:ok",
+"1:38x32:Rung 14, not yet written:ok",
+"1:38x32:Rung 17, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"open",
+"you none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"has",
+"you none"
+],
+"lcap": [],
+"line": "Rung 18 of 21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real scores / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1440,
+"d": "cad",
+"lv": 1,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:105x32:Rungs 1 to 3, not yet written:ok",
+"1:38x32:Rung 6, not yet written:ok",
+"3:105x32:Rungs 7 to 9, not yet written:ok",
+"3:105x32:Rungs 10 to 12, not yet written:ok",
+"2:72x32:Rungs 14 to 15, not yet written:ok",
+"3:105x32:Rungs 16 to 18, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"you none",
+"open",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"you none",
+"has",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"lcap": [],
+"line": "Rung 4 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1440,
+"d": "cad",
+"lv": 4,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:105x32:Rungs 1 to 3, not yet written:ok",
+"1:38x32:Rung 6, not yet written:ok",
+"3:105x32:Rungs 7 to 9, not yet written:ok",
+"3:105x32:Rungs 10 to 12, not yet written:ok",
+"2:72x32:Rungs 14 to 15, not yet written:ok",
+"3:105x32:Rungs 16 to 18, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"none",
+"open",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1440,
+"d": "cad",
+"lv": 7,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:105x32:Rungs 1 to 3, not yet written:ok",
+"1:38x32:Rung 6, not yet written:ok",
+"3:105x32:Rungs 7 to 9, not yet written:ok",
+"3:105x32:Rungs 10 to 12, not yet written:ok",
+"2:72x32:Rungs 14 to 15, not yet written:ok",
+"3:105x32:Rungs 16 to 18, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"none",
+"-",
+"none",
+"none",
+"open",
+"none",
+"you none"
+],
+"tabcls": [
+"none",
+"-",
+"none",
+"none",
+"has",
+"none",
+"you none"
+],
+"lcap": [],
+"line": "Rung 13 of 21 · Level 5, Senior (≈ NSW Stage 6)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"f 21 · Level 5, Senior (≈ NSW Stage 6)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1440,
+"errs": []
+},
+{
+"w": 1366,
+"d": "mel",
+"lv": 1,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"34x32",
+"35x32",
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:38x32:Rung 1, not yet written:ok",
+"2:71x32:Rungs 7 to 8, not yet written:ok",
+"1:38x32:Rung 11, not yet written:ok",
+"1:38x32:Rung 14, not yet written:ok",
+"1:38x32:Rung 17, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"you open",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"you has",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"lcap": [],
+"line": "Rung 2 of 21 · Level 1, First steps (≈ NSW Stage 4) · five crotchets, do to so / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"· Level 1, First steps (≈ NSW Stage 4) · five crotchets, do"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1366,
+"d": "mel",
+"lv": 4,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"34x32",
+"35x32",
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:38x32:Rung 1, not yet written:ok",
+"2:71x32:Rungs 7 to 8, not yet written:ok",
+"1:38x32:Rung 11, not yet written:ok",
+"1:38x32:Rung 14, not yet written:ok",
+"1:38x32:Rung 17, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"-",
+"-",
+"-",
+"you open",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 39,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1366,
+"d": "mel",
+"lv": 7,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"34x32",
+"35x32",
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:38x32:Rung 1, not yet written:ok",
+"2:71x32:Rungs 7 to 8, not yet written:ok",
+"1:38x32:Rung 11, not yet written:ok",
+"1:38x32:Rung 14, not yet written:ok",
+"1:38x32:Rung 17, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"open",
+"you none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"has",
+"you none"
+],
+"lcap": [],
+"line": "Rung 18 of 21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real scores / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1366,
+"d": "cad",
+"lv": 1,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:105x32:Rungs 1 to 3, not yet written:ok",
+"1:38x32:Rung 6, not yet written:ok",
+"3:105x32:Rungs 7 to 9, not yet written:ok",
+"3:105x32:Rungs 10 to 12, not yet written:ok",
+"2:72x32:Rungs 14 to 15, not yet written:ok",
+"3:105x32:Rungs 16 to 18, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"you none",
+"open",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"you none",
+"has",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"lcap": [],
+"line": "Rung 4 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1366,
+"d": "cad",
+"lv": 4,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:105x32:Rungs 1 to 3, not yet written:ok",
+"1:38x32:Rung 6, not yet written:ok",
+"3:105x32:Rungs 7 to 9, not yet written:ok",
+"3:105x32:Rungs 10 to 12, not yet written:ok",
+"2:72x32:Rungs 14 to 15, not yet written:ok",
+"3:105x32:Rungs 16 to 18, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"none",
+"open",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1366,
+"d": "cad",
+"lv": 7,
+"geo": {
+"w": 796,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:105x32:Rungs 1 to 3, not yet written:ok",
+"1:38x32:Rung 6, not yet written:ok",
+"3:105x32:Rungs 7 to 9, not yet written:ok",
+"3:105x32:Rungs 10 to 12, not yet written:ok",
+"2:72x32:Rungs 14 to 15, not yet written:ok",
+"3:105x32:Rungs 16 to 18, not yet written:ok",
+"3:105x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"none",
+"-",
+"none",
+"none",
+"open",
+"none",
+"you none"
+],
+"tabcls": [
+"none",
+"-",
+"none",
+"none",
+"has",
+"none",
+"you none"
+],
+"lcap": [],
+"line": "Rung 13 of 21 · Level 5, Senior (≈ NSW Stage 6)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"f 21 · Level 5, Senior (≈ NSW Stage 6)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1366,
+"errs": []
+},
+{
+"w": 1280,
+"d": "mel",
+"lv": 1,
+"geo": {
+"w": 780,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32",
+"34x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:37x32:Rung 1, not yet written:ok",
+"2:70x32:Rungs 7 to 8, not yet written:ok",
+"1:38x32:Rung 11, not yet written:ok",
+"1:38x32:Rung 14, not yet written:ok",
+"1:38x32:Rung 17, not yet written:ok",
+"3:103x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"you open",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"you has",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"lcap": [],
+"line": "Rung 2 of 21 · Level 1, First steps (≈ NSW Stage 4) · five crotchets, do to so / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"· Level 1, First steps (≈ NSW Stage 4) · five crotchets, do"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1280,
+"d": "mel",
+"lv": 4,
+"geo": {
+"w": 780,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32",
+"34x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:37x32:Rung 1, not yet written:ok",
+"2:70x32:Rungs 7 to 8, not yet written:ok",
+"1:38x32:Rung 11, not yet written:ok",
+"1:38x32:Rung 14, not yet written:ok",
+"1:38x32:Rung 17, not yet written:ok",
+"3:103x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"-",
+"-",
+"-",
+"you open",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 39,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1280,
+"d": "mel",
+"lv": 7,
+"geo": {
+"w": 780,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32",
+"34x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:37x32:Rung 1, not yet written:ok",
+"2:70x32:Rungs 7 to 8, not yet written:ok",
+"1:38x32:Rung 11, not yet written:ok",
+"1:38x32:Rung 14, not yet written:ok",
+"1:38x32:Rung 17, not yet written:ok",
+"3:103x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"open",
+"you none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"has",
+"you none"
+],
+"lcap": [],
+"line": "Rung 18 of 21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real scores / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1280,
+"d": "cad",
+"lv": 1,
+"geo": {
+"w": 780,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:103x32:Rungs 1 to 3, not yet written:ok",
+"1:38x32:Rung 6, not yet written:ok",
+"3:103x32:Rungs 7 to 9, not yet written:ok",
+"3:103x32:Rungs 10 to 12, not yet written:ok",
+"2:70x32:Rungs 14 to 15, not yet written:ok",
+"3:103x32:Rungs 16 to 18, not yet written:ok",
+"3:103x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"you none",
+"open",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"you none",
+"has",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"lcap": [],
+"line": "Rung 4 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1280,
+"d": "cad",
+"lv": 4,
+"geo": {
+"w": 780,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:103x32:Rungs 1 to 3, not yet written:ok",
+"1:38x32:Rung 6, not yet written:ok",
+"3:103x32:Rungs 7 to 9, not yet written:ok",
+"3:103x32:Rungs 10 to 12, not yet written:ok",
+"2:70x32:Rungs 14 to 15, not yet written:ok",
+"3:103x32:Rungs 16 to 18, not yet written:ok",
+"3:103x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"none",
+"open",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1280,
+"d": "cad",
+"lv": 7,
+"geo": {
+"w": 780,
+"h": 60,
+"rows": 1,
+"cells": [
+"33x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:103x32:Rungs 1 to 3, not yet written:ok",
+"1:38x32:Rung 6, not yet written:ok",
+"3:103x32:Rungs 7 to 9, not yet written:ok",
+"3:103x32:Rungs 10 to 12, not yet written:ok",
+"2:70x32:Rungs 14 to 15, not yet written:ok",
+"3:103x32:Rungs 16 to 18, not yet written:ok",
+"3:103x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"none",
+"-",
+"none",
+"none",
+"open",
+"none",
+"you none"
+],
+"tabcls": [
+"none",
+"-",
+"none",
+"none",
+"has",
+"none",
+"you none"
+],
+"lcap": [],
+"line": "Rung 13 of 21 · Level 5, Senior (≈ NSW Stage 6)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"f 21 · Level 5, Senior (≈ NSW Stage 6)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1280,
+"errs": []
+},
+{
+"w": 1024,
+"d": "mel",
+"lv": 1,
+"geo": {
+"w": 834,
+"h": 60,
+"rows": 1,
+"cells": [
+"35x32",
+"37x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:39x32:Rung 1, not yet written:ok",
+"2:75x32:Rungs 7 to 8, not yet written:ok",
+"1:40x32:Rung 11, not yet written:ok",
+"1:40x32:Rung 14, not yet written:ok",
+"1:40x32:Rung 17, not yet written:ok",
+"3:110x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"you open",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"you has",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"lcap": [],
+"line": "Rung 2 of 21 · Level 1, First steps (≈ NSW Stage 4) · five crotchets, do to so / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"· Level 1, First steps (≈ NSW Stage 4) · five crotchets, do"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1024,
+"d": "mel",
+"lv": 4,
+"geo": {
+"w": 834,
+"h": 60,
+"rows": 1,
+"cells": [
+"35x32",
+"37x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:39x32:Rung 1, not yet written:ok",
+"2:75x32:Rungs 7 to 8, not yet written:ok",
+"1:40x32:Rung 11, not yet written:ok",
+"1:40x32:Rung 14, not yet written:ok",
+"1:40x32:Rung 17, not yet written:ok",
+"3:110x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"-",
+"-",
+"-",
+"you open",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 39,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1024,
+"d": "mel",
+"lv": 7,
+"geo": {
+"w": 834,
+"h": 60,
+"rows": 1,
+"cells": [
+"35x32",
+"37x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"1:39x32:Rung 1, not yet written:ok",
+"2:75x32:Rungs 7 to 8, not yet written:ok",
+"1:40x32:Rung 11, not yet written:ok",
+"1:40x32:Rung 14, not yet written:ok",
+"1:40x32:Rung 17, not yet written:ok",
+"3:110x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"open",
+"you none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"has",
+"you none"
+],
+"lcap": [],
+"line": "Rung 18 of 21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real scores / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1024,
+"d": "cad",
+"lv": 1,
+"geo": {
+"w": 834,
+"h": 60,
+"rows": 1,
+"cells": [
+"35x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:110x32:Rungs 1 to 3, not yet written:ok",
+"1:40x32:Rung 6, not yet written:ok",
+"3:110x32:Rungs 7 to 9, not yet written:ok",
+"3:110x32:Rungs 10 to 12, not yet written:ok",
+"2:75x32:Rungs 14 to 15, not yet written:ok",
+"3:110x32:Rungs 16 to 18, not yet written:ok",
+"3:110x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"you none",
+"open",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"you none",
+"has",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"lcap": [],
+"line": "Rung 4 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1024,
+"d": "cad",
+"lv": 4,
+"geo": {
+"w": 834,
+"h": 60,
+"rows": 1,
+"cells": [
+"35x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:110x32:Rungs 1 to 3, not yet written:ok",
+"1:40x32:Rung 6, not yet written:ok",
+"3:110x32:Rungs 7 to 9, not yet written:ok",
+"3:110x32:Rungs 10 to 12, not yet written:ok",
+"2:75x32:Rungs 14 to 15, not yet written:ok",
+"3:110x32:Rungs 16 to 18, not yet written:ok",
+"3:110x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"none",
+"open",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1024,
+"d": "cad",
+"lv": 7,
+"geo": {
+"w": 834,
+"h": 60,
+"rows": 1,
+"cells": [
+"35x32"
+],
+"tabs": [],
+"tabGap": null,
+"ny": [
+"3:110x32:Rungs 1 to 3, not yet written:ok",
+"1:40x32:Rung 6, not yet written:ok",
+"3:110x32:Rungs 7 to 9, not yet written:ok",
+"3:110x32:Rungs 10 to 12, not yet written:ok",
+"2:75x32:Rungs 14 to 15, not yet written:ok",
+"3:110x32:Rungs 16 to 18, not yet written:ok",
+"3:110x32:Rungs 19 to 21, not yet written:ok"
+],
+"caps": [
+"1 First steps/11px",
+"2 Foundation/11px",
+"3 Developing/11px",
+"4 Intermediate/11px",
+"5 Senior/11px",
+"6 Advanced/11px",
+"7 Extension/11px"
+],
+"groups": [
+"none",
+"-",
+"none",
+"none",
+"open",
+"none",
+"you none"
+],
+"tabcls": [
+"none",
+"-",
+"none",
+"none",
+"has",
+"none",
+"you none"
+],
+"lcap": [],
+"line": "Rung 13 of 21 · Level 5, Senior (≈ NSW Stage 6)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"f 21 · Level 5, Senior (≈ NSW Stage 6)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 1024,
+"errs": []
+},
+{
+"w": 820,
+"d": "mel",
+"lv": 1,
+"geo": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [
+"217x48"
+],
+"tabs": [
+"91x51",
+"91x44"
+],
+"tabGap": 3,
+"ny": [
+"1:221x48:Rung 1, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"you open",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"you has",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 1 · First steps · your level"
+],
+"line": "Rung 2 of 21 · Level 1, First steps (≈ NSW Stage 4) · five crotchets, do to so / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"· Level 1, First steps (≈ NSW Stage 4) · five crotchets, do"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 820,
+"d": "mel",
+"lv": 4,
+"geo": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [
+"217x48"
+],
+"tabs": [
+"91x44",
+"91x51"
+],
+"tabGap": 3,
+"ny": [
+"1:222x48:Rung 11, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"-",
+"-",
+"-",
+"you open",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 4 · Intermediate · your level"
+],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 56,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"tab6": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [
+"217x48"
+],
+"tabs": [
+"91x44",
+"91x51"
+],
+"tabGap": 3,
+"ny": [
+"1:222x48:Rung 17, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"-",
+"-",
+"-",
+"you",
+"-",
+"open",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 6 · Advanced"
+],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 56,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"rungKept": true,
+"focusAfterTab": "|",
+"tab1": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [
+"217x48"
+],
+"tabs": [
+"91x51",
+"91x44"
+],
+"tabGap": 3,
+"ny": [
+"1:221x48:Rung 1, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"open",
+"-",
+"-",
+"you",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 1 · First steps"
+],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 56,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+}
+},
+{
+"w": 820,
+"d": "mel",
+"lv": 7,
+"geo": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [
+"217x48"
+],
+"tabs": [
+"91x44",
+"91x51"
+],
+"tabGap": 3,
+"ny": [
+"1:222x48:Rung 17, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"open",
+"you none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"has",
+"you none"
+],
+"lcap": [
+"Level 6 · Advanced"
+],
+"line": "Rung 18 of 21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real scores / LAST 10",
+"lineH": 18,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 820,
+"d": "cad",
+"lv": 1,
+"geo": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [
+"217x48"
+],
+"tabs": [
+"91x44",
+"91x51"
+],
+"tabGap": 3,
+"ny": [
+"1:222x48:Rung 6, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"you none",
+"open",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"you none",
+"has",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 2 · Foundation"
+],
+"line": "Rung 4 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 820,
+"d": "cad",
+"lv": 4,
+"geo": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [
+"217x48"
+],
+"tabs": [
+"91x44",
+"91x51"
+],
+"tabGap": 3,
+"ny": [
+"1:222x48:Rung 6, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none",
+"open",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 2 · Foundation"
+],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"tab6": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [],
+"tabs": [
+"91x44",
+"91x51"
+],
+"tabGap": 3,
+"ny": [
+"3:656x48:Rungs 16 to 18, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none",
+"-",
+"none",
+"you none",
+"-",
+"none open",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 6 · Advanced"
+],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"rungKept": true,
+"focusAfterTab": "|",
+"tab1": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [],
+"tabs": [
+"91x51",
+"91x44"
+],
+"tabGap": 3,
+"ny": [
+"3:656x48:Rungs 1 to 3, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none open",
+"-",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 1 · First steps"
+],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+}
+},
+{
+"w": 820,
+"d": "cad",
+"lv": 7,
+"geo": {
+"w": 658,
+"h": 124,
+"rows": 1,
+"cells": [
+"217x48"
+],
+"tabs": [
+"91x44",
+"91x51"
+],
+"tabGap": 3,
+"ny": [
+"2:439x48:Rungs 14 to 15, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none",
+"-",
+"none",
+"none",
+"open",
+"none",
+"you none"
+],
+"tabcls": [
+"none",
+"-",
+"none",
+"none",
+"has",
+"none",
+"you none"
+],
+"lcap": [
+"Level 5 · Senior"
+],
+"line": "Rung 13 of 21 · Level 5, Senior (≈ NSW Stage 6)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"f 21 · Level 5, Senior (≈ NSW Stage 6)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 820,
+"errs": []
+},
+{
+"w": 390,
+"d": "mel",
+"lv": 1,
+"geo": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [
+"107x48"
+],
+"tabs": [
+"44x51",
+"44x44"
+],
+"tabGap": 3,
+"ny": [
+"1:111x48:Rung 1, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"you open",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"you has",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 1 · First steps · your level"
+],
+"line": "Rung 2 of 21 · Level 1, First steps (≈ NSW Stage 4) · five crotchets, do to so / LAST 10",
+"lineH": 56,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"· Level 1, First steps (≈ NSW Stage 4) · five crotchets, do"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 390,
+"d": "mel",
+"lv": 4,
+"geo": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [
+"107x48"
+],
+"tabs": [
+"44x44",
+"44x51"
+],
+"tabGap": 3,
+"ny": [
+"1:112x48:Rung 11, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"-",
+"-",
+"-",
+"you open",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 4 · Intermediate · your level"
+],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 74,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"tab6": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [
+"107x48"
+],
+"tabs": [
+"44x44",
+"44x51"
+],
+"tabGap": 3,
+"ny": [
+"1:112x48:Rung 17, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"-",
+"-",
+"-",
+"you",
+"-",
+"open",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 6 · Advanced"
+],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 74,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"rungKept": true,
+"focusAfterTab": "|",
+"tab1": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [
+"107x48"
+],
+"tabs": [
+"44x51",
+"44x44"
+],
+"tabGap": 3,
+"ny": [
+"1:111x48:Rung 1, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"open",
+"-",
+"-",
+"you",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 1 · First steps"
+],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 74,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+}
+},
+{
+"w": 390,
+"d": "mel",
+"lv": 7,
+"geo": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [
+"107x48"
+],
+"tabs": [
+"44x44",
+"44x51"
+],
+"tabGap": 3,
+"ny": [
+"1:112x48:Rung 17, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"open",
+"you none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"has",
+"you none"
+],
+"lcap": [
+"Level 6 · Advanced"
+],
+"line": "Rung 18 of 21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real scores / LAST 10",
+"lineH": 56,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real "
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 390,
+"d": "cad",
+"lv": 1,
+"geo": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [
+"107x48"
+],
+"tabs": [
+"44x44",
+"44x51"
+],
+"tabGap": 3,
+"ny": [
+"1:112x48:Rung 6, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"you none",
+"open",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"you none",
+"has",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 2 · Foundation"
+],
+"line": "Rung 4 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 390,
+"d": "cad",
+"lv": 4,
+"geo": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [
+"107x48"
+],
+"tabs": [
+"44x44",
+"44x51"
+],
+"tabGap": 3,
+"ny": [
+"1:112x48:Rung 6, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none",
+"open",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 2 · Foundation"
+],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"tab6": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [],
+"tabs": [
+"44x44",
+"44x51"
+],
+"tabGap": 3,
+"ny": [
+"3:326x48:Rungs 16 to 18, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none",
+"-",
+"none",
+"you none",
+"-",
+"none open",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 6 · Advanced"
+],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"rungKept": true,
+"focusAfterTab": "|",
+"tab1": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [],
+"tabs": [
+"44x51",
+"44x44"
+],
+"tabGap": 3,
+"ny": [
+"3:326x48:Rungs 1 to 3, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none open",
+"-",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 1 · First steps"
+],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+}
+},
+{
+"w": 390,
+"d": "cad",
+"lv": 7,
+"geo": {
+"w": 328,
+"h": 124,
+"rows": 1,
+"cells": [
+"107x48"
+],
+"tabs": [
+"44x44",
+"44x51"
+],
+"tabGap": 3,
+"ny": [
+"2:219x48:Rungs 14 to 15, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none",
+"-",
+"none",
+"none",
+"open",
+"none",
+"you none"
+],
+"tabcls": [
+"none",
+"-",
+"none",
+"none",
+"has",
+"none",
+"you none"
+],
+"lcap": [
+"Level 5 · Senior"
+],
+"line": "Rung 13 of 21 · Level 5, Senior (≈ NSW Stage 6)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"f 21 · Level 5, Senior (≈ NSW Stage 6)"
+]
+},
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+}
+},
+{
+"w": 390,
+"errs": []
+},
+{
+"w": 360,
+"d": "mel",
+"lv": 1,
+"geo": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [
+"97x48"
+],
+"tabs": [
+"40x51",
+"40x44"
+],
+"tabGap": 3,
+"ny": [
+"1:101x48:Rung 1, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"you open",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"you has",
+"-",
+"-",
+"-",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 1 · First steps · your level"
+],
+"line": "Rung 2 of 21 · Level 1, First steps (≈ NSW Stage 4) · five crotchets, do to so / LAST 10",
+"lineH": 56,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"· Level 1, First steps (≈ NSW Stage 4) · five crotchets, do"
+]
+},
+"chk": {
+"small": [],
+"tap": [
+".el-ltab.you.has:40x51:1",
+".el-ltab:40x44:2",
+".el-ltab:40x44:3",
+".el-ltab:40x44:4",
+".el-ltab:40x44:5",
+".el-ltab:40x44:6",
+".el-ltab.none:40x44:7"
+],
+"over": 0
+}
+},
+{
+"w": 360,
+"d": "mel",
+"lv": 4,
+"geo": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [
+"97x48"
+],
+"tabs": [
+"40x44",
+"40x51"
+],
+"tabGap": 3,
+"ny": [
+"1:102x48:Rung 11, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"-",
+"-",
+"-",
+"you open",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 4 · Intermediate · your level"
+],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 74,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"chk": {
+"small": [],
+"tap": [
+".el-ltab:40x44:1",
+".el-ltab:40x44:2",
+".el-ltab:40x44:3",
+".el-ltab.you.has:40x51:4",
+".el-ltab:40x44:5",
+".el-ltab:40x44:6",
+".el-ltab.none:40x44:7"
+],
+"over": 0
+},
+"tab6": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [
+"97x48"
+],
+"tabs": [
+"40x44",
+"40x51"
+],
+"tabGap": 3,
+"ny": [
+"1:102x48:Rung 17, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"-",
+"-",
+"-",
+"you",
+"-",
+"open",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 6 · Advanced"
+],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 74,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+},
+"rungKept": true,
+"focusAfterTab": "|",
+"tab1": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [
+"97x48"
+],
+"tabs": [
+"40x51",
+"40x44"
+],
+"tabGap": 3,
+"ny": [
+"1:101x48:Rung 1, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"open",
+"-",
+"-",
+"you",
+"-",
+"-",
+"none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"you has",
+"-",
+"-",
+"none"
+],
+"lcap": [
+"Level 1 · First steps"
+],
+"line": "Rung 10 of 21 · Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, 3/4, 4/4 or 6/8 · harmonic and melodic minor (si, fi) / LAST 10",
+"lineH": 74,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" Level 4, Intermediate (≈ NSW Stage 5) · four bars of 2/4, "
+]
+}
+},
+{
+"w": 360,
+"d": "mel",
+"lv": 7,
+"geo": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [
+"97x48"
+],
+"tabs": [
+"40x44",
+"40x51"
+],
+"tabGap": 3,
+"ny": [
+"1:102x48:Rung 17, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"open",
+"you none"
+],
+"tabcls": [
+"-",
+"-",
+"-",
+"-",
+"-",
+"has",
+"you none"
+],
+"lcap": [
+"Level 6 · Advanced"
+],
+"line": "Rung 18 of 21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real scores / LAST 10",
+"lineH": 56,
+"tag": "RUNGS 2 TO 18 · 12 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"21 · Level 6, Advanced (≈ NSW Stage 6) · phrases from real "
+]
+},
+"chk": {
+"small": [],
+"tap": [
+".el-ltab:40x44:1",
+".el-ltab:40x44:2",
+".el-ltab:40x44:3",
+".el-ltab:40x44:4",
+".el-ltab:40x44:5",
+".el-ltab.has:40x51:6",
+".el-ltab.you.none:40x44:7"
+],
+"over": 0
+}
+},
+{
+"w": 360,
+"d": "cad",
+"lv": 1,
+"geo": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [
+"97x48"
+],
+"tabs": [
+"40x44",
+"40x51"
+],
+"tabGap": 3,
+"ny": [
+"1:102x48:Rung 6, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"you none",
+"open",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"you none",
+"has",
+"none",
+"none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 2 · Foundation"
+],
+"line": "Rung 4 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [
+".el-ltab.you.none:40x44:1",
+".el-ltab.has:40x51:2",
+".el-ltab.none:40x44:3",
+".el-ltab.none:40x44:4",
+".el-ltab:40x44:5",
+".el-ltab.none:40x44:6",
+".el-ltab.none:40x44:7"
+],
+"over": 0
+}
+},
+{
+"w": 360,
+"d": "cad",
+"lv": 4,
+"geo": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [
+"97x48"
+],
+"tabs": [
+"40x44",
+"40x51"
+],
+"tabGap": 3,
+"ny": [
+"1:102x48:Rung 6, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none",
+"open",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 2 · Foundation"
+],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"chk": {
+"small": [],
+"tap": [
+".el-ltab.none:40x44:1",
+".el-ltab.has:40x51:2",
+".el-ltab.none:40x44:3",
+".el-ltab.you.none:40x44:4",
+".el-ltab:40x44:5",
+".el-ltab.none:40x44:6",
+".el-ltab.none:40x44:7"
+],
+"over": 0
+},
+"tab6": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [],
+"tabs": [
+"40x44",
+"40x51"
+],
+"tabGap": 3,
+"ny": [
+"3:296x48:Rungs 16 to 18, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none",
+"-",
+"none",
+"you none",
+"-",
+"none open",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 6 · Advanced"
+],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+},
+"rungKept": true,
+"focusAfterTab": "|",
+"tab1": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [],
+"tabs": [
+"40x51",
+"40x44"
+],
+"tabGap": 3,
+"ny": [
+"3:296x48:Rungs 1 to 3, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none open",
+"-",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"tabcls": [
+"none",
+"has",
+"none",
+"you none",
+"-",
+"none",
+"none"
+],
+"lcap": [
+"Level 1 · First steps"
+],
+"line": "Rung 5 of 21 · Level 2, Foundation (≈ NSW Stage 4)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+" · Level 2, Foundation (≈ NSW Stage 4)"
+]
+}
+},
+{
+"w": 360,
+"d": "cad",
+"lv": 7,
+"geo": {
+"w": 298,
+"h": 124,
+"rows": 1,
+"cells": [
+"97x48"
+],
+"tabs": [
+"40x44",
+"40x51"
+],
+"tabGap": 3,
+"ny": [
+"2:199x48:Rungs 14 to 15, not yet written:ok"
+],
+"caps": [],
+"groups": [
+"none",
+"-",
+"none",
+"none",
+"open",
+"none",
+"you none"
+],
+"tabcls": [
+"none",
+"-",
+"none",
+"none",
+"has",
+"none",
+"you none"
+],
+"lcap": [
+"Level 5 · Senior"
+],
+"line": "Rung 13 of 21 · Level 5, Senior (≈ NSW Stage 6)",
+"lineH": 18,
+"tag": "RUNGS 4 TO 13 · 3 WRITTEN",
+"subs": [
+"Pulse and metre: 3 rungs",
+"Rhythm dictation: 10 rungs",
+"Chord quality: 3 rungs",
+"Cadences: 3 rungs",
+"Bass and numerals: 3 rungs",
+"Melodic dictation: 12 rungs",
+"Blind analysis: 3 rungs"
+],
+"now": 1,
+"stage": [
+"f 21 · Level 5, Senior (≈ NSW Stage 6)"
+]
+},
+"chk": {
+"small": [],
+"tap": [
+".el-ltab.none:40x44:1",
+".el-ltab:40x44:2",
+".el-ltab.none:40x44:3",
+".el-ltab.none:40x44:4",
+".el-ltab.has:40x51:5",
+".el-ltab.none:40x44:6",
+".el-ltab.you.none:40x44:7"
+],
+"over": 0
+}
+},
+{
+"w": 360,
+"errs": []
+}
+]

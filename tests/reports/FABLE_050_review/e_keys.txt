@@ -1,0 +1,22 @@
+Tab from search input -> . | solid 2px off 2px | level 5 | popHidden true | expanded false
+Tab -> #lvBtn.lvbtn | solid 2px off 2px | level 5 | popHidden true | expanded false
+Tab -> #openJ.jbtn | solid 2px off 2px | level 5 | popHidden true | expanded false
+reached lvBtn after tabs: 2
+Enter opens -> .lvopt.upto[l=5] | solid 2px off 2px | level 5 | popHidden false | expanded true
+Down -> .lvopt.upto[l=6] | solid 2px off 2px | level 6 | popHidden false | expanded true
+End -> .lvopt.upto[l=7] | solid 2px off 2px | level 7 | popHidden false | expanded true
+Down wraps -> .lvopt.upto[l=1] | solid 2px off 2px | level 1 | popHidden false | expanded true
+Up wraps -> .lvopt.upto[l=7] | solid 2px off 2px | level 7 | popHidden false | expanded true
+Home -> .lvopt.upto[l=1] | solid 2px off 2px | level 1 | popHidden false | expanded true
+Right -> .lvopt.upto[l=2] | solid 2px off 2px | level 2 | popHidden false | expanded true
+Left -> .lvopt.upto[l=1] | solid 2px off 2px | level 1 | popHidden false | expanded true
+Tab to curriculum -> #lvCur. | solid 2px off 2px | level 1 | popHidden false | expanded true
+Esc on select -> #lvCur. | solid 2px off 2px | level 1 | popHidden false | expanded true
+Tab past popover -> #openJ.jbtn | solid 2px off 2px | level 1 | popHidden false | expanded true
+state #lvBtn.lvbtn | solid 2px off 2px | level 1 | popHidden true | expanded false
+open again -> .lvopt.upto[l=1] | solid 2px off 2px | level 1 | popHidden false | expanded true
+Esc on row -> #lvBtn.lvbtn | solid 2px off 2px | level 1 | popHidden true | expanded false
+open -> .lvopt.upto[l=1] | solid 2px off 2px | level 1 | popHidden false | expanded true
+Space on row -> #lvBtn.lvbtn | solid 2px off 2px | level 1 | popHidden true | expanded false
+open -> .lvopt.upto[l=1] | solid 2px off 2px | level 1 | popHidden false | expanded true
+Enter on row -> #lvBtn.lvbtn | solid 2px off 2px | level 1 | popHidden true | expanded false

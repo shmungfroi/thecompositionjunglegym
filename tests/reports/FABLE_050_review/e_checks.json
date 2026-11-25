@@ -1,0 +1,153 @@
+{
+ "keys": {
+  "small": [
+   ".stp:10:T",
+   ".stp.h:10:S"
+  ],
+  "tap": [],
+  "over": 0
+ },
+ "focus_summary": {
+  "el": ".lvch",
+  "outline": "solid 2px rgb(240, 212, 138) off 2px",
+  "shadow": "none",
+  "lvl": 5,
+  "popHidden": true
+ },
+ "focus_cmp": {
+  "el": ".climb.cmp",
+  "outline": "solid 2px rgb(240, 212, 138) off 2px",
+  "shadow": "none",
+  "lvl": 5,
+  "popHidden": true
+ },
+ "focus_lvrow": {
+  "el": ".lvrow.on",
+  "outline": "solid 2px rgb(240, 212, 138) off -2px",
+  "shadow": "none",
+  "lvl": 5,
+  "popHidden": true
+ },
+ "nowstrip": [
+  [
+   "fresh load",
+   {
+    "btn": "lvm lg",
+    "inRoom": 1,
+    "popRow": "lvm lg"
+   }
+  ],
+  [
+   "rail click Forms",
+   {
+    "btn": "lvm lg",
+    "inRoom": 0,
+    "popRow": "lvm lg"
+   }
+  ],
+  [
+   "picked Level 4",
+   {
+    "btn": "lvm lg now",
+    "inRoom": 0,
+    "popRow": "lvm lg now"
+   }
+  ],
+  [
+   "rail click Chords",
+   {
+    "btn": "lvm lg",
+    "inRoom": 1,
+    "popRow": "lvm lg"
+   }
+  ],
+  [
+   "picked a chord type",
+   {
+    "btn": "lvm lg",
+    "inRoom": 1,
+    "popRow": "lvm lg"
+   }
+  ],
+  [
+   "rail click Ear Lab",
+   {
+    "btn": "lvm lg",
+    "inRoom": 1,
+    "popRow": "lvm lg"
+   }
+  ],
+  [
+   "pressed Play in Ear Lab",
+   {
+    "btn": "lvm lg",
+    "inRoom": 0,
+    "popRow": "lvm lg"
+   }
+  ]
+ ],
+ "climb3": {
+  "id": "c4List",
+  "w": 467,
+  "h": 683,
+  "heads": [
+   "4 NEW AT LEVEL 4 1",
+   "EARLIER LEVELS · 1 TO 3 5"
+  ],
+  "cads": 6,
+  "rows": 0,
+  "cadSize": [
+   "437x86 r10px",
+   "435x66 r10px",
+   "435x86 r10px"
+  ],
+  "cols": "none"
+ },
+ "climb1": {
+  "id": "c2mList",
+  "w": 342,
+  "h": 194,
+  "heads": [
+   "4 NEW AT LEVEL 4 1",
+   "EARLIER LEVELS · 3 3",
+   "AHEAD OF YOU · 5 2"
+  ],
+  "cads": 0,
+  "rows": 0,
+  "cadSize": [],
+  "cols": "342.234px"
+ },
+ "voice": {
+  "small": [],
+  "tap": [],
+  "over": 0
+ },
+ "climb3_390": {
+  "small": [],
+  "tap": [],
+  "over": 0
+ },
+ "keys_390": {
+  "small": [],
+  "tap": [],
+  "over": 0
+ },
+ "reduced": [],
+ "motion_default": [
+  "lvopt border-color, background-color 0.15s, 0.15s anim:none",
+  "lvBtn border-color 0.15s anim:none",
+  "car transform 0.15s anim:none",
+  "lvPop all 0s anim:none",
+  "lvrow border-color, background-color 0.15s, 0.15s anim:none",
+  "climb border-color 0.15s anim:none"
+ ],
+ "markcss": [
+  "lvm lg | bg rgb(11, 9, 6) | border solid rgba(201, 162, 74, 0.6) | color rgb(201, 162, 74) | w 400",
+  "lvm lg | bg rgb(11, 9, 6) | border solid rgba(201, 162, 74, 0.6) | color rgb(201, 162, 74) | w 400",
+  "lvm lg | bg rgb(11, 9, 6) | border solid rgba(201, 162, 74, 0.6) | color rgb(201, 162, 74) | w 400",
+  "lvm lg now | bg rgb(201, 162, 74) | border solid rgb(201, 162, 74) | color rgb(11, 9, 6) | w 700",
+  "lvm lg ahead | bg rgb(11, 9, 6) | border dashed rgba(156, 146, 124, 0.75) | color rgb(156, 146, 124) | w 400",
+  "lvm lg ahead | bg rgb(11, 9, 6) | border dashed rgba(156, 146, 124, 0.75) | color rgb(156, 146, 124) | w 400",
+  "lvm lg ahead | bg rgb(11, 9, 6) | border dashed rgba(156, 146, 124, 0.75) | color rgb(156, 146, 124) | w 400"
+ ]
+}

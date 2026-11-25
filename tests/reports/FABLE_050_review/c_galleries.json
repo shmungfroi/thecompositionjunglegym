@@ -1,0 +1,1525 @@
+[
+{
+"w": 1440,
+"lv": 2,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 1324,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 2 FORMS [42h disp 30px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 9 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband ahead:false"
+],
+"full": [
+"319x278",
+"319x278"
+],
+"cmp": [
+"257x83 r12px",
+"257x75 r12px"
+],
+"cmpText": [
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "3:ahead 3:ahead 4:ahead 4:ahead 5:ahead 5:ahead 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1440,
+"lv": 2,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 1324,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVEL 1 · 4 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 8 CLIMBS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"319x182"
+],
+"cmp": [
+"257x62 r12px",
+"257x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 3:ahead 3:ahead 4:ahead 4:ahead 4:ahead 4:ahead 5:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1440,
+"lv": 5,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 1324,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 2 FORMS [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 2 TO 4 · 6 FORMS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 3 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"319x208",
+"319x208"
+],
+"cmp": [
+"257x83 r12px",
+"257x62 r12px",
+"257x75 r12px"
+],
+"cmpText": [
+"2 | Phrase, period and sentence | FOUNDATIONS | →",
+"2 | 12-bar blues | BLUES AND JAZZ | →",
+"3 | Rondo | CLASSICAL | →",
+"3 | Theme and variations | CLASSICAL | →",
+"4 | Jazz blues | BLUES AND JAZZ | →",
+"4 | Minor blues | BLUES AND JAZZ | →",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "2: 2: 3: 3: 4: 4: 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1440,
+"lv": 5,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 1324,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 1 TO 4 · 11 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 1 CLIMB [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"319x203"
+],
+"cmp": [
+"257x62 r12px",
+"257x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"2 | Reharmonisation | CLIMB 11 · JAZZ | →",
+"3 | The cycle of 5ths | CLIMB 6 · HARMONY | →",
+"3 | Borrowed and chromatic chords | CLIMB 8 · HARMONY | →",
+"4 | Modal polyphony | CLIMB 2 · FOUNDATIONS | →",
+"4 | Secondary dominants | CLIMB 7 · HARMONY | →",
+"4 | ii–V–I | CLIMB 9 · JAZZ | →",
+"4 | Imitation and fugue | CLIMB 13 · BEYOND | →",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 2: 3: 3: 4: 4: 4: 4: 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1440,
+"errs": []
+},
+{
+"w": 1366,
+"lv": 2,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 1250,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 2 FORMS [42h disp 30px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 9 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband ahead:false"
+],
+"full": [
+"301x278",
+"301x278"
+],
+"cmp": [
+"305x62 r12px",
+"305x75 r12px"
+],
+"cmpText": [
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "3:ahead 3:ahead 4:ahead 4:ahead 5:ahead 5:ahead 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1366,
+"lv": 2,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 1250,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVEL 1 · 4 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 8 CLIMBS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"301x203"
+],
+"cmp": [
+"305x62 r12px",
+"305x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 3:ahead 3:ahead 4:ahead 4:ahead 4:ahead 4:ahead 5:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1366,
+"lv": 5,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 1250,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 2 FORMS [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 2 TO 4 · 6 FORMS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 3 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"301x229",
+"301x229"
+],
+"cmp": [
+"305x83 r12px",
+"305x62 r12px",
+"305x75 r12px"
+],
+"cmpText": [
+"2 | Phrase, period and sentence | FOUNDATIONS | →",
+"2 | 12-bar blues | BLUES AND JAZZ | →",
+"3 | Rondo | CLASSICAL | →",
+"3 | Theme and variations | CLASSICAL | →",
+"4 | Jazz blues | BLUES AND JAZZ | →",
+"4 | Minor blues | BLUES AND JAZZ | →",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "2: 2: 3: 3: 4: 4: 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1366,
+"lv": 5,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 1250,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 1 TO 4 · 11 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 1 CLIMB [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"301x203"
+],
+"cmp": [
+"305x62 r12px",
+"305x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"2 | Reharmonisation | CLIMB 11 · JAZZ | →",
+"3 | The cycle of 5ths | CLIMB 6 · HARMONY | →",
+"3 | Borrowed and chromatic chords | CLIMB 8 · HARMONY | →",
+"4 | Modal polyphony | CLIMB 2 · FOUNDATIONS | →",
+"4 | Secondary dominants | CLIMB 7 · HARMONY | →",
+"4 | ii–V–I | CLIMB 9 · JAZZ | →",
+"4 | Imitation and fugue | CLIMB 13 · BEYOND | →",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 2: 3: 3: 4: 4: 4: 4: 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1366,
+"errs": []
+},
+{
+"w": 1280,
+"lv": 2,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 1164,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 2 FORMS [42h disp 30px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 9 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband ahead:false"
+],
+"full": [
+"377x229",
+"377x229"
+],
+"cmp": [
+"284x62 r12px",
+"284x75 r12px"
+],
+"cmpText": [
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "3:ahead 3:ahead 4:ahead 4:ahead 5:ahead 5:ahead 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1280,
+"lv": 2,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 1164,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVEL 1 · 4 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 8 CLIMBS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"377x182"
+],
+"cmp": [
+"284x62 r12px",
+"284x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 3:ahead 3:ahead 4:ahead 4:ahead 4:ahead 4:ahead 5:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1280,
+"lv": 5,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 1164,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 2 FORMS [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 2 TO 4 · 6 FORMS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 3 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"377x208",
+"377x208"
+],
+"cmp": [
+"284x83 r12px",
+"284x62 r12px",
+"284x75 r12px"
+],
+"cmpText": [
+"2 | Phrase, period and sentence | FOUNDATIONS | →",
+"2 | 12-bar blues | BLUES AND JAZZ | →",
+"3 | Rondo | CLASSICAL | →",
+"3 | Theme and variations | CLASSICAL | →",
+"4 | Jazz blues | BLUES AND JAZZ | →",
+"4 | Minor blues | BLUES AND JAZZ | →",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "2: 2: 3: 3: 4: 4: 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1280,
+"lv": 5,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 1164,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 1 TO 4 · 11 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 1 CLIMB [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"377x182"
+],
+"cmp": [
+"284x62 r12px",
+"284x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"2 | Reharmonisation | CLIMB 11 · JAZZ | →",
+"3 | The cycle of 5ths | CLIMB 6 · HARMONY | →",
+"3 | Borrowed and chromatic chords | CLIMB 8 · HARMONY | →",
+"4 | Modal polyphony | CLIMB 2 · FOUNDATIONS | →",
+"4 | Secondary dominants | CLIMB 7 · HARMONY | →",
+"4 | ii–V–I | CLIMB 9 · JAZZ | →",
+"4 | Imitation and fugue | CLIMB 13 · BEYOND | →",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 2: 3: 3: 4: 4: 4: 4: 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1280,
+"errs": []
+},
+{
+"w": 1024,
+"lv": 2,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 908,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 2 FORMS [42h disp 30px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 9 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband ahead:false"
+],
+"full": [
+"446x229",
+"446x229"
+],
+"cmp": [
+"296x62 r12px",
+"296x75 r12px"
+],
+"cmpText": [
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "3:ahead 3:ahead 4:ahead 4:ahead 5:ahead 5:ahead 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1024,
+"lv": 2,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 908,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVEL 1 · 4 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 8 CLIMBS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"446x182"
+],
+"cmp": [
+"296x62 r12px",
+"296x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 3:ahead 3:ahead 4:ahead 4:ahead 4:ahead 4:ahead 5:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1024,
+"lv": 5,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 908,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 2 FORMS [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 2 TO 4 · 6 FORMS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 3 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"446x208",
+"446x208"
+],
+"cmp": [
+"296x83 r12px",
+"296x62 r12px",
+"296x75 r12px"
+],
+"cmpText": [
+"2 | Phrase, period and sentence | FOUNDATIONS | →",
+"2 | 12-bar blues | BLUES AND JAZZ | →",
+"3 | Rondo | CLASSICAL | →",
+"3 | Theme and variations | CLASSICAL | →",
+"4 | Jazz blues | BLUES AND JAZZ | →",
+"4 | Minor blues | BLUES AND JAZZ | →",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "2: 2: 3: 3: 4: 4: 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1024,
+"lv": 5,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 908,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 1 TO 4 · 11 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 1 CLIMB [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"446x182"
+],
+"cmp": [
+"296x62 r12px",
+"296x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"2 | Reharmonisation | CLIMB 11 · JAZZ | →",
+"3 | The cycle of 5ths | CLIMB 6 · HARMONY | →",
+"3 | Borrowed and chromatic chords | CLIMB 8 · HARMONY | →",
+"4 | Modal polyphony | CLIMB 2 · FOUNDATIONS | →",
+"4 | Secondary dominants | CLIMB 7 · HARMONY | →",
+"4 | ii–V–I | CLIMB 9 · JAZZ | →",
+"4 | Imitation and fugue | CLIMB 13 · BEYOND | →",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 2: 3: 3: 4: 4: 4: 4: 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 1024,
+"errs": []
+},
+{
+"w": 820,
+"lv": 2,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 704,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 2 FORMS [42h disp 30px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 9 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband ahead:false"
+],
+"full": [
+"344x229",
+"344x229"
+],
+"cmp": [
+"347x62 r12px"
+],
+"cmpText": [
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "3:ahead 3:ahead 4:ahead 4:ahead 5:ahead 5:ahead 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 820,
+"lv": 2,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 704,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVEL 1 · 4 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVELS 3 TO 6 · 8 CLIMBS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"344x182"
+],
+"cmp": [
+"347x62 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 3:ahead 3:ahead 4:ahead 4:ahead 4:ahead 4:ahead 5:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 820,
+"lv": 5,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 704,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 2 FORMS [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 2 TO 4 · 6 FORMS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 3 FORMS [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"344x208",
+"344x208"
+],
+"cmp": [
+"347x62 r12px"
+],
+"cmpText": [
+"2 | Phrase, period and sentence | FOUNDATIONS | →",
+"2 | 12-bar blues | BLUES AND JAZZ | →",
+"3 | Rondo | CLASSICAL | →",
+"3 | Theme and variations | CLASSICAL | →",
+"4 | Jazz blues | BLUES AND JAZZ | →",
+"4 | Minor blues | BLUES AND JAZZ | →",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "2: 2: 3: 3: 4: 4: 6:ahead 6:ahead 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 820,
+"lv": 5,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 704,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 1 CLIMB [42h disp 30px small 12.5px]",
+"Earlier levels / LEVELS 1 TO 4 · 11 CLIMBS · IN ORDER [35h disp 24px small 12.5px]",
+"Ahead of you / LEVEL 6 · 1 CLIMB [35h disp 24px small 12.5px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"344x203"
+],
+"cmp": [
+"347x62 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"2 | Reharmonisation | CLIMB 11 · JAZZ | →",
+"3 | The cycle of 5ths | CLIMB 6 · HARMONY | →",
+"3 | Borrowed and chromatic chords | CLIMB 8 · HARMONY | →",
+"4 | Modal polyphony | CLIMB 2 · FOUNDATIONS | →",
+"4 | Secondary dominants | CLIMB 7 · HARMONY | →",
+"4 | ii–V–I | CLIMB 9 · JAZZ | →",
+"4 | Imitation and fugue | CLIMB 13 · BEYOND | →",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 2: 3: 3: 4: 4: 4: 4: 6:ahead",
+"gaps": [
+26,
+26
+],
+"stage": []
+}
+]
+},
+{
+"w": 820,
+"errs": []
+},
+{
+"w": 390,
+"lv": 2,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [
+"SUMMARY:290x16:SyllabusStruct",
+".mini:136x24:♫ Ear Lab: cad",
+".mini.gold:125x29:Open this form"
+],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 362,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 2 FORMS [66h disp 26px small 11px]",
+"Ahead of you / LEVELS 3 TO 6 · 9 FORMS [61h disp 22px small 11px]"
+],
+"open": [
+"lvband ahead:false"
+],
+"full": [
+"362x230",
+"362x230"
+],
+"cmp": [
+"362x62 r12px"
+],
+"cmpText": [
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "3:ahead 3:ahead 4:ahead 4:ahead 5:ahead 5:ahead 6:ahead 6:ahead 6:ahead",
+"gaps": [
+22
+],
+"stage": []
+}
+]
+},
+{
+"w": 390,
+"lv": 2,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [
+"SUMMARY:340x38:SyllabusPitch ",
+".mini:136x24:♫ Ear Lab: cad",
+".mini:159x28:Answer it in y",
+".mini.gold:126x29:Start this cli"
+],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 362,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 1 CLIMB [66h disp 26px small 11px]",
+"Earlier levels / LEVEL 1 · 4 CLIMBS · IN ORDER [61h disp 22px small 11px]",
+"Ahead of you / LEVELS 3 TO 6 · 8 CLIMBS [61h disp 22px small 11px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"362x183"
+],
+"cmp": [
+"362x62 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 3:ahead 3:ahead 4:ahead 4:ahead 4:ahead 4:ahead 5:ahead 6:ahead",
+"gaps": [
+22,
+22
+],
+"stage": []
+}
+]
+},
+{
+"w": 390,
+"lv": 5,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [
+"SUMMARY:290x16:SyllabusStruct",
+".mini:136x24:♫ Ear Lab: cad",
+".mini.gold:125x29:Open this form"
+],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 362,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 2 FORMS [66h disp 26px small 11px]",
+"Earlier levels / LEVELS 2 TO 4 · 6 FORMS · IN ORDER [61h disp 22px small 11px]",
+"Ahead of you / LEVEL 6 · 3 FORMS [61h disp 22px small 11px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"362x209",
+"362x209"
+],
+"cmp": [
+"362x62 r12px"
+],
+"cmpText": [
+"2 | Phrase, period and sentence | FOUNDATIONS | →",
+"2 | 12-bar blues | BLUES AND JAZZ | →",
+"3 | Rondo | CLASSICAL | →",
+"3 | Theme and variations | CLASSICAL | →",
+"4 | Jazz blues | BLUES AND JAZZ | →",
+"4 | Minor blues | BLUES AND JAZZ | →",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "2: 2: 3: 3: 4: 4: 6:ahead 6:ahead 6:ahead",
+"gaps": [
+22,
+22
+],
+"stage": []
+}
+]
+},
+{
+"w": 390,
+"lv": 5,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [
+"SUMMARY:340x38:SyllabusPitch ",
+".mini:136x24:♫ Ear Lab: cad",
+".mini:159x28:Answer it in y",
+".mini.gold:126x29:Start this cli"
+],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 362,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 1 CLIMB [66h disp 26px small 11px]",
+"Earlier levels / LEVELS 1 TO 4 · 11 CLIMBS · IN ORDER [61h disp 22px small 11px]",
+"Ahead of you / LEVEL 6 · 1 CLIMB [61h disp 22px small 11px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"362x183"
+],
+"cmp": [
+"362x62 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"2 | Reharmonisation | CLIMB 11 · JAZZ | →",
+"3 | The cycle of 5ths | CLIMB 6 · HARMONY | →",
+"3 | Borrowed and chromatic chords | CLIMB 8 · HARMONY | →",
+"4 | Modal polyphony | CLIMB 2 · FOUNDATIONS | →",
+"4 | Secondary dominants | CLIMB 7 · HARMONY | →",
+"4 | ii–V–I | CLIMB 9 · JAZZ | →",
+"4 | Imitation and fugue | CLIMB 13 · BEYOND | →",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 2: 3: 3: 4: 4: 4: 4: 6:ahead",
+"gaps": [
+22,
+22
+],
+"stage": []
+}
+]
+},
+{
+"w": 390,
+"errs": []
+},
+{
+"w": 360,
+"lv": 2,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [
+"SUMMARY:290x16:SyllabusStruct",
+".mini:136x24:♫ Ear Lab: cad",
+".mini.gold:125x29:Open this form"
+],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 332,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 2 FORMS [66h disp 26px small 11px]",
+"Ahead of you / LEVELS 3 TO 6 · 9 FORMS [61h disp 22px small 11px]"
+],
+"open": [
+"lvband ahead:false"
+],
+"full": [
+"332x251",
+"332x230"
+],
+"cmp": [
+"332x62 r12px",
+"332x75 r12px"
+],
+"cmpText": [
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "3:ahead 3:ahead 4:ahead 4:ahead 5:ahead 5:ahead 6:ahead 6:ahead 6:ahead",
+"gaps": [
+22
+],
+"stage": []
+}
+]
+},
+{
+"w": 360,
+"lv": 2,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [
+"SUMMARY:310x38:SyllabusPitch ",
+".mini:136x24:♫ Ear Lab: cad",
+".mini:159x28:Answer it in y",
+".mini.gold:126x29:Start this cli"
+],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 332,
+"heads": [
+"New at your level / LEVEL 2 · FOUNDATION · 1 CLIMB [66h disp 26px small 11px]",
+"Earlier levels / LEVEL 1 · 4 CLIMBS · IN ORDER [61h disp 22px small 11px]",
+"Ahead of you / LEVELS 3 TO 6 · 8 CLIMBS [61h disp 22px small 11px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"332x183"
+],
+"cmp": [
+"332x62 r12px",
+"332x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 3:ahead 3:ahead 4:ahead 4:ahead 4:ahead 4:ahead 5:ahead 6:ahead",
+"gaps": [
+22,
+22
+],
+"stage": []
+}
+]
+},
+{
+"w": 360,
+"lv": 5,
+"room": "forms",
+"chk": {
+"small": [],
+"tap": [
+"SUMMARY:290x16:SyllabusStruct",
+".mini:136x24:♫ Ear Lab: cad",
+".mini.gold:125x29:Open this form"
+],
+"over": 0
+},
+"geo": [
+{
+"id": "formsList",
+"cls": "lvlst cards",
+"w": 332,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 2 FORMS [66h disp 26px small 11px]",
+"Earlier levels / LEVELS 2 TO 4 · 6 FORMS · IN ORDER [61h disp 22px small 11px]",
+"Ahead of you / LEVEL 6 · 3 FORMS [61h disp 22px small 11px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"332x209",
+"332x209"
+],
+"cmp": [
+"332x62 r12px",
+"332x75 r12px"
+],
+"cmpText": [
+"2 | Phrase, period and sentence | FOUNDATIONS | →",
+"2 | 12-bar blues | BLUES AND JAZZ | →",
+"3 | Rondo | CLASSICAL | →",
+"3 | Theme and variations | CLASSICAL | →",
+"4 | Jazz blues | BLUES AND JAZZ | →",
+"4 | Minor blues | BLUES AND JAZZ | →",
+"",
+"",
+" (dim)"
+],
+"clip": [],
+"marks": "2: 2: 3: 3: 4: 4: 6:ahead 6:ahead 6:ahead",
+"gaps": [
+22,
+22
+],
+"stage": []
+}
+]
+},
+{
+"w": 360,
+"lv": 5,
+"room": "climbs",
+"chk": {
+"small": [],
+"tap": [
+"SUMMARY:310x38:SyllabusPitch ",
+".mini:136x24:♫ Ear Lab: cad",
+".mini:159x28:Answer it in y",
+".mini.gold:126x29:Start this cli"
+],
+"over": 0
+},
+"geo": [
+{
+"id": "climbsGal",
+"cls": "lvlst cards",
+"w": 332,
+"heads": [
+"New at your level / LEVEL 5 · SENIOR · 1 CLIMB [66h disp 26px small 11px]",
+"Earlier levels / LEVELS 1 TO 4 · 11 CLIMBS · IN ORDER [61h disp 22px small 11px]",
+"Ahead of you / LEVEL 6 · 1 CLIMB [61h disp 22px small 11px]"
+],
+"open": [
+"lvband met:true",
+"lvband ahead:false"
+],
+"full": [
+"332x204"
+],
+"cmp": [
+"332x62 r12px",
+"332x83 r12px"
+],
+"cmpText": [
+"1 | Drones and modes | CLIMB 1 · FOUNDATIONS | →",
+"1 | Tonal architecture | CLIMB 3 · FOUNDATIONS | →",
+"1 | I–IV–V | CLIMB 4 · FOUNDATIONS | →",
+"1 | The four-chord loop | CLIMB 5 · FOUNDATIONS | →",
+"2 | Reharmonisation | CLIMB 11 · JAZZ | →",
+"3 | The cycle of 5ths | CLIMB 6 · HARMONY | →",
+"3 | Borrowed and chromatic chords | CLIMB 8 · HARMONY | →",
+"4 | Modal polyphony | CLIMB 2 · FOUNDATIONS | →",
+"4 | Secondary dominants | CLIMB 7 · HARMONY | →",
+"4 | ii–V–I | CLIMB 9 · JAZZ | →",
+"4 | Imitation and fugue | CLIMB 13 · BEYOND | →",
+""
+],
+"clip": [],
+"marks": "1: 1: 1: 1: 2: 3: 3: 4: 4: 4: 4: 6:ahead",
+"gaps": [
+22,
+22
+],
+"stage": []
+}
+]
+},
+{
+"w": 360,
+"errs": []
+}
+]
