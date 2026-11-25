@@ -2139,9 +2139,9 @@ const Q=[
  {k:'9',n:'dominant ninth',d:['1','3','5','b7','9'],l:5,stp:12,t:'A dominant 7th with a 9th on top: fuller and funkier. It still pulls to the chord a 5th below. Funk, soul and blues bands live on it.'},
  {k:'maj9',n:'major ninth',d:['1','3','5','7','9'],l:5,stp:12,t:'A major 7th with a 9th added: the most luxurious tonic chord in jazz and neo-soul.'},
  {k:'m9',n:'minor ninth',d:['1','b3','5','b7','9'],l:5,stp:12,t:'A minor 7th with a 9th: warm, smoky, modal. The opening chord of countless jazz and R&B grooves.'},
- {k:'It+6',n:'Italian augmented sixth',d:['1','3','#6'],l:9,t:'le, do and fi: the augmented 6th between le and fi expands outward to so.'},
- {k:'Fr+6',n:'French augmented sixth',d:['1','3','#4','#6'],l:9,t:'le, do, re and fi: the Italian sixth plus re.'},
- {k:'Ger+6',n:'German augmented sixth',d:['1','3','5','#6'],l:9,t:'le, do, ma and fi: sounds like a dominant 7th, but le falls and fi rises a semitone to so. The chord moves to V, often through I⁶₄ first.'},
+ {k:'It+6',n:'Italian augmented sixth',d:['1','3','#6'],l:6,stp:20,t:'le, do and fi: the augmented 6th between le and fi expands outward to so.'},
+ {k:'Fr+6',n:'French augmented sixth',d:['1','3','#4','#6'],l:6,stp:20,t:'le, do, re and fi: the Italian sixth plus re.'},
+ {k:'Ger+6',n:'German augmented sixth',d:['1','3','5','#6'],l:6,stp:20,t:'le, do, ma and fi: sounds like a dominant 7th, but le falls and fi rises a semitone to so. The chord moves to V, often through I⁶₄ first.'},
  {k:'7sus4',n:'dominant seventh suspended fourth',d:['1','4','5','b7'],l:4,stp:9,t:'A dominant 7th with the 4th in place of the 3rd. It delays the pull of the dominant; often resolves to a plain 7th before landing.'}
 ];
 const ALIAS={'5':'5','':'', 'M':'', 'maj':'', 'm':'m','min':'m','-':'m','7':'7','dom7':'7','sus2':'sus2','sus4':'sus4','sus':'sus4','dim':'dim','°':'dim','o':'dim','aug':'aug','+':'aug','maj7':'maj7','M7':'maj7','Δ':'maj7','Δ7':'maj7','ma7':'maj7','m7':'m7','min7':'m7','-7':'m7','6':'6','add9':'add9','madd9':'madd9','m(add9)':'madd9','m6':'m6','m7b5':'m7b5','ø':'m7b5','ø7':'m7b5','min7b5':'m7b5','dim7':'dim7','°7':'dim7','o7':'dim7','9':'9','maj9':'maj9','M9':'maj9','m9':'m9','min9':'m9','7sus4':'7sus4','7sus':'7sus4'};
@@ -2296,8 +2296,10 @@ function lvSync(){const L=S.level,h=curHint(L),ck=curKey();
   box.querySelectorAll('.lvopt').forEach(o=>{const l=+o.dataset.l,on=l===L;o.classList.toggle('upto',l<=L);o.setAttribute('aria-checked',on?'true':'false');o.tabIndex=on?0:-1;
    const m=o.querySelector('.lvm');m.className='lvm lg'+(on?' now':l>L?' ahead':'');o.querySelector('small').textContent=curHint(l,true)});
   const s=box.querySelector('select');if(s&&s.value!==ck)s.value=ck})}
-function lvlSet(l){S.level=l;try{localStorage.setItem('cjg_level',l)}catch(e){}lvSync()}
-function lvlChange(l){if(l===S.level)return;lvlSet(l);render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM)}
+/* 0.50 ICfix (IC V1-1, V1-6, V1-9): every level write goes through lvClamp: a whole number 1-7, or null (ignored) for anything that is not a number */
+function lvClamp(l){if(l===null||l===undefined||(typeof l==='string'&&!l.trim()))return null;const n=Math.round(+l);if(!isFinite(n))return null;return Math.min(7,Math.max(1,n))}
+function lvlSet(l){const v=lvClamp(l);if(v===null)return;S.level=v;try{localStorage.setItem('cjg_level',v)}catch(e){}lvSync()}
+function lvlChange(l){const v=lvClamp(l);if(v===null||v===S.level)return;lvlSet(v);l=v;render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM)}
 function curSet(k){try{localStorage.setItem('cjg_curric',k)}catch(e){}lvSync();document.dispatchEvent(new CustomEvent('cjg-curric',{detail:{key:k}}));if(typeof ROOM!=='undefined'&&ROOM==='ear')room('ear')}/* every hint refreshes: the button and both lists here, the Ear Lab rung line by the re-render (and by the cjg-curric event) */
 /* 0.50 V3: the ordering rule. Three bands: New at Level n, Earlier levels, Ahead of you. Sort key: l, stp, table order. */
 const LVCH=l=>l===S.level?'now':l<S.level?'':'ahead';
@@ -3027,12 +3029,11 @@ function diatonicRomans(k,sev){
  if(k.mode==='maj')return sev?['Imaj7','ii7','iii7','IVmaj7','V7','vi7','viiø7']:['I','ii','iii','IV','V','vi','vii°'];
  return sev?['i7','iiø7','IIImaj7','iv7','V7','VImaj7','VII7','vii°7']:['i','ii°','III','iv','V','VI','VII','vii°'];
 }
-function colourRomans(k,sev,level){
- if(level<5)return[];
- let r=k.mode==='maj'?['iv','bIII','bVI','bVII']:['IV','I'];
- if(level>=6)r=r.concat(k.mode==='maj'?['V7/ii','V7/iii','V7/IV','V7/V','V7/vi','bII','vii°7']:['V7/iv','V7/V','bII']);
- return r;
-}
+/* 0.50 ICfix (IC V1-4): colour chords by level. Borrowed chords at climb 8's levels (iv and the rock bVII at 3, bVI at 4); secondary dominants at
+   climb 7's (V/V and V/vi at 4, V/IV and V/ii at 5). So that no migrated learner loses a chord: bIII and the Picardy I stay with bVI at 4 (old
+   Stage 5 = Level 4 had them), and V/iii and the diminished 7th join at 5 (old Stage 6 = Level 5 had every secondary dominant). bII (Neapolitan) 6. */
+const COLR={maj:[['iv',3],['bIII',4],['bVI',4],['bVII',3],['V7/ii',5],['V7/iii',5],['V7/IV',5],['V7/V',4],['V7/vi',4],['bII',6],['vii°7',5]],min:[['IV',3],['I',4],['V7/iv',5],['V7/V',4],['bII',6]]};
+function colourRomans(k,sev,level){return COLR[k.mode==='maj'?'maj':'min'].filter(([,l])=>l<=level).map(([r])=>r)}
 const listFrom=(arr,k)=>arr.map(r=>{const p=parseRoman(r,k);return p?{...p,rn:r}:null}).filter(Boolean);
 
 /* ---------- smooth voice leading ---------- */
@@ -3202,7 +3203,7 @@ function midiBytes(){const V=voiceProg(P),tpq=480,ev=[];let tick=0;
 const O={tab:'cards',hand:[],n:4,end:'free',start:true,col:false,sev:false,dice:{deg:0,col:0,inv:0,len:1},strat:null,shist:[]};
 const SUIT={T:'Home',PD:'Away',D:'Pull',MD:'Soft pull',C:'Colour'};
 const HINT={T:'rest, arrival, home',PD:'moving away, setting up',D:'tension, pulling home',C:'a surprise from outside the key',MD:'no leading note: a softer pull home, a modal sound'};
-function deck(){const lv=S.level,sev=O.sev&&lv>=5;
+function deck(){const lv=S.level,sev=O.sev&&lv>=3;   // 0.50 ICfix (IC V1-4): the sevenths switch shows from Level 3, so it works from 3
  return listFrom(diatonicRomans(K,sev),K).concat(listFrom(colourRomans(K,sev,lv),K)).concat(CUSTOM).map(x=>({root:x.root,q:x.q,...analyse(x,K)}))}
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
 function oDraw(){const D=deck(),n=O.n;let h=O.hand.slice(0,n);while(h.length<n)h.push(null);
@@ -3288,7 +3289,7 @@ function renderOracle(){
  if(!$('deal'))return;fillKeySels();
  document.querySelectorAll('#otabs button').forEach(b=>b.classList.toggle('on',b.dataset.o===O.tab));
  ['cards','dice','strat'].forEach(t=>$('o-'+t).hidden=t!==O.tab);
- $('oSev').parentElement.style.display=S.level>=3?'':'none';$('oCol').parentElement.style.display=S.level>=5?'':'none';
+ $('oSev').parentElement.style.display=S.level>=3?'':'none';$('oCol').parentElement.style.display=colourRomans(K,false,S.level).length?'':'none';
  $('deal').innerHTML=O.hand.length?O.hand.map((c,i)=>c?`<div class="tc ${c.kept?'kept':''} ${c.fresh?'flip':''}" style="--c:${FN[c.f]};animation-delay:${i*.08}s" data-tc="${i}">
    <div class="suit">${SUIT[c.f]}</div><div class="orn">❦</div><div class="num disp">${c.num}</div><div class="cs">${pretty(chordOf(c.root,c.q).sym)}</div><div class="hint">${HINT[c.f]}</div>
    <button class="lock" data-keep="${i}">${c.kept?'kept':'keep'}</button></div>`:'').join(''):'<div class="empty">Draw a hand. Keep the cards you like, then draw again to replace the rest.</div>';
@@ -4566,7 +4567,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-c8ex],[dat
    CLIMB 9 · ii–V–I  (jazz voicings, guide tones)
    ===================================================================== */
 DEG['b13']=20;
-const C9={key:{k:0,mode:'maj'},ex:'maj',vt:'rootless',start:'A',quiz:{q:null,ans:null,right:0,n:0},gt:Array(8).fill(null)};
+const C9={key:{k:0,mode:'maj'},ex:'maj',vt:'rootless',vtPick:false,start:'A',quiz:{q:null,ans:null,right:0,n:0},gt:Array(8).fill(null)};
 const C9KEYS=[{k:0,mode:'maj'},{k:5,mode:'maj'},{k:10,mode:'maj'},{k:3,mode:'maj'},{k:7,mode:'maj'},{k:2,mode:'maj'},{k:9,mode:'min'},{k:2,mode:'min'},{k:7,mode:'min'},{k:0,mode:'min'}];
 const C9EX=[
  {k:'maj',n:'Major ii–V–I',l:4,maj:'ii7 V7 Imaj7 Imaj7',min:null,p:'The engine of jazz. Two falling 5ths into home, with a 7th on every chord.'},
@@ -4631,10 +4632,12 @@ function c9Cur(){const ex=C9EX.find(x=>x.k===C9.ex),L=c9List(ex[C9.key.mode],C9.
 // guide-tone melody over the standard eight bars
 function c9GtList(){return c9List(C9EX.find(x=>x.k==='std').maj,{k:C9.key.mode==='maj'?C9.key.k:mod(C9.key.k+3,12),mode:'maj'})}
 function c9GtLine(){const L=c9GtList();let prev=null;return L.map((ch,i)=>{const c=C9.gt[i];if(c==null)return null;const g=c9Guide(ch)[c==='3'?0:1];const m=prev?near(mod(g.midi,12),prev.midi):near(mod(g.midi,12),67);const n=at9(g,m);prev=n;return n})}
-function renderClimb9(){const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.filter(x=>x[mode]);
+/* 0.50 ICfix (IC V12-1): climb 9 opens on shells (root, 3rd, 7th) below Level 5 and on rootless voicings from 5; a voicing the learner chose stays */
+function c9VtDef(){return S.level>=5?'rootless':'shell'}
+function renderClimb9(){if(!C9.vtPick)C9.vt=c9VtDef();const key=C9.key,mode=key.mode,kn=keyName(key),EX=C9EX.filter(x=>x[mode]);
  if(!EX.find(x=>x.k===C9.ex))C9.ex=EX[0].k;const{ex,L,V}=c9Cur();
  const keySel=C9KEYS.map((k,i)=>`<option value="${i}" ${k.k===key.k&&k.mode===key.mode?'selected':''}>${keyName(k)}</option>`).join('');
- const VT=[['guide','Guide tones (3rd + 7th)'],['shell','Shells (root, 3rd, 7th)'],['rootless','Rootless (A and B)']];
+ const VT=[['guide','Guide tones (3rd + 7th)'],['shell','Shells (root, 3rd, 7th)'],['rootless','Rootless (A and B)'+(S.level<5?' · Level 5':'')]];
  const mv=c9Move(V);
  const tKey=mode==='maj'?key:{k:mod(key.k+3,12),mode:'maj'},GL=c9GtList(),GLine=c9GtLine();
  const gtDone=GLine.every(Boolean);let gtMsg='';
@@ -4700,7 +4703,7 @@ function c9QNew(){const key=rnd(C9KEYS.filter(k=>k.mode==='maj')),q=rnd(C9Q),str
 document.addEventListener('click',e=>{const t=e.target.closest('[data-c9ex],[data-c9play],[data-c9vt],[data-c9st],[data-c9q],[data-c9a],[data-c9gt],[data-c9g]');if(!t)return;const d=t.dataset;
  if(d.c9ex){C9.ex=d.c9ex;renderClimb9();c9Play(c9Cur().V,c9Step);return}
  if(d.c9play!==undefined){c9Play(c9Cur().V,c9Step);return}
- if(d.c9vt){C9.vt=d.c9vt;renderClimb9();c9Play(c9Cur().V,c9Step,{guide:C9.vt==='guide'});return}
+ if(d.c9vt){C9.vt=d.c9vt;C9.vtPick=true;renderClimb9();c9Play(c9Cur().V,c9Step,{guide:C9.vt==='guide'});return}
  if(d.c9st){C9.start=d.c9st;renderClimb9();c9Play(c9Cur().V,c9Step,{guide:C9.vt==='guide'});return}
  if(d.c9q==='new'){c9QNew();renderClimb9();return}
  if(d.c9q==='again'&&C9.quiz.q){c9Play(C9.quiz.q.V,null);return}
@@ -4837,6 +4840,8 @@ const C11TOOLS=[
  {k:'bor',n:'Borrowed chord',l:5,r:'I IV iv I',keep:'the function',how:'Take iv, ♭VI or ♭VII from the parallel minor (climb 8).'},
  {k:'tri',n:'Tritone substitution',l:6,r:'ii7 bII7 Imaj7',keep:'the guide tones',how:'Swap a dominant 7th for the one a tritone away (climb 10).'},
  {k:'back',n:'The backdoor ii–V',l:6,r:'iv7 bVII7 Imaj7',keep:'the arrival on I',how:'Come home from ♭VII7 instead of V7: a softer, sideways arrival through the back door.'}];
+/* 0.50 ICfix (IC V1-5, V2-4): the three vocabulary sets of climb 11, with level and step (table 5) */
+const C11VOCSET=[{k:2,l:2,stp:1,n:'diatonic triads I–vi'},{k:5,l:5,stp:2,n:'7ths, secondary dominants, passing diminished 7ths, borrowed iv, ♭VI, ♭VII, I⁶₄'},{k:6,l:6,stp:3,n:'♭II7, ♭III7, ♭VI7, ♭VII7, iv7, I⁶, 9th chords'}];
 const C11VOC={2:['I','ii','iii','IV','V','vi'],5:['Imaj7','ii7','iii7','IVmaj7','V7','vi7','V7/ii','V7/iii','V7/IV','V7/V','V7/vi','#i°7','#ii°7','#iv°7','iv','bVI','bVII','I:2'],6:['bII7','bIII7','bVI7','bVII7','iv7','I6','V9','II9','bIII9','bII9']};
 const C11HEAR=[
  {g:'Jazz · original',w:'Tune Up',a:'Miles Davis (often credited to Eddie Vinson)',y:'1953',f:'A chain of ii–V–Is, each landing a whole tone lower. Listen to this first.',q:'Tune Up Miles Davis 1953'},
@@ -4871,7 +4876,7 @@ function c11Draw(el,rns,key){el.innerHTML='';if(!window.Vex)return;ENG.keep(el,c
  ENG.finish(S)}
 function c11Rn(r){if(r==='I6')return'I add6';return r.replace(/:2$/,'⁶₄').replace(/:1$/,'⁶').replace(/b(?=[IVX])/g,'♭').replace('#','♯')}
 function c11Motion(a,b){const d=mod(pcOf(a.root)-pcOf(b.root),12);return d===7?'↓5th':d===1?'↘ semitone':d===11?'↗ semitone':d===0?'same root':d===5?'↑5th':d===2||d===10?'step':'3rd'}
-function c11Opts(i,key,mel){const out=[];[2,5,6].filter(l=>l<=S.level).forEach(l=>C11VOC[l].forEach(r=>{const ch=c11Ch(r,key);if(ch.root&&c11Fit(ch,mel[i]))out.push(r)}));return[...new Set(out)]}
+function c11Opts(i,key,mel){const out=[],L=lvAt(C11VOCSET);C11VOCSET.filter(v=>v.l<=L).map(v=>v.k).forEach(l=>C11VOC[l].forEach(r=>{const ch=c11Ch(r,key);if(ch.root&&c11Fit(ch,mel[i]))out.push(r)}));return[...new Set(out)]}
 function c11Review(rns,key){const L=rns.map(r=>c11Ch(r,key)),notes=[];let strong=0;
  for(let i=0;i<L.length-1;i++){const m=c11Motion(L[i],L[i+1]),c=chordOf(L[i].root,L[i].q,0),dom=['7','9'].includes(L[i].q)||(L[i].q===''&&mod(pcOf(L[i].root)-key.k,12)===7);
   if(m==='↓5th'||(dom&&m==='↘ semitone'))strong++;if(L[i].q==='dim7'&&m!=='↗ semitone'&&mod(pcOf(L[i+1].root)-pcOf(L[i].root),12)!==1)notes.push(`Slot ${i+1}: a diminished 7th usually rises a semitone to the next chord's root (common-practice and jazz habit); used as a chromatic passing chord it can also move by step down.`);
@@ -5099,15 +5104,17 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-c12t],[dat
 /* =====================================================================
    CLIMB 1 · DRONES AND MODES
    ===================================================================== */
-const C1={view:'same',drone:2,mode:'dor',pads:[],quiz:{q:null,ans:null,right:0,n:0},droneOn:false};
+const C1={view:'same',drone:2,mode:'dor',pick:false,pads:[],quiz:{q:null,ans:null,right:0,n:0},droneOn:false};
 const C1M=[
  {k:'lyd',n:'Lydian',iv:[0,2,4,6,7,9,11],deg:3,c:3,cn:'raised 4th',parent:3,l:4,feel:'The brightest: major with a raised 4th. Floating, wondrous, a little unreal.'},
  {k:'ion',n:'Ionian (major)',iv:[0,2,4,5,7,9,11],deg:0,c:6,cn:'leading note, a semitone below home',parent:0,l:1,feel:'The major scale: bright and settled. Its leading note pulls hard to home.'},
  {k:'mix',n:'Mixolydian',iv:[0,2,4,5,7,9,10],deg:4,c:6,cn:'flattened 7th',parent:4,l:3,feel:'Major with a flattened 7th: earthy, open, the sound of bagpipes, folk and rock.'},
  {k:'dor',n:'Dorian',iv:[0,2,3,5,7,9,10],deg:1,c:5,cn:'raised 6th',parent:1,l:3,feel:'Minor with a raised 6th: serious but warm, the sound of folk song and modal jazz.'},
- {k:'aeo',n:'Aeolian (natural minor)',iv:[0,2,3,5,7,8,10],deg:5,c:5,cn:'flattened 6th',parent:5,l:2,feel:'Natural minor: sad, noble, ancient.'},
+ {k:'aeo',n:'Aeolian (natural minor)',iv:[0,2,3,5,7,8,10],deg:5,c:5,cn:'flattened 6th',parent:5,l:1,feel:'Natural minor: sad, noble, ancient.'},
  {k:'phr',n:'Phrygian',iv:[0,1,3,5,7,8,10],deg:2,c:1,cn:'flattened 2nd',parent:2,l:4,feel:'Minor with a flattened 2nd: dark, tense, Spanish and metal.'},
  {k:'loc',n:'Locrian',iv:[0,1,3,5,6,8,10],deg:6,c:4,cn:'diminished 5th',parent:6,l:5,feel:'The darkest: even the 5th is flattened, so home itself is unstable. Rarely a whole piece, often a moment.'}];
+/* 0.50 ICfix (IC V1-3): the mode the climb opens on: Ionian at Levels 1-2 (Dorian is Level 3), Dorian from 3. A mode the learner chose stays. */
+function c1DefMode(L){return L<3?'ion':'dor'}
 const C1FIN={ion:'C',dor:'D',phr:'E',lyd:'F',mix:'G',aeo:'A',loc:'B'};
 const C1DRONES=['C','D','E','G','A'];
 const C1HEAR=[
@@ -5128,7 +5135,7 @@ function c1DroneStop(){const a=AC;C1DR.forEach(({o,g})=>{try{g.gain.cancelSchedu
 function c1Play(seq,tonic,onStep,gap){stopAll();c1DroneStart(tonic);PLAY.on=true;PLAY.src='climb';const a=ac(),spb=gap||.42;let t=a.currentTime+1;
  seq.forEach((n,i)=>{tone(n.midi,t,'piano');PLAY.timers.push(setTimeout(()=>onStep&&onStep(i),(t-a.currentTime)*1000));t+=spb});PLAY.timers.push(setTimeout(()=>{c1DroneStop();stopAll()},(t-a.currentTime)*1000+1400))}
 function c1Melody(mk,tonic){const N=c1Notes(mk,tonic),c=C1M.find(x=>x.k===mk).c;return[0,2,4,c,4,2,1,0].map(i=>N[i])}
-function renderClimb1(){const L=Math.max(S.level,1),MS=C1M,QMS=C1M.filter(m=>m.l<=L);if(!MS.find(m=>m.k===C1.mode))C1.mode='dor';const m=C1M.find(x=>x.k===C1.mode),tonic=c1Tonic(),N=c1Notes(m.k,tonic);
+function renderClimb1(){const L=Math.max(S.level,1),MS=C1M,QMS=C1M.filter(m=>m.l<=L);if(!C1.pick||!MS.find(m=>m.k===C1.mode))C1.mode=c1DefMode(L);const m=C1M.find(x=>x.k===C1.mode),tonic=c1Tonic(),N=c1Notes(m.k,tonic);
  $('climbDetail').innerHTML=`
  <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 1 · ${clLv(0)}</span><span class="sp"></span>
   <span class="note">Drone:</span><span class="chips">${[['same','one drone, every mode'],['white','white-note modes']].map(([k,l])=>`<button class="chip ${C1.view===k?'on':''}" data-c1v="${k}">${l}</button>`).join('')}</span>${C1.view==='same'?`<label class="note">on <select id="c1Dr">${C1DRONES.map((d,i)=>`<option value="${i}" ${i===C1.drone?'selected':''}>${d}</option>`).join('')}</select></label>`:''}</div>
@@ -5182,7 +5189,7 @@ function c1Feedback(N,m){const P=C1.pads;if(P.length<4)return'<div class="note">
 document.addEventListener('click',e=>{const t=e.target.closest('[data-c1v],[data-c1m],[data-c1d],[data-c1p],[data-c1pad],[data-c1pp],[data-c1q],[data-c1a]');if(!t)return;const d=t.dataset;
  const step=i=>document.querySelectorAll('#c1Row .c1n').forEach((b,j)=>b.classList.toggle('now',j===i));
  if(d.c1v){C1.view=d.c1v;C1.pads=[];c1DroneStop();renderClimb1();return}
- if(d.c1m){C1.mode=d.c1m;C1.pads=[];renderClimb1();const tn=c1Tonic(),N=c1Notes(C1.mode,tn);c1Play([...N,...N.slice(0,-1).reverse()],tn,i=>step(i<8?i:14-i));return}
+ if(d.c1m){C1.mode=d.c1m;C1.pick=true;C1.pads=[];renderClimb1();const tn=c1Tonic(),N=c1Notes(C1.mode,tn);c1Play([...N,...N.slice(0,-1).reverse()],tn,i=>step(i<8?i:14-i));return}
  if(d.c1d!==undefined){if(C1.droneOn){c1DroneStop()}else{stopAll();c1DroneStart(c1Tonic())}renderClimb1();return}
  if(d.c1p==='scale'){const tn=c1Tonic(),N=c1Notes(C1.mode,tn);c1Play([...N,...N.slice(0,-1).reverse()],tn,i=>step(i<8?i:14-i));return}
  if(d.c1p==='tune'){const tn=c1Tonic(),M=c1Melody(C1.mode,tn);c1Play(M,tn,i=>step(M[i].deg),.5);return}
@@ -5215,9 +5222,9 @@ const C2M=[
  {k:'dor',n:'Dorian',fin:'D',l:3,fux:true,cf:['D4','F4','E4','D4','G4','F4','A4','G4','F4','E4','D4'],feel:'Minor with a raised 6th. Fux\'s own first cantus.'},
  {k:'aeo',n:'Aeolian',fin:'A',l:3,cf:['A3','C4','B3','A3','D4','C4','E4','D4','C4','B3','A3'],feel:'Natural minor; G is raised to G♯ at the cadence.'},
  {k:'ion',n:'Ionian',fin:'C',l:3,cf:['C4','D4','E4','C4','F4','E4','G4','F4','E4','D4','C4'],feel:'The major mode: B already leads up to C.'},
- {k:'mix',n:'Mixolydian',fin:'G',l:4,cf:['G3','C4','A3','B3','C4','F4','E4','D4','C4','B3','A3','G3'],feel:'Major with a flattened 7th; F is raised to F♯ at the cadence.'},
- {k:'phr',n:'Phrygian',fin:'E',l:5,cf:['E4','G4','F4','E4','A4','G4','C5','B4','A4','G4','F4','E4'],feel:'The semitone is above home (F–E), so the cadence works the other way round.'},
- {k:'lyd',n:'Lydian',fin:'F',l:5,cf:['F4','A4','G4','B4','C5','A4','D5','C5','A4','G4','F4'],feel:'Major with a raised 4th: watch the tritone between F and B.'}];
+ {k:'mix',n:'Mixolydian',fin:'G',l:3,cf:['G3','C4','A3','B3','C4','F4','E4','D4','C4','B3','A3','G3'],feel:'Major with a flattened 7th; F is raised to F♯ at the cadence.'},
+ {k:'phr',n:'Phrygian',fin:'E',l:4,cf:['E4','G4','F4','E4','A4','G4','C5','B4','A4','G4','F4','E4'],feel:'The semitone is above home (F–E), so the cadence works the other way round.'},
+ {k:'lyd',n:'Lydian',fin:'F',l:4,cf:['F4','A4','G4','B4','C5','A4','D5','C5','A4','G4','F4'],feel:'Major with a raised 4th: watch the tritone between F and B.'}];
 /* fifth species: a rhythm pattern per bar (h minim, q crotchet, e quaver; ~ = last note tied into the next bar) */
 const C2RH={rh:['r4','h'],'rh~':['r4','h~'],hh:['h','h'],'hh~':['h','h~'],qqqq:['q','q','q','q'],hqq:['h','q','q'],'qqh~':['q','q','h~'],qeeqq:['q','e','e','q','q'],qqqee:['q','q','q','e','e'],hqee:['h','q','e','e'],w:['w']};
 const C2RHLAB={rh:'𝄼 𝅗𝅥','rh~':'𝄼 𝅗𝅥⁀',hh:'𝅗𝅥 𝅗𝅥','hh~':'𝅗𝅥 𝅗𝅥⁀',qqqq:'♩♩♩♩',hqq:'𝅗𝅥 ♩♩','qqh~':'♩♩ 𝅗𝅥⁀',qeeqq:'♩♫♩♩',qqqee:'♩♩♩♫',hqee:'𝅗𝅥 ♩♫',w:'𝅝'};
@@ -5723,19 +5730,22 @@ function c2RenderCant(){hBtns();const w=$('c2CantW');if(!w)return;const sl=w.scr
  const strs=c2CantStrs();if(window.Vex&&$('c2CantStaff')){const ns=strs.map(s=>s?{...c2Parse(s),under:c2Sol(c2Parse(s))}:null).filter(Boolean);const n2=[];strs.forEach((s,i)=>{if(i)n2.push({bar:true});if(s){const p=c2Parse(s);n2.push({name:p.name,oct:p.oct,under:c2Sol(p)})}else n2.push({rest:true})});drawLine($('c2CantStaff'),n2,ns.length&&ns.reduce((s,p)=>s+p.midi,0)/ns.length<57?'bass':'treble','C','w','C|')}
  const ok=strs.every(Boolean)&&!c2CantusCheck(C2.cant.fin,strs).iss.some(x=>x.sev==='err');$('c2CantUse').disabled=!ok}
 function c2SetCantus(){const strs=c2CantStrs(),f=C2.cant.fin;C2OWN={k:'own',n:`Your cantus (${C2MODEN[f]})`,fin:f,l:3,cf:strs,feel:`Your own cantus firmus in ${C2MODEN[f]}${c2Rise({cf:strs})?', rising into the final':''}.`};C2.mode='own';C2.set=null;logIt(`wrote a cantus firmus in ${C2MODEN[f]}: ${strs.join(' ')}`)}
-function c2Settable(){const M=C2OWN,L=Math.max(S.level,4),jobs=[];C2SP.filter(s=>s.l<=L&&s.k!==6).forEach(s=>(L>=5?['above','below']:['above']).forEach(p=>jobs.push([s.k,p])));
+function c2Settable(){const M=C2OWN,L=Math.max(S.level,3),jobs=[];C2SP.filter(s=>s.l<=L&&s.k!==6).forEach(s=>(L>=4?['above','below']:['above']).forEach(p=>jobs.push([s.k,p])));
  C2.set={jobs,res:{},key:M.cf.join('')};const step=i=>{if(!C2.set||C2.set.key!==M.cf.join('')||i>=jobs.length)return;const[sp,pos]=jobs[i];
   let ok=sp===5?[3,5,8].some(k=>c2Solve(M,5,pos,11,null,4000,c2Plan(M.cf.length,k))):!!c2Solve(M,sp,pos,11,null,6000);if(!ok&&sp===2)ok=!!c2Solve(M,25,pos,11,null,6000)&&'w';if(!ok&&sp===4)for(let b=1;b<=M.cf.length-3&&!ok;b++)if(c2Solve(M,4,pos,11,null,3000,[b]))ok='b';
   C2.set.res[sp+pos]=ok;const el=$('c2Set');if(el)el.innerHTML=c2SetHTML();setTimeout(()=>step(i+1),15)};setTimeout(()=>step(0),30)}
 function c2SetHTML(){if(!C2.set||!C2OWN)return'';const s=C2.set;return`<table class="cadtab"><tr><th>Species</th>${['above','below'].filter(p=>s.jobs.some(j=>j[1]===p)).map(p=>`<th>${p} the cantus</th>`).join('')}</tr>${[...new Set(s.jobs.map(j=>j[0]))].map(sp=>`<tr><td>${C2SP.find(x=>x.k===sp).n}</td>${['above','below'].filter(p=>s.jobs.some(j=>j[1]===p)).map(p=>{const r=s.res[sp+p];return`<td>${r===undefined?'<span class="note">checking…</span>':r===true?'<span style="color:var(--green)">✓ can be set</span>':r==='w'?'<span style="color:var(--goldhi)">✓ with a semibreve before the end</span>':r==='b'?'<span style="color:var(--goldhi)">✓ with one broken ligature</span>':'<span style="color:#e0604f">✗ no correct answer found</span>'}</td>`}).join('')}</tr>`).join('')}</table>`}
-function renderClimb2(){const L=Math.max(S.level,4),MS=C2M.concat(C2OWN?[C2OWN]:[]),SPS=C2SP;
+/* 0.50 ICfix (IC V1-2): climb 2 runs on levels (table 5): Level 3 first species above the cantus; 4 second and third species, above or below;
+   5 fourth and fifth; 6 three voices. Modes per table 2: Dorian, Aeolian, Ionian, Mixolydian at 3; Lydian and Phrygian at 4. */
+function c2Tier(L){return L<4?'Level 3: first species above the cantus, in four modes':L<5?'Level 4: three species, six modes, above or below':L<6?'Level 5: all five species, above or below':'Level 6: five species and three voices'}
+function renderClimb2(){const L=Math.max(S.level,3),MS=C2M.concat(C2OWN?[C2OWN]:[]),SPS=C2SP;
  if(C2EX===null)C2EX=typeof C2EXAMPLES!=='undefined'?C2EXAMPLES:{};
- if(!MS.find(m=>m.k===C2.mode))C2.mode='dor';if(!SPS.find(s=>s.k===C2.sp))C2.sp=1;if(L<5)C2.pos='above';const CB=C2.cant;if(C2M.filter(m=>m.l<=L).every(m=>m.fin!==CB.fin))CB.fin='D';
+ if(!MS.find(m=>m.k===C2.mode))C2.mode='dor';if(!SPS.find(s=>s.k===C2.sp))C2.sp=1;if(L<4)C2.pos='above';const CB=C2.cant;if(C2M.filter(m=>m.l<=L).every(m=>m.fin!==CB.fin))CB.fin='D';
  if(C2.sp===6)return(C2.c3.sp>1?renderC3m:renderC3)(L,MS,SPS);
  const M=c2Mode(C2.mode),spc=c2Spc(),sp=C2SP.find(s=>s.k===C2.sp),own=C2.mode==='own',ck=M.k+spc+C2.pos+(own?M.cf.join(''):'');
  const pending=own&&C2CACHE[ck]===undefined,model=pending?null:c2Model(M,spc,C2.pos),mres=model?c2Check(M,spc,C2.pos,model.cp,model.br):null,above=C2.pos==='above';
  $('climbDetail').innerHTML=`
- <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 2 · ${clLv(1)}</span><span class="sp"></span><button class="chip ${C2.cclef?'on':''}" data-c2cclef title="Fux wrote counterpoint in C clefs: soprano, alto and tenor">${C2.cclef?'C clefs on':'C clefs (alto / tenor)'}</button><span class="note">${L<5?'Level 4: first species above the cantus, in three modes':L<6?'Level 5: three species, four modes, above or below':'Level 6: all six modes'}</span></div>
+ <div class="cltop"><button class="mini" data-clback>← All climbs</button><span class="kicker" style="margin:0">Climb 2 · ${clLv(1)}</span><span class="sp"></span><button class="chip ${C2.cclef?'on':''}" data-c2cclef title="Fux wrote counterpoint in C clefs: soprano, alto and tenor">${C2.cclef?'C clefs on':'C clefs (alto / tenor)'}</button><span class="note">${c2Tier(L)}</span></div>
  <h1 class="disp" style="margin:6px 0 4px">Modal polyphony</h1>
  <p class="sub" style="max-width:880px">Polyphony means many sounds: two or more lines, each a real melody, heard at once. Here you write a second voice against a given tune, the <b>cantus firmus</b> ("fixed song"), one step at a time, the way composers have learned since Johann Joseph Fux's <i>Gradus ad Parnassum</i> (1725). Each <b>species</b> adds one new way for the voices to move. Then you write your own cantus and set it.</p>
  <div class="path"><span>Ask</span><span>Hear</span><span>Understand</span><span>See</span><span>Try</span><span>Make</span></div>
@@ -5743,7 +5753,7 @@ function renderClimb2(){const L=Math.max(S.level,4),MS=C2M.concat(C2OWN?[C2OWN]:
  <section class="card"><h3>Set up the climb</h3>
   <div class="c2set"><div><span class="gl">Cantus</span>${lvBands('c2mList',MS,{wrap:'chips',noun:'cantus modes',label:'cantus modes',on:m=>m.k===C2.mode,row:m=>`<button class="chip ${m.k===C2.mode?'on':''}" data-c2m="${m.k}">${m.k==='own'?'★ ':''}${m.n} <small>on ${m.fin}</small></button>`})}</div>
   <div><span class="gl">Species</span>${lvBands('c2sList',SPS,{wrap:'chips',noun:'species',label:'species',on:s=>s.k===C2.sp,row:s=>`<button class="chip ${s.k===C2.sp?'on':''}" data-c2s="${s.k}">${s.n} <small>${s.r}</small></button>`})}</div>
-  ${L>=5?`<div><span class="gl">Counterpoint</span><span class="chips">${['above','below'].map(p=>`<button class="chip ${p===C2.pos?'on':''}" data-c2p="${p}">${p} the cantus</button>`).join('')}</span></div>`:''}
+  ${L>=4?`<div><span class="gl">Counterpoint</span><span class="chips">${['above','below'].map(p=>`<button class="chip ${p===C2.pos?'on':''}" data-c2p="${p}">${p} the cantus</button>`).join('')}</span></div>`:''}
   ${C2.sp===2?`<div><span class="gl">Bar before the end</span><span class="chips"><button class="chip ${C2.pw?'':'on'}" data-c2w="0">two minims (Fux)</button><button class="chip ${C2.pw?'on':''}" data-c2w="1">one semibreve (app option)</button></span></div>`:''}</div>
   <p class="note" style="margin:8px 0 0">${M.feel}${M.fux?' This cantus is Fux\'s own.':own?'':' This cantus was written for the Jungle Gym in Fux\'s style.'} ${sp.d}</p></section>
  <div class="grid clgrid">
@@ -5792,10 +5802,10 @@ function renderClimb2(){const L=Math.max(S.level,4),MS=C2M.concat(C2OWN?[C2OWN]:
   ${C2.quiz.q?`<div class="staff" id="c2QStaff" style="margin-top:10px"></div><div class="gans">${M.cf.map((c,b)=>`<button class="chip ${C2.quiz.ans!=null?(C2.quiz.q.bars.includes(b)?'right':b===C2.quiz.ans?'wrong':''):''}" data-c2a="${b}">bar ${b+1}</button>`).join('')}</div>
    ${C2.quiz.ans!=null?`<div class="${C2.quiz.q.bars.includes(C2.quiz.ans)?'ok':'iss warn'}" style="margin-top:10px">${C2.quiz.q.bars.includes(C2.quiz.ans)?'✓ Found it. ':`Not there. The fault is in bar ${C2.quiz.q.bars.map(b=>b+1).join(' and ')}. `}${c2Code(C2.quiz.q.code)} <b>${C2RULE[C2.quiz.q.rule]}.</b> ${C2.quiz.q.msg}</div>`:''}`:''}</section>
  <section class="card"><h3>Make · a two-voice piece on your own cantus</h3>
-  <p class="desc" style="margin-top:0">Write your own cantus firmus in a mode of your choice and check it against rules C1–C15. Write a first-species counterpoint above it and another below it${L>=5?', then second-, third- and fourth-species counterpoints':''}${L>=6?', and finally a florid (fifth-species) counterpoint: a complete composition in Fux\'s style on your own cantus':''}. Sing or play both lines with a partner, swapping parts. Then use what you learned in a short free duet: 8 to 16 bars in the same mode for two voices or instruments, mixing note values, with at least one suspension and a modal cadence at the end.</p>
+  <p class="desc" style="margin-top:0">Write your own cantus firmus in a mode of your choice and check it against rules C1–C15. Write a first-species counterpoint above it and another below it${L>=4?', then second- and third-species counterpoints':''}${L>=5?', then a fourth-species and finally a florid (fifth-species) counterpoint: a complete composition in Fux\'s style on your own cantus':''}. Sing or play both lines with a partner, swapping parts. Then use what you learned in a short free duet: 8 to 16 bars in the same mode for two voices or instruments, mixing note values, with at least one suspension and a modal cadence at the end.</p>
   <table class="cadtab crit"><tr><th>Limited</th><th>Sound</th><th>Excellent</th></tr><tr>
    <td>A cantus or a second line is written, but there are errors: dissonances on strong beats, parallel 5ths or octaves, or no cadence. The performance does not keep both lines going.</td>
-   <td>An error-free cantus of your own and error-free counterpoints in first species above and below it${L>=5?' and in one more species':''}, with mostly contrary motion, a clear high point and the modal cadence. Both lines are sung or played accurately, and you can name the rule behind each choice.</td>
+   <td>An error-free cantus of your own and error-free counterpoints in first species above and below it${L>=4?' and in one more species':''}, with mostly contrary motion, a clear high point and the modal cadence. Both lines are sung or played accurately, and you can name the rule behind each choice.</td>
    <td>Everything in Sound, with counterpoints in every species you have studied, plus a free two-voice duet in the mode that combines them: passing notes, suspensions prepared and resolved, imitation between the voices, and a cadence with a suspension. Your journal explains how the two lines tell a story together, and your process log shows the drafts.</td></tr></table>
   <div class="chips" style="margin-top:12px"><button class="mini gold" data-clopen="0">⤴ Back to climb 1: drones and modes</button><button class="mini" data-clopen="2">Next: climb 3, tonal architecture →</button><button class="mini" data-openj>What story does it tell? Write it in your journal</button></div></section>`;
  if(model)c2Draw($('c2Staff'),M,spc,C2.pos,model.cp,{res:mres,marks:false,br:model.br});else $('c2Staff').innerHTML=`<div class="empty">${pending?'Composing…':'No model for this setting.'}</div>`;
@@ -7776,7 +7786,7 @@ function earGenMel(l,r){const mode=l===3?'min':'maj',lv=(EARSTAGE.mel||[])[l-1]|
    ===================================================================== */
 const LADT=420;  // rule U: ticks per crotchet (LCM of 12, 5 and 7): semiquaver 105, quaver 210, triplet quaver 140, quintuplet 84, septuplet 60
 // rule MK: do's pitch class, by Level (0.50 V8: notation keys follow the level; 5+ keeps the old Stage 6 set)
-const LADKEYS={1:[0,7,5],2:[0,7,2,5,10],3:[0,7,2,9,5,10,3],4:[0,7,2,9,4,5,10,3,8],5:[0,7,2,9,4,11,5,10,3,8,1],6:[0,7,2,9,4,11,5,10,3,8,1],7:[0,7,2,9,4,11,5,10,3,8,1]};
+const LADKEYS={1:[0,7,5],2:[0,7,2,5,10],3:[0,7,2,9,5,10,3],4:[0,7,2,9,4,5,10,3,8],5:[0,7,2,9,4,11,6,5,10,3,8,1],6:[0,7,2,9,4,11,6,5,10,3,8,1],7:[0,7,2,9,4,11,6,5,10,3,8,1]};   // 0.50 ICfix (IC V8-1): all 12 keys from Level 5, with do on F♯
 const LADSTG=typeof EARSTAGE!=='undefined'?{mel:EARSTAGE.mel,rhy:EARSTAGE.rhy}:{mel:[2,2,2,2,4,4,4,4,5,5,5,5],rhy:[2,2,2,4,4,4,4,5,5,5]};
 const LADSHARE=2/3;   // D2: share of items that contain the rung's new thing
 const lmod=(a,n)=>((a%n)+n)%n;
@@ -9764,8 +9774,12 @@ setTimeout(()=>{try{loadSamples('piano')}catch(e){}},1200);
   if(!/^\s*▶/.test(b.textContent))return;
   if(busy()&&performance.now()>=PLAY.guard)stopAll();unmark();const key=sig(b);
   setTimeout(()=>{if(!busy())return;PK=key;const m=b.isConnected&&/^\s*▶/.test(b.textContent)?b:find();if(m)mark(m)},40)},true)})();
-/* remember the stage between visits */
-(()=>{try{let l=+localStorage.getItem('cjg_level');if(!(l>=1&&l<=7)){const o=+localStorage.getItem('cjg_stage');l=LVMIG[o]||0;if(l)localStorage.setItem('cjg_level',l)}if(l>=1&&l<=7){S.level=l;if(typeof lvSync==='function')lvSync()}}catch(e){}})();
+/* remember the level between visits. 0.50 ICfix (IC V1-1): the old cjg_stage is converted only when cjg_level is absent or is not a number;
+   a stored number outside 1-7 (or not whole) is clamped into 1-7 and rewritten, so the migration never runs over a level the learner chose */
+function lvLoad(){try{const raw=localStorage.getItem('cjg_level');let l=lvClamp(raw);
+ if(l===null){const o=+localStorage.getItem('cjg_stage');l=LVMIG[o]||null}
+ if(l!==null){if(String(l)!==raw)localStorage.setItem('cjg_level',l);S.level=l;if(typeof lvSync==='function')lvSync()}}catch(e){}}
+lvLoad();
 /* journal drafts are kept as you type */
 (()=>{try{const D=JSON.parse(localStorage.getItem('cjg_jdraft')||'[]');[1,2,3,4].forEach(i=>{const t=$('j'+i);if(!t)return;if(D[i-1]&&!t.value)t.value=D[i-1];t.addEventListener('input',()=>{try{localStorage.setItem('cjg_jdraft',JSON.stringify([1,2,3,4].map(k=>$('j'+k)?$('j'+k).value:'')))}catch(e){}})})}catch(e){}})();
 render();renderLog();applyRoute(location.hash.slice(1));termInit();
