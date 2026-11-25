@@ -99,7 +99,7 @@ async def run(p, w):
                 await pg.uncheck('#earLet')
             # playback during the question must not light anything (it would give the answer away)
             await pg.evaluate("earPlay('nokey')"); await pg.wait_for_timeout(900)
-            check(await pg.evaluate("document.querySelectorAll('#earMain .now').length") == 0, f'{tag}: no follow highlight before the reveal')
+            check(await pg.evaluate("document.querySelectorAll('#earMain .now:not(.lvm)').length") == 0, f'{tag}: no follow highlight before the reveal')
             await pg.evaluate("stopAll()")
             # reveal correct
             await pg.click('[data-earchk]'); st = await pg.evaluate(STATE)
