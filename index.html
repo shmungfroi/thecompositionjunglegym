@@ -3044,7 +3044,7 @@ function diatonicRomans(k,sev){
 /* 0.50 ICfix (IC V1-4): colour chords by level. Borrowed chords at climb 8's levels (iv and the rock bVII at 3, bVI at 4); secondary dominants at
    climb 7's (V/V and V/vi at 4, V/IV and V/ii at 5). So that no migrated learner loses a chord: bIII and the Picardy I stay with bVI at 4 (old
    Stage 5 = Level 4 had them), and V/iii and the diminished 7th join at 5 (old Stage 6 = Level 5 had every secondary dominant). bII (Neapolitan) 6. */
-const COLR={maj:[['iv',3],['bIII',4],['bVI',4],['bVII',3],['V7/ii',5],['V7/iii',5],['V7/IV',5],['V7/V',4],['V7/vi',4],['bII',6],['vii°7',5]],min:[['IV',3],['I',4],['V7/iv',5],['V7/V',4],['bII',6]]};
+const COLR={maj:[['iv',3],['bIII',4],['bVI',4],['bVII',3],['V7/ii',5],['V7/iii',6],['V7/IV',5],['V7/V',4],['V7/vi',4],['bII',6],['vii°7',5]],min:[['IV',3],['I',4],['V7/iv',5],['V7/V',4],['bII',6]]};
 function colourRomans(k,sev,level){return COLR[k.mode==='maj'?'maj':'min'].filter(([,l])=>l<=level).map(([r])=>r)}
 const listFrom=(arr,k)=>arr.map(r=>{const p=parseRoman(r,k);return p?{...p,rn:r}:null}).filter(Boolean);
 
@@ -3996,7 +3996,9 @@ function playSat(sat){playCols(sat,'climb')}
 function fnOf(ch,key){return withKey(key,()=>analyse(ch,key).f)}
 /* a climb's level range comes from its own examples (.l), with the approved climb floors */
 const clGroup=i=>i<5?'Foundations':i<8?'Harmony':i<11?'Jazz':'Beyond';
-function clInfo(i){const F=[1,4,1,1,1,3,4,3,4,6,2,5,4],T=[C1M,C2M.concat(C2SP),CADS,C4EX,C5FAM,C6EX,C7EX,C8EX,C9EX,C10EX,C11V,C12MODES.concat(C12SHAPES),null][i],ls=T?T.map(x=>x.l||1):[4,6];return{l:Math.max(F[i],Math.min(...ls)),hi:Math.max(F[i],Math.max(...ls))}}
+/* 0.50 (IC R-2, R-5): climb level ranges exactly as re-tag table 5 (approved 22 Nov) */
+const CLRANGE=[[1,5],[3,6],[1,5],[1,4],[1,3],[2,5],[4,6],[3,6],[4,7],[6,6],[2,6],[5,7],[2,7]];
+function clInfo(i){const[l,hi]=CLRANGE[i];return{l,hi}}
 function clLv(i){const c=clInfo(i);return c.l===c.hi?`Level ${c.l}`:`Levels ${c.l} to ${c.hi}`}
 function renderClimbs(){
  document.querySelectorAll('#room-climbs > .ask, #room-climbs > .path, #room-climbs > .head').forEach(e=>e.hidden=CL.open!==null);
@@ -5821,10 +5823,10 @@ function renderClimb2(){const L=Math.max(S.level,3),MS=C2M.concat(C2OWN?[C2OWN]:
   ${C2.quiz.q?`<div class="staff" id="c2QStaff" style="margin-top:10px"></div><div class="gans">${M.cf.map((c,b)=>`<button class="chip ${C2.quiz.ans!=null?(C2.quiz.q.bars.includes(b)?'right':b===C2.quiz.ans?'wrong':''):''}" data-c2a="${b}">bar ${b+1}</button>`).join('')}</div>
    ${C2.quiz.ans!=null?`<div class="${C2.quiz.q.bars.includes(C2.quiz.ans)?'ok':'iss warn'}" style="margin-top:10px">${C2.quiz.q.bars.includes(C2.quiz.ans)?'✓ Found it. ':`Not there. The fault is in bar ${C2.quiz.q.bars.map(b=>b+1).join(' and ')}. `}${c2Code(C2.quiz.q.code)} <b>${C2RULE[C2.quiz.q.rule]}.</b> ${C2.quiz.q.msg}</div>`:''}`:''}</section>
  <section class="card"><h3>Make · a two-voice piece on your own cantus</h3>
-  <p class="desc" style="margin-top:0">Write your own cantus firmus in a mode of your choice and check it against rules C1–C15. Write a first-species counterpoint above it and another below it${L>=4?', then second- and third-species counterpoints':''}${L>=5?', then a fourth-species and finally a florid (fifth-species) counterpoint: a complete composition in Fux\'s style on your own cantus':''}. Sing or play both lines with a partner, swapping parts. Then use what you learned in a short free duet: 8 to 16 bars in the same mode for two voices or instruments, mixing note values, with at least one suspension and a modal cadence at the end.</p>
+  <p class="desc" style="margin-top:0">Write your own cantus firmus in a mode of your choice and check it against rules C1–C15. Write a first-species counterpoint above it${L>=4?' and another below it':''}${L>=4?', then second- and third-species counterpoints':''}${L>=5?', then a fourth-species and finally a florid (fifth-species) counterpoint: a complete composition in Fux\'s style on your own cantus':''}. Sing or play both lines with a partner, swapping parts. Then use what you learned in a short free duet: 8 to 16 bars in the same mode for two voices or instruments, mixing note values, with at least one suspension and a modal cadence at the end.</p>
   <table class="cadtab crit"><tr><th>Limited</th><th>Sound</th><th>Excellent</th></tr><tr>
    <td>A cantus or a second line is written, but there are errors: dissonances on strong beats, parallel 5ths or octaves, or no cadence. The performance does not keep both lines going.</td>
-   <td>An error-free cantus of your own and error-free counterpoints in first species above and below it${L>=4?' and in one more species':''}, with mostly contrary motion, a clear high point and the modal cadence. Both lines are sung or played accurately, and you can name the rule behind each choice.</td>
+   <td>An error-free cantus of your own and error-free counterpoints in first species ${L>=4?'above and below it':'above it'}${L>=4?' and in one more species':''}, with mostly contrary motion, a clear high point and the modal cadence. Both lines are sung or played accurately, and you can name the rule behind each choice.</td>
    <td>Everything in Sound, with counterpoints in every species you have studied, plus a free two-voice duet in the mode that combines them: passing notes, suspensions prepared and resolved, imitation between the voices, and a cadence with a suspension. Your journal explains how the two lines tell a story together, and your process log shows the drafts.</td></tr></table>
   <div class="chips" style="margin-top:12px"><button class="mini gold" data-clopen="0">⤴ Back to climb 1: drones and modes</button><button class="mini" data-clopen="2">Next: climb 3, tonal architecture →</button><button class="mini" data-openj>What story does it tell? Write it in your journal</button></div></section>`;
  if(model)c2Draw($('c2Staff'),M,spc,C2.pos,model.cp,{res:mres,marks:false,br:model.br});else $('c2Staff').innerHTML=`<div class="empty">${pending?'Composing…':'No model for this setting.'}</div>`;
@@ -7110,7 +7112,7 @@ function renderAnalysis(){const el=$('anMain');if(!el)return;const t=AN.tab;
   $('anInfo').innerHTML=`${m.sections.length?`<table class="cadtab"><tr><th>Section</th><th>Bars</th><th>Key and notes</th></tr>${m.sections.map(s=>`<tr><td><b style="color:${ANLINE[s[3]]}">${s[0]}</b></td><td>${s[1]}–${s[2]}</td><td>${s[4]}</td></tr>`).join('')}</table>`:''}
    ${m.cads.length?`<table class="cadtab"><tr><th>Phrase</th><th>Last chords</th><th>Cadence</th></tr>${m.cads.map((c,i)=>`<tr><td>${c.bar?'ends bar '+c.bar:(i+1)+' (fermata)'}</td><td>${c.ch}</td><td>${c.t}</td></tr>`).join('')}</table><p class="note">${m.cads[0].bar?`Cadences at bars ${m.cads.map(c=>c.bar).join(', ')}.`:'Each fermata marks the end of a line of the hymn.'} The cadence labels are computed by the app from the notes${m.labels.length?'; the "chord on every beat" layer is computed too and can be confused by passing notes':''}: check them against your own ears and eyes.</p>`:''}
    ${m.labels.length?`<p class="note anfn">Numeral colours: <b style="color:${FN.T}">tonic</b> · <b style="color:${FN.PD}">predominant</b> · <b style="color:${FN.D}">dominant</b> (V and vii°, with the leading note) · <b style="color:${FN.C}">colour</b> (applied and chromatic chords, such as V/V) · <b style="color:${FN.MD}">modal dominant</b>, a soft pull (the minor v and the subtonic VII in a minor key${MD_MAJOR?', and borrowed into major (v, ♭VII)':''}: no leading note, so in common-practice minor they pull more softly than V). (7) marks a passing 7th; (4–3), (7–6), (9–8) a suspension (a held note that falls to a chord note); (2–3) a bass suspension (the bass is held and falls).</p>`:''}
-   ${ANCHROM[AN.score]?`<p class="note">A Level ${(ANLV[AN.score]||[5])[0]} score. Its chromatic chords (the numerals in the colour of colour chords, in the chord layer) are Level ${ANCHROM[AN.score]} and are marked so${S.level<ANCHROM[AN.score]?`: they come at Level ${ANCHROM[AN.score]}`:''}.</p>`:''}
+   ${ANCHROM[AN.score]?`<p class="note">A Level ${(ANLV[AN.score]||[5])[0]} score. Its chromatic chords are a Level ${ANCHROM[AN.score]} idea${S.level<ANCHROM[AN.score]?`: they come at Level ${ANCHROM[AN.score]}`:''}. ${(AN.meta&&AN.meta[AN.score]&&(AN.meta[AN.score].labels||[]).length)?'They are marked in the chord layer.':'This score has no chord labels yet, so they are not marked.'}</p>`:''}
    <p class="note" style="margin-top:10px">${m.src}</p>`}).catch(()=>{$('anScore').innerHTML='<div class="empty">The score files could not be loaded. They load from the published app; open it online to see them.</div>'})}
 document.addEventListener('click',e=>{if(ROOM!=='analysis')return;const t=e.target.closest('[data-antab],[data-ansc],[data-anplay],[data-anrep],[data-anmadd],[data-anmx],[data-anmsave],[data-anjump]');if(!t)return;const d=t.dataset;
  if(d.anjump!==undefined){anJump(+d.anjump);return}
@@ -8246,6 +8248,7 @@ function ladGenMel(l,r,o={}){const rung=l===13?13:Math.max(1,Math.min(12,l));l=r
    if(!got)continue}
   else{got=ladPitch(l,r,n,wantNew,fv);if(!got)continue}
   const p=got.p,info=got.info,lo=Math.min(...p.map(x=>x[0])),hi=Math.max(...p.map(x=>x[0]));
+  if(rung===13&&wantNew&&!p.some(([x])=>lmod(x,7)===3||lmod(x,7)===6))continue;   // IC R-4: natural minor must sound fa or ti, else it is la-pentatonic
   const key=lpick(LADKEYS[stage],r),dm=ladDo(key);
   if(dm+Math.min(...p.map(([x,a])=>ladSemis(x,a)))<55||dm+Math.max(...p.map(([x,a])=>ladSemis(x,a)))>83)continue;   // MR2: G3–B5
   const mode=info.mode,tonicIdx=info.home||0,it={d:'mel',l,lvl:l,new:wantNew,info,mode,

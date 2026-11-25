@@ -363,12 +363,17 @@ async def main():
         ck(L['half'] == [4, '4'] and L['zero'] == [1, '1'] and L['none_none'] == [5, None], f"load: 3.5 / 0 / nothing: {L}")
         ck(ic['aug6'] == [['It+6', 6, 20], ['Fr+6', 6, 20], ['Ger+6', 6, 20]] and not ic['qOut'] and not ic['libHasAug6'], f"aug 6ths {ic['aug6']}, outside 1-7 {ic['qOut']}, in the library list {ic['libHasAug6']}")
         C = ic['col']
+        rr = await pg.evaluate("Array.from({length:13},(_,i)=>{const r=clInfo(i);return [r.l,r.hi]})")
+        ck(rr == [[1,5],[3,6],[1,5],[1,4],[1,3],[2,5],[4,6],[3,6],[4,7],[6,6],[2,6],[5,7],[2,7]], f"climb ranges must equal re-tag table 5: {rr}")
+        nm = await pg.evaluate("""(()=>{let x=77;const R=()=>{x=(x*16807)%2147483647;return x/2147483647};let n=0,bad=0,ex=null;for(let i=0;i<300;i++){const q=ladGenMel(13,R,{wantNew:true});if(!q)continue;n++;const a=[].concat(q.a||[]).map(String);if(!a.some(y=>/^(f|t)/.test(y.replace(/[,']/g,'')))){bad++;ex=ex||a.join(' ')}}return [n,bad,ex]})()""")
+        ck(nm[0] > 250 and nm[1] == 0, f"melody place 7 (natural minor): every new-content item sounds fa or ti: {nm}")
         ck(C['1']['maj'] == [] and C['2']['maj'] == [] and C['3']['maj'] == ['iv', 'bVII'] and C['3']['min'] == ['IV'], f"colour chords L1-3 {C['1']} {C['2']} {C['3']}")
         ck({'bVI', 'bIII', 'V7/V', 'V7/vi'} <= set(C['4']['maj']) and 'V7/ii' not in C['4']['maj'] and 'I' in C['4']['min'], f"colour chords L4 {C['4']}")
-        ck({'V7/ii', 'V7/iii', 'V7/IV', 'vii°7'} <= set(C['5']['maj']) and 'bII' not in C['5']['maj'] and 'bII' in C['6']['maj'] and 'bII' in C['6']['min'], f"colour chords L5/L6 {C['5']} {C['6']}")
+        ck({'V7/ii', 'V7/IV', 'vii°7'} <= set(C['5']['maj']) and 'V7/iii' not in C['5']['maj'] and 'V7/iii' in C['6']['maj'] and 'bII' not in C['5']['maj'] and 'bII' in C['6']['maj'] and 'bII' in C['6']['min'], f"colour chords L5/L6 {C['5']} {C['6']}")
         # migrated learners keep what they had: old Stage 5 (now 4) had iv bIII bVI bVII; old Stage 6 (now 5) had every secondary dominant
         ck({'iv', 'bIII', 'bVI', 'bVII'} <= set(C['4']['maj']) and {'IV', 'I'} <= set(C['4']['min']), 'migrated Stage 5 (Level 4) lost a borrowed chord')
-        ck({'V7/ii', 'V7/iii', 'V7/IV', 'V7/V', 'V7/vi'} <= set(C['5']['maj']) and {'V7/iv', 'V7/V'} <= set(C['5']['min']), 'migrated Stage 6 (Level 5) lost a secondary dominant')
+        # Justin 25 Nov (follow table 5): V/iii and bII are Level 6, so old Stage 6 (now 5) keeps every other secondary dominant
+        ck({'V7/ii', 'V7/IV', 'V7/V', 'V7/vi'} <= set(C['5']['maj']) and {'V7/iv', 'V7/V'} <= set(C['5']['min']), 'migrated Stage 6 (Level 5) lost a secondary dominant')
         ck(ic['deck7'] == {'2': False, '3': True, '4': True, '5': True}, f"Oracle sevenths by level {ic['deck7']}")
         ck(ic['ocol'] == {'2': [False, False], '3': [True, True], '5': [True, True]}, f"Oracle colour / sevenths switches shown {ic['ocol']}")
         ck([ic['c1'][str(l)]['mode'] for l in (1, 2, 3, 4, 5)] == ['ion', 'ion', 'dor', 'dor', 'dor'], f"climb 1 opening mode {ic['c1']}")

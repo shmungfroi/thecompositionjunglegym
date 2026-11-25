@@ -1,0 +1,12 @@
+const {load}=require('./harness.js');const R=load(process.argv[2],{cjg_level:'5'});
+console.log('CLIMB ranges',JSON.stringify(R.run('CLIMBS.map((c,i)=>{const x=clInfo(i);return [i+1,x.l,x.hi,c.n||c.t||c.name]})')));
+console.log('ANLV',JSON.stringify(R.run("typeof ANLV!=='undefined'?ANLV:null")));
+console.log('ANCHROM',JSON.stringify(R.run("typeof ANCHROM!=='undefined'?ANCHROM:null")));
+console.log('ANLAY',JSON.stringify(R.run("ANLAY")));
+console.log('FORMS',JSON.stringify(R.run("FORMS.map(f=>[f.k,f.l,f.stp,FB[f.k]&&FB[f.k].l])")));
+console.log('FB keys',JSON.stringify(R.run("Object.keys(FB).map(k=>[k,FB[k].l])")));
+console.log('PHEX',JSON.stringify(R.run("PHEX.map(f=>[f.k,f.l,f.stp])")));
+console.log('LADKEYS',JSON.stringify(R.run("LADKEYS")));
+console.log('EARSLOT',JSON.stringify(R.run("EARSLOT")));console.log('EARSTAGE',JSON.stringify(R.run("EARSTAGE")));
+console.log('qualItems',JSON.stringify(R.run("typeof qualItems==='function'?qualItems().map(q=>q.k):null")));
+console.log('QSHORT has aug6', JSON.stringify(R.run("['It+6','Fr+6','Ger+6'].map(k=>[k,typeof QSHORT!=='undefined'&&QSHORT[k]])")));
