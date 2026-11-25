@@ -5,7 +5,7 @@ Run: python3 tests/ladder_ui_test.py <repo dir>
       and the dot (EAR.reached) is earned once and stays
   U2  earLenLive (the palette's live lengths): every rung and metre, every legal bar of the engine is reachable length by length; the chosen length moves to the longest live shorter one
   E2E answering with the engine's own right answer through the UI marks right at every melody rung 4 to 12 (both settings at rung 9) and every rhythm rung 1 to 10
-  V   the new views at 1366 and 390: 11 px floor, 44 px phone targets, no sideways scroll (.el-bandtab, .el-bandmore, .el-len, .el-undo1, .el-mut, half rungs, .el-tile.tup, .grp.set buttons)
+  V   the new views at 1366 and 390: 11 px floor, 44 px phone targets, no sideways scroll (.el-ltab, .el-ny, .el-len, .el-undo1, .el-mut, half rungs, .el-tile.tup, .grp.set buttons)
 """
 import sys, asyncio, json, pathlib, re
 REPO = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
@@ -206,7 +206,7 @@ async def run(p):
             t = f'{w}px {tag}'
             check(not await pg.evaluate(SMALL), f'{t}: text under 11 px {(await pg.evaluate(SMALL))[:3]}')
             check(await pg.evaluate(OVER) <= 0, f'{t}: sideways scroll {await pg.evaluate(OVER)}')
-            check(await pg.evaluate(COUNT, '.el-bandtab') >= 1 and await pg.evaluate(COUNT, '.el-rungline') == 1, f'{t}: picker and rung line')
+            check(await pg.evaluate(COUNT, '.el-ltab') == 7 and await pg.evaluate(COUNT, '.el-lgr button, .el-lgr .el-ny') >= 8 and await pg.evaluate(COUNT, '.el-rungline') == 1, f'{t}: picker and rung line')
             if not chk: check(await pg.evaluate(COUNT, '.el-len') >= (1 if l == 11 else 3), f'{t}: palette cells')
             if mod == 'move' and not chk: check(await pg.evaluate(COUNT, '.el-mut') == 1, f'{t}: mutation button only under Move do')
             if mod == 'home' and l == 9: check(await pg.evaluate(COUNT, '.el-mut') == 0, f'{t}: no mutation button under Keep home do')
@@ -257,9 +257,10 @@ async def run(p):
                 lb = await pg.evaluate(LABELS)
                 check(lb and not any(re.search(r'bars \d+$', x, re.I) for x in lb) and any(re.search(r'bar \d+$', x, re.I) for x in lb), f'{w}px r12 reveal labels: "bar n" for one bar, never "bars n" {lb}')
                 check(any(re.search(r'upbeat . bar 1$', x, re.I) for x in lb) or w < 500, f'{w}px r12 reveal labels: the first system reads "upbeat · bar 1" {lb}')
-        # the picker: phones fold to tabs (.el-bandtab), "n more" chip (.el-bandmore) appears when the Stage hides rungs
+        # the picker (0.50 V10): seven level tabs and 21 slots at every learner level; the old chip and tabs are gone
         await pg.evaluate("EAR.drill='mel';EAR.lvl.mel=4;EAR.q=null;EAR.done=false;S.level=4;EAR.all=false;renderEar()")
-        check(await pg.evaluate(COUNT, '.el-bandmore') >= 1, f'{w}px picker: .el-bandmore when Stage 4 hides rungs')
+        check(await pg.evaluate(COUNT, '.el-lg') == 7 and await pg.evaluate(COUNT, '.el-bandmore, .el-bandtab, .el-band, .el-all, .el-rungs') == 0, f'{w}px picker: seven level groups, no band chip at Stage 4')
+        check(await pg.evaluate("()=>{const g=document.querySelectorAll('.el-lgr button').length+[...document.querySelectorAll('.el-ny')].reduce((s,e)=>s+(+e.style.getPropertyValue('--n')||1),0);return g}") == 21, f'{w}px picker: 21 slots')
         # rhythm views
         await pg.evaluate("S.level=6;EAR.all=false")
         for l in (4, 7, 8, 9, 10):
