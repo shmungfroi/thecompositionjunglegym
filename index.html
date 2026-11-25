@@ -661,20 +661,12 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-drill:hover b{color:var(--goldhi)}
 .el-drill.on b{color:var(--goldhi)}.el-drill.on small{color:var(--gold)}
 .el-drill.on:after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--lush),var(--pink))}
-.el-all{flex:none;align-self:center;margin-left:8px;background:none;border:0;border-bottom:1px dotted var(--muted);padding:0 0 1px;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
-.el-all:hover{color:var(--goldhi);border-color:var(--gold)}
 
 /* ---- card header: title, rungs, tally ---- */
 .el-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 24px;align-items:start;margin-bottom:16px}
 .el-tag{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:600}
 .el-title{margin:4px 0 0;font-family:"Poiret One",Outfit,sans-serif;font-weight:400;font-size:28px;line-height:1.1;letter-spacing:.5px;color:var(--ivory)}
 .el-rungrow{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
-.el-rungs{display:inline-flex;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden}
-.el-rungs button{height:34px;padding:0 16px;background:none;border:0;font-size:14px;color:var(--muted);cursor:pointer;white-space:nowrap}
-.el-rungs button+button{border-left:1px solid var(--line)}
-.el-rungs button:hover{color:var(--goldhi)}
-.el-rungs button.on{background:var(--gold);color:var(--ink);font-weight:600}
-.el-rungs button.on:focus-visible{outline-color:var(--ink)}
 .el-rungnote{font-size:12.5px;color:var(--muted)}
 
 /* ---- tally (R5): shared by Ear Lab, Keys interval quiz, Sing it back ---- */
@@ -839,7 +831,7 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-tips li,.el-tips+p{max-width:68ch}
 
 /* ---- focus (EL-9) ---- */
-.el-drill:focus-visible,.el-rungs button:focus-visible,.el-seg button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+.el-drill:focus-visible,.el-seg button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
 .el-play:focus-visible{outline:2px solid var(--goldhi);outline-offset:3px}
 .el-opt:focus-visible,.el-tile:focus-visible,.el-btn:focus-visible,.el-var:focus-visible{outline:2px solid var(--goldhi);outline-offset:2px}
 
@@ -857,8 +849,6 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
  .el-side{display:flex;gap:10px;padding-left:0;border-left:0}
  .el-side div{letter-spacing:1px;gap:5px;align-items:baseline}
  .el-rungrow{grid-column:1 / -1;margin-top:14px}
- .el-all{min-height:44px;display:inline-flex;align-items:center;border-bottom:0;text-decoration:underline dotted var(--muted);text-underline-offset:4px}
- .el-rungs{display:flex;flex:1 1 100%}.el-rungs button{flex:1;height:44px;padding:0 6px}
  .el-stage{grid-template-columns:auto minmax(0,1fr);padding:12px}
  .el-play{--sz:56px}
  .el-acts{grid-column:1 / -1;grid-row:2}.el-acts .el-btn{flex:1}
@@ -947,7 +937,6 @@ button.fch{cursor:pointer}.fch b{font-size:15px;font-weight:600}.fch span{font-s
 .el-slots.lock{margin-bottom:24px}
 .el-opts.wait{pointer-events:none}
 .el-lb{margin:0 0 6px}
-.el-rungs button[disabled]{opacity:.4}
 .el-seg button{min-width:44px}
 .el-gold{color:var(--goldhi)}
 .el-note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
@@ -1256,29 +1245,10 @@ label.ck{gap:8px;cursor:pointer}
 .el-head.long .el-tally{grid-row:1}
 .el-head.long .el-rungrow{grid-column:1 / -1;display:block;margin-top:14px}
 
-/* ---- rung picker: one pill per Stage band ---- */
-.el-rp{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.el-band{display:inline-flex;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden}
-.el-bandlab{display:flex;align-items:center;padding:0 11px 0 14px;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);background:var(--panel2);border-right:1px solid var(--line);white-space:nowrap}
-.el-band.cur .el-bandlab{color:var(--gold)}
-.el-band button{position:relative;min-width:40px;height:34px;padding:0 4px;background:none;border:0;font-size:14px;color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums lining-nums}
-.el-band button+button{border-left:1px solid var(--line)}
-.el-band button:last-child{border-radius:0 var(--r-pill) var(--r-pill) 0}
-.el-band button:hover{color:var(--goldhi)}
-.el-band button.on{background:var(--gold);color:var(--ink);font-weight:600}
-.el-band button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
-.el-band button.on:focus-visible{outline-color:var(--ink)}
+/* ---- rung picker: 21 slots in seven level groups (levels050.css) ---- */
 /* a rung the student has reached 8 of the last 10 on: a small dot under the numeral (a mark, not only a colour) */
-.el-band button.done::after{content:"";position:absolute;left:50%;bottom:4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--gold)}
-.el-band button.on.done::after{background:var(--ink)}
 /* the rung being suggested: a ring, held still (no pulse) */
-.el-band button.sug,.el-bandtab.sug,.el-bandmore.sug{box-shadow:inset 0 0 0 1.5px var(--goldhi);color:var(--goldhi)}
 /* bands above the Stage switch: one dashed chip that shows them all (replaces the "show all rungs" link on these two drills) */
-.el-bandmore{height:36px;padding:0 14px;border:1px dashed rgba(156,146,124,.55);border-radius:var(--r-pill);background:none;font-size:12.5px;color:var(--muted);cursor:pointer;white-space:nowrap}
-.el-bandmore b{font-weight:400;color:var(--ivory)}
-.el-bandmore small{font-size:inherit}
-.el-bandmore:hover{border-color:var(--gold);color:var(--goldhi)}
-.el-bandtab{display:none}
 
 /* ---- the rung line: what this rung is, and the last ten answers on it ---- */
 .el-rungline{display:flex;align-items:center;gap:6px 16px;flex-wrap:wrap;margin:10px 0 0;font-size:12.5px;line-height:1.4;color:var(--muted)}
@@ -1308,20 +1278,6 @@ label.ck{gap:8px;cursor:pointer}
 
 @media (max-width:760px){
  .el-head.long .el-rungrow{margin-top:14px}
- /* one band open at a time; the others fold to a two-line tab */
- .el-rp{flex-wrap:nowrap;align-items:stretch;gap:6px}
- .el-band{display:none;flex:1 1 0;min-width:0}
- .el-band.open{display:flex}
- .el-bandlab{display:none}
- .el-band button{flex:1 1 0;min-width:44px;height:44px;font-size:15px}
- .el-band button:first-of-type{border-radius:var(--r-pill) 0 0 var(--r-pill)}
- .el-band button.done::after{bottom:6px}
- .el-bandtab{flex:none;display:grid;place-content:center;justify-items:center;gap:1px;width:60px;height:46px;padding:0;border:1px solid var(--line);border-radius:var(--r-m);background:none;cursor:pointer}
- .el-bandtab.open{display:none}
- .el-bandtab small{font-size:11px;letter-spacing:.4px;color:var(--muted);line-height:1.2}
- .el-bandtab b{font-size:12.5px;font-weight:400;color:var(--ivory);line-height:1.2;font-variant-numeric:lining-nums}
- .el-bandmore{flex:none;display:grid;place-content:center;justify-items:center;gap:1px;width:72px;height:46px;padding:0;border-radius:var(--r-m);line-height:1.2}
- .el-bandmore .sep{display:none}.el-bandmore small{font-size:11px;letter-spacing:.4px}
  .el-rungline{margin-top:10px}
  .el-last10{margin-left:0;flex:1 1 100%}
  .el-sug{margin-top:14px}.el-sug p{flex:1 1 0;min-width:0}
@@ -1496,6 +1452,195 @@ label.ck{gap:8px;cursor:pointer}
  .el-gap .gbar i{width:26px}
 }
 
+/* =====================================================================
+   0.50 LEVELS (Fable, DESIGN_050). Append to the end of the main <style> in index.html, as written.
+   Order: 0 level mark · 1 level control and top bar · 2 ordered lists · 3 Ear Lab 21-rung picker
+   ===================================================================== */
+
+/* ---- 0. the level mark: one small numeral, used by the level control, the lists and the rung picker ----
+   plain   = a level you have already met (solid ring)
+   .now    = your level (filled disc)
+   .ahead  = above your level (dashed ring)                                                            */
+.lvm{flex:none;display:inline-grid;place-items:center;box-sizing:border-box;width:20px;height:20px;border:1px solid rgba(201,162,74,.6);border-radius:50%;background:var(--ink);font:400 11px/1 Outfit,sans-serif;font-variant-numeric:lining-nums;letter-spacing:0;color:var(--gold)}
+.lvm.now{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:700}
+.lvm.ahead{border-style:dashed;border-color:rgba(156,146,124,.75);color:var(--muted)}
+.lvm.lg{width:26px;height:26px;font-size:14px}
+
+/* ---- 1. level control ---- */
+.lvc{position:relative;flex:none}
+.lvbtn{display:flex;align-items:center;gap:9px;height:38px;padding:0 13px 0 5px;border:1px solid var(--line);border-radius:22px;background:var(--panel);text-align:left;white-space:nowrap;cursor:pointer;transition:border-color .15s}
+.lvbtn:hover,.lvbtn[aria-expanded=true]{border-color:var(--gold)}
+.lvbtn-t{display:grid;gap:2px}
+.lvbtn-t b{font-weight:400;font-size:14px;line-height:1.1;color:var(--ivory)}
+.lvbtn-t small{font-size:11px;line-height:1.1;letter-spacing:.3px;color:var(--muted)}
+.lvbtn .car,.lvbh .car{flex:none;width:10px;height:6px;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.lvbtn[aria-expanded=true] .car{transform:rotate(180deg);stroke:var(--goldhi)}
+
+.lvpop{position:absolute;top:calc(100% + 11px);right:0;z-index:9;width:340px;padding:16px 16px 14px;background:#14110b;border:1px solid var(--line);border-top-color:var(--gold);border-radius:14px;box-shadow:0 22px 44px -14px rgba(0,0,0,.95)}
+.lvpop[hidden]{display:none}
+.lvhd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 10px 8px 2px}
+.lvhd .lbl{margin:0}
+.lvhd small{font-size:11px;letter-spacing:.3px;color:var(--muted)}
+
+.lvlist{--lvh:40px;display:grid}
+.lvopt{position:relative;display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:12px;height:var(--lvh);padding:0 10px 0 6px;border:1px solid transparent;border-radius:10px;background:none;text-align:left;cursor:pointer;transition:border-color .15s,background-color .15s}
+.lvopt b{font-weight:400;font-size:15px;color:var(--ivory)}
+.lvopt small{font-size:11px;letter-spacing:.3px;color:var(--muted);white-space:nowrap}
+.lvopt:hover{border-color:rgba(201,162,74,.6)}
+.lvopt[aria-checked=true]{border-color:var(--gold);background:rgba(201,162,74,.14)}
+.lvopt[aria-checked=true] b{color:var(--goldhi)}
+/* the ladder: a hairline from each disc up to the one before it; gold as far as your level */
+.lvopt+.lvopt::before{content:"";position:absolute;left:18px;top:calc((26px - var(--lvh))/2 - 1px);width:1px;height:calc(var(--lvh) - 26px);background:var(--line)}
+.lvopt.upto::before{background:rgba(201,162,74,.6)}
+
+.lvnote{margin:10px 2px 0;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.lvcur{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.lvcur label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.lvcur select{min-width:150px;padding:7px 10px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+
+/* area names in the rail: names only, no numerals */
+.rail .lv{margin:10px 0 0;padding:9px 0 1px;border-top:1px solid var(--line);font-family:"Poiret One",Outfit,sans-serif;font-size:13px;line-height:1;letter-spacing:.6px;text-align:center;color:var(--gold)}
+
+/* top bar: the search field keeps a usable width at every size */
+.search{flex:1 1 260px;min-width:200px}
+.jbtn .ji{margin-right:5px}
+@media (min-width:761px) and (max-width:1100px){.top .tw{display:none}}
+@media (min-width:761px) and (max-width:900px){
+ .lvbtn{gap:6px;padding:0 10px 0 5px}.lvbtn-t{display:none}
+ .jbtn .jt{display:none}.jbtn .ji{margin:0}.top .jbtn{padding:7px 12px}
+ .lvpop{width:320px}
+}
+@media (max-width:760px){
+ .search{flex:1 1 100%;min-width:0}
+ /* top row: wordmark, then the level button (32 px tall, 44 px tap area) */
+ .lvbtn{position:relative;height:32px;gap:7px;padding:0 11px 0 4px}
+ .lvbtn::after{content:"";position:absolute;inset:-8px -4px -4px}
+ .lvbtn .lvm.lg{width:24px;height:24px;font-size:12.5px}
+ .lvbtn-t small{display:none}
+ .lvpop{display:none}                          /* on phones the list lives in the More sheet */
+ .msb{max-height:88vh}
+ .lvlist{--lvh:44px}
+ .lvcur select:not(#_){min-height:44px}
+ .mslv{margin-top:16px}
+ .mslv .lvnote{margin-top:8px}
+}
+
+/* ---- 2. ordered lists: new at your level, then everything else from Level 1 up ---- */
+/* 2a. single-column lists (pickers). One rail runs down the left: a gradient bar beside what is new, a hairline with level marks beside the rest. */
+.lvlst{--row:32px;display:grid;gap:0}
+.lvband{position:relative;padding-left:30px}
+.lvband::before{content:"";position:absolute;left:9px;top:0;bottom:0;width:1px;background:var(--line)}
+.lvband.new::before{left:8px;top:30px;bottom:6px;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--lush),var(--pink))}
+.lvband.ahead::before{background:none;border-left:1px dashed rgba(156,146,124,.45)}
+.lvband:last-child::before{bottom:8px}
+.lvband+.lvband{margin-top:8px;padding-top:4px}
+.lvband+.lvband::after{content:"";position:absolute;left:30px;right:0;top:0;height:1px;background:var(--line)}
+
+.lvbh{position:relative;display:flex;align-items:center;gap:8px;min-height:30px;margin:0;padding:0 10px 0 0;font:600 11px/1.2 Outfit,sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--muted);list-style:none}
+.lvbh::-webkit-details-marker{display:none}
+summary.lvbh{cursor:pointer;border-radius:6px}
+summary.lvbh:hover{color:var(--goldhi)}
+.lvband.new>.lvbh{color:var(--gold)}
+.lvbh>.lvm,.lvbh>.car{position:absolute;left:-30px;top:50%;margin-top:-10px}
+.lvbh>.car{left:-25px;margin-top:-3px;background:var(--panel2);box-shadow:0 0 0 5px var(--panel2);transform:rotate(-90deg)}
+details[open]>.lvbh>.car{transform:none}
+.lvbh .n{margin-left:auto;font-weight:400;letter-spacing:.5px;font-variant-numeric:tabular-nums}
+
+.lvgrp{position:relative}
+.lvgrp+.lvgrp{margin-top:6px}
+.lvgrp>.lvm{position:absolute;left:-30px;top:calc((var(--row) - 20px)/2)}
+
+.lvrow{display:grid;grid-template-columns:84px minmax(0,1fr);align-items:baseline;column-gap:8px;width:100%;min-height:var(--row);padding:5px 10px;border:1px solid transparent;border-radius:9px;background:none;text-align:left;cursor:pointer;transition:border-color .15s,background-color .15s}
+.lvrow b{font-size:15px;font-weight:600;line-height:1.3;color:var(--ivory)}
+.lvrow span{overflow:hidden;font-size:12.5px;line-height:1.3;color:var(--muted);white-space:nowrap;text-overflow:ellipsis}
+.lvrow:hover{border-color:rgba(201,162,74,.6)}
+.lvrow.on{border-color:var(--gold);background:rgba(201,162,74,.14)}
+.lvrow.on b{color:var(--goldhi)}
+.lvrow:focus-visible{outline-offset:-2px}
+.lvnone{margin:0;padding:5px 10px;font-size:12.5px;line-height:1.4;color:var(--muted)}
+@media (max-width:760px){.lvlst{--row:46px}.lvrow{align-items:center;padding:0 12px}.lvbh{min-height:44px}.lvband.new::before{top:38px}}
+
+/* 2b. card galleries (Forms, Climbs, Analysis scores): the same three bands, as headed groups of cards */
+.lvlst.cards{gap:26px}
+.lvlst.cards .lvband{padding:0;margin:0}
+.lvlst.cards .lvband::before,.lvlst.cards .lvband::after{display:none}
+.lvch{position:relative;font-weight:400;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);list-style:none}
+.lvch::-webkit-details-marker{display:none}
+.lvch .disp{font-size:30px;font-weight:400;line-height:1.1;color:var(--goldhi)}
+.lvch small{font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.lvband.new>.lvch{border-bottom-color:transparent}
+.lvband.new>.lvch::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,var(--lush),var(--gold) 34%,var(--pink) 62%,transparent 92%)}
+summary.lvch{cursor:pointer;border-radius:6px}
+summary.lvch .disp{font-size:24px;color:var(--ivory)}
+summary.lvch:hover .disp{color:var(--goldhi)}
+summary.lvch .car{align-self:center;width:12px;height:7px;margin-left:auto;fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transform:rotate(-90deg);transition:transform .15s}
+details[open]>summary.lvch .car{transform:none}
+details:not([open])>summary.lvch{margin-bottom:0}
+
+/* compact card: every band except "new" */
+.climbs.cmp{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.climb.cmp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:0 12px;min-height:62px;padding:10px 14px;border-radius:12px;text-align:left;cursor:pointer;transition:border-color .15s}
+.climb.cmp:hover{border-color:rgba(201,162,74,.6)}
+.climb.cmp .tx{display:grid;gap:3px;min-width:0}
+.climb.cmp .tx b{font-family:"Poiret One",Outfit,sans-serif;font-weight:400;font-size:19px;line-height:1.15;color:var(--goldhi)}
+.climb.cmp .tx small{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.climb.cmp .arr{font-size:15px;color:var(--muted)}
+.climb.cmp:hover .arr{color:var(--goldhi)}
+.climb.cmp.dim{cursor:default}
+@media (max-width:760px){.lvlst.cards{gap:22px}.lvch .disp{font-size:26px}summary.lvch .disp{font-size:22px}.lvch small{flex:1 1 100%;font-size:11px}summary.lvch{padding-right:22px}summary.lvch .car{position:absolute;right:2px;top:10px}.climbs.cmp{grid-template-columns:1fr}}
+
+/* ---- 3. Ear Lab: 21 rungs, three to a level ---- */
+.el-rp7{display:flex;align-items:flex-end;gap:8px}
+.el-lg{position:relative;flex:1 1 0;min-width:0;display:grid;gap:6px}
+.el-lg+.el-lg::before{content:"";position:absolute;left:-8px;bottom:17px;width:8px;height:1px;background:var(--line)}       /* the rail between two levels */
+.el-lgcap{display:flex;align-items:center;gap:5px;height:20px;padding-left:3px;overflow:hidden;font-size:11px;line-height:1.2;letter-spacing:.2px;color:var(--muted);white-space:nowrap}
+.el-lgcap i{font-style:normal;color:var(--ivory);font-variant-numeric:lining-nums}
+.el-lg.you .el-lgcap{color:var(--goldhi)}
+.el-lgr{display:flex;height:34px;border:1px solid var(--line);border-radius:var(--r-pill);overflow:hidden}
+.el-lg.you .el-lgr{border-color:rgba(201,162,74,.6)}
+.el-lgr button{position:relative;flex:1 1 0;min-width:0;height:100%;padding:0;background:none;border:0;font-size:14px;color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums lining-nums}
+.el-lgr>*+*{border-left:1px solid var(--line)}
+.el-lgr button:hover{color:var(--goldhi)}
+.el-lgr button.on{background:var(--gold);color:var(--ink);font-weight:600}
+.el-lgr button:focus-visible{outline:2px solid var(--goldhi);outline-offset:-2px}
+.el-lgr button.on:focus-visible{outline-color:var(--ink)}
+.el-lgr button.done::after{content:"";position:absolute;left:50%;bottom:4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--gold)}
+.el-lgr button.on.done::after{background:var(--ink)}
+.el-lgr button.sug,.el-ltab.sug{box-shadow:inset 0 0 0 1.5px var(--goldhi);color:var(--goldhi)}
+/* rungs that are not written yet: a run of them is one quiet cell that says so */
+.el-ny{flex:var(--n,1) 1 0;min-width:0;display:grid;place-items:center;padding:0 2px;font-size:11px;line-height:1.05;letter-spacing:.2px;text-align:center;color:var(--muted);background:repeating-linear-gradient(135deg,transparent 0 6px,rgba(156,146,124,.07) 6px 7px)}
+.el-lgr>.el-ny+*,.el-lgr>*+.el-ny{border-left-style:dashed;border-left-color:rgba(156,146,124,.4)}
+.el-lg.none .el-lgr{border-style:dashed;border-color:rgba(156,146,124,.4)}
+.el-lg.none .el-lgcap i{color:var(--muted)}
+.el-ltab,.el-lcap{display:none}
+
+@media (max-width:900px){
+ /* seven level tabs over one row of three rungs */
+ .el-rp7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0 3px;align-items:stretch}
+ .el-lg{display:contents}
+ .el-lg+.el-lg::before,.el-lgcap{display:none}
+ .el-ltab{grid-row:1;position:relative;display:grid;place-items:center;min-width:0;min-height:44px;padding:0;border:1px solid var(--line);border-radius:var(--r-m);background:none;font-size:15px;color:var(--ivory);cursor:pointer;font-variant-numeric:lining-nums}
+ .el-ltab b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;font-weight:400}
+ .el-ltab.has b{background:var(--gold);color:var(--ink);font-weight:600}                                /* the level that holds the rung in use */
+ .el-ltab.you::after{content:"";position:absolute;left:50%;bottom:4px;width:14px;height:2px;margin-left:-7px;border-radius:2px;background:linear-gradient(90deg,var(--lush),var(--pink))}   /* your level */
+ .el-ltab.none{border-style:dashed;border-color:rgba(156,146,124,.4);color:var(--muted)}
+ .el-lg.open .el-ltab{z-index:1;margin-bottom:-1px;min-height:51px;padding-bottom:6px;border-color:rgba(201,162,74,.6);border-style:solid;border-bottom-color:#1a160e;border-radius:var(--r-m) var(--r-m) 0 0;background:#1a160e}
+ .el-lg.open .el-ltab.you::after{bottom:10px}
+ .el-lg:not(.open) .el-ltab{margin-bottom:6px}
+ .el-lgr{display:none;grid-column:1 / -1;grid-row:2;height:50px;border-color:rgba(201,162,74,.6);border-style:solid;border-radius:var(--r-m);background:#1a160e}
+ .el-lg.none .el-lgr{border-style:solid;border-color:rgba(201,162,74,.6)}
+ .el-lg.open .el-lgr{display:flex}
+ .el-lg.open:first-child .el-lgr{border-top-left-radius:0}
+ .el-lg.open:last-child .el-lgr{border-top-right-radius:0}
+ .el-lgr button{font-size:16px}
+ .el-lgr button.done::after{bottom:8px}
+ .el-ny{font-size:12.5px}
+ .el-lcap{grid-column:1 / -1;grid-row:3;display:none;margin:8px 2px 0;font-size:12.5px;line-height:1.3;color:var(--muted)}
+ .el-lg.open .el-lcap{display:block}
+ .el-lcap b{font-weight:400;color:var(--ivory)}
+ .el-lcap em{font-style:normal;color:var(--goldhi)}
+}
+@media (prefers-reduced-motion:reduce){.lvbtn,.lvbtn .car,.lvbh .car,.lvopt,.lvrow,.climb.cmp,summary.lvch .car{transition:none}}
 </style></head>
 <body>
 
@@ -2080,6 +2225,7 @@ function degNum(d){return parseInt(d.replace(/[#b]/g,''))}
 function degColor(d){const n=degNum(d);if(n===1)return'var(--goldhi)';if(n===3||n===2&&!d.startsWith('b')||n===4)return'var(--green)';if(n===5)return'var(--ivory)';if(n===7||n===6)return'var(--red)';return'var(--violet)'}
 
 const LVN=['','First steps','Foundation','Developing','Intermediate','Senior','Advanced','Extension'];
+if(typeof curHint!=='function'){var curHint=function(l){var c;try{c=localStorage.getItem('cjg_curric')}catch(e){}if(c==='')return'';return '≈ NSW '+['','Stage 4','Stage 4','Stage 5','Stage 5','Stage 6','Stage 6','Stage 6 Extension'][l]}}
 const LVMIG={4:2,5:4,6:5};
 /* 0.50 V8 (re-tag 2, Q3; 22 Nov: notation only): keys a learner writes in follow the level. Level 1: C, G, F major and A minor; 2: up to 2 sharps or flats; 3: 3; 4: 4; 5+: all. Listening-only drills keep all keys (0.49 C3: fewer keys let pitch give the answer away). */
 function keyAcc(k,mode){const M={0:0,7:1,2:2,9:3,4:4,11:5,6:6,1:-5,8:-4,3:-3,10:-2,5:-1};return M[mode==='min'?(k+3)%12:k]}
@@ -2657,7 +2803,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-
  if(t.dataset.v!==undefined){S.vi=+t.dataset.v;document.querySelectorAll('.vbox').forEach((b,i)=>b.classList.toggle('on',i===S.vi));const x=instMidis(chord());play(x.m,x.gap,x.k);return}
  if(t.dataset.i){S.inst=t.dataset.i;S.vi=0;const k=smpKind(S.inst==='piano'?'piano':S.inst==='bass'?'bass':S.inst);if(k)loadSamples(k);renderInst(chord());return}
  if(t.dataset.gtone){S.gtone=t.dataset.gtone;loadSamples(smpKind('guitar'));renderInst(chord());return}
- if(t.dataset.l){S.level=+t.dataset.l;if(typeof EAR!=='undefined'&&EAR.all){EAR.all=false;earSave()}try{localStorage.setItem('cjg_level',S.level)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
+ if(t.dataset.l){S.level=+t.dataset.l;try{localStorage.setItem('cjg_level',S.level)}catch(e){}document.querySelectorAll('#lvl button').forEach(b=>b.classList.toggle('on',b===t));render();if(typeof ROOM!=='undefined'&&ROOM!=='seed')room(ROOM);return}
  if(t.dataset.room)return;
  if(t.dataset.m!==undefined){play([+t.dataset.m],0,S.inst==='piano'?'piano':'pluck')}
 });
@@ -7116,11 +7262,11 @@ function sylLine(c){const m=SYLM[c];return m?`Syllabus: ${m.n} · ${[...m.e].map
    EAR LAB (Level 3)
    ===================================================================== */
 const EARSAVE=LS.get('cjg_ear')||{};
-const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,all:!!EARSAVE.all,rhy:{pulse:!EARSAVE.rhy||EARSAVE.rhy.pulse!==false,bpm:EARSAVE.rhy&&(EARSAVE.rhy.bpm===72||EARSAVE.rhy.bpm===100)?EARSAVE.rhy.bpm:null},q:null,ans:[],done:false,res:null,meta:null,blind:null,
+const EAR={drill:EARSAVE.drill||'cad',lvl:EARSAVE.lvl||{},st:EARSAVE.st||{},letters:!!EARSAVE.letters,rhy:{pulse:!EARSAVE.rhy||EARSAVE.rhy.pulse!==false,bpm:EARSAVE.rhy&&(EARSAVE.rhy.bpm===72||EARSAVE.rhy.bpm===100)?EARSAVE.rhy.bpm:null},q:null,ans:[],done:false,res:null,meta:null,blind:null,
  // 0.49 ladders: rhythm names ('k' Kodály names | 'kk' Kodály with konnakol tuplets), M9 solfa ('home' Keep home do | 'move' Move do (mutation)),
  // readiness (rd[drill][rung] = the last 10 answered: 1 right, 0 wrong). Saved rungs keep their number (register 0.3).
  names:EARSAVE.names==='kk'?'kk':'k',mod:EARSAVE.mod==='move'?'move':'home',reached:EARSAVE.reached&&typeof EARSAVE.reached==='object'?EARSAVE.reached:{},band:0,sugNow:false,sugSeen:{},len:null,pivot:null,part:'mel',sysSel:null,glossQ:undefined,rd:EARSAVE.rd&&typeof EARSAVE.rd==='object'?EARSAVE.rd:{}};
-function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,all:EAR.all,rhy:EAR.rhy,names:EAR.names,mod:EAR.mod,rd:EAR.rd,reached:EAR.reached})}
+function earSave(){LS.set('cjg_ear',{drill:EAR.drill,lvl:EAR.lvl,st:EAR.st,letters:EAR.letters,rhy:EAR.rhy,names:EAR.names,mod:EAR.mod,rd:EAR.rd,reached:EAR.reached})}
 /* 0.50 V9 (re-tag 8, approved 22 Nov): every drill has 21 rungs, 3 per level (rung = 3 x (level - 1) + step). The generators keep their
    internal rung numbers (saved progress and the ladder rules key on them); EARSLOT gives each built internal rung its place 1-21.
    Places with no built rung are 'not yet'. A built rung that holds content from two places sits at the later one. */
@@ -7138,15 +7284,20 @@ function earRungs(d){return EARSTAGE[d].map((_,i)=>i+1)}
 function earStage(){return typeof S!=='undefined'&&S.level>=1&&S.level<=7?S.level:5}
 function earStageTxt(a,b){return a===b?`Level ${a}`:`Levels ${a}–${b}`}
 function earStageTag(d){const v=EARSTAGE[d];return earStageTxt(Math.min(...v),Math.max(...v))}
+/* 0.50 V10 labels (spec 3.6): written rungs, counted from EARSLOT */
+function earDrillSub(d){return`${EARSLOT[d].length} rungs`}
+function earDrillTag(d){const a=EARSLOT[d];return`Rungs ${a[0]} to ${a[a.length-1]} · ${a.length} written`}
+/* first visit to a drill (spec 3.5 item 4): the first written rung at the learner's level, else the nearest written rung below, else the lowest */
+function earFirstRung(d){const lv=earStage(),E=EARSTAGE[d];let i=E.indexOf(lv);if(i>=0)return i+1;for(let k=E.length-1;k>=0;k--)if(E[k]<lv)return k+1;return 1}
 function earDrillOn(d,g=earStage()){return EARSTAGE[d][0]<=g}
 function earRungOn(d,r,g=earStage()){return EARSTAGE[d][r-1]<=g}
 function earRungStages(d,r){return earStageTxt(EARSTAGE[d][r-1],Math.max(...EARSTAGE[d]))}
 // a drill outside the Stage (open because it was chosen, or through Show all) offers all its rungs
-function earRungsShown(d){if(EAR.all||!earDrillOn(d))return earRungs(d);return earRungs(d).filter(r=>earRungOn(d,r))}
-function earDrillShown(d,g=earStage()){return !!EAR.all||earDrillOn(d,g)||d===EAR.drill}
-function earRungShown(d,l){return earRungsShown(d).includes(l)||(d===EAR.drill&&l===earLvl())}
+function earRungsShown(d){return earRungs(d)}   // 0.50 V10: every written rung shows; nothing is behind a chip
+function earDrillShown(d){return true}
+function earRungShown(d,l){return earRungs(d).includes(l)}
 // whether anything is behind "Show all" at this Stage
-function earHidden(g=earStage()){return EDR.some(([k])=>!earDrillOn(k,g)||earRungs(k).some(r=>!earRungOn(k,r,g)))}
+function earHidden(){return false}
 const epick=(a,r)=>a[Math.floor(r()*a.length)];
 /* ---- question generators: pure, given a random function ---- */
 const METRES={'2/4':{b:2,sub:2,acc:[2,0]},'3/4':{b:3,sub:2,acc:[2,0,0]},'4/4':{b:4,sub:2,acc:[2,0,1,0]},'6/8':{b:2,sub:3,acc:[2,0]},'9/8':{b:3,sub:3,acc:[2,0,0]},'12/8':{b:4,sub:3,acc:[2,0,1,0]},'5/4':{b:5,sub:2,acc:[2,0,0,1,0]},'7/8':{b:3,sub:0,grp:[2,2,3],acc:[2,1,1]}};
@@ -8412,7 +8563,7 @@ function earMark(ok,given){if(EAR.done)return;EAR.done=true;const kind=given===n
 // a question left before it was answered is recorded as skipped; returns true if one was
 function earSkip(){if(!EAR.q||EAR.done||EAR.q.plays===0)return false;earRecord('skipped');logIt(`Ear Lab · ${EDR.find(x=>x[0]===EAR.drill)[1]} rung ${rn(EAR.drill,earLvl())}: skipped`);return true}
 // the rung in use: an open question's own rung, else the rung chosen for this drill (shown even when it is above the Stage), else the first rung shown
-function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;const l=EAR.lvl[EAR.drill];return l||earRungsShown(EAR.drill)[0]}
+function earLvl(){const q=EAR.q;if(q&&q.l&&q.d===EAR.drill)return q.l;let l=EAR.lvl[EAR.drill];if(!l||!EARSLOT[EAR.drill][l-1]){l=EAR.lvl[EAR.drill]=earFirstRung(EAR.drill)}return l}   // 0.50 V10: the first visit fixes the rung; a later change of learner level does not move it
 // R4 family answers (imperfect for a Phrygian cadence, perfect for a cadential 6/4) are Nearly (EAR_NEARLY) or wrong; the result panel's
 // text for both states comes from earCadNear / earCad64IntGiven (one source, reconcile 0.48)
 function earCheck(){const q=EAR.q;if(!q)return;if(q.d==='rhy'){const m=ladRhyMark(q,EAR.ans);earMark(m.ok?true:m.nearly?'nearly':false,Array.isArray(EAR.ans)?EAR.ans.slice():EAR.ans);EAR.res.mark=m}
@@ -8443,17 +8594,26 @@ function earLast10HTML(d,l){const a=(EAR.rd[d]&&EAR.rd[d][l])||[],r=a.reduce((s,
  return`<span class="el-last10" role="img" aria-label="${a.length?`Last ${a.length} answers on this rung: ${r} right`:'No answers on this rung yet'}">Last 10 <i>${m.map(x=>`<span class="${x===1?'r':x===null?'e':''}"></span>`).join('')}</i></span>`}
 /* the readiness state for the rung in use (D10: Shown, Skipped and Nearly are not in the window; the next rung counts at any Stage, D5) */
 function earReady(d,l){return ladRdState(EAR.rd,d,l,earRungs(d))}
-function earPickerHTML(d,l){const bands=earBands(d),top=earStage(),st=earReady(d,l),sug=st.ready?st.next:null,rd=EAR.reached[d]||[];
- const stageOf=n=>EARSTAGE[d][n-1],open=EAR.band&&bands.some(b=>b.stage===EAR.band&&(EAR.all||b.stage<=top||b.rungs.includes(l)))?EAR.band:stageOf(l);let h='',hid=0;const hs=[];
- for(const b of bands){const isCur=b.rungs.includes(l);
-  if(!(EAR.all||b.stage<=top||isCur)){hid+=b.rungs.length;hs.push(b.stage);continue}
-  const isOpen=open===b.stage,sg=b.rungs.includes(sug),a=b.rungs[0],z=b.rungs[b.rungs.length-1];
-  h+=`<button class="el-bandtab${isOpen?' open':''}${sg?' sug':''}" data-band="${b.stage}" aria-expanded="${isOpen}" aria-label="Level ${b.stage}, rungs ${rn(d,a)} to ${rn(d,z)}${sg?', suggested next':''}"><small>Level ${b.stage}</small><b>${rn(d,a)}–${rn(d,z)}</b></button>`;
-  h+=`<div class="el-band${isCur?' cur':''}${isOpen?' open':''}" role="group" aria-label="Level ${b.stage}"><span class="el-bandlab" data-notm>Level ${b.stage}</span>${b.rungs.map(n=>{const dn=rd.includes(n);
-   return`<button data-earlv="${n}" aria-pressed="${n===l}" aria-label="Rung ${rn(d,n)}, Level ${b.stage}${dn?', 8 of the last 10 reached':''}${n===sug?', suggested next':''}" class="${n===l?'on':''}${dn?' done':''}${n===sug?' sug':''}">${rn(d,n)}</button>`}).join('')}</div>`}
- if(hid){const lab=earStageTxt(hs[0],hs[hs.length-1]),sg=sug&&hs.includes(stageOf(sug));
-  h+=`<button class="el-bandmore${sg?' sug':''}" data-earall aria-pressed="false" aria-label="Show ${hid} more rungs, ${lab}${sg?', suggested next':''}"><b>${hid} more</b><span class="sep"> · </span><small>${lab}</small></button>`}
- return`<div class="el-rp" role="group" aria-label="Rung">${h}</div><p class="el-rungline" data-notm><span><b>Rung ${rn(d,l)} of 21</b> · ${earStageTxt(stageOf(l),stageOf(l))} · ${earRungWhat(d,l)}</span>${earLast10HTML(d,l)}</p>`}
+/* what a rung is, for the drills that are not the two long ladders (from the answer sets the generators use) */
+function earRungWhatShort(d,l){if(d==='metre')return'metres: '+earMetreOpts(l).join(', ');if(d==='qual')return'chords: '+earQualOpts(l).map(k=>QUALS[k].toLowerCase()).join(', ');return''}
+/* 0.50 V10 (spec 3): 21 slots in seven level groups. Place = 3 x (level - 1) + step; the buttons carry the internal rung (data-earlv), the text the place. */
+function earPickerHTML(d,l){const slot=EARSLOT[d],st=earReady(d,l),sug=earLong(d)&&st.ready?st.next:null,rd=EAR.reached[d]||[],mine=EARSTAGE[d][l-1],you=earStage(),
+ open=EAR.band>=1&&EAR.band<=7?EAR.band:mine,hint=lv=>{const h=curHint(lv);return h?` (${h})`:''};let h='';
+ for(let lv=1;lv<=7;lv++){const p0=3*(lv-1)+1,cells=[];let run=0,runA=0,has=false,sg=false,wr=0;
+  const flush=()=>{if(run){cells.push(`<span class="el-ny" style="--n:${run}" role="img" aria-label="${run>1?`Rungs ${runA} to ${runA+run-1}`:`Rung ${runA}`}, not yet written">not yet</span>`);run=0}};
+  for(let k=0;k<3;k++){const p=p0+k,n=slot.indexOf(p)+1;
+   if(!n){if(!run)runA=p;run++;continue}
+   flush();wr++;const dn=rd.includes(n),isOn=n===l,isSg=n===sug;if(isOn)has=true;if(isSg)sg=true;
+   cells.push(`<button data-earlv="${n}" aria-pressed="${isOn}" aria-label="Rung ${p}, Level ${lv}${dn?', 8 of the last 10 reached':''}${isSg?', suggested next':''}" class="${isOn?'on':''}${dn?' done':''}${isSg?' sug':''}">${p}</button>`)}
+  flush();
+  const isYou=lv===you,isOpen=lv===open,none=!wr,nm=LVN[lv];
+  h+=`<div class="el-lg${isYou?' you':''}${none?' none':''}${isOpen?' open':''}" role="group" aria-label="Level ${lv}, ${nm}">
+   <button class="el-ltab${isYou?' you':''}${none?' none':''}${has?' has':''}${sg?' sug':''}" data-band="${lv}" aria-expanded="${isOpen}" aria-label="Level ${lv}, ${nm}${isYou?', your level':''}${none?', not yet written':`, rungs ${p0} to ${p0+2}`}${sg?', suggested next':''}"><b>${lv}</b></button>
+   <span class="el-lgcap" data-notm>${isYou?`<span class="lvm now" aria-hidden="true">${lv}</span>`:`<i>${lv}</i>`} ${nm}</span>
+   <div class="el-lgr">${cells.join('')}</div>
+   <p class="el-lcap" data-notm><b>Level ${lv} · ${nm}</b>${isYou?' · <em>your level</em>':''}</p></div>`}
+ const hint2=curHint(mine),desc=earLong(d)?earRungWhat(d,l):earRungWhatShort(d,l);
+ return`<div class="el-rp7" role="group" aria-label="Rung">${h}</div><p class="el-rungline" data-notm><span><b>Rung ${rn(d,l)} of 21</b> · Level ${mine}, ${LVN[mine]}${hint2?` <span style="white-space:nowrap">(${hint2})</span>`:''}${desc?` · ${desc}`:''}</span>${earLong(d)?earLast10HTML(d,l):''}</p>`}
 /* the suggestion, as the last row of the result panel */
 function earSugHTML(d,l){if(!earLong(d)||!EAR.sugNow||!EAR.done)return'';const st=earReady(d,l);if(!st.ready)return'';const n=st.next,sn=EARSTAGE[d][n-1],cross=sn>EARSTAGE[d][l-1],txt=(d==='mel'?LMNEW:LRNEWTXT)[n]||'';
  return`<div class="el-sug" role="status" data-notm><svg class="ico" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M9 27V5M21 27V5M9 22h12M9 16h12M9 10h12"/><path d="M15 13V3m-3.2 3.2L15 3l3.2 3.2" stroke-width="1.6"/></svg>
@@ -9340,7 +9500,7 @@ function earAnswerAreaHTML(q,l){const d=EAR.drill;
 function earTipsHTML(d){return`<section class="card" id="earTips"><h3>Listening for it</h3><ol class="el-tips">${ELTIPS[d].map(([a,b])=>`<li><b>${a}</b> ${b}</li>`).join('')}</ol><p>${ELTIPNOTE[d]}</p></section>`}
 /* ---- the card ---- */
 function earFocusKey(){const a=document.activeElement;if(!a||!a.closest||!a.closest('#earMain')||!a.dataset)return null;
- for(const k of ['len','rest','earmut','eardo','earpart','sys','earplay','eardr','earlv','earpulse','earspd','earall','earreset','earresetno','earresetyes','earresetundo','earjournal','eardock']){if(a.dataset[k]!==undefined)return a.dataset[k]===''?`[data-${k}]`:`[data-${k}="${a.dataset[k]}"]`}return null}
+ for(const k of ['len','rest','earmut','eardo','earpart','sys','earplay','eardr','earlv','earpulse','earspd','earreset','earresetno','earresetyes','earresetundo','earjournal','eardock']){if(a.dataset[k]!==undefined)return a.dataset[k]===''?`[data-${k}]`:`[data-${k}="${a.dataset[k]}"]`}return null}
 function earLiveSay(t){let n=document.getElementById('earLive');if(!n){n=document.createElement('div');n.id='earLive';n.className='el-sr';n.setAttribute('role','status');n.setAttribute('aria-live','polite');n.setAttribute('aria-atomic','true');document.getElementById('room-ear').appendChild(n)}n.textContent='';setTimeout(()=>{n.textContent=t},30)}
 function renderEar(){const el=$('earMain');if(!el)return;
  // a question belongs to its own drill: if the drill was changed from outside (a link, a test), drop the stale question
@@ -9348,15 +9508,13 @@ function renderEar(){const el=$('earMain');if(!el)return;
  const q=EAR.q,l=earLvl(),s=earSt(),rdy=elReady(EAR.drill),d=EAR.drill;
  if(!rdy&&!EAR.preloading){EAR.preloading=elPreload(d).catch(()=>{}).then(()=>{EAR.preloading=null;if(ROOM==='ear'&&$('earMain'))renderEar()})}
  el.classList.add('el');if(q&&q.d==='mel'&&earLong4(q)&&!EAR.done)earLenFix(q,true);const fk=EAR.focus||earFocusKey();EAR.focus=null;
- const tabs=EDR.filter(([k])=>earDrillShown(k)),hidD=EDR.filter(([k])=>!earDrillShown(k)),rungs=[...new Set([...earRungsShown(d),l])].sort((a,b)=>a-b),hidR=rungs.length<earRungs(d).length;   // 0.49: numeric order, 12 / 10 rungs
- const hmin=Math.min(...hidD.map(([k])=>EARSTAGE[k][0])),hmax=Math.max(...hidD.map(([k])=>Math.max(...EARSTAGE[k])));
- const allBtn=hidD.length?`<button class="el-all" data-earall aria-pressed="false" title="Also offer the drills and rungs outside Stage ${earStage()}">${hidD.length} more for ${earStageTxt(hmin,hmax)} · show all</button>`:EAR.all?`<button class="el-all" data-earall aria-pressed="true" title="Offer only the drills and rungs for Stage ${earStage()}">Show Stage ${earStage()} only</button>`:'';
+ const tabs=EDR.filter(([k])=>earDrillShown(k)),hidD=[];
  const fresh=EAR.ok0===undefined?s.ok:EAR.ok0,fade=s.ok>fresh&&EAR.ok0Drill===d;EAR.ok0=s.ok;EAR.ok0Drill=d;
  let tally=earTallyHTML(s);if(fade)tally=tally.replace('<b data-ok','<b class="fade" data-ok');
  const T=q&&EAR.done&&EAR.res&&d!=='mel'?earTeach(q,EAR.res):null;
- el.innerHTML=`<div class="el-drills" role="tablist" aria-label="Ear Lab drills">${tabs.map(([k,n])=>`<button class="el-drill${d===k?' on':''}" role="tab" aria-selected="${d===k}" data-eardr="${k}"><b>${n}</b><small>${earStageTag(k)}</small></button>`).join('')}${allBtn}</div>
- <div class="el-cols"><section class="card" id="earCard"><div class="el-head${earLong(d)?' long':''}"><div><div class="el-tag">${earStageTag(d)}</div><h2 class="el-title">${elDrillName(d)}</h2></div>${tally}
-  <div class="el-rungrow">${earLong(d)?earPickerHTML(d,l):`<div class="el-rungs" role="group" aria-label="Rung">${rungs.map(n=>`<button data-earlv="${n}" aria-pressed="${l===n}" class="${l===n?'on':''}" title="${earRungStages(d,n)}">Rung ${rn(d,n)}</button>`).join('')}</div>${hidR&&!EAR.all?`<button class="el-all" data-earall aria-pressed="false">show all rungs</button>`:''}</div>`}</div></div>
+ el.innerHTML=`<div class="el-drills" role="tablist" aria-label="Ear Lab drills">${tabs.map(([k,n])=>`<button class="el-drill${d===k?' on':''}" role="tab" aria-selected="${d===k}" data-eardr="${k}"><b>${n}</b><small>${earDrillSub(k)}</small></button>`).join('')}</div>
+ <div class="el-cols"><section class="card" id="earCard"><div class="el-head long"><div><div class="el-tag">${earDrillTag(d)}</div><h2 class="el-title">${elDrillName(d)}</h2></div>${tally}
+  <div class="el-rungrow">${earPickerHTML(d,l)}</div></div>
   <p class="el-ask">${d==='rhy'?earRhyAsk(q,l):(d==='mel'&&earMelAsk(q,l))||ELASK[d]}</p>
   ${T?earResultHTML(q,T):d==='mel'&&q&&EAR.done?'':earStageHTML(q,l)}
   ${earAnswerAreaHTML(q,l)}${earFootHTML(s)}</section>${earTipsHTML(d)}</div>${earDockHTML(q)}`;
@@ -9402,15 +9560,14 @@ function earSounding(){return ELT.st!=='idle'&&ELT.item===EAR.q&&ELT.variant!=='
 function earPress(v,main,o){const q=EAR.q;
  if(main){if(!q){earNew();return}if(earSounding()){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,'all');return}
  if(!q)return;if(earSounding()&&ELT.variant===v){if(performance.now()<PLAY.guard)return;elStop();return}elPlay(q,v,o)}
-document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earall],[data-earplay],[data-eardock],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earpulse],[data-earspd],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore],[data-band],[data-earstay],[data-eardrum],[data-earnames],[data-len],[data-rest],[data-earmut],[data-eardo],[data-earpart],[data-sys]');if(!t)return;const d=t.dataset;
+document.addEventListener('click',e=>{if(ROOM!=='ear')return;const t=e.target.closest('[data-eardr],[data-earlv],[data-earplay],[data-eardock],[data-earnew],[data-earans],[data-earcell],[data-earrn],[data-earsol],[data-earclr],[data-earchk],[data-earshow],[data-earpulse],[data-earspd],[data-earreset],[data-earresetyes],[data-earresetno],[data-earresetundo],[data-earjournal],[data-earscore],[data-band],[data-earstay],[data-eardrum],[data-earnames],[data-len],[data-rest],[data-earmut],[data-eardo],[data-earpart],[data-sys]');if(!t)return;const d=t.dataset;
  if(d.band){EAR.band=+d.band;renderEar();return}
  if(d.earnames){EAR.names=d.earnames==='kk'?'kk':'k';earSave();renderEar();return}
  if(d.earstay!==undefined){EAR.sugNow=false;renderEar();return}
  // EL-11: leaving a question unanswered (a change of drill or rung) records it as skipped, and says so
- if(d.eardr){if(d.eardr===EAR.drill)return;elStop();const sk=earSkip();EAR.drill=d.eardr;EAR.q=null;EAR.done=false;EAR.ans=[];EAR.resetAsk=false;earSave();renderEar();if(sk)toast('The unanswered question was recorded as skipped (not a miss).');return}
+ if(d.eardr){if(d.eardr===EAR.drill)return;elStop();const sk=earSkip();EAR.drill=d.eardr;EAR.band=0;EAR.q=null;EAR.done=false;EAR.ans=[];EAR.resetAsk=false;earSave();renderEar();if(sk)toast('The unanswered question was recorded as skipped (not a miss).');return}
  if(d.earlv){if(+d.earlv===earLvl())return;elStop();const sk=earSkip();EAR.lvl[EAR.drill]=+d.earlv;EAR.band=0;EAR.sugNow=false;earSave();EAR.q=null;EAR.done=false;EAR.ans=[];renderEar();if(sk)toast('Rung changed: the unanswered question was recorded as skipped (not a miss).');return}
- if(d.earall!==undefined){EAR.all=!EAR.all;earSave();renderEar();return}
- if(d.earplay!==undefined){const o=(d.earo||'').split(':').map(Number);earPress(d.earplay,d.v==='*',{o});return}
+  if(d.earplay!==undefined){const o=(d.earo||'').split(':').map(Number);earPress(d.earplay,d.v==='*',{o});return}
  if(d.eardock!==undefined){if(d.eardock==='toggle')earPress('all',true);else if(d.eardock==='check'){elStop();earCheck()}else earNew();return}
  if(d.earnew!==undefined){earNew();return}
  if(d.earpulse!==undefined){elStop();EAR.rhy.pulse=d.earpulse==='1';earSave();renderEar();return}
