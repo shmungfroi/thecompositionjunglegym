@@ -1,0 +1,71 @@
+
+=== ladGenMel, learner level 1 (keys must follow the RUNG's level) ===
+ internal  1 place  2 L1: do = C(0) G(1) F(-1) | max acc 1 vs band 1 OK | 3 keys | modes [["maj",1200]] vars [["dia",1200]]
+ internal  2 place  3 L1: do = C(0) G(1) F(-1) | max acc 1 vs band 1 OK | 3 keys | modes [["maj",1200]] vars [["dia",1200]]
+ internal  3 place  4 L2: do = C(0) G(1) F(-1) D(2) B♭(-2) | max acc 2 vs band 2 OK | 5 keys | modes [["maj",1200]] vars [["dia",806],["pent",394]]
+ internal  4 place  5 L2: do = C(0) G(1) F(-1) B♭(-2) D(2) | max acc 2 vs band 2 OK | 5 keys | modes [["maj",1200]] vars [["dia",809],["pent",391]]
+ internal  5 place  6 L2: do = C(0) F(-1) G(1) D(2) B♭(-2) | max acc 2 vs band 2 OK | 5 keys | modes [["min",789],["maj",411]] vars [["natmin",415],["lapent",374],["major",411]]
+ internal  6 place  9 L3: do = C(0) F(-1) G(1) B♭(-2) D(2) A(3) E♭(-3) | max acc 3 vs band 3 OK | 7 keys | modes [["min",620],["maj",580]] vars [["natmin",620],["major",580]]
+ internal  7 place 10 L4: do = C(0) F(-1) G(1) B♭(-2) D(2) A(3) E♭(-3) E(4) A♭(-4) | max acc 4 vs band 4 OK | 9 keys | modes [["min",1200]] vars [["melo",419],["harm",387],["natmin",394]]
+ internal  8 place 12 L4: do = C(0) F(-1) G(1) B♭(-2) D(2) A(3) E♭(-3) A♭(-4) E(4) | max acc 4 vs band 4 OK | 9 keys | modes [["maj",598],["Dorian on re",206],["min",213],["Mixolydian on so",183]] vars [["fi",189],["major",209],["dor",206],["natmin",213],["te",200],["mix",183]]
+ internal  9 place 13 L5: do = C(0) F(-1) G(1) B♭(-2) D(2) A(3) E♭(-3) A♭(-4) E(4) B(5) D♭(-5) | max acc 5 vs band all OK | 11 keys | modes [["min",729],["maj",471]] vars [["m-v",202],["review:major",92],["m-III",218],["M-vi",192],["M-V",187],["review:natmin",203],["review:melo",82],["review:harm",24]]
+ internal 10 place 15 L5: do = C(0) G(1) F(-1) B♭(-2) D(2) A(3) E♭(-3) A♭(-4) E(4) D♭(-5) B(5) | max acc 5 vs band all OK | 11 keys | modes [["min",716],["maj",484]] vars [["natmin",716],["major",484]]
+ internal 11 place 16 L6: do = C(0) G(1) F(-1) B♭(-2) D(2) A(3) E♭(-3) A♭(-4) E(4) D♭(-5) B(5) | max acc 5 vs band all OK | 11 keys | modes [["maj",1086],["min",114]] vars [["major",1086],["natmin",114]]
+ internal 12 place 18 L6: do = C(0) G(1) D(2) A(3) E♭(-3) A♭(-4) | max acc 4 vs band all OK | 6 keys | modes [["maj",262],["min",138]] vars [["repertoire",400]]
+
+=== ladGenMel, learner level 5 (keys must follow the RUNG's level) ===
+ internal  1 place  2 L1: do = C(0) F(-1) G(1) | max acc 1 vs band 1 OK | 3 keys | modes [["maj",1200]] vars [["dia",1200]]
+ internal  2 place  3 L1: do = C(0) G(1) F(-1) | max acc 1 vs band 1 OK | 3 keys | modes [["maj",1200]] vars [["dia",1200]]
+ internal  3 place  4 L2: do = C(0) F(-1) G(1) B♭(-2) D(2) | max acc 2 vs band 2 OK | 5 keys | modes [["maj",1200]] vars [["dia",796],["pent",404]]
+ internal  4 place  5 L2: do = C(0) G(1) F(-1) B♭(-2) D(2) | max acc 2 vs band 2 OK | 5 keys | modes [["maj",1200]] vars [["dia",825],["pent",375]]
+ internal  5 place  6 L2: do = C(0) G(1) F(-1) B♭(-2) D(2) | max acc 2 vs band 2 OK | 5 keys | modes [["min",799],["maj",401]] vars [["natmin",399],["major",401],["lapent",400]]
+ internal  6 place  9 L3: do = C(0) F(-1) G(1) B♭(-2) D(2) E♭(-3) A(3) | max acc 3 vs band 3 OK | 7 keys | modes [["maj",617],["min",583]] vars [["major",617],["natmin",583]]
+ internal  7 place 10 L4: do = C(0) G(1) F(-1) D(2) B♭(-2) E♭(-3) A(3) A♭(-4) E(4) | max acc 4 vs band 4 OK | 9 keys | modes [["min",1200]] vars [["harm",409],["natmin",404],["melo",387]]
+ internal  8 place 12 L4: do = C(0) F(-1) G(1) B♭(-2) D(2) E♭(-3) A(3) A♭(-4) E(4) | max acc 4 vs band 4 OK | 9 keys | modes [["Dorian on re",196],["min",188],["maj",620],["Mixolydian on so",196]] vars [["dor",196],["natmin",188],["major",207],["mix",196],["te",202],["fi",211]]
+ internal  9 place 13 L5: do = C(0) F(-1) G(1) D(2) B♭(-2) A(3) E♭(-3) E(4) A♭(-4) B(5) D♭(-5) | max acc 5 vs band all OK | 11 keys | modes [["maj",491],["min",709]] vars [["M-vi",212],["M-V",191],["review:natmin",214],["m-v",195],["review:major",88],["review:melo",95],["m-III",185],["review:harm",20]]
+ internal 10 place 15 L5: do = C(0) F(-1) G(1) D(2) B♭(-2) A(3) E♭(-3) A♭(-4) E(4) B(5) D♭(-5) | max acc 5 vs band all OK | 11 keys | modes [["min",706],["maj",494]] vars [["natmin",706],["major",494]]
+ internal 11 place 16 L6: do = C(0) G(1) F(-1) D(2) B♭(-2) E♭(-3) A(3) E(4) A♭(-4) D♭(-5) B(5) | max acc 5 vs band all OK | 11 keys | modes [["maj",1075],["min",125]] vars [["major",1075],["natmin",125]]
+ internal 12 place 18 L6: do = C(0) G(1) D(2) A(3) E♭(-3) A♭(-4) | max acc 4 vs band all OK | 6 keys | modes [["maj",255],["min",145]] vars [["repertoire",400]]
+
+=== ladGenMel, learner level 7 (keys must follow the RUNG's level) ===
+ internal  1 place  2 L1: do = C(0) F(-1) G(1) | max acc 1 vs band 1 OK | 3 keys | modes [["maj",1200]] vars [["dia",1200]]
+ internal  2 place  3 L1: do = C(0) F(-1) G(1) | max acc 1 vs band 1 OK | 3 keys | modes [["maj",1200]] vars [["dia",1200]]
+ internal  3 place  4 L2: do = C(0) F(-1) G(1) B♭(-2) D(2) | max acc 2 vs band 2 OK | 5 keys | modes [["maj",1200]] vars [["dia",789],["pent",411]]
+ internal  4 place  5 L2: do = C(0) G(1) F(-1) D(2) B♭(-2) | max acc 2 vs band 2 OK | 5 keys | modes [["maj",1200]] vars [["dia",778],["pent",422]]
+ internal  5 place  6 L2: do = C(0) G(1) F(-1) D(2) B♭(-2) | max acc 2 vs band 2 OK | 5 keys | modes [["min",818],["maj",382]] vars [["lapent",408],["major",382],["natmin",410]]
+ internal  6 place  9 L3: do = C(0) F(-1) G(1) B♭(-2) D(2) A(3) E♭(-3) | max acc 3 vs band 3 OK | 7 keys | modes [["maj",592],["min",608]] vars [["major",592],["natmin",608]]
+ internal  7 place 10 L4: do = C(0) G(1) F(-1) B♭(-2) D(2) A(3) E♭(-3) E(4) A♭(-4) | max acc 4 vs band 4 OK | 9 keys | modes [["min",1200]] vars [["harm",416],["natmin",379],["melo",405]]
+ internal  8 place 12 L4: do = C(0) G(1) F(-1) D(2) B♭(-2) E♭(-3) A(3) E(4) A♭(-4) | max acc 4 vs band 4 OK | 9 keys | modes [["Mixolydian on so",163],["maj",626],["Dorian on re",216],["min",195]] vars [["mix",163],["major",207],["te",197],["fi",222],["dor",216],["natmin",195]]
+ internal  9 place 13 L5: do = C(0) G(1) F(-1) D(2) B♭(-2) A(3) E♭(-3) A♭(-4) E(4) B(5) D♭(-5) | max acc 5 vs band all OK | 11 keys | modes [["maj",465],["min",735]] vars [["M-vi",180],["review:melo",63],["M-V",181],["review:natmin",195],["m-III",233],["m-v",225],["review:major",104],["review:harm",19]]
+ internal 10 place 15 L5: do = C(0) G(1) F(-1) D(2) B♭(-2) A(3) E♭(-3) A♭(-4) E(4) B(5) D♭(-5) | max acc 5 vs band all OK | 11 keys | modes [["min",707],["maj",493]] vars [["natmin",707],["major",493]]
+ internal 11 place 16 L6: do = C(0) F(-1) G(1) D(2) B♭(-2) E♭(-3) A(3) A♭(-4) E(4) D♭(-5) B(5) | max acc 5 vs band all OK | 11 keys | modes [["maj",1082],["min",118]] vars [["major",1082],["natmin",118]]
+ internal 12 place 18 L6: do = C(0) G(1) D(2) A(3) E♭(-3) A♭(-4) | max acc 4 vs band all OK | 6 keys | modes [["maj",253],["min",147]] vars [["repertoire",400]]
+
+=== legacy earGenMel(l) (l=1..3) by learner level ===
+ S.level 1 l=1: C(0) G(1) F(-1)
+ S.level 1 l=2: C(0) F(-1) G(1)
+ S.level 1 l=3: Em(1) Am(0) Gm(-2) Dm(-1)
+ S.level 3 l=1: C(0) G(1) F(-1)
+ S.level 3 l=2: C(0) F(-1) G(1)
+ S.level 3 l=3: Em(1) Am(0) Gm(-2) Dm(-1)
+ S.level 5 l=1: C(0) G(1) F(-1)
+ S.level 5 l=2: C(0) F(-1) G(1)
+ S.level 5 l=3: Em(1) Am(0) Gm(-2) Dm(-1)
+
+=== is legacy earGenMel reachable? earGen1 source (mel branch) ===
+function earGen1(d,l,r){return d==='metre'?earGenMetre(l,r):d==='rhy'?ladGenFresh('rhy',l,r):d==='qual'?earGenQual(l,r):d==='cad'?earGenCad(l,r):d==='bass'?earGenBass(l,r):d==='mel'?ladGenFresh('mel',l,r):earGenBlind(l,r)}
+
+=== listening-only drills: keys drawn (S.level=1, should still be all keys per 0.49 C3) ===
+ cad internal 1: 12 distinct keys/roots: 0 1 10 11 2 3 4 5 6 7 8 9 [["maj",3000]]
+ cad internal 2: 24 distinct keys/roots: 0 0m 1 10 10m 11 11m 1m 2 2m 3 3m 4 4m 5 5m 6 6m 7 7m 8 8m 9 9m [["maj",2029],["min",971]]
+ cad internal 3: 24 distinct keys/roots: 0 0m 1 10 10m 11 11m 1m 2 2m 3 3m 4 4m 5 5m 6 6m 7 7m 8 8m 9 9m [["maj",1463],["min",1537]]
+ bass internal 1: 10 distinct keys/roots: 0 1 10 2 3 4 5 7 8 9 [["maj",3000]]
+ bass internal 2: 10 distinct keys/roots: 0 1 10 2 3 4 5 7 8 9 [["maj",3000]]
+ bass internal 3: 10 distinct keys/roots: 0 1 10 2 3 4 5 7 8 9 [["maj",3000]]
+ qual internal 1: 12 distinct keys/roots: A Ab B Bb C D Db E Eb F F# G []
+ qual internal 2: 12 distinct keys/roots: A Ab B Bb C D Db E Eb F F# G []
+ qual internal 3: 12 distinct keys/roots: A Ab B Bb C D Db E Eb F F# G []
+
+V8 out-of-band rungs: 0
+
+[exited with code 0]

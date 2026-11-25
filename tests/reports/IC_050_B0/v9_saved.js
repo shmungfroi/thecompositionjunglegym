@@ -1,0 +1,9 @@
+// V9: saved Ear Lab progress from 0.49 survives 0.50 unchanged (internal rung numbers kept); visibility of rungs for migrated learners.
+const {load}=require('./harness.js');
+const saved={drill:'mel',lvl:{mel:7,rhy:10,cad:3,metre:3,qual:2,bass:3,blind:2},st:{mel:{ok:5,n:9,best:3,shown:1,skipped:0,nearly:0}},letters:false,all:false,rhy:{pulse:true},names:'k',mod:'home',rd:{mel:{7:[1,1,0,1],12:[1]},rhy:{10:[1,0]},cad:{3:[1,1,1]}},reached:{mel:[1,2,3,4,5,6],rhy:[1,2]}};
+for(const [f,ls] of [['/tmp/old.html',{cjg_stage:'6'}],['index.html',{cjg_stage:'6'}]]){const R=load(f,{...ls,cjg_ear:JSON.stringify(saved)});const E=R.get('EAR');
+  console.log(f,'S.level',R.get('S').level,'| EAR.lvl',JSON.stringify(E.lvl),'| rd',JSON.stringify(E.rd),'| reached',JSON.stringify(E.reached),'| earLvl()',R.run('earLvl()'));
+  R.run('earSave()');const back=JSON.parse(R.store.cjg_ear);console.log('  re-saved lvl/rd/reached/st identical to input:',JSON.stringify([back.lvl,back.rd,back.reached,back.st])===JSON.stringify([saved.lvl,saved.rd,saved.reached,saved.st]));
+  for(const d of ['mel','rhy','metre','qual','cad','bass','blind'])console.log('  ',d,'rungs offered without "show all":',JSON.stringify(R.run(`earRungs(${JSON.stringify(d)}).filter(r=>earRungOn(${JSON.stringify(d)},r))`)),'of',R.run(`earRungs(${JSON.stringify(d)}).length`))}
+const R=load('index.html');console.log('ladRdState text uses place numbers:',R.run("ladRdState({mel:{5:[1,1,1,1,1,1,1,1,1,1]}},'mel',5,[5,6]).text"));
+console.log('EARSTAGE == ceil(EARSLOT/3):',JSON.stringify(R.get('EARSTAGE'))===JSON.stringify(Object.fromEntries(Object.entries(R.get('EARSLOT')).map(([d,a])=>[d,a.map(n=>Math.ceil(n/3))]))),'| places strictly rising and within 1-21:',Object.values(R.get('EARSLOT')).every(a=>a.every((n,i)=>n>=1&&n<=21&&(i===0||n>a[i-1]))),'| counts',JSON.stringify(Object.fromEntries(Object.entries(R.get('EARSLOT')).map(([d,a])=>[d,a.length]))));
